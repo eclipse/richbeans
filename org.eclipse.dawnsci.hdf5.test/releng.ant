@@ -1,4 +1,4 @@
-<project name="plugin-org.dawb.hdf5.test" basedir=".">
+<project name="plugin-org.eclipse.dawnsci.hdf5.test" basedir=".">
 
 	<dirname property="plugin.basedir" file="${ant.file}" />
 	<pathconvert property="workspace.loc" setonempty="false">
