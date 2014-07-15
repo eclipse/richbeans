@@ -34,7 +34,7 @@ public class Hdf5TestUtils {
 		if (relative.exists()) return relative;
 		
 		if (Activator.getContext()==null) { // Tests not running in eclipse
-			return  new File("org.dawb.hdf5.test/src/"+relPath);
+			return  new File("org.eclipse.dawnsci.hdf5.test/src/"+relPath);
 		}
 		URL[] findEntries = FileLocator.findEntries(Activator.getContext().getBundle(), new Path("src"));
 		URL found = FileLocator.find(Activator.getContext().getBundle(), new Path(relPath), null);

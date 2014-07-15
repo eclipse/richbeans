@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
 
 public class H5Editor extends EditorPart implements IReusableEditor, IH5Editor {
 
-	public static final String ID = "org.dawb.hdf5.editor.raw.tree";
+	public static final String ID = "org.eclipse.dawnsci.hdf5.editor.raw.tree";
 	
     private static final Logger logger = LoggerFactory.getLogger(H5Editor.class);
 	
@@ -245,7 +245,7 @@ public class H5Editor extends EditorPart implements IReusableEditor, IH5Editor {
 					// It is not failure to not open the value view.
 				}
 
-				final IConfigurationElement[] ele = Platform.getExtensionRegistry().getConfigurationElementsFor("org.dawb.hdf5.editor.double.click.listener");
+				final IConfigurationElement[] ele = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.dawnsci.hdf5.editor.double.click.listener");
 				for (IConfigurationElement e : ele) {
 					IH5DoubleClickSelectionProvider prov=null;
 					try {
