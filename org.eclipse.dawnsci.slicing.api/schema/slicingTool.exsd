@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.dawnsci.slicing.api" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.dawnsci.slicing.api" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.dawnsci.slicing.api" id="slicingTool" name="Slicing Tool"/>
+         <meta.schema plugin="org.eclipse.dawnsci.slicing.api" id="slicingTool" name="Slicing Tool"/>
       </appinfo>
       <documentation>
          A slicing tool is similar to a plotting tool but allows the original slice data to be interacted with. It may contribute custom UI to replace the plotting part and it may present additional UI in the SliceSystem for editing its settings.
@@ -70,7 +70,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":org.dawnsci.slicing.api.tool.ISlicingTool"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.dawnsci.slicing.api.tool.ISlicingTool"/>
                </appinfo>
             </annotation>
          </attribute>
