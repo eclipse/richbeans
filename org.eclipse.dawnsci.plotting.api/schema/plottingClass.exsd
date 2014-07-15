@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.dawnsci.plotting.api" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.dawnsci.plotting.api" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.dawnsci.plotting.api" id="plottingClass" name="Plotting System"/>
+         <meta.schema plugin="org.eclipse.dawnsci.plotting.api" id="plottingClass" name="Plotting System"/>
       </appInfo>
       <documentation>
          Add plotting systems into the system using this extension point.
@@ -56,7 +56,7 @@ Then the current plotting system will be returned by PlottingFactory.getPlotting
                   Define your plotting system here.
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.dawnsci.plotting.api.IPlottingSystem"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.dawnsci.plotting.api.IPlottingSystem"/>
                </appInfo>
             </annotation>
          </attribute>

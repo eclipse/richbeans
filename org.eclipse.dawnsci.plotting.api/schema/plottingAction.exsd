@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <!-- Schema file written by PDE -->
-<schema targetNamespace="org.dawnsci.plotting.api" xmlns="http://www.w3.org/2001/XMLSchema">
+<schema targetNamespace="org.eclipse.dawnsci.plotting.api" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appinfo>
-         <meta.schema plugin="org.dawnsci.plotting.api" id="plottingAction" name="Plotting Action"/>
+         <meta.schema plugin="org.eclipse.dawnsci.plotting.api" id="plottingAction" name="Plotting Action"/>
       </appinfo>
       <documentation>
          [Enter description of this extension point.]
