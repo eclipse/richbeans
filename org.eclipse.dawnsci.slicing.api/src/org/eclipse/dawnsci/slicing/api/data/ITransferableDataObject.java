@@ -202,4 +202,10 @@ public interface ITransferableDataObject {
 	 */
 	public void setFilterPath(String filterFile);
 
+	/**
+	 * The path to the data file (if any) from which the data came.
+	 * @return file path to data file, may be null.
+	 */
+	public String getFilePath();
+
 }
