@@ -10,6 +10,9 @@ package org.eclipse.dawnsci.plotting.api.trace;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+
 import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 import uk.ac.diamond.scisoft.analysis.roi.IROI;
 
@@ -41,7 +44,10 @@ public interface ISurfaceTrace extends IImage3DTrace, IWindowTrace {
 	/**
 	 * Set the window to be used as a SurfacePlotROI or RectangularROI
 	 * @param window
+	 * @param updateClipping
+	 * @param monitor
+	 * @return status
 	 */
-	public void setWindow(IROI window);
+	public IStatus setWindow(IROI window, boolean updateClipping, IProgressMonitor monitor);
 
 }
