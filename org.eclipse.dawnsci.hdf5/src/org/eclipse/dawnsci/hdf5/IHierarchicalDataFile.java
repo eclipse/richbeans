@@ -205,7 +205,15 @@ public interface IHierarchicalDataFile extends AutoCloseable {
 	 */
 	public void setAttribute(final String objectPath, final String name, final String value) throws Exception;
 
-
+	/**
+	 * 
+	 * @param object
+	 * @param name
+	 * @param value
+	 * @throws Exception
+	 */
+	public void setAttribute(final String objectPath, final String name, final String value, boolean overwrite) throws Exception;
+	
 	/**
 	 * Set an integer attribute on an HObject, useful for nexus signal and axis calls.
 	 * Does not overwrite the value if it is already set.
