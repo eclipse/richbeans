@@ -779,7 +779,8 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 		
     	int    dType   = ((AbstractDataset)data).getDtype();
 		long[] shape   = H5Utils.getLong(data.getShape());
-		Object buffer  = ((AbstractDataset)data).getBuffer();
+		//need to flatten before getting the buffer!
+		Object buffer  = ((AbstractDataset)data).flatten().getBuffer();
 		
 		return createDataset(name, dType, shape, buffer, parentPath, overwrite);
    	
