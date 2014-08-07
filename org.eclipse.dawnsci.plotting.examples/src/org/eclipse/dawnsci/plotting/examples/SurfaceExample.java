@@ -32,7 +32,7 @@ public class SurfaceExample extends PlotExample {
 			surface.setData(image, null);
 			// NOTE We are viewing a window of the data. The user can 
 			// open a tool from the toolbar to move around this window.
-			surface.setWindow(new RectangularROI(300,300,600,600,0));
+			surface.setWindow(new RectangularROI(300,300,600,600,0), false, null);
 			
 			// Let's make it something colorful!
 			final IPaletteService pservice = (IPaletteService)Activator.getService(IPaletteService.class);
