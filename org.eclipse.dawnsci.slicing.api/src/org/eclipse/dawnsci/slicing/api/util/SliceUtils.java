@@ -459,7 +459,7 @@ public class SliceUtils {
 		
 		if (axisName.endsWith("[Expression]")) {
 			final IDataset set = currentSlice.getExpressionAxis(axisName);
-			return service.convertToAbstractDataset(set);
+			return service.convertToDataset(set);
 		}
 		
 		try {
@@ -513,7 +513,7 @@ public class SliceUtils {
 		if (dataPath.endsWith("[Expression]")) {
 			final IDataset set = currentSlice.getExpressionAxis(dataPath);
 			final IDatasetMathsService service = (IDatasetMathsService)ServiceManager.getService(IDatasetMathsService.class);
-			return service.convertToAbstractDataset(set);
+			return service.convertToDataset(set);
 		}
 		
 		if (requireUnit) { // Slower
