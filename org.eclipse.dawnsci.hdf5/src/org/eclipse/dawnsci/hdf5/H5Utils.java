@@ -9,11 +9,9 @@
  */ 
 package org.eclipse.dawnsci.hdf5;
 
-import ncsa.hdf.object.Dataset;
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.h5.H5Datatype;
-import uk.ac.diamond.scisoft.analysis.dataset.AbstractDataset;
-import uk.ac.diamond.scisoft.analysis.dataset.BooleanDataset;
+import uk.ac.diamond.scisoft.analysis.dataset.Dataset;
 import uk.ac.diamond.scisoft.analysis.dataset.ByteDataset;
 import uk.ac.diamond.scisoft.analysis.dataset.DatasetUtils;
 import uk.ac.diamond.scisoft.analysis.dataset.DoubleDataset;
@@ -36,26 +34,26 @@ public class H5Utils {
 		
 		switch (size) {
 		case 8:
-			return AbstractDataset.INT8;
+			return Dataset.INT8;
 			
 		case 16:
-			return AbstractDataset.INT16;
+			return Dataset.INT16;
 			
 		case 32:
-			if (type==Datatype.CLASS_INTEGER) return AbstractDataset.INT32;
-			if (type==Datatype.CLASS_FLOAT)   return AbstractDataset.FLOAT32;
+			if (type==Datatype.CLASS_INTEGER) return Dataset.INT32;
+			if (type==Datatype.CLASS_FLOAT)   return Dataset.FLOAT32;
 			//$FALL-THROUGH$
 		case 64:
-			if (type==Datatype.CLASS_INTEGER) return AbstractDataset.INT64;
-			if (type==Datatype.CLASS_FLOAT)   return AbstractDataset.FLOAT64;
+			if (type==Datatype.CLASS_INTEGER) return Dataset.INT64;
+			if (type==Datatype.CLASS_FLOAT)   return Dataset.FLOAT64;
 		}
 		
-		return AbstractDataset.FLOAT;
+		return Dataset.FLOAT;
 	}
 	
-	public static AbstractDataset getSet(final IHierarchicalDataFile file, String fullPath) throws Exception {
+	public static Dataset getSet(final IHierarchicalDataFile file, String fullPath) throws Exception {
 		@SuppressWarnings("deprecation") // We are allowed to use this method internally.
-		Dataset dataset = (Dataset) file.getData(fullPath);
+		ncsa.hdf.object.Dataset dataset = (ncsa.hdf.object.Dataset) file.getData(fullPath);
 		return H5Utils.getSet(dataset.getData(), dataset);
 	}
 
@@ -67,7 +65,7 @@ public class H5Utils {
 	 * @return dataset
 	 * @throws Exception
 	 */
-	public static AbstractDataset getSet(final Object  val, final Dataset set) throws Exception {
+	public static Dataset getSet(final Object  val, final ncsa.hdf.object.Dataset set) throws Exception {
 	    return H5Utils.getSet(val, set.getDims(), set);
 	}
 
@@ -79,11 +77,11 @@ public class H5Utils {
 	 * @return dataset
 	 * @throws Exception
 	 */
-	public static AbstractDataset getSet(final Object  val, final long[] longShape, final Dataset set) throws Exception {
+	public static Dataset getSet(final Object  val, final long[] longShape, final ncsa.hdf.object.Dataset set) throws Exception {
 
 		final int[] intShape  = getInt(longShape);
          
-		AbstractDataset ret = null;
+		Dataset ret = null;
         if (val instanceof byte[]) {
         	ret = new ByteDataset((byte[])val, intShape);
         } else if (val instanceof short[]) {
@@ -102,15 +100,15 @@ public class H5Utils {
         
 		if (set.getDatatype().isUnsigned()) {
 			switch (ret.getDtype()) {
-			case AbstractDataset.INT32:
+			case Dataset.INT32:
 				ret = new LongDataset(ret);
 				DatasetUtils.unwrapUnsigned(ret, 32);
 				break;
-			case AbstractDataset.INT16:
+			case Dataset.INT16:
 				ret = new IntegerDataset(ret);
 				DatasetUtils.unwrapUnsigned(ret, 16);
 				break;
-			case AbstractDataset.INT8:
+			case Dataset.INT8:
 				ret = new ShortDataset(ret);
 				DatasetUtils.unwrapUnsigned(ret, 8);
 				break;
@@ -171,25 +169,25 @@ public class H5Utils {
 	public static Datatype getDatatype(int dType, int size)  throws Exception {
 		
 		// There is a smarter way of doing this, but am in a hurry...
-		if (dType==AbstractDataset.INT8 || dType==AbstractDataset.BOOL) {
+		if (dType==Dataset.INT8 || dType==Dataset.BOOL) {
          	return new H5Datatype(Datatype.CLASS_INTEGER, 8/8, Datatype.NATIVE, Datatype.SIGN_NONE);
          	
-        } else if (dType==AbstractDataset.INT16) {
+        } else if (dType==Dataset.INT16) {
         	return new H5Datatype(Datatype.CLASS_INTEGER, 16/8, Datatype.NATIVE, Datatype.NATIVE); 
         	
-        } else if (dType==AbstractDataset.INT32) {
+        } else if (dType==Dataset.INT32) {
         	return new H5Datatype(Datatype.CLASS_INTEGER, 32/8, Datatype.NATIVE, Datatype.NATIVE); 
        	
-        } else if (dType==AbstractDataset.INT64) {
+        } else if (dType==Dataset.INT64) {
         	return new H5Datatype(Datatype.CLASS_INTEGER, 64/8, Datatype.NATIVE, Datatype.NATIVE); 
         	
-        } else if (dType==AbstractDataset.FLOAT32) {
+        } else if (dType==Dataset.FLOAT32) {
         	return new H5Datatype(Datatype.CLASS_FLOAT, 32/8, Datatype.NATIVE, Datatype.NATIVE); 
         	
-        } else if (dType==AbstractDataset.FLOAT64) {
+        } else if (dType==Dataset.FLOAT64) {
         	return new H5Datatype(Datatype.CLASS_FLOAT, 64/8, Datatype.NATIVE, Datatype.NATIVE); 
       	    
-        } else if (dType == AbstractDataset.STRING) {
+        } else if (dType == Dataset.STRING) {
         	if (size<0) size = 64;
         	return new H5Datatype(Datatype.CLASS_STRING, size, Datatype.NATIVE, Datatype.NATIVE);
         }
