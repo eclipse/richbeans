@@ -985,7 +985,7 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 	}
 	
 	@Override
-	public String insertSlice(String name,  
+	public synchronized String insertSlice(String name,  
 					            final IDataset data,
 					            final String   parentPath,
 					            final long[][] startStopStep,
