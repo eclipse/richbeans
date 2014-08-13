@@ -760,10 +760,14 @@ public class SliceUtils {
 			if (shape==null) continue;
 			
 			boolean foundDims = false;
-			for (int i = 0; i < shape.length; i++) {
-				if (shape[i]>minSize) {
-					foundDims = true;
-					break;
+			if (minSize==1 && shape.length==0) {
+				foundDims = true;
+			} else {
+				for (int i = 0; i < shape.length; i++) {
+					if (shape[i]>=minSize) {
+						foundDims = true;
+						break;
+					}
 				}
 			}
 			if (!foundDims) continue;
