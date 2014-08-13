@@ -64,7 +64,7 @@ public interface IImageService {
 	 * min and max inside the bounds which are to be part of the main histogram.
 	 * The mean and real max values are also calculated.
 	 * 
-	 * The AbstractDataset and the histogram type must be set in the bean.
+	 * The Dataset and the histogram type must be set in the bean.
 	 * 
 	 * The return array[2] was added in "Updated for Diffraction Tool." commit,
 	 * but no trace of such usage. However it should not be removed, because

@@ -170,7 +170,7 @@ public interface IImageTrace extends IPaletteTrace, IDownsampledTrace, ICoordina
 	
 	/**
 	 * 
-	 * @return the current downsampled AbstractDataset being used to draw the image.
+	 * @return the current downsampled Dataset being used to draw the image.
 	 */
 	public IDataset getDownsampled();
 

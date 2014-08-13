@@ -152,7 +152,7 @@ public interface IPlottingSystem extends IAdaptable, ITraceSystem, IRegionSystem
 	 * @see IPlottingSystem.createPlot1D(x, ys, monitor);
 	 * 
 	 * This method is Thread safe - so no need to call from UI thread!
-	 * @see createPlot1D(AbstractDataset, List<AbstractDataset>, IProgressMonitor)
+	 * @see createPlot1D(IDataset, List<IDataset>, IProgressMonitor)
 	 * @param x
 	 * @param ys
 	 * @param title - specifies the title instead of creating one.
@@ -168,7 +168,7 @@ public interface IPlottingSystem extends IAdaptable, ITraceSystem, IRegionSystem
 	 * @see IPlottingSystem.createPlot1D(x, ys, monitor);
 	 * 
 	 * This method is Thread safe - so no need to call from UI thread!
-	 * @see createPlot1D(AbstractDataset, List<AbstractDataset>, IProgressMonitor)
+	 * @see createPlot1D(IDataset, List<IDataset>, IProgressMonitor)
 	 * @param x
 	 * @param ys
 	 * @param dataNames - If the data plotted has names which will be used in Filters these can be set here.
@@ -307,7 +307,7 @@ public interface IPlottingSystem extends IAdaptable, ITraceSystem, IRegionSystem
 	 * 
 	 * Example of starting a plot with nothing and then adding points:
 	 * 
-	 * final AbstractDataset y = new DoubleDataset(new double[]{}, 0}
+	 * final Dataset y = new DoubleDataset(new double[]{}, 0}
 	 * y.setName("y")
 	 * 
 	 * plottingSystem.createPlot(y, null, PlotType.PT1D, mon);
@@ -388,8 +388,8 @@ public interface IPlottingSystem extends IAdaptable, ITraceSystem, IRegionSystem
 	
 	/**
 	 * Call this method to return a plotted data set by name. NOTE the plotting system
-	 * will likely not be using AbstractDataset as internal data. Instead it will get the
-	 * current data of the plot required and construct an AbstractDataset for it. This means
+	 * will likely not be using Dataset as internal data. Instead it will get the
+	 * current data of the plot required and construct an Dataset for it. This means
 	 * that you can plot int data but get back double data if the graph keeps data internally
 	 * as doubles for instance. If the append(...) method has been used, the data returned by
 	 * name from here will include the appended points.

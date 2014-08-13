@@ -16,7 +16,7 @@ public interface IPaletteTrace extends IAxesTrace {
 
 	
 	/**
-	 * PaletteData for creating the image/surface from the AbstractDataset
+	 * PaletteData for creating the image/surface from the Dataset
 	 * @return
 	 */
 	public PaletteData getPaletteData();
@@ -28,7 +28,7 @@ public interface IPaletteTrace extends IAxesTrace {
 	public void setPaletteData(PaletteData paletteData);
 
 	/**
-	 * PaletteName for creating the image/surface from the AbstractDataset
+	 * PaletteName for creating the image/surface from the Dataset
 	 * @return
 	 */
 	public String getPaletteName();
