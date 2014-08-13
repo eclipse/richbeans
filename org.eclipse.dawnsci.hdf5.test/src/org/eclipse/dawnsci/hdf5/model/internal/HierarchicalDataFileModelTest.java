@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import ncsa.hdf.object.Dataset;
-
 import org.eclipse.dawnsci.hdf5.HierarchicalDataFactory;
 import org.eclipse.dawnsci.hdf5.HierarchicalDataUtils;
 import org.eclipse.dawnsci.hdf5.IHierarchicalDataFile;
@@ -19,7 +17,7 @@ import org.eclipse.dawnsci.hdf5.model.internal.HierarchicalDataFileModel;
 import org.eclipse.dawnsci.hdf5.model.internal.IHierarchicalDataFileGetReader;
 import org.junit.Test;
 
-import uk.ac.diamond.scisoft.analysis.dataset.AbstractDataset;
+import uk.ac.diamond.scisoft.analysis.dataset.Dataset;
 
 public class HierarchicalDataFileModelTest {
 
@@ -65,7 +63,7 @@ public class HierarchicalDataFileModelTest {
 			String childPath = members.get(i);
 			System.out.print(childPath);
 			if (reader.isDataset(childPath)) {
-				Dataset dataset = (Dataset) reader.getData(childPath);
+				ncsa.hdf.object.Dataset dataset = (ncsa.hdf.object.Dataset) reader.getData(childPath);
 				Object value = dataset.read();
 				System.out.print("=DIMS(");
 				System.out.print(Arrays.toString(dataset.getDims()));
@@ -344,37 +342,37 @@ public class HierarchicalDataFileModelTest {
 	@Test
 	public void testMultiDimArrayString() throws Exception {
 		final String GOLD = "Gold";
-		assertEquals(GOLD, createNexusFile(AbstractDataset.STRING, new long[] { 1 }, new String[] { GOLD }));
+		assertEquals(GOLD, createNexusFile(Dataset.STRING, new long[] { 1 }, new String[] { GOLD }));
 		assertEquals(
-				GOLD, createNexusFile(AbstractDataset.STRING, new long[] { 1, 1 },
+				GOLD, createNexusFile(Dataset.STRING, new long[] { 1, 1 },
 						new String[] { GOLD }));
 		assertEquals(
-				GOLD, createNexusFile(AbstractDataset.STRING, new long[] { 1, 1, 1 },
+				GOLD, createNexusFile(Dataset.STRING, new long[] { 1, 1, 1 },
 						new String[] { GOLD }));
 		assertEquals(
-				GOLD, createNexusFile(AbstractDataset.STRING, new long[] { 1, 1, 1, 1 },
+				GOLD, createNexusFile(Dataset.STRING, new long[] { 1, 1, 1, 1 },
 						new String[] { GOLD }));
 	}
 
 	@Test
 	public void testMultiDimArrayFloat() throws Exception {
 		assertEquals(1.0,
-				createNexusFile(AbstractDataset.FLOAT64, new long[] { 1 }, new double[] { 1.0 }));
+				createNexusFile(Dataset.FLOAT64, new long[] { 1 }, new double[] { 1.0 }));
 		assertEquals(
 				1.0,
-				createNexusFile(AbstractDataset.FLOAT64, new long[] { 1, 1 },
+				createNexusFile(Dataset.FLOAT64, new long[] { 1, 1 },
 						new double[][] { { 1.0 } }));
 		assertEquals(
 				1.0,
-				createNexusFile(AbstractDataset.FLOAT64, new long[] { 1, 1, 1 },
+				createNexusFile(Dataset.FLOAT64, new long[] { 1, 1, 1 },
 						new double[][][] { { { 1.0 } } }));
 		assertEquals(
 				1.0,
-				createNexusFile(AbstractDataset.FLOAT64, new long[] { 1, 1 },
+				createNexusFile(Dataset.FLOAT64, new long[] { 1, 1 },
 						new double[] { 1.0 }));
 		assertEquals(
 				1.0,
-				createNexusFile(AbstractDataset.FLOAT64, new long[] { 1, 1, 1 },
+				createNexusFile(Dataset.FLOAT64, new long[] { 1, 1, 1 },
 						new double[] { 1.0 }));
 
 	}

@@ -34,7 +34,6 @@ import org.eclipse.dawnsci.hdf5.nexus.NexusUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.diamond.scisoft.analysis.dataset.AbstractDataset;
 import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 
 /**
@@ -749,7 +748,7 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 			}
 			
 	        String[] arrayValue = {};
-	        Datatype dtype  = H5Utils.getDatatype(AbstractDataset.STRING, size);
+	        Datatype dtype  = H5Utils.getDatatype(uk.ac.diamond.scisoft.analysis.dataset.Dataset.STRING, size);
 			Dataset dataset = file.createScalarDS(name, parent, dtype, new long[]{1}, null, null, 0, arrayValue);
 
 			return dataset.getFullName();
@@ -777,10 +776,10 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 			                     final String   parentPath,
 			                     final boolean  overwrite) throws Exception {
 		
-    	int    dType   = ((AbstractDataset)data).getDtype();
+    	int    dType   = ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)data).getDtype();
 		long[] shape   = H5Utils.getLong(data.getShape());
 		//need to flatten before getting the buffer!
-		Object buffer  = ((AbstractDataset)data).flatten().getBuffer();
+		Object buffer  = ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)data).flatten().getBuffer();
 		
 		return createDataset(name, dType, shape, buffer, parentPath, overwrite);
    	
@@ -867,9 +866,9 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 						                     final IDataset data,
 						                     final String   parentGroupPath) throws Exception {
 		
-    	int    dType   = ((AbstractDataset)data).getDtype();
+    	int    dType   = ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)data).getDtype();
 		long[] shape   = H5Utils.getLong(data.getShape());
-		Object buffer  = ((AbstractDataset)data).getBuffer();
+		Object buffer  = ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)data).getBuffer();
 		
 		return appendDataset(name, dType, shape, buffer, parentGroupPath);
 	}
@@ -996,7 +995,7 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 		final Group parent = _group(parentPath);
 		final int id = parent.open();
 		
-		Serializable buffer = ((AbstractDataset)data).getBuffer();
+		Serializable buffer = ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)data).getBuffer();
 		try {
 			
 			final HObject o = checkExists(name, parent, Dataset.class);

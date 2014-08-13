@@ -15,7 +15,6 @@ import java.util.Map;
 
 import ncsa.hdf.hdf5lib.H5;
 import ncsa.hdf.hdf5lib.HDF5Constants;
-import ncsa.hdf.object.Dataset;
 
 import org.eclipse.dawnsci.hdf5.HierarchicalDataFactory;
 import org.eclipse.dawnsci.hdf5.HierarchicalDataUtils;
@@ -24,7 +23,7 @@ import org.eclipse.dawnsci.hdf5.Nexus;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import uk.ac.diamond.scisoft.analysis.dataset.AbstractDataset;
+import uk.ac.diamond.scisoft.analysis.dataset.Dataset;
 
 
 public class Hdf5Test {
@@ -63,7 +62,7 @@ public class Hdf5Test {
 				random[i] = Math.random();
 			}
 			String s = file.createDataset("data",
-											AbstractDataset.FLOAT64,
+											Dataset.FLOAT64,
 											new long[]{2048,2048},
 											random,
 											myDataGroup);
@@ -71,7 +70,7 @@ public class Hdf5Test {
 			file.close();
 
 			file = HierarchicalDataFactory.getReader(tmp.getAbsolutePath());
-			final Dataset set = (Dataset)file.getData("myData/data");
+			final ncsa.hdf.object.Dataset set = (ncsa.hdf.object.Dataset)file.getData("myData/data");
 
 			set.getMetadata();
 
@@ -120,7 +119,7 @@ public class Hdf5Test {
 		try {
 			// open the file and retrieve the file structure
 			testFile = HierarchicalDataFactory.getReader(path);
-			final Dataset set = (Dataset)testFile.getData("/entry1/counterTimer01/lnI0It");
+			final ncsa.hdf.object.Dataset set = (ncsa.hdf.object.Dataset)testFile.getData("/entry1/counterTimer01/lnI0It");
 			final Object  dat = set.read();
 			final double[] da = (double[])dat;
 			if (da.length<100) throw new Exception("Did not get data from node lnI0It");
