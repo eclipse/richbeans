@@ -14,6 +14,8 @@ public enum PlotType {
 
 	SURFACE(3, 2),      // dimensions=2 X and Y
 
+	ISOSURFACE(3, 3),   // dimensions=2 X, Y, Z
+
 	XY(1, 1),           // dimensions=1 X
 
 	XY_STACKED(1, 2),   // dimensions=2 X and Many Y
@@ -23,6 +25,8 @@ public enum PlotType {
 	XY_SCATTER_3D(3, 1),// dimensions=1 X and Many Y
 
 	MULTI_IMAGE(4, 2);  // dimensions=2 X and Many Y
+	
+
 
 	private final int rank;
 	private final int dimensions;

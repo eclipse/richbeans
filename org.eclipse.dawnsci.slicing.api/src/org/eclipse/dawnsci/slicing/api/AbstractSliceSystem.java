@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -105,6 +106,8 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 	
 	private ISlicingTool activeTool;
 
+	protected Map<String, ISlicingTool> sliceTools;
+
 	/**
 	 * Creates the slice tools by reading extension points
 	 * for the slice tools.
@@ -129,6 +132,7 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 		final IConfigurationElement[] eles = Platform.getExtensionRegistry().getConfigurationElementsFor("org.eclipse.dawnsci.slicing.api.slicingTool");
 
   		plotTypeActions= new HashMap<Enum, IAction>();
+  		this.sliceTools= new LinkedHashMap<String, ISlicingTool>(17);
 
 		for (IConfigurationElement e : eles) {
 			
@@ -142,6 +146,7 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 			man.add(action);
 			plotTypeActions.put(slicingTool.getSliceType(), action);
 
+			sliceTools.put(slicingTool.getToolId(), slicingTool);
 		}
 								
 		return man;

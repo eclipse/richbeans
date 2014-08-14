@@ -11,6 +11,7 @@ package org.eclipse.dawnsci.slicing.api.tool;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.dawnsci.slicing.api.system.ISliceSystem;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.swt.widgets.Composite;
 
 /**
  * A tool which integrates to the slicing system to 
@@ -22,6 +23,14 @@ import org.eclipse.jface.action.IAction;
  *
  */
 public interface ISlicingTool extends IAdaptable {
+	
+	/**
+	 * You may optionally create some UI. If you do, this
+	 * should be setVisible(false) when created a then true
+	 * on militarize and false again on demilitarize;
+	 * @param parent
+	 */
+	public void createToolComponent(Composite parent);
 	
 	/**
 	 * Called when the tool changes the slicing and

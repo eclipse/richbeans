@@ -18,6 +18,7 @@ import org.eclipse.dawnsci.slicing.api.system.DimsDataList;
 import org.eclipse.dawnsci.slicing.api.system.ISliceSystem;
 import org.eclipse.dawnsci.slicing.api.util.SliceUtils;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.swt.widgets.Composite;
 
 import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 import uk.ac.diamond.scisoft.analysis.dataset.IDatasetMathsService;
@@ -33,6 +34,14 @@ public abstract class AbstractSlicingTool implements ISlicingTool {
 	protected ISliceSystem slicingSystem;
 	protected String       toolId;
 
+	/**
+	 * Does nothing by default.
+	 */
+	@Override
+	public void createToolComponent(Composite parent) {
+		
+	}
+	
 	/**
 	 * Does nothing but demilitarize() unless overridden.
 	 */
