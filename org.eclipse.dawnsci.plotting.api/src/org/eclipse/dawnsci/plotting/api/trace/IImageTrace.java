@@ -206,4 +206,10 @@ public interface IImageTrace extends IPaletteTrace, IDownsampledTrace, ICoordina
 	 */
 	public void setMask(IDataset bd);
 
+	/**
+	 * Can be used to clear memory used by the image if the plotting system is
+	 * no longer active.
+	 */
+	public void sleep();
+
 }
