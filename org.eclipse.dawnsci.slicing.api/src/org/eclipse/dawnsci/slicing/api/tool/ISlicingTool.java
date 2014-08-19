@@ -103,4 +103,10 @@ public interface ISlicingTool extends IAdaptable {
 	 */
 	public IAction createAction();
 	
+	/**
+	 * If the tool requires the slice system to do a slice, return true.
+	 * If the tool does its own custom slice, return false.
+	 * @return
+	 */
+	public boolean isSliceRequired();
 }

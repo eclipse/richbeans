@@ -292,4 +292,10 @@ public interface ISliceSystem {
      * @param mode
      */
 	public RangeMode getRangeMode();
+
+	/**
+	 * 
+	 * @return the current slice tool which the user has chosen, or null
+	 */
+	public ISlicingTool getActiveTool();
 }

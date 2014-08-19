@@ -488,6 +488,7 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 		return sliceType instanceof PlotType && ((PlotType)sliceType).is3D();
 	}
 
+	@Override
 	public ISlicingTool getActiveTool() {
 		return activeTool;
 	}
