@@ -395,7 +395,7 @@ public class NexusUtils {
 		if (dimension<1) return  null;
        	IHierarchicalDataFile file = null;
         try {
-        	file = HierarchicalDataFactory.getReader(filePath);
+        	file = HierarchicalDataFactory.getReader(filePath, true);
         	return file.getNexusAxesNames(nexusPath, dimension);
         } finally {
         	if (file!=null) file.close();

@@ -10,7 +10,7 @@ package org.eclipse.dawnsci.hdf5;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
@@ -43,7 +43,33 @@ public class HierarchicalDataFactory {
 	 * @throws Exception
 	 */
 	public static IHierarchicalDataFile getReader(final String absolutePath) throws Exception {
-		if (lowLevelLocks.containsKey(absolutePath)) throw new Exception("The low level API is currently reading from "+absolutePath);
+		return  HierarchicalDataFactory.getReader(absolutePath, false);
+	}
+	
+	/**
+	 * Get the reader, optionally waiting if a low level API call is blocking reading the file.
+	 * @param absolutePath
+	 * @param waitForLowLevel
+	 * @return
+	 * @throws Exception
+	 */
+	public static IHierarchicalDataFile getReader(final String absolutePath, boolean waitForLowLevel) throws Exception {
+		if (lowLevelLocks.containsKey(absolutePath)) {
+			if (!waitForLowLevel) {
+				throw new Exception("The low level API is currently reading from "+absolutePath);
+			} else {
+				final ReentrantLock lock = lowLevelLocks.get(absolutePath);
+				if (lock!=null) {
+					try {
+					    lock.lock(); // waits
+						return HierarchicalDataFile.open(absolutePath, FileFormat.READ);
+					} finally {
+						lock.unlock();
+						lowLevelLocks.remove(absolutePath);
+					}
+				}
+			}
+		}
 		return HierarchicalDataFile.open(absolutePath, FileFormat.READ);
 	}
 	
@@ -131,7 +157,7 @@ public class HierarchicalDataFactory {
 	/**
 	 * These locks can be used for requesting a lock for accessing a file path.
 	 */
-	private static Map<String, ReentrantLock> lowLevelLocks = new HashMap<String, ReentrantLock>();
+	private static Map<String, ReentrantLock> lowLevelLocks = new Hashtable<String, ReentrantLock>();
 
 	private static ReentrantLock accessLock = new ReentrantLock();
 
