@@ -14,6 +14,7 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -733,6 +734,7 @@ public class SliceUtils {
 		return getSlicableNames(holder, 2, String.class);
 	}
 	
+
 	/**
 	 * Deals with loaders which provide data names of size 1
 	 * 
@@ -752,8 +754,15 @@ public class SliceUtils {
 		List<Class<?>> restrictions = new ArrayList<Class<?>>(10);
 		if (elementClasses!=null) for (Class<?> clazz : elementClasses) restrictions.add(clazz);
 		
+		boolean isH5 = isH5(holder.getFilePath());
+		
 		List<String> ret   = new ArrayList<String>(names.size());
 		for (String name : names) {
+			
+			// Some funny keys are put in data holders with the 
+			// 'local_name' attribute in nexus.
+			if (isH5 && !name.startsWith("/")) continue;
+			
 			ILazyDataset ls = holder.getLazyDataset(name);
 			if (restrictions.contains(ls.elementClass())) continue;
 			int[] shape = ls!=null ? ls.getShape() : null;
@@ -776,5 +785,29 @@ public class SliceUtils {
 		return ret;
 	}
 
+
+	public final static List<String> EXT;
+	static {
+		List<String> tmp = new ArrayList<String>(7);
+		tmp.add("h5");
+		tmp.add("nxs");
+		tmp.add("hd5");
+		tmp.add("hdf5");
+		tmp.add("hdf");
+		tmp.add("nexus");
+		EXT = Collections.unmodifiableList(tmp);
+	}	
+
+	private static boolean isH5(final String filePath) {
+		if (filePath == null) { return false; }
+		final String ext = getFileExtension(filePath);
+		if (ext == null) { return false; }
+		return EXT.contains(ext.toLowerCase());
+	}
+	private static String getFileExtension(String fileName) {
+		int posExt = fileName.lastIndexOf(".");
+		// No File Extension
+		return posExt == -1 ? "" : fileName.substring(posExt + 1);
+	}
 
 }
