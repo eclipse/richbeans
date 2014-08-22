@@ -31,6 +31,7 @@ import ncsa.hdf.object.h5.H5Datatype;
 import ncsa.hdf.object.h5.H5ScalarDS;
 
 import org.eclipse.dawnsci.hdf5.nexus.NexusUtils;
+import org.eclipse.dawnsci.hdf5.nexus.NexusUtils.ATTRIBUTE_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -969,7 +970,7 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 	@Override
 	public void setAttribute(String objectPath, String name, String value, boolean overwrite) throws Exception {
 		HObject object = getData(objectPath);
-		NexusUtils.setAttribute(file, object, name, value, overwrite);
+		NexusUtils.setAttribute(file, object, name, value, overwrite?ATTRIBUTE_TYPE.OVERWRITE:ATTRIBUTE_TYPE.NO_OVERWRITE);
 	}
 
 	@Override

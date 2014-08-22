@@ -11,6 +11,7 @@ package org.eclipse.dawnsci.hdf5;
 public class Nexus {
 
 	public static final String ENTRY   = "NXentry";
+	public static final String SUBENTRY= "NXsubentry";
 	public static final String DATA    = "NXdata";
 	public static final String INST    = "NXinstrument";
 	public static final String DETECT  = "NXdetector";

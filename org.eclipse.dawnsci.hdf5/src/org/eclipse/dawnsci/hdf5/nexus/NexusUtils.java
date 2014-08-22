@@ -81,14 +81,18 @@ public class NexusUtils {
 									final HObject    entry,
 									final String     name,
 									final String     entryKey) throws Exception {
-		setAttribute(file, entry, name, entryKey, false);
+		setAttribute(file, entry, name, entryKey, ATTRIBUTE_TYPE.FORCE);
 	}
 	
+	public enum ATTRIBUTE_TYPE {
+		FORCE, OVERWRITE, NO_OVERWRITE;
+	}
 	public static void setAttribute(final FileFormat file,
 			final HObject    entry,
 			final String     name,
 			final String     entryKey,
-			final boolean overwrite) throws Exception {
+			final ATTRIBUTE_TYPE type) throws Exception {
+		
 		boolean attributeExist = false;
 		// Check if attribute is already there
 		@SuppressWarnings("unchecked")
@@ -99,7 +103,7 @@ public class NexusUtils {
 					final Attribute a      = (Attribute)object;
 					final String[]  aValue = (String[])a.getValue();
 					if (name.equals(a.getName())) {
-						if (!overwrite && entryKey.equals(aValue[0])) {
+						if (type==ATTRIBUTE_TYPE.NO_OVERWRITE && entryKey.equals(aValue[0])) {
 							return;
 						}
 						attributeExist = true;
@@ -107,7 +111,7 @@ public class NexusUtils {
 				}
 			}
 		}
-		if (overwrite & !attributeExist) {
+		if (type==ATTRIBUTE_TYPE.OVERWRITE & !attributeExist) {
 			return;
 		}
 		final int id = entry.open();
@@ -117,7 +121,7 @@ public class NexusUtils {
 			Attribute attr = new Attribute(name, attrType, new long[]{1});
 			attr.setValue(classValue);
 
-			file.writeAttribute(entry, attr, overwrite);
+			file.writeAttribute(entry, attr, attributeExist);
 
 			if (entry instanceof Group) {
 				attrList.add(attr);
