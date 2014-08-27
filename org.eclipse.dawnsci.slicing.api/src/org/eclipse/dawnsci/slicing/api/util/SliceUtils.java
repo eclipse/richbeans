@@ -504,7 +504,12 @@ public class SliceUtils {
 		
     	if (varMan!=null && varMan.isDataName(axisName, null)) {
     		ILazyDataset la = varMan.getDataValue(axisName, null);
-    		IDataset da = la instanceof IDataset ? (IDataset)la : la.getSlice();
+    		IDataset da;
+    		if (dimension<0) {
+    			da = la instanceof IDataset ? (IDataset)la : la.getSlice();
+    		} else {
+    			da = sliceDimension(la, dimension);
+    		}
             da.setName(getAxisLabel(currentSlice, origName));
             return da;
     	}
@@ -549,22 +554,7 @@ public class SliceUtils {
 
 		// TODO Should really be averaging not using first index.
 		if (dimension>-1) {
-			final int[] shape = axis.getShape();
-			final int[] start = new int[shape.length];
-			final int[] stop  = new int[shape.length];
-			final int[] step  = new int[shape.length];
-			for (int i = 0; i < shape.length; i++) {
-				start[i] = 0;
-				step[i]  = 1;
-				if (i==dimension) {
-					stop[i] = shape[i];
-				} else {
-					stop[i] = 1;
-				}
-			}
-			axis = axis.getSlice(start, stop, step);
-			if (axis == null) return null;
-			axis = axis.squeeze();
+			axis = sliceDimension(axis, dimension);
 		}
 		
 		axis.setName(getAxisLabel(currentSlice, origName));
@@ -572,6 +562,27 @@ public class SliceUtils {
 
 	}
 
+
+	private static IDataset sliceDimension(ILazyDataset axis, int dimension) {
+		
+		final int[] shape = axis.getShape();
+		final int[] start = new int[shape.length];
+		final int[] stop  = new int[shape.length];
+		final int[] step  = new int[shape.length];
+		for (int i = 0; i < shape.length; i++) {
+			start[i] = 0;
+			step[i]  = 1;
+			if (i==dimension) {
+				stop[i] = shape[i];
+			} else {
+				stop[i] = 1;
+			}
+		}
+		IDataset iaxis = axis.getSlice(start, stop, step);
+		if (iaxis == null) return null;
+		iaxis = iaxis.squeeze();
+		return iaxis;
+	}
 
 	public static IDataset getSlice(final ILazyDataset      ld,
 									final SliceObject       currentSlice,
