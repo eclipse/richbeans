@@ -98,15 +98,18 @@ public class NexusUtils {
 		@SuppressWarnings("unchecked")
 		final List<Object> attrList = entry.getMetadata();
 		if (attrList!=null) {
-			for (Object object : attrList) {
+			LOOP: for (Object object : attrList) {
 				if (object instanceof Attribute) {
-					final Attribute a      = (Attribute)object;
-					final String[]  aValue = (String[])a.getValue();
+					final Attribute a    = (Attribute)object;
 					if (name.equals(a.getName())) {
-						if (type==ATTRIBUTE_TYPE.NO_OVERWRITE && entryKey.equals(aValue[0])) {
+						
+						final Object  oValue = a.getValue();
+						final String[] aValue = oValue instanceof String[] ? (String[])oValue : null;
+						if (aValue!=null && type==ATTRIBUTE_TYPE.NO_OVERWRITE && entryKey.equals(aValue[0])) {
 							return;
 						}
 						attributeExist = true;
+						break LOOP;
 					}
 				}
 			}
