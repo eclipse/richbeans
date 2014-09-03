@@ -293,15 +293,15 @@ public class SliceUtils {
 	 * @param monitor
 	 * @throws Exception
 	 */
-	public static void plotSlice(final SliceSource       sliceSource,
-			                     final SliceObject       currentSlice,
-			                     final PlotType          type,
-			                     final IPlottingSystem   plottingSystem,
-			                     final IProgressMonitor  monitor) throws Exception {
+	public static IDataset plotSlice(final SliceSource       sliceSource,
+				                     final SliceObject       currentSlice,
+				                     final PlotType          type,
+				                     final IPlottingSystem   plottingSystem,
+				                     final IProgressMonitor  monitor) throws Exception {
 
-		if (plottingSystem==null) return;
+		if (plottingSystem==null) return null;
 		if (monitor!=null) monitor.worked(1);
-		if (monitor!=null&&monitor.isCanceled()) return;
+		if (monitor!=null&&monitor.isCanceled()) return null;
 		
 		final ILazyDataset lazySet = sliceSource.getLazySet();
 		final int[]      dataShape = lazySet.getShape();
@@ -320,7 +320,7 @@ public class SliceUtils {
 		} else {
 			slice = getSlice(lazySet, currentSlice,monitor);
 		}
-		if (slice==null) return;
+		if (slice==null) return slice;
 		
 		// DO NOT CANCEL the monitor now, we have done the hard part the slice.
 		// We may as well plot it or the plot will look very slow.
@@ -411,6 +411,8 @@ public class SliceUtils {
 			plottingSystem.updatePlot2D(slice, axes, sliceSource.getDataName(), monitor); 			
 		}
 		plottingSystem.repaint(requireScale);
+		
+		return slice;
 	}
 
 	/**

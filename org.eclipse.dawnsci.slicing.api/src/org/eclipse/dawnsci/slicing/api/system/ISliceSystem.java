@@ -14,9 +14,11 @@ import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
 import org.eclipse.dawnsci.slicing.api.tool.ISlicingTool;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
+import uk.ac.diamond.scisoft.analysis.io.IMetaData;
 import uk.ac.diamond.scisoft.analysis.io.SliceObject;
 
 /**
@@ -298,4 +300,23 @@ public interface ISliceSystem {
 	 * @return the current slice tool which the user has chosen, or null
 	 */
 	public ISlicingTool getActiveTool();
+	
+	/**
+	 * The metadata of the current slice, if any
+	 * @return
+	 */
+	public IMetaData getSliceMetadata();
+	
+	/**
+	 * The metadata of the current slice, if any
+	 * @return
+	 */
+	public void setSliceMetadata(IMetaData sliceMeta);
+
+	/**
+	 * May be null
+	 * @return
+	 */
+	public ISelectionProvider getSelectionProvider();
+	
 }
