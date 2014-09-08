@@ -73,6 +73,7 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 	private List<IAction>     customActions;
 	protected SliceObject     sliceObject;
 	protected RangeMode       rangeMode=RangeMode.NO_RANGES;
+	protected Action          advanced;
 	
 	protected Enum        sliceType=PlotType.IMAGE;
 	protected IToolBarManager sliceToolbar;
@@ -188,6 +189,19 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 		if (activeTool!=null && slicingTool!=activeTool) {
 			activeTool.demilitarize();
 		}
+		
+		// If we don't support advanced slicing (averaging etc.) then disable
+		if (advanced!=null) advanced.setEnabled(slicingTool.isAdvancedSupported());
+		if (!slicingTool.isAdvancedSupported()) {
+            DimsDataList list = getDimsDataList();
+            for (DimsData dd : list.iterable()) {
+            	if (dd.getPlotAxis().isAdvanced()) {
+            		dd.setSliceRange(null);
+            		dd.setPlotAxis(AxisType.SLICE);
+            	}
+			}
+		}
+
 		slicingTool.militarize();
 		activeTool = slicingTool;
 		
@@ -196,6 +210,7 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 			final IAction action = plotTypeActions.get(key);
 			action.setChecked(key==sliceType);
 		}
+		
 	}
 	
 	/**

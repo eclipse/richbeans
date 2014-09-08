@@ -109,4 +109,11 @@ public interface ISlicingTool extends IAdaptable {
 	 * @return
 	 */
 	public boolean isSliceRequired();
+	
+	/**
+	 * Defines if the user may use this tool with the advanced action.
+	 * @return
+	 */
+	public boolean isAdvancedSupported();
+
 }

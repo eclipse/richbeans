@@ -128,4 +128,9 @@ public abstract class AbstractSlicingTool implements ISlicingTool {
 	public boolean isSliceRequired() {
 		return true;
 	}
+	@Override
+	public boolean isAdvancedSupported() {
+		return true;
+	}
+
 }
