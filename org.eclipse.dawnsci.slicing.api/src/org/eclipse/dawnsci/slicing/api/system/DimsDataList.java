@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import uk.ac.diamond.scisoft.analysis.dataset.ILazyDataset;
+import uk.ac.diamond.scisoft.analysis.dataset.Slice;
 
 public class DimsDataList implements Serializable {
 
@@ -445,6 +446,20 @@ public class DimsDataList implements Serializable {
 			}
 		}
 		
+	}
+
+	public Slice[] toSliceArray(int[] dataShape) {
+		
+		final Slice[] ret = new Slice[size()];
+		for (int i = 0; i < size(); i++) {
+			DimsData dd = getDimsData(i);			
+			if (dd.isSlice()) {
+				ret[i] = new Slice(dd.getSlice(), dd.getSlice()+1);
+			} else {
+				ret[i] = new Slice(dataShape[dd.getDimension()]);
+			}
+		}
+		return ret;	
 	}
 
 }
