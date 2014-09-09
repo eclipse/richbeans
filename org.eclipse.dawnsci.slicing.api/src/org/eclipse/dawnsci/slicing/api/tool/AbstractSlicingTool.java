@@ -22,6 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 
 import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 import uk.ac.diamond.scisoft.analysis.dataset.IDatasetMathsService;
+import uk.ac.diamond.scisoft.analysis.dataset.Slice;
 
 /**
  * Convenience class for extending to provide a tool.
@@ -133,4 +134,23 @@ public abstract class AbstractSlicingTool implements ISlicingTool {
 		return true;
 	}
 
+	protected Slice[] getSlices() {
+		
+		int[] dataShape         = getSlicingSystem().getData().getLazySet().getShape();
+		final DimsDataList dims = getSlicingSystem().getDimsDataList();
+		
+        return dims.toSliceArray(dataShape);
+	}
+
+	
+	private boolean             on = true;
+
+	public boolean isOn() {
+		return on;
+	}
+
+	public void setOn(boolean on) {
+		this.on = on;
+	}
+    
 }
