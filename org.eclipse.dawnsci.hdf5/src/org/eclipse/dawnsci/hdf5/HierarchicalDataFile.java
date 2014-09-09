@@ -954,7 +954,7 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 	}
 
 	@Override
-	public List<String> getNexusAxesNames(String signalPath, int dimension) throws Exception {
+	public synchronized List<String> getNexusAxesNames(String signalPath, int dimension) throws Exception {
 
 		HObject signal = file.get(signalPath);
     	
