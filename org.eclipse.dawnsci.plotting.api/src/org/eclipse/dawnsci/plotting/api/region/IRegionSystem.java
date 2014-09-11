@@ -82,6 +82,11 @@ public interface IRegionSystem {
 	 * Remove all regions. Not thread safe, call from UI thread.
 	 */
 	public void clearRegions();
+	
+	/**
+	 * If there is a current region tool clear this.
+	 */
+	public void clearRegionTool();
 
 	/**
 	 * Current regions in the plotting system.
@@ -93,5 +98,5 @@ public interface IRegionSystem {
 	 * Renames the region, better than calling setName on the IRegion as the
 	 * collection of regions is updated properly. No event will be fired.
 	 */
-	public void renameRegion(IRegion region, String name) throws Exception;
+	public void renameRegion(IRegion region, String name);
 }

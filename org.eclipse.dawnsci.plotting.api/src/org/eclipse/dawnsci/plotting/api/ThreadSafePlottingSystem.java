@@ -105,11 +105,6 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 	}
 
 	@Override
-	public ILineStackTrace createLineStackTrace(String traceName, int stackplots) {
-		return (ILineStackTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName, stackplots);
-	}
-
-	@Override
 	public IScatter3DTrace createScatter3DTrace(String traceName) {
 		return (IScatter3DTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName);
 	}
@@ -205,7 +200,7 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 	}
 
 	@Override
-	public void renameRegion(IRegion region, String name) throws Exception {
+	public void renameRegion(IRegion region, String name) {
 		call(getMethodName(Thread.currentThread().getStackTrace()), region, name);
 	}
 
@@ -267,8 +262,7 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 	}
 
 	@Override
-	public void renameAnnotation(IAnnotation annotation, String name)
-			throws Exception {
+	public void renameAnnotation(IAnnotation annotation, String name) {
 		call(getMethodName(Thread.currentThread().getStackTrace()), annotation, name);
 	}
 
@@ -394,11 +388,6 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 	@Override
 	public ISelectionProvider getSelectionProvider() {
 		return delegate.getSelectionProvider();
-	}
-
-	@Override
-	public IDataset getData(String dataSetName) {
-		return delegate.getData(dataSetName);
 	}
 
 	@Override
@@ -656,6 +645,16 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 	@Override
 	public void removeClickListener(IClickListener l) {
 		call(getMethodName(Thread.currentThread().getStackTrace()), new Class[]{IClickListener.class}, l);
+	}
+
+	@Override
+	public void clearRegionTool() {
+		call(getMethodName(Thread.currentThread().getStackTrace()));
+	}
+
+	@Override
+	public void printScaledPlotting() {
+		call(getMethodName(Thread.currentThread().getStackTrace()));
 	}
 
 }

@@ -17,6 +17,11 @@ import java.util.List;
  *
  */
 public interface IAxisSystem {
+	
+	/**
+	 * Called to reset the axes
+	 */
+	public void resetAxes();
 
 	/**
 	 * Use this method to create axes other than the default y and x axes.

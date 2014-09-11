@@ -41,9 +41,12 @@ public class TraceWillPlotEvent extends EventObject {
 	public TraceWillPlotEvent(Object source, boolean applyStraightAway) {
 		super(source);
 		this.applyStraightAway = applyStraightAway;
+		
+		final IDataset set = ((ITrace)source).getData();
+		image = set.getRank()==2 ? set : null;
+
 		if (source instanceof IImageTrace) {
 			IImageTrace it = (IImageTrace)source;
-			image = it.getData();
 			axes  = it.getAxes();
 		}
 		

@@ -18,6 +18,11 @@ package org.eclipse.dawnsci.plotting.api;
 public interface IPrintablePlotting {
 
 	/**
+	 * Prints out the plotting in a scaled way
+	 */
+	public void printScaledPlotting();
+	
+	/**
 	 * Print/preview the plotting
 	 */
 	public void printPlotting();

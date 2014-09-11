@@ -337,8 +337,8 @@ public class SliceUtils {
 			plottingSystem.createPlot1D(x, Arrays.asList((IDataset)slice), Arrays.asList(sliceSource.getDataName()), slice.getName(), monitor);
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
-					plottingSystem.getSelectedXAxis().setTitle(x.getName());
-					plottingSystem.getSelectedYAxis().setTitle("");
+					if (plottingSystem.getSelectedXAxis()!=null) plottingSystem.getSelectedXAxis().setTitle(x.getName());
+					if (plottingSystem.getSelectedYAxis()!=null) plottingSystem.getSelectedYAxis().setTitle("");
 				}
 			});
 			
@@ -388,8 +388,8 @@ public class SliceUtils {
 			final IDataset xAxisFinal = xAxis;
 			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
-					plottingSystem.getSelectedXAxis().setTitle(xAxisFinal.getName());
-					plottingSystem.getSelectedYAxis().setTitle("");
+					if (plottingSystem.getSelectedXAxis()!=null) plottingSystem.getSelectedXAxis().setTitle(xAxisFinal.getName());
+					if (plottingSystem.getSelectedYAxis()!=null) plottingSystem.getSelectedYAxis().setTitle("");
 				}
 			});
 		} else if (type==PlotType.IMAGE || type==PlotType.SURFACE){

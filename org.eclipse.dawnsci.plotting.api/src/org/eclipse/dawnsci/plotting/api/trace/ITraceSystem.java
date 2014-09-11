@@ -76,19 +76,6 @@ public interface ITraceSystem {
 	public ILineStackTrace createLineStackTrace(String traceName);
 
 	/**
-	 * Creates a stack trace used for 3D plotting. This does not add the trace
-	 * or give it any data.
-	 * 
-	 * A stack trace is a 3D set of lines.
-	 * 
-	 * @param traceName
-	 * @param stackplots
-	 *           Number of stack plots
-	 * @return
-	 */
-	public ILineStackTrace createLineStackTrace(String traceName, int stackplots);
-
-	/**
 	 * Creates a scatter 3D plot trace used for 3D plotting. This does not add the trace
 	 * or give it any data.
 	 * 

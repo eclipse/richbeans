@@ -387,16 +387,6 @@ public interface IPlottingSystem extends IAdaptable, ITraceSystem, IRegionSystem
 	public ISelectionProvider getSelectionProvider();
 	
 	/**
-	 * Call this method to return a plotted data set by name. NOTE the plotting system
-	 * will likely not be using Dataset as internal data. Instead it will get the
-	 * current data of the plot required and construct an Dataset for it. This means
-	 * that you can plot int data but get back double data if the graph keeps data internally
-	 * as doubles for instance. If the append(...) method has been used, the data returned by
-	 * name from here will include the appended points.
-	 */
-	public IDataset getData(final String dataSetName);
-
-	/**
 	 * Will return the current plot type 1D, 2D etc.
 	 */
 	public PlotType getPlotType();

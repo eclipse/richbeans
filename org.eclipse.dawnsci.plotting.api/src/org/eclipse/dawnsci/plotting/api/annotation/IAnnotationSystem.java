@@ -60,5 +60,5 @@ public interface IAnnotationSystem {
 	 * Renames the annotation; better than calling setName on the IAnnotation as the
 	 * collection of annotations is updated properly. No event will be fired.
 	 */
-	public void renameAnnotation(IAnnotation annotation, String name) throws Exception;
+	public void renameAnnotation(IAnnotation annotation, String name);
 }
