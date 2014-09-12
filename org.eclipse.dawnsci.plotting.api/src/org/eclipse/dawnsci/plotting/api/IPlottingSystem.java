@@ -16,6 +16,7 @@ import org.eclipse.dawnsci.plotting.api.annotation.IAnnotationSystem;
 import org.eclipse.dawnsci.plotting.api.axis.IAxisSystem;
 import org.eclipse.dawnsci.plotting.api.region.IRegionSystem;
 import org.eclipse.dawnsci.plotting.api.trace.ColorOption;
+import org.eclipse.dawnsci.plotting.api.trace.IIsosurfaceTrace;
 import org.eclipse.dawnsci.plotting.api.trace.ITrace;
 import org.eclipse.dawnsci.plotting.api.trace.ITraceSystem;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -72,6 +73,7 @@ public interface IPlottingSystem extends IAdaptable, ITraceSystem, IRegionSystem
 	
 	public static final int NORMAL_CURSOR = 0;
 	public static final int CROSS_CURSOR  = 1;
+	public static final int WAIT_CURSOR   = 2;
 
 	/**
 	 * Get the current title being used for the plot.

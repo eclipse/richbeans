@@ -424,10 +424,10 @@ public interface IPlottingSystemViewer extends IAxisSystem, IRegionSystem, IAnno
 			
 		}
 
-		@Override
+		protected IPlottingSystem system;
+		
 		public void init(IPlottingSystem system) {
-			
-			
+			this.system = system;
 		}
 
 		@Override

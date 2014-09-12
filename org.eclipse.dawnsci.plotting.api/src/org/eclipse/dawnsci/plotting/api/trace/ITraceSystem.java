@@ -55,6 +55,13 @@ public interface ITraceSystem {
 	 */
 	public ISurfaceTrace createSurfaceTrace(String traceName);
 
+    /**
+     * 
+     * @param string
+     * @return
+     */
+	public IIsosurfaceTrace createIsosurfaceTrace(String string);
+
 	/**
 	 * Creates a multi image trace. This does not add the trace
 	 * or give it any data.
@@ -97,7 +104,7 @@ public interface ITraceSystem {
 	public IImageStackTrace createImageStackTrace(String traceName);
 
 	/**
-	 * Adds and plots the trace.
+	 * Adds and plots the trace. Not Thread safe
 	 * @param trace
 	 */
 	public void addTrace(ITrace trace);
