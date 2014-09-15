@@ -225,6 +225,13 @@ public interface IPlottingSystemViewer extends IAxisSystem, IRegionSystem, IAnno
 	
 	public class Stub implements IPlottingSystemViewer {
 
+
+		protected IPlottingSystem system;
+		
+		public Stub() {
+			
+		}
+
 		@Override
 		public void resetAxes() {
 			
@@ -423,8 +430,6 @@ public interface IPlottingSystemViewer extends IAxisSystem, IRegionSystem, IAnno
 			
 			
 		}
-
-		protected IPlottingSystem system;
 		
 		public void init(IPlottingSystem system) {
 			this.system = system;
