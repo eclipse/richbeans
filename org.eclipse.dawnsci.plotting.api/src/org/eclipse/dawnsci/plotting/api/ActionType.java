@@ -31,7 +31,10 @@ public enum ActionType {
 		if (type.equals(PlotType.XY_SCATTER_3D) && this == SCATTER3D) {
 			return true;
 		}
-		if (type.is3D() && this == THREED) {
+		if (type.is3D() && this == THREED && type != PlotType.ISOSURFACE) {
+			return true;
+		}
+		if (type==PlotType.ISOSURFACE && this == FX3D) {
 			return true;
 		}
 		if (type.isMulti2D() && this == MULTIIMAGE) {
