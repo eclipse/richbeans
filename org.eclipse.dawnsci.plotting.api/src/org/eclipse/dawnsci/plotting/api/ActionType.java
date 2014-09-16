@@ -10,7 +10,7 @@ package org.eclipse.dawnsci.plotting.api;
 
 public enum ActionType {
 
-	XY, IMAGE, XYANDIMAGE, THREED, SURFACE, SCATTER3D, MULTIIMAGE, ALL;
+	XY, IMAGE, XYANDIMAGE, THREED, SURFACE, SCATTER3D, MULTIIMAGE, ALL, FX3D;
 
 	public boolean isCompatible(PlotType type) {
 
