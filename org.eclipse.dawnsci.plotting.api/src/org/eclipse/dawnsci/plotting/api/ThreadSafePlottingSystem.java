@@ -28,8 +28,8 @@ import org.eclipse.dawnsci.plotting.api.axis.IAxis;
 import org.eclipse.dawnsci.plotting.api.axis.IClickListener;
 import org.eclipse.dawnsci.plotting.api.axis.IPositionListener;
 import org.eclipse.dawnsci.plotting.api.region.IRegion;
-import org.eclipse.dawnsci.plotting.api.region.IRegionListener;
 import org.eclipse.dawnsci.plotting.api.region.IRegion.RegionType;
+import org.eclipse.dawnsci.plotting.api.region.IRegionListener;
 import org.eclipse.dawnsci.plotting.api.trace.ColorOption;
 import org.eclipse.dawnsci.plotting.api.trace.IImageStackTrace;
 import org.eclipse.dawnsci.plotting.api.trace.IImageTrace;
@@ -532,6 +532,12 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 	@Override
 	public void setKeepAspect(boolean b) {
 		call(getMethodName(Thread.currentThread().getStackTrace()), new Class[] { boolean.class }, b);
+	}
+
+
+	@Override
+	public boolean isShowIntensity() {
+		return (Boolean)call(getMethodName(Thread.currentThread().getStackTrace()));
 	}
 
 	@Override

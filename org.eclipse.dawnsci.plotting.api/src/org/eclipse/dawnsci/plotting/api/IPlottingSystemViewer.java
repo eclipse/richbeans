@@ -181,6 +181,9 @@ public interface IPlottingSystemViewer extends IAxisSystem, IRegionSystem, IAnno
 	 */
 	public void setShowLegend(boolean b);
 
+
+
+	public boolean isShowIntensity();
 	/**
 	 * 
 	 * @param b
@@ -558,6 +561,12 @@ public interface IPlottingSystemViewer extends IAxisSystem, IRegionSystem, IAnno
 			
 		}
 
+
+
+		public boolean isShowIntensity() {
+			return false;
+		}
+		
 		@Override
 		public void setShowIntensity(boolean b) {
 			
@@ -602,4 +611,6 @@ public interface IPlottingSystemViewer extends IAxisSystem, IRegionSystem, IAnno
 		}
 		
 	}
+
+
 }

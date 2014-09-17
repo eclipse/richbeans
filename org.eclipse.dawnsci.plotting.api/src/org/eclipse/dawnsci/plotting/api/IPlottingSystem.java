@@ -435,6 +435,12 @@ public interface IPlottingSystem extends IAdaptable, ITraceSystem, IRegionSystem
 	public boolean isEnabled();
 
 	/**
+	 * 
+	 * @return true if intensity is shown for images.
+	 */
+	public boolean isShowIntensity();
+	
+	/**
 	 * Shows or not the intensity scale
 	 * The intensity scale is displayed (set to True) every time there is an image update
 	 * If you want to hide it (set to False), make sure this method is called after each update.
