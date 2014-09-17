@@ -37,8 +37,10 @@ public interface ISlicingTool extends IAdaptable {
 	 * potentially does the first slice in the new 
 	 * format. It will also make any UI changes so 
 	 * that the UI is set up for this slicing methodology.
+	 * 
+	 * @param if the tool is being militarized after a new slice has been done.
 	 */
-	public void militarize();
+	public void militarize(boolean newSlice);
 	
 	
 	/**

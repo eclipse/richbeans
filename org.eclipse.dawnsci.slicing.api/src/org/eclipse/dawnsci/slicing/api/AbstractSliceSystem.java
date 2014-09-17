@@ -202,7 +202,7 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 			}
 		}
 
-		slicingTool.militarize();
+		slicingTool.militarize(false);
 		activeTool = slicingTool;
 		
 		// check the correct actions
