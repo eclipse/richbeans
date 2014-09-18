@@ -11,7 +11,7 @@ package org.eclipse.dawnsci.slicing.api.data;
 import org.dawb.common.services.IExpressionObject;
 
 import uk.ac.diamond.scisoft.analysis.io.IDataHolder;
-import uk.ac.diamond.scisoft.analysis.io.IMetaData;
+import uk.ac.diamond.scisoft.analysis.io.IMetadata;
 
 /**
  * A service for making ITransferableDataObjects
@@ -32,7 +32,7 @@ public interface ITransferableDataService {
 	 * @param name
 	 * @return
 	 */
-	public ITransferableDataObject createData(IDataHolder holder, IMetaData meta, String name);
+	public ITransferableDataObject createData(IDataHolder holder, IMetadata meta, String name);
 
 	/**
 	 * Create a ITransferableDataObject which will be used to hold an expression
@@ -40,7 +40,7 @@ public interface ITransferableDataService {
 	 * @param meta
 	 * @return
 	 */
-	public ITransferableDataObject createExpression(IDataHolder holder, IMetaData meta) ;
+	public ITransferableDataObject createExpression(IDataHolder holder, IMetadata meta) ;
 	
 	/**
 	 * Create a ITransferableDataObject expression
@@ -49,7 +49,7 @@ public interface ITransferableDataService {
 	 * @param expression
 	 * @return
 	 */
-	public ITransferableDataObject createExpression(IDataHolder holder, IMetaData meta, IExpressionObject expression);
+	public ITransferableDataObject createExpression(IDataHolder holder, IMetadata meta, IExpressionObject expression);
 	
 
 	/**

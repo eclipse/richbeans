@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import uk.ac.diamond.scisoft.analysis.io.IMetaData;
+import uk.ac.diamond.scisoft.analysis.io.IMetadata;
 import uk.ac.diamond.scisoft.analysis.io.SliceObject;
 
 /**
@@ -305,13 +305,13 @@ public interface ISliceSystem {
 	 * The metadata of the current slice, if any
 	 * @return
 	 */
-	public IMetaData getSliceMetadata();
+	public IMetadata getSliceMetadata();
 	
 	/**
 	 * The metadata of the current slice, if any
 	 * @return
 	 */
-	public void setSliceMetadata(IMetaData sliceMeta);
+	public void setSliceMetadata(IMetadata sliceMeta);
 
 	/**
 	 * May be null

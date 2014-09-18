@@ -55,7 +55,7 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.diamond.scisoft.analysis.io.IMetaData;
+import uk.ac.diamond.scisoft.analysis.io.IMetadata;
 import uk.ac.diamond.scisoft.analysis.io.SliceObject;
 
 /**
@@ -526,12 +526,12 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 		this.rangeMode = rm;
 	}
 	
-	private IMetaData sliceMetadata;
+	private IMetadata sliceMetadata;
 	/**
 	 * The metadata of the current slice, if any
 	 * @return
 	 */
-	public IMetaData getSliceMetadata() {
+	public IMetadata getSliceMetadata() {
 		return sliceMetadata;
 	}
 	
@@ -539,7 +539,7 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 	 * The metadata of the current slice, if any
 	 * @return
 	 */
-	public void setSliceMetadata(IMetaData sliceMeta) {
+	public void setSliceMetadata(IMetadata sliceMeta) {
 		this.sliceMetadata = sliceMeta;
 	}
 
