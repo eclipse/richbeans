@@ -328,7 +328,7 @@ public abstract class AbstractCompoundDataset extends AbstractDataset implements
 		return (CompoundDataset) super.variance(axis);
 	}
 
-	protected static double[] toDoubleArray(final Object b, final int itemSize) {
+	public static double[] toDoubleArray(final Object b, final int itemSize) {
 		double[] result = null;
 
 		// ensure array is of given length
@@ -403,7 +403,7 @@ public abstract class AbstractCompoundDataset extends AbstractDataset implements
 		return result;
 	}
 
-	protected static float[] toFloatArray(final Object b, final int itemSize) {
+	public static float[] toFloatArray(final Object b, final int itemSize) {
 		float[] result = null;
 
 		if (b instanceof Number) {
@@ -477,7 +477,7 @@ public abstract class AbstractCompoundDataset extends AbstractDataset implements
 		return result;
 	}
 
-	protected static long[] toLongArray(final Object b, final int itemSize) {
+	public static long[] toLongArray(final Object b, final int itemSize) {
 		long[] result = null;
 
 		if (b instanceof Number) {
@@ -551,7 +551,7 @@ public abstract class AbstractCompoundDataset extends AbstractDataset implements
 		return result;
 	}
 
-	protected static int[] toIntegerArray(final Object b, final int itemSize) {
+	public static int[] toIntegerArray(final Object b, final int itemSize) {
 		int[] result = null;
 
 		if (b instanceof Number) {
@@ -625,7 +625,7 @@ public abstract class AbstractCompoundDataset extends AbstractDataset implements
 		return result;
 	}
 
-	protected static short[] toShortArray(final Object b, final int itemSize) {
+	public static short[] toShortArray(final Object b, final int itemSize) {
 		short[] result = null;
 
 		if (b instanceof Number) {
@@ -699,7 +699,7 @@ public abstract class AbstractCompoundDataset extends AbstractDataset implements
 		return result;
 	}
 
-	protected static byte[] toByteArray(final Object b, final int itemSize) {
+	public static byte[] toByteArray(final Object b, final int itemSize) {
 		byte[] result = null;
 
 		if (b instanceof Number) {
