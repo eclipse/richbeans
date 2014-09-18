@@ -3,7 +3,7 @@
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_INTERPRETER">Default</pydev_property>
 <pydev_property name="org.python.pydev.PYTHON_PROJECT_VERSION">python 2.7</pydev_property>
 <pydev_pathproperty name="org.python.pydev.PROJECT_SOURCE_PATH">
-<path>/uk.ac.diamond.scisoft.analysis.dataset/jars/jtransforms-2.4.jar</path>
-<path>/uk.ac.diamond.scisoft.analysis.dataset/bin</path>
+<path>/org.eclipse.dawnsci.analysis.dataset/jars/jtransforms-2.4.jar</path>
+<path>/org.eclipse.dawnsci.analysis.dataset/bin</path>
 </pydev_pathproperty>
 </pydev_project>
