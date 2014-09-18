@@ -55,8 +55,8 @@ import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import uk.ac.diamond.scisoft.analysis.io.IMetadata;
 import uk.ac.diamond.scisoft.analysis.io.SliceObject;
+import uk.ac.diamond.scisoft.analysis.metadata.IMetadata;
 
 /**
  * Do not expose this class to copying. Instead use ISliceSystem

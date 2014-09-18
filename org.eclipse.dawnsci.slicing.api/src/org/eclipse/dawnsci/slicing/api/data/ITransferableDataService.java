@@ -11,7 +11,7 @@ package org.eclipse.dawnsci.slicing.api.data;
 import org.dawb.common.services.IExpressionObject;
 
 import uk.ac.diamond.scisoft.analysis.io.IDataHolder;
-import uk.ac.diamond.scisoft.analysis.io.IMetadata;
+import uk.ac.diamond.scisoft.analysis.metadata.IMetadata;
 
 /**
  * A service for making ITransferableDataObjects

@@ -18,8 +18,8 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-import uk.ac.diamond.scisoft.analysis.io.IMetadata;
 import uk.ac.diamond.scisoft.analysis.io.SliceObject;
+import uk.ac.diamond.scisoft.analysis.metadata.IMetadata;
 
 /**
  * 
