@@ -227,7 +227,7 @@ public class SliceIterator extends IndexIterator {
 		return index < imax;
 	}
 
-	int[] getStart() {
+	public int[] getStart() {
 		return start;
 	}
 
@@ -236,7 +236,7 @@ public class SliceIterator extends IndexIterator {
 		return pos;
 	}
 
-	int[] getStep() {
+	public int[] getStep() {
 		return step;
 	}
 

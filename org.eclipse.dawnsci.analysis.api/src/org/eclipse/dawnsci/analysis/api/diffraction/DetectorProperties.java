@@ -608,7 +608,7 @@ public class DetectorProperties implements Serializable, Cloneable {
 	 * @param roll
 	 * @return transformation matrix
 	 */
-	protected static Matrix3d inverseMatrixFromEulerAngles(final double yaw, final double pitch, final double roll) {
+	public static Matrix3d inverseMatrixFromEulerAngles(final double yaw, final double pitch, final double roll) {
 		return inverseMatrixFromEulerAngles(yaw, pitch, roll, null);
 	}
 
