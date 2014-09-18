@@ -1,12 +1,11 @@
 package org.eclipse.dawnsci.plotting.examples;
 
+import org.eclipse.dawnsci.analysis.dataset.roi.SectorROI;
 import org.eclipse.dawnsci.plotting.api.region.IRegion;
 import org.eclipse.dawnsci.plotting.api.region.IRegion.RegionType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-
-import uk.ac.diamond.scisoft.analysis.roi.SectorROI;
 
 /**
  * View which creates a sector selection region

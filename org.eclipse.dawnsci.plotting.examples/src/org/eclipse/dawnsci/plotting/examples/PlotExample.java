@@ -1,10 +1,9 @@
 package org.eclipse.dawnsci.plotting.examples;
 
+import org.eclipse.dawnsci.analysis.api.io.ILoaderService;
 import org.eclipse.dawnsci.plotting.api.IPlottingService;
 import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
 import org.eclipse.ui.part.ViewPart;
-
-import uk.ac.diamond.scisoft.analysis.io.ILoaderService;
 
 public abstract class PlotExample extends ViewPart {
 

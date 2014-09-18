@@ -1,18 +1,14 @@
 package org.eclipse.dawnsci.plotting.examples;
 
 import java.io.File;
-import java.util.Arrays;
-import java.util.List;
 
+import org.eclipse.dawnsci.analysis.api.io.IDataHolder;
+import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 import org.eclipse.dawnsci.plotting.api.PlotType;
 import org.eclipse.dawnsci.plotting.api.trace.ILineTrace;
 import org.eclipse.dawnsci.plotting.api.trace.ILineTrace.TraceType;
 import org.eclipse.dawnsci.plotting.examples.util.BundleUtils;
 import org.eclipse.swt.widgets.Composite;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
-import uk.ac.diamond.scisoft.analysis.io.IDataHolder;
-import uk.ac.diamond.scisoft.analysis.monitor.IMonitor;
 
 /**
  * A basic view which plots xy (1D) data.

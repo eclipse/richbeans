@@ -4,17 +4,11 @@ import java.io.File;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.dawnsci.plotting.api.IPlottingService;
-import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
+import org.eclipse.dawnsci.analysis.api.io.IDataHolder;
+import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 import org.eclipse.dawnsci.plotting.api.PlotType;
 import org.eclipse.dawnsci.plotting.examples.util.BundleUtils;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.ViewPart;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
-import uk.ac.diamond.scisoft.analysis.io.IDataHolder;
-import uk.ac.diamond.scisoft.analysis.io.ILoaderService;
-import uk.ac.diamond.scisoft.analysis.monitor.IMonitor;
 
 /**
  * A basic view which plots xy (1D) data.

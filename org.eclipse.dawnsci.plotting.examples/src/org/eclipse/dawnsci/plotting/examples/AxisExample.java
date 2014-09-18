@@ -3,12 +3,11 @@ package org.eclipse.dawnsci.plotting.examples;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.IDatasetMathsService;
 import org.eclipse.dawnsci.plotting.api.axis.IAxis;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
-import uk.ac.diamond.scisoft.analysis.dataset.IDatasetMathsService;
 
 /**
  * View which creates a sector selection region
