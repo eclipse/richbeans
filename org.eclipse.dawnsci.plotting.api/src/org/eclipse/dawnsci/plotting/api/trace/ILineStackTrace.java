@@ -10,8 +10,8 @@ package org.eclipse.dawnsci.plotting.api.trace;
 
 import java.util.List;
 
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
-import uk.ac.diamond.scisoft.analysis.roi.IROI;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.roi.IROI;
 
 /**
  * Interface for plotting stack of plots in 3D.

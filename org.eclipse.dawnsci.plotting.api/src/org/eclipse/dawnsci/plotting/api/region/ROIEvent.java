@@ -10,7 +10,7 @@ package org.eclipse.dawnsci.plotting.api.region;
 
 import java.util.EventObject;
 
-import uk.ac.diamond.scisoft.analysis.roi.IROI;
+import org.eclipse.dawnsci.analysis.api.roi.IROI;
 
 public class ROIEvent extends EventObject {
 

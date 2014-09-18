@@ -10,8 +10,7 @@ package org.eclipse.dawnsci.plotting.api.trace;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-
-import uk.ac.diamond.scisoft.analysis.roi.IROI;
+import org.eclipse.dawnsci.analysis.api.roi.IROI;
 
 
 public interface IWindowTrace extends ITrace {

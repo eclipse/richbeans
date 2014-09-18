@@ -8,8 +8,8 @@
  */ 
 package org.eclipse.dawnsci.slicing.api.system;
 
-import uk.ac.diamond.scisoft.analysis.dataset.ILazyDataset;
-import uk.ac.diamond.scisoft.analysis.io.SliceObject;
+import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
+import org.eclipse.dawnsci.analysis.api.io.SliceObject;
 
 /**
  * This interface marks a workbench part as being able to display a gallery

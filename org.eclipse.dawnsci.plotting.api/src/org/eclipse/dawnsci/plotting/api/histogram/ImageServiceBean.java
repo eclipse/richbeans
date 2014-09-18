@@ -13,9 +13,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.swt.graphics.PaletteData;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 
 /**
  * As histogramming has become more complex and gained more options, this class has become more

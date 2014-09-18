@@ -2,7 +2,7 @@ package org.eclipse.dawnsci.slicing.api.editor;
 
 import java.util.Map;
 
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 
 /*-
  * Copyright (c) 2013 Diamond Light Source Ltd.

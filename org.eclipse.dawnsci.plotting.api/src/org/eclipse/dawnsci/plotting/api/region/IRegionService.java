@@ -1,9 +1,8 @@
 package org.eclipse.dawnsci.plotting.api.region;
 
+import org.eclipse.dawnsci.analysis.api.roi.IROI;
 import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
 import org.eclipse.dawnsci.plotting.api.region.IRegion.RegionType;
-
-import uk.ac.diamond.scisoft.analysis.roi.IROI;
 
 /**
  * Service for managing IROI (data region) and IRegion

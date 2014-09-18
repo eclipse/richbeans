@@ -8,10 +8,9 @@
  */
 package org.eclipse.dawnsci.plotting.api.axis;
 
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 
 /**
  * Interface used to define an axis on the graph (multiple x and y are allowed).

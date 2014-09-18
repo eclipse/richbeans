@@ -8,7 +8,7 @@
  */ 
 package org.eclipse.dawnsci.plotting.api;
 
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 
 public interface IPlottingSystemSelection {
 	

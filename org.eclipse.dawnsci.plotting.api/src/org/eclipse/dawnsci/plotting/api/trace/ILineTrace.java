@@ -12,10 +12,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.plotting.api.axis.IAxis;
 import org.eclipse.swt.graphics.Color;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 
 /**
  * Line trace is used for all 1D trace data. So as well as lines,

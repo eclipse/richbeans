@@ -10,9 +10,8 @@ package org.eclipse.dawnsci.plotting.api.trace;
 
 import java.util.List;
 
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.swt.graphics.PaletteData;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 
 /**
  * A vector trace can be added to a 1D or 2D plot to show a vector map over

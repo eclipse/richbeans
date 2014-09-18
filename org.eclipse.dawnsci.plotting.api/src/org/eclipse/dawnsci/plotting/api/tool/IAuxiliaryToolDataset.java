@@ -8,7 +8,7 @@
  */
 package org.eclipse.dawnsci.plotting.api.tool;
 
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 
 /**
  * Interface used to add extra dataset to a tool

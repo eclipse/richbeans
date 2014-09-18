@@ -30,12 +30,11 @@ import ncsa.hdf.object.HObject;
 import ncsa.hdf.object.h5.H5Datatype;
 import ncsa.hdf.object.h5.H5ScalarDS;
 
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.hdf5.nexus.NexusUtils;
 import org.eclipse.dawnsci.hdf5.nexus.NexusUtils.ATTRIBUTE_TYPE;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 
 /**
  * 
@@ -749,7 +748,7 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 			}
 			
 	        String[] arrayValue = {};
-	        Datatype dtype  = H5Utils.getDatatype(uk.ac.diamond.scisoft.analysis.dataset.Dataset.STRING, size);
+	        Datatype dtype  = H5Utils.getDatatype(org.eclipse.dawnsci.analysis.dataset.impl.Dataset.STRING, size);
 			Dataset dataset = file.createScalarDS(name, parent, dtype, new long[]{1}, null, null, 0, arrayValue);
 
 			return dataset.getFullName();
@@ -777,10 +776,10 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 			                     final String   parentPath,
 			                     final boolean  overwrite) throws Exception {
 		
-    	int    dType   = ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)data).getDtype();
+    	int    dType   = ((org.eclipse.dawnsci.analysis.dataset.impl.Dataset)data).getDtype();
 		long[] shape   = H5Utils.getLong(data.getShape());
 		//need to flatten before getting the buffer!
-		Object buffer  = ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)data).flatten().getBuffer();
+		Object buffer  = ((org.eclipse.dawnsci.analysis.dataset.impl.Dataset)data).flatten().getBuffer();
 		
 		return createDataset(name, dType, shape, buffer, parentPath, overwrite);
    	
@@ -867,9 +866,9 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 						                     final IDataset data,
 						                     final String   parentGroupPath) throws Exception {
 		
-    	int    dType   = ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)data).getDtype();
+    	int    dType   = ((org.eclipse.dawnsci.analysis.dataset.impl.Dataset)data).getDtype();
 		long[] shape   = H5Utils.getLong(data.getShape());
-		Object buffer  = ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)data).getBuffer();
+		Object buffer  = ((org.eclipse.dawnsci.analysis.dataset.impl.Dataset)data).getBuffer();
 		
 		return appendDataset(name, dType, shape, buffer, parentGroupPath);
 	}
@@ -996,7 +995,7 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 		final Group parent = _group(parentPath);
 		final int id = parent.open();
 		
-		Serializable buffer = ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)data).getBuffer();
+		Serializable buffer = ((org.eclipse.dawnsci.analysis.dataset.impl.Dataset)data).getBuffer();
 		try {
 			
 			final HObject o = checkExists(name, parent, Dataset.class);

@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.plotting.api.annotation.IAnnotationSystem;
 import org.eclipse.dawnsci.plotting.api.axis.IAxisSystem;
 import org.eclipse.dawnsci.plotting.api.region.IRegionSystem;
@@ -24,8 +25,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPart;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 
 
 /**

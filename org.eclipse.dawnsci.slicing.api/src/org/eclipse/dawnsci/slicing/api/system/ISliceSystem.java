@@ -10,6 +10,8 @@ package org.eclipse.dawnsci.slicing.api.system;
 
 import java.util.Map;
 
+import org.eclipse.dawnsci.analysis.api.io.SliceObject;
+import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
 import org.eclipse.dawnsci.slicing.api.tool.ISlicingTool;
 import org.eclipse.jface.action.IAction;
@@ -17,9 +19,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-
-import uk.ac.diamond.scisoft.analysis.io.SliceObject;
-import uk.ac.diamond.scisoft.analysis.metadata.IMetadata;
 
 /**
  * 

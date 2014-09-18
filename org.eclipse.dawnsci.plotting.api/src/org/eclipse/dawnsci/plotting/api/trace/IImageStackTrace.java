@@ -8,7 +8,7 @@
  */
 package org.eclipse.dawnsci.plotting.api.trace;
 
-import uk.ac.diamond.scisoft.analysis.dataset.ILazyDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 
 
 /**

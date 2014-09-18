@@ -13,11 +13,10 @@ import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
+import org.eclipse.dawnsci.analysis.api.roi.IROI;
 import org.eclipse.dawnsci.plotting.api.PlotType;
 import org.eclipse.dawnsci.plotting.api.axis.ICoordinateSystem;
 import org.eclipse.swt.graphics.Color;
-
-import uk.ac.diamond.scisoft.analysis.roi.IROI;
 
 /**
  * A selection region must conform to this interface. You can set its position, colour and transparency settings.

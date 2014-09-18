@@ -12,10 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dawb.common.services.ServiceManager;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.IDatasetMathsService;
 import org.eclipse.dawnsci.plotting.api.PlotType;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
-import uk.ac.diamond.scisoft.analysis.dataset.IDatasetMathsService;
 
 public enum AxisType {
 

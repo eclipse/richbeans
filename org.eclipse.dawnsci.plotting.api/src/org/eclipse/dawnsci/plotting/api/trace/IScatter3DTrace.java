@@ -10,7 +10,7 @@ package org.eclipse.dawnsci.plotting.api.trace;
 
 import java.util.List;
 
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 
 /**
  * 

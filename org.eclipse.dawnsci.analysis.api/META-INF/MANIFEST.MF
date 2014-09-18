@@ -1,0 +1,28 @@
+Dependency-Note: This plugin defines the API which the main analysis plugin
+ is provided with. It should be as vanilla as possible.
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Analysis API Bundle
+Bundle-SymbolicName: org.eclipse.dawnsci.analysis.api;singleton:=true
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Diamond Light Source
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.dawnsci.analysis.api,
+ org.eclipse.dawnsci.analysis.api.api,
+ org.eclipse.dawnsci.analysis.api.dataset,
+ org.eclipse.dawnsci.analysis.api.diffraction,
+ org.eclipse.dawnsci.analysis.api.fitting,
+ org.eclipse.dawnsci.analysis.api.fitting.functions,
+ org.eclipse.dawnsci.analysis.api.io,
+ org.eclipse.dawnsci.analysis.api.message,
+ org.eclipse.dawnsci.analysis.api.metadata,
+ org.eclipse.dawnsci.analysis.api.monitor,
+ org.eclipse.dawnsci.analysis.api.processing,
+ org.eclipse.dawnsci.analysis.api.processing.model,
+ org.eclipse.dawnsci.analysis.api.roi,
+ org.eclipse.dawnsci.analysis.api.slice
+Import-Package: javax.measure.unit;version="4.3.1",
+ javax.vecmath,
+ org.slf4j;version="[1.7.6,1.7.7)"
+Require-Bundle: org.apache.commons.lang;bundle-version="[2.6.0,2.7.0)",
+ org.apache.commons.math3;bundle-version="3.2.0"

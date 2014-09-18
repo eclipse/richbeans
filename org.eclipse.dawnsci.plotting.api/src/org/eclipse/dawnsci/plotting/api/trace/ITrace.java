@@ -9,7 +9,7 @@
 package org.eclipse.dawnsci.plotting.api.trace;
 
 
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 
 /**
  * A representation of a plotted data set.

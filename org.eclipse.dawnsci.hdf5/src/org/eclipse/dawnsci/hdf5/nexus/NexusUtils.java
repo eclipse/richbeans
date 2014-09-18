@@ -24,14 +24,13 @@ import ncsa.hdf.object.Group;
 import ncsa.hdf.object.HObject;
 import ncsa.hdf.object.h5.H5Datatype;
 
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.hdf5.H5Utils;
 import org.eclipse.dawnsci.hdf5.HierarchicalDataFactory;
 import org.eclipse.dawnsci.hdf5.IFileFormatDataFile;
 import org.eclipse.dawnsci.hdf5.IHierarchicalDataFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
 
 /**
  * Class used to mark groups in the hdf5 tree with nexus attributes.
@@ -196,7 +195,7 @@ public class NexusUtils {
 				                      dataset.getName(), 
 				                      H5Utils.getDatatype(dataset), 
 				                      H5Utils.getLong(dataset.getShape()), 
-				                      ((uk.ac.diamond.scisoft.analysis.dataset.Dataset)dataset).getBuffer());
+				                      ((org.eclipse.dawnsci.analysis.dataset.impl.Dataset)dataset).getBuffer());
 	}
 
 	/**

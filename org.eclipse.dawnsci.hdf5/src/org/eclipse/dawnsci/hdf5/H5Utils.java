@@ -9,18 +9,19 @@
  */ 
 package org.eclipse.dawnsci.hdf5;
 
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.Slice;
+import org.eclipse.dawnsci.analysis.dataset.impl.ByteDataset;
+import org.eclipse.dawnsci.analysis.dataset.impl.Dataset;
+import org.eclipse.dawnsci.analysis.dataset.impl.DatasetUtils;
+import org.eclipse.dawnsci.analysis.dataset.impl.DoubleDataset;
+import org.eclipse.dawnsci.analysis.dataset.impl.FloatDataset;
+import org.eclipse.dawnsci.analysis.dataset.impl.IntegerDataset;
+import org.eclipse.dawnsci.analysis.dataset.impl.LongDataset;
+import org.eclipse.dawnsci.analysis.dataset.impl.ShortDataset;
+
 import ncsa.hdf.object.Datatype;
 import ncsa.hdf.object.h5.H5Datatype;
-import uk.ac.diamond.scisoft.analysis.dataset.Dataset;
-import uk.ac.diamond.scisoft.analysis.dataset.ByteDataset;
-import uk.ac.diamond.scisoft.analysis.dataset.DatasetUtils;
-import uk.ac.diamond.scisoft.analysis.dataset.DoubleDataset;
-import uk.ac.diamond.scisoft.analysis.dataset.FloatDataset;
-import uk.ac.diamond.scisoft.analysis.dataset.IDataset;
-import uk.ac.diamond.scisoft.analysis.dataset.IntegerDataset;
-import uk.ac.diamond.scisoft.analysis.dataset.LongDataset;
-import uk.ac.diamond.scisoft.analysis.dataset.ShortDataset;
-import uk.ac.diamond.scisoft.analysis.dataset.Slice;
 
 public class H5Utils {
 
@@ -149,7 +150,7 @@ public class H5Utils {
 		
 		// There is a smarter way of doing this, but am in a hurry...
 		try {
-		    return getDatatype(((uk.ac.diamond.scisoft.analysis.dataset.Dataset)a).getDtype());
+		    return getDatatype(((org.eclipse.dawnsci.analysis.dataset.impl.Dataset)a).getDtype());
 		} catch (Exception ne) {
 			throw new Exception("Cannot deal with data in form "+a.getClass().getName());
 		}
