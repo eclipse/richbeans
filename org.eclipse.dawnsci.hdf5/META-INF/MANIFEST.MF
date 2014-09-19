@@ -14,6 +14,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: org.eclipse.dawnsci.hdf5,
+ org.eclipse.dawnsci.hdf5.api,
  org.eclipse.dawnsci.hdf5.model,
  org.eclipse.dawnsci.hdf5.model.internal;x-internal:=true,
  org.eclipse.dawnsci.hdf5.nexus
