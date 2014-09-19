@@ -12,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.dawb.common.services.ServiceManager;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.IDatasetMathsService;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
+import org.eclipse.dawnsci.slicing.api.Activator;
 import org.eclipse.dawnsci.slicing.api.system.DimsData;
 import org.eclipse.dawnsci.slicing.api.system.DimsDataList;
 import org.eclipse.dawnsci.slicing.api.system.ISliceSystem;
@@ -107,7 +107,7 @@ public abstract class AbstractSlicingTool implements ISlicingTool {
 				continue;
 			}
             if (axis==null) {
-            	final IDatasetMathsService service = (IDatasetMathsService)ServiceManager.getService(IDatasetMathsService.class);
+            	final IDatasetMathsService service = (IDatasetMathsService)Activator.getService(IDatasetMathsService.class);
             	axis = service.createRange(dataShape[dd.getDimension()], IDatasetMathsService.INT);
             }
             ret.add(axis);

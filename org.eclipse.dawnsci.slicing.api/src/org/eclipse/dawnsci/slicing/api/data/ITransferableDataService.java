@@ -8,9 +8,9 @@
  */
 package org.eclipse.dawnsci.slicing.api.data;
 
-import org.dawb.common.services.IExpressionObject;
 import org.eclipse.dawnsci.analysis.api.io.IDataHolder;
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
+import org.eclipse.dawnsci.plotting.api.expressions.IExpressionObject;
 
 /**
  * A service for making ITransferableDataObjects

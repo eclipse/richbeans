@@ -11,10 +11,10 @@ package org.eclipse.dawnsci.slicing.api.system;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dawb.common.services.ServiceManager;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.IDatasetMathsService;
 import org.eclipse.dawnsci.plotting.api.PlotType;
+import org.eclipse.dawnsci.slicing.api.Activator;
 
 public enum AxisType {
 
@@ -100,7 +100,7 @@ public enum AxisType {
 		
 		if (!isAdvanced()) throw new Exception("Cannot process non-advanced axes!");
 		
-		final IDatasetMathsService service = (IDatasetMathsService)ServiceManager.getService(IDatasetMathsService.class);
+		final IDatasetMathsService service = (IDatasetMathsService)Activator.getService(IDatasetMathsService.class);
 		if (this==MEAN) { // TODO The other types!
 			return service.mean(slice, i);
 		} else if (this==MAX) { // TODO The other types!

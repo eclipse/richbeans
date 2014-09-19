@@ -8,7 +8,6 @@
  */ 
 package org.eclipse.dawnsci.slicing.api;
 
-import org.dawb.common.services.ServiceManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.io.IDataHolder;
@@ -76,7 +75,7 @@ public class SliceDialog extends Dialog {
 			            final String   filePath,
 			            final IProgressMonitor monitor) throws Throwable {
 		
-		final ILoaderService service = (ILoaderService)ServiceManager.getService(ILoaderService.class);
+		final ILoaderService service = (ILoaderService)Activator.getService(ILoaderService.class);
 		final IDataHolder holder = service.getData(filePath, new ProgressMonitorWrapper(monitor));
 		ILazyDataset lazy  = holder.getLazyDataset(dataSetName);
 		if (lazy==null) lazy = holder.getLazyDataset(0);

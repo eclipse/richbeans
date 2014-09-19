@@ -8,8 +8,11 @@
  */
 package org.eclipse.dawnsci.slicing.api;
 
+import java.util.HashMap;
+
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -54,5 +57,21 @@ public class Activator extends AbstractUIPlugin {
 	public static Activator getDefault() {
 		return plugin;
 	}
+
+	private static HashMap<Class<?>, Object> testServices;
+
+	public static Object getService(Class<?> clazz) {
+		if (testServices!=null && testServices.containsKey(clazz)) return testServices.get(clazz);
+		if (plugin.getBundle().getBundleContext()==null) return null;
+		ServiceReference<?> ref = plugin.getBundle().getBundleContext().getServiceReference(clazz);
+		if (ref==null) return null;
+		return plugin.getBundle().getBundleContext().getService(ref);
+	}
+
+	public static void setTestService(Class<?> clazz, Object impl) {
+		if (testServices == null) testServices = new HashMap<Class<?>, Object>(3);
+		testServices.put(clazz, impl);
+	}
+
 
 }

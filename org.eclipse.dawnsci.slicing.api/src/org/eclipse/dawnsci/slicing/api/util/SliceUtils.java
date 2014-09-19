@@ -18,8 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.dawb.common.services.IVariableManager;
-import org.dawb.common.services.ServiceManager;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.IDatasetMathsService;
@@ -31,8 +29,10 @@ import org.eclipse.dawnsci.doe.DOEUtils;
 import org.eclipse.dawnsci.hdf5.HierarchicalDataFactory;
 import org.eclipse.dawnsci.hdf5.IHierarchicalDataFile;
 import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
+import org.eclipse.dawnsci.plotting.api.expressions.IVariableManager;
 import org.eclipse.dawnsci.plotting.api.trace.IImageTrace;
 import org.eclipse.dawnsci.plotting.api.trace.ITrace;
+import org.eclipse.dawnsci.slicing.api.Activator;
 import org.eclipse.dawnsci.slicing.api.system.AxisType;
 import org.eclipse.dawnsci.slicing.api.system.DimsData;
 import org.eclipse.dawnsci.slicing.api.system.DimsDataList;
@@ -100,7 +100,7 @@ public class SliceUtils {
     			}
     		}
 
-    		final IDatasetMathsService service = (IDatasetMathsService)ServiceManager.getService(IDatasetMathsService.class);
+    		final IDatasetMathsService service = (IDatasetMathsService)Activator.getService(IDatasetMathsService.class);
     		if (dimsData.getPlotAxis()==AxisType.X) {
     			x = service.createRange(dataShape[i], IDatasetMathsService.INT);
     			x.setName("Dimension "+(dimsData.getDimension()+1));
@@ -314,7 +314,7 @@ public class SliceUtils {
 		
 		
 		String axisName = currentSlice.getAxisName(iAxis);
-		final IDatasetMathsService service = (IDatasetMathsService)ServiceManager.getService(IDatasetMathsService.class);
+		final IDatasetMathsService service = (IDatasetMathsService)Activator.getService(IDatasetMathsService.class);
 		if ("indices".equals(axisName) || axisName==null) {
 			if (requireIndicesOnError) {
 				IDataset indices = service.createRange(length, IDatasetMathsService.INT); // Save time
@@ -385,7 +385,7 @@ public class SliceUtils {
 		final String dataPath = currentSlice.getName();
 		if (dataPath.endsWith("[Expression]")) {
 			final IDataset set = currentSlice.getExpressionAxis(dataPath);
-			final IDatasetMathsService service = (IDatasetMathsService)ServiceManager.getService(IDatasetMathsService.class);
+			final IDatasetMathsService service = (IDatasetMathsService)Activator.getService(IDatasetMathsService.class);
 			return service.convertToDataset(set);
 		}
 		
@@ -397,7 +397,7 @@ public class SliceUtils {
 				
 				final String fullName = group+"/"+axisName;
 				
-				final ILoaderService service = (ILoaderService)ServiceManager.getService(ILoaderService.class);
+				final ILoaderService service = (ILoaderService)Activator.getService(ILoaderService.class);
 				axis = service.getDataset(currentSlice.getPath(), fullName, new ProgressMonitorWrapper(monitor));
 				if (axis == null) return null;
 				axis = axis.squeeze();
@@ -412,7 +412,7 @@ public class SliceUtils {
 			final File file = new File(dataPath);
 			final String parent = file.getParent();
 			final String fullName = parent == null ? axisName : parent.replace('\\','/')+"/"+axisName;
-			final ILoaderService service = (ILoaderService)ServiceManager.getService(ILoaderService.class);
+			final ILoaderService service = (ILoaderService)Activator.getService(ILoaderService.class);
 			axis = service.getDataset(currentSlice.getPath(), fullName, new ProgressMonitorWrapper(monitor));
 			if (axis == null) return null;
 			axis = axis.squeeze();
@@ -466,7 +466,7 @@ public class SliceUtils {
 		
 		final DimsDataList ddl = (DimsDataList)currentSlice.getDimensionalData();
 		
-		final IDatasetMathsService service = (IDatasetMathsService)ServiceManager.getService(IDatasetMathsService.class);
+		final IDatasetMathsService service = (IDatasetMathsService)Activator.getService(IDatasetMathsService.class);
 		if (currentSlice.isRange()) {
 			// We sum the data in the dimensions that are not axes
 			IDataset sum    = slice;
