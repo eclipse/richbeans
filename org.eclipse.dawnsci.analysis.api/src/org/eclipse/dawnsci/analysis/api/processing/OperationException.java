@@ -11,24 +11,24 @@ package org.eclipse.dawnsci.analysis.api.processing;
 
 public class OperationException extends RuntimeException {
 
-	private final IOperation operation;
+	private final IOperation<?, ?> operation;
 
-	public OperationException(IOperation operation) {
+	public OperationException(IOperation<?, ?> operation) {
 		super();
 		this.operation = operation;
 	}
-	public OperationException(IOperation operation, Throwable cause) {
+
+	public OperationException(IOperation<?, ?> operation, Throwable cause) {
 		super(cause);
 		this.operation = operation;
 	}
-	
-	public OperationException(IOperation operation, String reason) {
+
+	public OperationException(IOperation<?, ?> operation, String reason) {
 		super(reason);
 		this.operation = operation;
 	}
 
-	public IOperation getOperation() {
+	public IOperation<?, ?> getOperation() {
 		return operation;
 	}
-
 }

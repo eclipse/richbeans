@@ -18,13 +18,13 @@ import java.util.Locale;
 
 /**
  * Extend this class for your model to avoid having to implement the get and set manually.
- * Do not put non-pojo methods in your models, keep them vanilla.
+ * Do not put non-POJO methods in your models, keep them vanilla.
  * 
  * BE WARNED the get and set are not especially fast - do not call them from big loops!
  * 
  * This class MUST define a no argument constructor with getters and setters.
  * 
- * NOTE You can currently have only two level of inheritence below this class so
+ * NOTE You can currently have only two level of inheritance below this class so
  * 
  * class B extends A ...
  * class A extends AbstractOperationModel 
@@ -86,7 +86,8 @@ public abstract class AbstractOperationModel implements IOperationModel {
 		} catch (Exception ne) {
 			field = getClass().getSuperclass().getDeclaredField(name);
 		}
-		OperationModelField omf = (OperationModelField)field.getAnnotation(OperationModelField.class);
+
+		OperationModelField omf = field.getAnnotation(OperationModelField.class);
 
 		
 		final String getter = getGetterName(name).toLowerCase();

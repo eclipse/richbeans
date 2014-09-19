@@ -43,6 +43,7 @@ public class IntegersIterator extends IndexIterator {
 	 * @param shape of entire data array
 	 * @param index an array of integer dataset, boolean dataset, slices or null entries (same as full slices)
 	 */
+	@SuppressWarnings("null")
 	public IntegersIterator(final int[] shape, final Object... index) {
 		ishape = shape.clone();
 		irank = shape.length;
