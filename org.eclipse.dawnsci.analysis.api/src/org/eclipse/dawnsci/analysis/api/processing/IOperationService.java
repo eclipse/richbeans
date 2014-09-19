@@ -23,14 +23,14 @@ import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
 public interface IOperationService {
 	
 	/**
-	 * Get the name of the operation with this id
+	 * Get the name of the operation with this ID
 	 * @param id
 	 * @return name
 	 */
 	public String getName(String id) throws Exception;
 	
 	/**
-	 * Get the description of the operation with this id
+	 * Get the description of the operation with this ID
 	 * @param id
 	 * @return description
 	 */
@@ -38,16 +38,16 @@ public interface IOperationService {
 
 	/**
 	 * Finds all operations by doing a search
-	 * using the regex passed in. All operations whose descriptions/ids
+	 * using the regex passed in. All operations whose descriptions/IDs
 	 * match the regex are returned. For instance:
 	 * 
 	 * find("correction");  // Might give operations "Dark correction", "Flat correction"
 	 * find("integration"); // Might give operations "Azimuthal integration", "Radial integration", "Box integration", "Line integration"
 	 * 
 	 * NOTE the regex will be matched as follows on the id of the operation:
-	 * 1. if matching on the id
+	 * 1. if matching on the ID
 	 * 2. if matching the description in lower case.
-	 * 3. if indexOf the regex in the id is >0
+	 * 3. if indexOf the regex in the ID is >0
 	 * 4. if indexOf the regex in the description is >0
 	 * 
 	 * @param operationRegex
@@ -69,17 +69,17 @@ public interface IOperationService {
 	public Collection<IOperation<? extends IOperationModel, ? extends OperationData>> find(OperationRank rank, boolean isInput)  throws Exception;
 
 	/**
-	 * Finds the first operation matcing a search
-	 * using the regex passed in. All operations whose descriptions/ids
+	 * Finds the first operation matching a search
+	 * using the regex passed in. All operations whose descriptions/IDs
 	 * match the regex are returned. For instance:
 	 * 
 	 * find("correction");  // Might give operations "Dark correction", "Flat correction"
 	 * find("integration"); // Might give operations "Azimuthal integration", "Radial integration", "Box integration", "Line integration"
 	 * 
-	 * NOTE the regex will be matched as follows on the id of the operation:
-	 * 1. if matching on the id
+	 * NOTE the regex will be matched as follows on the ID of the operation:
+	 * 1. if matching on the ID
 	 * 2. if matching the description in lower case.
-	 * 3. if indexOf the regex in the id is >0
+	 * 3. if indexOf the regex in the ID is >0
 	 * 4. if indexOf the regex in the description is >0
 	 * 
 	 * @param operationRegex
@@ -88,8 +88,8 @@ public interface IOperationService {
 	public IOperation<? extends IOperationModel, ? extends OperationData>  findFirst(String operationRegex)  throws Exception;
 	
 	/**
-	 * Gets the ids of all the operations. The id is defined in the extension point.
-	 * @return all the ids which have been contributed via extensions
+	 * Gets the IDs of all the operations. The id is defined in the extension point.
+	 * @return all the IDs which have been contributed via extensions
 	 */
 	public Collection<String> getRegisteredOperations()  throws Exception;
 
@@ -162,7 +162,7 @@ public interface IOperationService {
 	 */
 	// If we start to need things like this:
 	//public IRichDataset executeGraph(IOperationNode root) throws OperationException;
-	// Then this service has inadvertently become a workflow tool and we are reinventing ptolemy
+	// Then this service has inadvertently become a workflow tool and we are reinventing Ptolemy
 	
 	
 	/**
@@ -170,7 +170,7 @@ public interface IOperationService {
 	 * in a package which implement IOperation. This is useful if your code for the operations is
 	 * not eclipse or you are writing a unit test.
 	 * 
-	 * @param l classloader where pacakage can be found.
+	 * @param l classloader where package can be found.
 	 * @param pakage separated by dots.
 	 */
 	public void createOperations(ClassLoader l, String pakage)  throws Exception;
