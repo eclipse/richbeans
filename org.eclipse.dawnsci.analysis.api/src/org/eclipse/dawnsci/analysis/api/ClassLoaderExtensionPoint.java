@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.eclipse.dawnsci.analysis.api.api;
+package org.eclipse.dawnsci.analysis.api;
 
 /**
  * This only holds constants for the extension point
@@ -17,7 +17,7 @@ public class ClassLoaderExtensionPoint {
 	/**
 	 * ID of extension point for class loading
 	 */
-	public static final String ID = "uk.ac.diamond.scisoft.analysis.classloader";
+	public static final String ID = "org.eclipse.dawnsci.analysis.classloader";
 
 	/**
 	 * attribute name in extension point

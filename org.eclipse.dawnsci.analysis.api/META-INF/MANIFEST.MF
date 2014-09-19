@@ -8,7 +8,6 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Diamond Light Source
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.dawnsci.analysis.api,
- org.eclipse.dawnsci.analysis.api.api,
  org.eclipse.dawnsci.analysis.api.dataset,
  org.eclipse.dawnsci.analysis.api.diffraction,
  org.eclipse.dawnsci.analysis.api.fitting,

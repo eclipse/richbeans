@@ -2,7 +2,7 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="uk.ac.diamond.scisoft.analysis.classloader">
+         point="org.eclipse.dawnsci.analysis.classloader">
       <bundle
             class="org.eclipse.dawnsci.analysis.dataset.impl.AbstractDataset">
       </bundle>
