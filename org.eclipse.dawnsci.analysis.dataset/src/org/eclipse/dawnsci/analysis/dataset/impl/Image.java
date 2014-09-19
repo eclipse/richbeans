@@ -12,9 +12,8 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dawb.common.services.IImageFilterService;
-import org.dawb.common.services.ServiceManager;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.image.IImageFilterService;
 import org.eclipse.dawnsci.analysis.api.roi.IRectangularROI;
 import org.eclipse.dawnsci.analysis.dataset.delaunay_triangulation.Delaunay_Triangulation;
 import org.eclipse.dawnsci.analysis.dataset.delaunay_triangulation.Point_dt;
@@ -34,9 +33,9 @@ public class Image {
 
 	private static IImageFilterService service;
 
-	public static void createImageFilterService() throws Exception {
+	public static void createImageFilterService() {
 		if (service == null) {
-			service = (IImageFilterService)ServiceManager.getService(IImageFilterService.class);
+			service = (IImageFilterService)Activator.getService(IImageFilterService.class);
 		}
 	}
 
