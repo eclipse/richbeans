@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Do not expose this class to copying. Instead use ISliceSystem
- * @author fcp94556
+ * @author Matthew Gerring
  * @internal
  */
 public abstract class AbstractSliceSystem implements ISliceSystem {

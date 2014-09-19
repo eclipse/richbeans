@@ -10,7 +10,7 @@ package org.eclipse.dawnsci.plotting.api.tool;
 
 /**
  * Used to mark views which can contain tools
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IToolContainer {

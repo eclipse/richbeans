@@ -19,7 +19,7 @@ import org.eclipse.dawnsci.plotting.api.histogram.ImageServiceBean.ImageOrigin;
  * 
  * In the LightWeightPlotter this is called ImageTrace.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  * 
  * <pre>
  *    Histogramming Explanation

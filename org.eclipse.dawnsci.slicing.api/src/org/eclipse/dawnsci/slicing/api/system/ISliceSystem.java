@@ -49,7 +49,7 @@ import org.eclipse.swt.widgets.Control;
  * 
  * </code>
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ISliceSystem {

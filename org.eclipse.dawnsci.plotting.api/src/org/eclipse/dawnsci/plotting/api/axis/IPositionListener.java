@@ -14,7 +14,7 @@ import java.util.EventListener;
  * Interface listener for reporting data position 
  * when the mouse moves over the graph.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IPositionListener extends EventListener{

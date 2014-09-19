@@ -55,7 +55,7 @@ Tools can be added to a perspective in 2 or 3 form in the perspective by adding 
 view to the perspective and setting the secondary id to the tool id required. For instance ‘org.dawb.workbench.plotting.tools.azimuthalProfileTool’. 
 Or by programmatically when opening a view by id. 
 
- @author fcp94556
+ @author Matthew Gerring
  
  */
 public abstract class AbstractToolPage extends Page implements IToolPage, IAdaptable {

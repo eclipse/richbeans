@@ -12,7 +12,7 @@ package org.eclipse.dawnsci.slicing.api.system;
  * Mode for slicing, whether the slicing allows multiple ranges
  * to be defined or not.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public enum RangeMode {

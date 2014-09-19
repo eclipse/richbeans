@@ -12,7 +12,7 @@ import java.util.EventListener;
 
 /**
  * It is a good idea to implement hasCode and equals so that removeAxisListener(...) works ok.
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IAxisListener extends EventListener{

@@ -93,7 +93,7 @@ public interface ITraceListener extends EventListener{
 	
 	/**
 	 * Convenience class for creating listeners
-	 * @author fcp94556
+	 * @author Matthew Gerring
 	 *
 	 */
 	public class Stub implements ITraceListener {

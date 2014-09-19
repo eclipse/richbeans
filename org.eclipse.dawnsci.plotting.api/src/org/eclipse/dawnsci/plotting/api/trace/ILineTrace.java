@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.Color;
  * it is used for histogram data. You can transform lines to histograms
  * using the setTraceType method.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ILineTrace extends ITrace {

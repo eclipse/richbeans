@@ -19,7 +19,7 @@ package org.eclipse.dawnsci.plotting.api.region;
  * with a more flexible and abstract API, like getting and setting handle
  * properties via abstract IDs.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ILockableRegion extends IRegion {

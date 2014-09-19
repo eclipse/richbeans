@@ -15,7 +15,7 @@ import org.eclipse.swt.widgets.Composite;
  * IMPORTANT do not remove this funny class it is used to 
  * give a widget with the same classloader as plugin org.eclipse.dawnsci.plotting.api
  * in order to provide functionality for the squish tests!
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class RefreshButton extends Button {

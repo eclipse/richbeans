@@ -12,7 +12,7 @@ package org.eclipse.dawnsci.plotting.api.annotation;
 /**
  * No methods in this interface are thread safe.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IAnnotationSystem {

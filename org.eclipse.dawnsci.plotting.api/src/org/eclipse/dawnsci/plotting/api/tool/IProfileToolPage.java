@@ -13,7 +13,7 @@ import org.eclipse.dawnsci.plotting.api.tool.IToolPage;
 
 /**
  * Interface designed to hide special tool pages.
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IProfileToolPage extends IToolPage {

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  * the file. It is better than alternative ways of doing this as the level of synchronization is
  * lower. Use HierarchicalDataFactory as much as possible to avoid thread problems with HDF5.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class HierarchicalDataFactory {

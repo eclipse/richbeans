@@ -12,7 +12,7 @@ import java.util.EventObject;
 
 /**
  * Event fired to notify of the stack position changing.
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class StackPositionEvent extends EventObject {

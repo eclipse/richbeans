@@ -14,7 +14,7 @@ import java.util.EventObject;
 /**
  * Event with source of the IRegion affected.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class RegionEvent extends EventObject {

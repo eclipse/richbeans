@@ -22,7 +22,7 @@ import org.eclipse.dawnsci.plotting.api.trace.TraceWillPlotEvent;
 /**
  * Please extend this class to define undoable filters.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public abstract class AbstractPlottingFilter implements IPlottingFilter {

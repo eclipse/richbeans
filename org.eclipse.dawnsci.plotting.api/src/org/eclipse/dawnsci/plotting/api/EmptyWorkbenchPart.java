@@ -17,7 +17,7 @@ import org.eclipse.ui.part.WorkbenchPart;
  * part which is active. This provides then the IAdaptable
  * for tools to work.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class EmptyWorkbenchPart extends WorkbenchPart {

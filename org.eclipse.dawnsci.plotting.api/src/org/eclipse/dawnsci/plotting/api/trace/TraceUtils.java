@@ -17,7 +17,7 @@ import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
 
 /**
  * Class containing utility methods for regions to avoid duplication 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class TraceUtils {

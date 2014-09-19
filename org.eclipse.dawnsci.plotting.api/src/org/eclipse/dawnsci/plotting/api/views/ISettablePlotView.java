@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 /**
  * Interface used to mark a view part as being able to accept data.
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ISettablePlotView {

@@ -15,7 +15,7 @@ import org.eclipse.dawnsci.plotting.api.tool.IToolPageSystem;
  * This is a service for wrapping PlottingFactory for
  * those that prefer to use a service rather than a 
  * factory.
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IPlottingService {

@@ -39,7 +39,7 @@ import java.util.EventListener;
                 |              *        +         *  
 ----------------++------------**---------+----------**----+---------------**+---------------++
 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IPaletteListener extends EventListener {

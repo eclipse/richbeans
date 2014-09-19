@@ -19,7 +19,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * page may contain its own plotting or it may
  * create selection regions on the main IPlottingSystem.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IToolPageSystem {

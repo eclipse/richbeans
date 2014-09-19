@@ -18,7 +18,7 @@ import org.eclipse.jface.action.IContributionManager;
  * The action filled will be exactly the same one as the plotting uses. Therefore
  * visible, enabled settings will take effect across all IContributionManagers
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IPlotActionSystem extends ITraceActionProvider{

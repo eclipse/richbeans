@@ -24,7 +24,7 @@ import org.eclipse.dawnsci.analysis.api.roi.IROI;
  * where manyYs is a stack of 1D data. This will all be plotted in an
  * overlayed manner but allow all tools to be used.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ILineStackTrace extends IAxesTrace, IWindowTrace {

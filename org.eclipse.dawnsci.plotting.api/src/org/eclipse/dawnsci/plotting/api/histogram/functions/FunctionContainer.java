@@ -15,7 +15,7 @@ import org.eclipse.dawnsci.plotting.api.histogram.ITransferFunction;
  * To be used as a function object in ImageServiceBean to override 
  * the normal 8-bit mapping and provide functions for use with SWTImageUtils
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class FunctionContainer {

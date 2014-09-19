@@ -14,7 +14,7 @@ import org.eclipse.dawnsci.plotting.api.tool.IToolPage.ToolPageRole;
  * Groups of actions available in the UI. Moved to API plugin
  * so that anyone can configure tools by group.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public enum ToolbarConfigurationConstants {

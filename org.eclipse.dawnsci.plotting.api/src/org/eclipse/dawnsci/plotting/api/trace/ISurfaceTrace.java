@@ -21,7 +21,7 @@ import org.eclipse.dawnsci.analysis.api.roi.IROI;
  * 3D plotting operations. Use IImageTrace normally for images.
  * 
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ISurfaceTrace extends IImage3DTrace, IWindowTrace {

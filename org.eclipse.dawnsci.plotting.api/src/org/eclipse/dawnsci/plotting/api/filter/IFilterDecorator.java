@@ -32,7 +32,7 @@ package org.eclipse.dawnsci.plotting.api.filter;
  * 
  * </code>
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IFilterDecorator {

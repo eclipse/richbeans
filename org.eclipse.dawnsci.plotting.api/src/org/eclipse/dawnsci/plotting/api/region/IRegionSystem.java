@@ -16,7 +16,7 @@ import org.eclipse.dawnsci.plotting.api.region.IRegion.RegionType;
 /**
  * No methods in this interface are thread safe.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IRegionSystem {

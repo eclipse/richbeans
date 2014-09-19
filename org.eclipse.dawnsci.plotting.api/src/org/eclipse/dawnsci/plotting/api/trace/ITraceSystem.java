@@ -13,7 +13,7 @@ import java.util.Collection;
 /**
  * No methods in this interface are thread safe.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ITraceSystem {

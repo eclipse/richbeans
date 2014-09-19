@@ -16,7 +16,7 @@ import org.eclipse.ui.IWorkbenchPart;
 /**
  * A workbench part which does plots and can participate in slicing.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ISlicablePlottingPart extends IWorkbenchPart, IPlottingContainer {

@@ -19,7 +19,7 @@ import org.eclipse.dawnsci.slicing.api.system.ISliceSystem;
  * 
  * A preference page will be added for choosing component from a drop down.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class SlicingFactory {

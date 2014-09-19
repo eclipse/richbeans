@@ -16,7 +16,7 @@ import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
  * 
  * 
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ITrace {

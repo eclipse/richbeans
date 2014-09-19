@@ -21,7 +21,7 @@ import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
  * This class represents information which configures a slice component
  * to 
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class SliceSource {

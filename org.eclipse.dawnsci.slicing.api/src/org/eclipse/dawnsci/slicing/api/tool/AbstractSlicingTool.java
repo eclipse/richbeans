@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Convenience class for extending to provide a tool.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public abstract class AbstractSlicingTool implements ISlicingTool {

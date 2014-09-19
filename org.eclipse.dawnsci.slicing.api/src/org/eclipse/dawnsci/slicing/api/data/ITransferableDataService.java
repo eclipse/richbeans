@@ -17,7 +17,7 @@ import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
  * 
  * These objects can be used for providing data into different parts of the UI.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ITransferableDataService {

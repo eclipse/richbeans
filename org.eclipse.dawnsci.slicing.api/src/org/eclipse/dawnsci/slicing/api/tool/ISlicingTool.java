@@ -19,7 +19,7 @@ import org.eclipse.swt.widgets.Composite;
  * 
  * Normally a tool is added by extending AbstractSlicingTool
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ISlicingTool extends IAdaptable {

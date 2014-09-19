@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  * You can use the factory directly or conjure the service
  * from the magic of OSGI.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class PlottingFactory {

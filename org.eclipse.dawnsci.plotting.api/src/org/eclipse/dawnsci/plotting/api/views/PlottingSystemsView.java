@@ -32,7 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 /**
  * This view shows a list of registered plotting systems
  * using their registered name.
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class PlottingSystemsView extends ViewPart {

@@ -18,7 +18,7 @@ import org.eclipse.swt.graphics.Font;
  * You can get an IAxis by using IPlottingSystem.createAxis(...) then you can configure the
  * axis as desired, for instance setLog10(...)
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IAxis {

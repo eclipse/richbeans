@@ -24,7 +24,7 @@ import org.eclipse.dawnsci.plotting.api.trace.TraceWillPlotEvent;
  * If a filter has been already done on a trace with this name,
  * it will also not be done again.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public abstract class UniqueNamedPlottingFilter extends AbstractPlottingFilter {

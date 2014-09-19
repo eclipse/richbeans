@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
 /**
  * A dialog for holding a component used to slice the data.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class SliceDialog extends Dialog {

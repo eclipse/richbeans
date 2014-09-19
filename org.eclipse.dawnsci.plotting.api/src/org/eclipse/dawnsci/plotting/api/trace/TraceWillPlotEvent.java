@@ -17,7 +17,7 @@ import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
  * Note the source to this event can either be the ITrace
  * or the plotting system.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class TraceWillPlotEvent extends EventObject {

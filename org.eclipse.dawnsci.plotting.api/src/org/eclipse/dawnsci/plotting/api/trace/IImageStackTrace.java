@@ -17,7 +17,7 @@ import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
  * 
  * The scale appears in the plot and can be moved by the user.
  *  
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IImageStackTrace extends IImageTrace {

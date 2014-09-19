@@ -14,7 +14,7 @@ import org.eclipse.swt.graphics.PaletteData;
 
 /**
  * Event used for palette changes, including change of Palette Data.
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class PaletteEvent extends EventObject {

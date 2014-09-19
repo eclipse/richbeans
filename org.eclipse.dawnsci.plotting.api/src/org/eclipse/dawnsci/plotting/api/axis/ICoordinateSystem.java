@@ -21,7 +21,7 @@ package org.eclipse.dawnsci.plotting.api.axis;
  * (because the ROIs are in the image coordinates by default). So the image indices
  * can then be converted to whatever custom axis labels are set.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ICoordinateSystem {

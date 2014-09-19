@@ -12,7 +12,7 @@ import org.eclipse.jface.action.IAction;
 
 /**
  * An action for creating a region
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IRegionAction extends IAction {

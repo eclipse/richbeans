@@ -44,7 +44,7 @@ import org.eclipse.ui.part.IPageBookViewPage;
  * 
  *
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IToolPage extends IPageBookViewPage, IAdaptable {

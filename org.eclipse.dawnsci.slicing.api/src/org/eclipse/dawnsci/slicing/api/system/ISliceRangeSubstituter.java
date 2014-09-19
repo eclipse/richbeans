@@ -13,7 +13,7 @@ package org.eclipse.dawnsci.slicing.api.system;
  * like ${x} where x equals the string "all" or "700:710" or
  * 10;100;1 for instance, the substituer replaces the value.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ISliceRangeSubstituter {

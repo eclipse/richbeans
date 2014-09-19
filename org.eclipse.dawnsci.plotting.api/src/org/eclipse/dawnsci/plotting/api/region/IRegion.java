@@ -21,7 +21,7 @@ import org.eclipse.swt.graphics.Color;
 /**
  * A selection region must conform to this interface. You can set its position, colour and transparency settings.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  */
 public interface IRegion {
 	
@@ -187,7 +187,7 @@ public interface IRegion {
 
 	/**
 	 * Class packages types of regions, their default names, colours and indices.
-	 * @author fcp94556
+	 * @author Matthew Gerring
 	 * 
 	 * Used to be:
 	 * 

@@ -20,7 +20,7 @@ import org.eclipse.swt.graphics.PaletteData;
  * represents a magnitude and angle (anti-clockwise from 12 O'Clock) in radians 
  * for the vector arrow.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IVectorTrace extends ITrace {

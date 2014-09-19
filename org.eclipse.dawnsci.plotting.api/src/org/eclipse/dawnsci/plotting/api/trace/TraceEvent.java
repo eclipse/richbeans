@@ -14,7 +14,7 @@ import java.util.EventObject;
  * Note the source to this event can either be the ITrace
  * or the plotting system.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class TraceEvent extends EventObject {

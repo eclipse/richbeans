@@ -13,7 +13,7 @@ package org.eclipse.dawnsci.plotting.api.region;
  * 
  * For instance children of a selection region and/or the selection region itself may be.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IRegionContainer {

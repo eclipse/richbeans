@@ -14,7 +14,7 @@ import org.eclipse.dawnsci.analysis.api.io.SliceObject;
 /**
  * This interface marks a workbench part as being able to display a gallery
  * from a currently configured slice.
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface ISliceGallery {

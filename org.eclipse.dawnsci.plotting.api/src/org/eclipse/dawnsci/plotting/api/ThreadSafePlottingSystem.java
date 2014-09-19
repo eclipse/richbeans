@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Will be a thread safe version of all the plotting system methods.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class ThreadSafePlottingSystem extends StandardMBean implements IPlottingSystem, NotificationBroadcaster {

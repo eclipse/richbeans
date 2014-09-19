@@ -13,7 +13,7 @@ import ncsa.hdf.object.FileFormat;
 /**
  * Internal use only.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IFileFormatDataFile extends IHierarchicalDataFile {

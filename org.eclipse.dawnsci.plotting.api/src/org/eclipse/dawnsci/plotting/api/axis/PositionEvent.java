@@ -15,7 +15,7 @@ import java.util.EventObject;
  * Event fired for notifying position of the mouse
  * in data coordinates.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class PositionEvent extends EventObject {

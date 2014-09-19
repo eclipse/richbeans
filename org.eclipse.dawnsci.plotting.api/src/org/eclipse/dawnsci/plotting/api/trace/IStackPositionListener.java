@@ -12,7 +12,7 @@ import java.util.EventListener;
 
 /**
  * Interface used to notify of the stack position changing.
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IStackPositionListener extends EventListener {

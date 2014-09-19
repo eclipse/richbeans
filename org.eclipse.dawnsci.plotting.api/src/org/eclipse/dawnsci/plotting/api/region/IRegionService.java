@@ -16,7 +16,7 @@ import org.eclipse.dawnsci.plotting.api.region.IRegion.RegionType;
  * Service for managing IROI (data region) and IRegion
  * object for managing user interface
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public interface IRegionService {
