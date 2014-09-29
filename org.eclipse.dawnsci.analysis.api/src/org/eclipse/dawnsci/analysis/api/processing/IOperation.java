@@ -108,6 +108,35 @@ public interface IOperation<M extends IOperationModel, D extends OperationData> 
 	 * @return rank of output data which we return. For instance for integration we input 2(image) and output 1(integration)
 	 */
 	public OperationRank getOutputRank();
+	
+	/**
+	 * Set whether the output of this operation should be stored, for example, as intermediate data in an output file
+	 * 
+	 * @param storeOutput
+	 */
+	public void setStoreOutput(boolean storeOutput);
+	
+	/**
+	 * Checks whether this operation has been flagged to have its output stored
+	 * 
+	 * @return storeOutput
+	 */
+	public boolean isStoreOutput();
+	
+	/**
+	 * Sets whether to pass the processed or unprocessed (input) data into the next operation. This value is just a flag for the pipeline running the operation,
+	 * operations implementing this interface should always return the processed OperationData.
+	 * 
+	 * For example, if set to true, the input to this operation is sent to the next operation in the series,
+	 * if false, the output of this operation is passed as the input to the next operation.
+	 * 
+	 * @param passUnmodifiedData
+	 */
+	public void setPassUnmodifiedData(boolean passUnmodifiedData);
 
-
+	/**
+	 * Checks whether the processed or unprocessed data should be passed down the pipe
+	 * @return passUnmodifiedData
+	 */
+	public boolean isPassUnmodifiedData();
 }

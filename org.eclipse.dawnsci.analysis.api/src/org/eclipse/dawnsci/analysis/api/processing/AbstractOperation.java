@@ -27,6 +27,9 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 
 	private String name;
 	private String description;
+	
+	private boolean storeOutput = false;
+	private boolean passUnmodifiedData = false;
 
 	@Override
 	public String getName() {
@@ -175,5 +178,25 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void setStoreOutput(boolean storeOutput) {
+		this.storeOutput = storeOutput;
+	}
+	
+	@Override
+	public boolean isStoreOutput() {
+		return storeOutput;
+	}
+	
+	@Override
+	public void setPassUnmodifiedData(boolean passUnmodifiedData) {
+		this.passUnmodifiedData = passUnmodifiedData;
+	}
+
+	@Override
+	public boolean isPassUnmodifiedData() {
+		return passUnmodifiedData;
 	}
 }

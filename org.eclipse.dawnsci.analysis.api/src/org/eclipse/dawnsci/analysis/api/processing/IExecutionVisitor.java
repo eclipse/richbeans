@@ -22,8 +22,19 @@ import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
  */
 public interface IExecutionVisitor {
 	
+	/**
+	 * Initialise the execution visitor with the series of operation that are going to be run
+	 * 
+	 * @param series
+	 * @throws Exception
+	 */
 	public void init(IOperation<? extends IOperationModel, ? extends OperationData>[] series) throws Exception;
 	
+	/**
+	 * Tell the execution visitor to close, releasing its resources
+	 * 
+	 * @throws Exception
+	 */
 	public void close() throws Exception;
 	
     /**
@@ -43,54 +54,26 @@ public interface IExecutionVisitor {
 	 */
 	public void executed(OperationData result, IMonitor monitor, Slice[] slices, int[] shape, int[] dataDims) throws Exception;
 	
-	/**
-	 * List of operations for which should not modify the data passing though the pipe
-	 * @param operations
-	 */
-	public void passDataThroughUnmodified(IOperation<? extends IOperationModel, ? extends OperationData>... operations);
-	
-	/**
-	 * check if operation should modify the data passing though the pipe
-	 * @param operation
-	 */
-	public boolean isRequiredToModifyData(IOperation<? extends IOperationModel, ? extends OperationData> operation);
-	
 	
 	public class Stub implements IExecutionVisitor {
 
 		@Override
 		public void executed(OperationData result, IMonitor monitor, Slice[] slices, int[] shape, int[] dataDims) throws Exception {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void notify(IOperation<? extends IOperationModel, ? extends OperationData> intermeadiateData, OperationData data, Slice[] slices, int[] shape, int[] dataDims) {
-			// TODO Auto-generated method stub
 			
-		}
-
-		@Override
-		public void passDataThroughUnmodified(IOperation<? extends IOperationModel, ? extends OperationData>... operations) {
-			// TODO Auto-generated method stub
-			
-		}
-
-		@Override
-		public boolean isRequiredToModifyData(IOperation<? extends IOperationModel, ? extends OperationData> operation) {
-			// TODO Auto-generated method stub
-			return true;
 		}
 
 		@Override
 		public void init(IOperation<? extends IOperationModel, ? extends OperationData>[] series) {
-			// TODO Auto-generated method stub
 			
 		}
 
 		@Override
 		public void close() throws Exception {
-			// TODO Auto-generated method stub
 			
 		}
 		
