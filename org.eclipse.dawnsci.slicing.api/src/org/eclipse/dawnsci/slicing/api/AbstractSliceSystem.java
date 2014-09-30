@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.io.SliceObject;
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 import org.eclipse.dawnsci.doe.DOEUtils;
@@ -542,4 +543,14 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 		this.sliceMetadata = sliceMeta;
 	}
 
+	private IDataset slice;
+
+	public IDataset getSlice() {
+		return slice;
+	}
+
+	public void setSlice(IDataset slice) {
+		this.slice = slice;
+	}
+	
 }

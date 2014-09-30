@@ -10,6 +10,7 @@ package org.eclipse.dawnsci.slicing.api.system;
 
 import java.util.Map;
 
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.io.SliceObject;
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
@@ -318,4 +319,15 @@ public interface ISliceSystem {
 	 */
 	public ISelectionProvider getSelectionProvider();
 	
+	/**
+	 * Current slice
+	 * @return
+	 */
+	public IDataset getSlice();
+	
+	/**
+	 * 
+	 * @param slice
+	 */
+	public void setSlice(IDataset slice);
 }
