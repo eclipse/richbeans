@@ -8,7 +8,6 @@
  */ 
 package org.eclipse.dawnsci.slicing.api.editor;
 
-import org.eclipse.dawnsci.plotting.api.IPlottingContainer;
 import org.eclipse.dawnsci.slicing.api.data.ITransferableDataObject;
 import org.eclipse.dawnsci.slicing.api.system.ISliceSystem;
 import org.eclipse.ui.IWorkbenchPart;
@@ -19,7 +18,7 @@ import org.eclipse.ui.IWorkbenchPart;
  * @author Matthew Gerring
  *
  */
-public interface ISlicablePlottingPart extends IWorkbenchPart, IPlottingContainer {
+public interface ISlicablePlottingPart extends IWorkbenchPart {
 
 	/**
 	 * Update the plot with checkables selected by the user.
