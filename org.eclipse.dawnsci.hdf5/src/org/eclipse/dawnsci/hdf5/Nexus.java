@@ -19,5 +19,7 @@ public class Nexus {
 	public static final String MONITOR = "NXmonitor";
 	public static final String MONO    = "NXmonochromator";
 	public static final String SDS     = "SDS";
+	public static final String NOTE    = "NXnote";
+	public static final String PROCESS = "NXprocess";
 
 }
