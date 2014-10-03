@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.eclipse.dawnsci.analysis.dataset.roi;
+package org.eclipse.dawnsci.analysis.dataset.impl.function;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,13 +17,12 @@ import org.eclipse.dawnsci.analysis.dataset.impl.AbstractDataset;
 import org.eclipse.dawnsci.analysis.dataset.impl.Dataset;
 import org.eclipse.dawnsci.analysis.dataset.impl.DatasetFactory;
 import org.eclipse.dawnsci.analysis.dataset.impl.Maths;
-import org.eclipse.dawnsci.analysis.dataset.impl.function.DatasetToDatasetFunction;
 
 /**
  * Sample along line and return list of one 1D dataset
  * 
  * When mapping from image to data, the array value is assumed to be
- * associated with the centre of the pixel, i.e. pixel co-od - 0.5 = data co-ord.
+ * associated with the centre of the pixel, i.e. pixel co-ord - 0.5 = data co-ord.
  * 
  * This half pixel offset is handled in this class so does not need to be accounted for else where.
  *
