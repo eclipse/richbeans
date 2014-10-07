@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Diamond Light Source Ltd.
+ * Copyright (c) 2011 Diamond Light Source Ltd.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -1488,9 +1488,9 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	
 			stride = nstride;
 		}
-		this.shape = nshape;
 
-		reshapeMetadata(nshape);
+		reshapeMetadata(this.shape, nshape);
+		this.shape = nshape;
 
 		if (storedValues != null)
 			filterStoredValues(storedValues); // as it is dependent on shape
@@ -2186,7 +2186,8 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 
 	@Override
 	public Dataset squeeze(boolean onlyFromEnds) {
-		int[] tshape = squeezeShape(shape, onlyFromEnds);
+		final int[] tshape = squeezeShape(shape, onlyFromEnds);
+		final int[] oshape = shape;
 		if (stride == null) {
 			shape = tshape;
 		} else {
@@ -2216,7 +2217,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 			}
 		}
 
-		reshapeMetadata(shape);
+		reshapeMetadata(oshape, shape);
 		return this;
 	}
 

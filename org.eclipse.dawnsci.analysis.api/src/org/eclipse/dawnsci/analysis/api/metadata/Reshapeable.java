@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Diamond Light Source Ltd.
+ * Copyright (c) 2014 Diamond Light Source Ltd.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -15,7 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This is an annotation for any field that can be reshaped. These include lazy datasets,
+ * This is an annotation for any field that can be reshaped or squeezed. These include lazy datasets,
  * arrays and lists of lazy datasets, and maps where the values are lazy datasets.
  */
 @Retention(RetentionPolicy.RUNTIME)

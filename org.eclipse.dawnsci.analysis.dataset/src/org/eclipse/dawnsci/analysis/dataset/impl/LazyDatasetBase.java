@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Diamond Light Source Ltd.
+ * Copyright (c) 2014 Diamond Light Source Ltd.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -298,10 +298,110 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	}
 
 	class MdsReshape implements MetadatasetAnnotationOperation {
+		private int[] oldShape;
 		private int[] newShape;
+		boolean onesOnly;
+		int[] differences;
 
-		public MdsReshape(int[] newShape) {
+		/*
+		 * if only ones then record differences (insertions and deletions)
+		 * 
+		 * if shape changing, find broadcasted dimensions and disallow
+		 * merging that include those dimensions
+		 */
+		public MdsReshape(final int[] oldShape, final int[] newShape) {
+			this.oldShape = oldShape;
 			this.newShape = newShape;
+			differences = null;
+		}
+
+		private void init() {
+			// TODO cope with zero-ranked shapes
+			int or = oldShape.length - 1;
+			int nr = newShape.length - 1;
+			int ob = 0;
+			int nb = 0;
+			onesOnly = true;
+			do {
+				while (oldShape[ob] == 1 && ob < or) {
+					ob++; // next non-unit dimension
+				}
+				while (newShape[nb] == 1 && nb < nr) {
+					nb++;
+				}
+				if (oldShape[ob++] != newShape[nb++]) {
+					onesOnly = false;
+					break;
+				}
+			} while (ob <= or && nb <= nr);
+
+			ob = 0;
+			nb = 0;
+			differences = new int[or + 1];
+			if (onesOnly) {
+				// work out unit dimensions removed from or add to old
+				int j = 0;
+				do {
+					while (oldShape[ob] == 1 && ob < or) {
+						ob++;
+						differences[j]--;
+					}
+					while (newShape[nb] == 1 && nb < nr) {
+						nb++;
+						differences[j]++;
+					}
+					j++;
+					ob++;
+					nb++;
+				} while (ob <= or && nb <= nr);
+			} else {
+				// work out mapping: contiguous dimensions can be grouped or split
+				while (ob <= or && nb <= nr) {
+					int ol = oldShape[ob];
+					while (ol == 1 && ol <= or) {
+						ob++;
+						ol = oldShape[ob];
+					}
+					int oe = ob + 1;
+					int nl = newShape[nb];
+					while (nl == 1 && nl <= nr) {
+						nb++;
+						nl = newShape[nb];
+					}
+					int ne = nb + 1;
+					if (ol < nl) {
+						differences[ob] = 1;
+						do { // case where new shape combines several dimensions into one dimension
+							if (oe == (or + 1)) {
+								break;
+							}
+							differences[oe] = 1;
+							ol *= oldShape[oe++];
+						} while (ol < nl);
+						differences[oe - 1] = oe - ob; // signal end with difference
+						if (nl != ol) {
+							logger.error("Single dimension is incompatible with subshape");
+							throw new IllegalArgumentException("Single dimension is incompatible with subshape");
+						}
+					} else if (ol > nl) {
+						do { // case where new shape spreads single dimension over several dimensions
+							if (ne == (nr + 1)) {
+								break;
+							}
+							nl *= newShape[ne++];
+						} while (nl < ol);
+						if (nl != ol) {
+							logger.error("Subshape is incompatible with single dimension");
+							throw new IllegalArgumentException("Subshape is incompatible with single dimension");
+						}
+
+					}
+
+					ob = oe;
+					nb = ne;
+				}
+
+			}
 		}
 
 		@Override
@@ -311,7 +411,54 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 
 		@Override
 		public ILazyDataset run(ILazyDataset lz) {
-			lz.setShape(newShape);
+			if (differences == null)
+				init();
+
+			int or = lz.getRank();
+			int[] lshape = lz.getShape();
+			int nr = newShape.length;
+			int[] nshape = new int[nr];
+			if (onesOnly) {
+				// ignore omit removed dimensions
+				int i = 0;
+				int nb = 0;
+				for (int ob = 0; ob < or; ob++) {
+					int d = differences[i++];
+					if (d < 0) {
+						ob -= d;
+					} else if (d > 0) {
+						for (; d >= 0; d--) {
+							nshape[nb++] = 1;
+						}
+					}
+					nshape[nb++] = lshape[ob];
+				}
+			} else {
+				boolean[] broadcast = new boolean[or];
+				for (int ob = 0; ob < or; ob++) {
+					broadcast[ob] = oldShape[ob] != 1 && lshape[ob] == 1;
+				}
+				int osize = lz.getSize();
+
+				// cannot do 3x5x... to 15x... if metadata is broadcasting (i.e. 1x5x...)
+				int ob = 0;
+				int nsize = 1;
+				for (int i = 0; i < nr; i++) {
+					if (ob < or && broadcast[ob]) {
+						if (differences[ob] != 0) {
+							logger.error("Metadata contains a broadcast axis which cannot be reshaped");
+							throw new IllegalArgumentException("Metadata contains a broadcast axis which cannot be reshaped");
+						}
+						nshape[i] = 1;
+					} else {
+						nshape[i] = nsize < osize ? newShape[i] : 1;
+					}
+					nsize *= nshape[i];
+					ob++;
+				}
+			}
+
+			lz.setShape(nshape);
 			return lz;
 		}
 	}
@@ -326,7 +473,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	 * @param oShape
 	 */
 	protected void sliceMetadata(boolean asView, final int[] start, final int[] stop, final int[] step, final int[] oShape) {
-		processAnnotatedMetadata(new MdsSlice(asView, start, stop, step, oShape));
+		processAnnotatedMetadata(new MdsSlice(asView, start, stop, step, oShape), true);
 	}
 
 	/**
@@ -335,12 +482,12 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	 * 
 	 * @param newShape
 	 */
-	protected void reshapeMetadata(final int[] newShape) {
-		processAnnotatedMetadata(new MdsReshape(newShape));
+	protected void reshapeMetadata(final int[] oldShape, final int[] newShape) {
+		processAnnotatedMetadata(new MdsReshape(oldShape, newShape), true);
 	}
 
 	@SuppressWarnings("unchecked")
-	private void processAnnotatedMetadata(MetadatasetAnnotationOperation op) {
+	private void processAnnotatedMetadata(MetadatasetAnnotationOperation op, boolean throwException) {
 		if (metadata == null)
 			return;
 
@@ -348,7 +495,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 			for (MetadataType m : metadata.get(c)) {
 				Class<? extends MetadataType> mc = m.getClass();
 				do { // iterate over super-classes
-					processClass(op, m, mc);
+					processClass(op, m, mc, throwException);
 					Class<?> sclazz = mc.getSuperclass();
 					if (!MetadataType.class.isAssignableFrom(sclazz))
 						break;
@@ -358,7 +505,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		}
 	}
 
-	private static void processClass(MetadatasetAnnotationOperation op, MetadataType m, Class<? extends MetadataType> mc) {
+	private static void processClass(MetadatasetAnnotationOperation op, MetadataType m, Class<? extends MetadataType> mc, boolean throwException) {
 		for (Field f : mc.getDeclaredFields()) {
 			if (!f.isAnnotationPresent(op.getAnnClass()))
 				continue;
@@ -385,6 +532,8 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 				}
 			} catch (Exception e) {
 				logger.error("Problem occurred when processing metadata of class {}: {}", mc.getCanonicalName(), e);
+				if (throwException)
+					throw new RuntimeException(e);
 			}
 		}
 	}

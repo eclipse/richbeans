@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 Diamond Light Source Ltd.
+ * Copyright (c) 2011 Diamond Light Source Ltd.
  *
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -174,8 +174,8 @@ public class LazyDataset extends LazyDatasetBase implements Cloneable, Serializa
 			}
 		}
 		nOffset = off;
+		reshapeMetadata(this.shape, shape);
 		this.shape = shape.clone();
-		reshapeMetadata(shape);
 	}
 
 	@Override
