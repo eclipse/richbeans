@@ -21,7 +21,7 @@ import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 public interface IImageStitchingProcess {
 
 	/**
-	 * Stitches a list of images with a default matrix size
+	 * Stitches a list of images with a default matrix size and angle
 	 * 
 	 * @param input
 	 * @return output stitched image
@@ -32,9 +32,12 @@ public interface IImageStitchingProcess {
 	 * Stitches a list of images
 	 * 
 	 * @param input
-	 * @param matrixSize
+	 * @param rows
+	 * @param columns
+	 * @param angle
+	 *            rotation in degree
 	 * @return output stitched image
 	 */
-	public IDataset stitch(List<IDataset> input, int matrixSize);
+	public IDataset stitch(List<IDataset> input, int rows, int columns, double angle);
 
 }
