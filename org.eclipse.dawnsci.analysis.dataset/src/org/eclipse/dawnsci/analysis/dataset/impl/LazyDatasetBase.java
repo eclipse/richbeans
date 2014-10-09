@@ -379,23 +379,34 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 
 			ob = 0;
 			nb = 0;
-			differences = new int[or + 1];
+			differences = new int[or + 2];
 			if (onesOnly) {
 				// work out unit dimensions removed from or add to old
 				int j = 0;
 				do {
-					while (oldShape[ob] == 1 && ob < or) {
+					if (oldShape[ob] != 1 && newShape[nb] != 1) {
 						ob++;
-						differences[j]--;
-					}
-					while (newShape[nb] == 1 && nb < nr) {
 						nb++;
-						differences[j]++;
+					} else {
+						while (oldShape[ob] == 1 && ob < or) {
+							ob++;
+							differences[j]--;
+						}
+						while (newShape[nb] == 1 && nb < nr) {
+							nb++;
+							differences[j]++;
+						}
 					}
 					j++;
-					ob++;
-					nb++;
 				} while (ob <= or && nb <= nr);
+				while (ob <= or && oldShape[ob] == 1) {
+					ob++;
+					differences[j]--;
+				}
+				while (nb <= nr && newShape[nb] == 1) {
+					nb++;
+					differences[j]++;
+				}
 			} else {
 				if (matchRank) {
 					logger.error("Combining dimensions is currently not supported");
@@ -461,12 +472,14 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 			int[] nshape = new int[nr];
 			if (onesOnly) {
 				// ignore omit removed dimensions
-				for (int i = 0, si = 0, di = 0; i < or && si < or; i++) {
+				for (int i = 0, si = 0, di = 0; i < (or+1) && si <= or && di < nr; i++) {
 					int c = differences[i];
 					if (c == 0) {
 						nshape[di++] = lshape[si++];
 					} else if (c > 0) {
-						di += c; // add nulls by skipping forward in destination array
+						while (c >= 0 && di < nr) {
+							nshape[di++] = 1;
+						}
 					} else if (c < 0) {
 						si -= c; // remove dimensions by skipping forward in source array
 					}
@@ -565,9 +578,9 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 						continue;
 
 					int n = 0;
-					for (int i = 0; i < l; i++) {
+					for (int i = 0; i < (l+1); i++) {
 						n += op.change(i);
-						if (r == null)
+						if (r == null && i < l)
 							r = Array.get(o, i);
 					}
 					if (r == null)
@@ -637,6 +650,9 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static Object processObject(MetadatasetAnnotationOperation op, Object o) {
+		if (o == null)
+			return o;
+
 		if (o instanceof ILazyDataset) {
 			return op.run((ILazyDataset) o);
 		} else if (o.getClass().isArray()) {
