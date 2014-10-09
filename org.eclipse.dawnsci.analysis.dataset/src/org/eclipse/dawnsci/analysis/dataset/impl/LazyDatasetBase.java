@@ -461,18 +461,15 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 			int[] nshape = new int[nr];
 			if (onesOnly) {
 				// ignore omit removed dimensions
-				int i = 0;
-				int nb = 0;
-				for (int ob = 0; ob < or; ob++) {
-					int d = differences[i++];
-					if (d < 0) {
-						ob -= d;
-					} else if (d > 0) {
-						for (; d >= 0; d--) {
-							nshape[nb++] = 1;
-						}
+				for (int i = 0, si = 0, di = 0; i < or && si < or; i++) {
+					int c = differences[i];
+					if (c == 0) {
+						nshape[di++] = lshape[si++];
+					} else if (c > 0) {
+						di += c; // add nulls by skipping forward in destination array
+					} else if (c < 0) {
+						si -= c; // remove dimensions by skipping forward in source array
 					}
-					nshape[nb++] = lshape[ob];
 				}
 			} else {
 				boolean[] broadcast = new boolean[or];
@@ -577,7 +574,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 						continue;
 
 					Object narray = Array.newInstance(r.getClass(), l + n);
-					for (int i = 0, si = 0, di = 0; i < l; i++) {
+					for (int i = 0, si = 0, di = 0; i < l && si < l; i++) {
 						int c = op.change(i);
 						if (c == 0) {
 							Array.set(narray, di++, processObject(op, Array.get(o, si++)));
@@ -610,7 +607,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 						continue;
 
 					Object narray = Array.newInstance(r.getClass(), l + n);
-					for (int i = 0, si = 0, di = 0; i < l; i++) {
+					for (int i = 0, si = 0, di = 0; i < l && si < l; i++) {
 						int c = op.change(i);
 						if (c == 0) {
 							Array.set(narray, di++, processObject(op, list.get(si++)));
