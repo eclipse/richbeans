@@ -15,7 +15,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This is an annotation for any field that can be sliced. These include lazy datasets,
+ * This is an annotation for any metadata field that should be sliced. These include lazy datasets,
  * arrays and lists of lazy datasets, and maps where the values are lazy datasets.
  */
 @Retention(RetentionPolicy.RUNTIME)

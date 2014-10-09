@@ -15,10 +15,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This is an annotation for any field that can be reshaped or squeezed. These include lazy datasets,
- * arrays and lists of lazy datasets, and maps where the values are lazy datasets.
+ * This is an annotation for any metadata field that should be reshaped or squeezed. These include
+ * lazy datasets, arrays and lists of lazy datasets, and maps where the values are lazy datasets.
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(value = ElementType.FIELD)
 public @interface Reshapeable {
+	/**
+	 * @return true if size of top-level array or list should match rank of dataset
+	 */
+	boolean matchRank() default false;
 }

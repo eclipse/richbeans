@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -239,7 +238,13 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	}
 
 	interface MetadatasetAnnotationOperation {
+		void processField(Field f);
 		Class<? extends Annotation> getAnnClass();
+		/**
+		 * @param axis
+		 * @return number of dimensions to insert or remove
+		 */
+		int change(int axis);
 		ILazyDataset run(ILazyDataset lz);
 	}
 
@@ -259,8 +264,17 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		}
 
 		@Override
+		public void processField(Field field) {
+		}
+
+		@Override
 		public Class<? extends Annotation> getAnnClass() {
 			return Sliceable.class;
+		}
+
+		@Override
+		public int change(int axis) {
+			return 0;
 		}
 
 		@Override
@@ -298,6 +312,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	}
 
 	class MdsReshape implements MetadatasetAnnotationOperation {
+		private boolean matchRank;
 		private int[] oldShape;
 		private int[] newShape;
 		boolean onesOnly;
@@ -313,6 +328,33 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 			this.oldShape = oldShape;
 			this.newShape = newShape;
 			differences = null;
+		}
+
+		@Override
+		public void processField(Field field) {
+			Annotation a = field.getAnnotation(getAnnClass());
+			if (a instanceof Reshapeable) {
+				matchRank = ((Reshapeable) a).matchRank();
+			}
+		}
+
+		@Override
+		public Class<? extends Annotation> getAnnClass() {
+			return Reshapeable.class;
+		}	
+
+		@Override
+		public int change(int axis) {
+			if (matchRank) {
+				if (differences == null)
+					init();
+
+				if (onesOnly) {
+					return differences[axis];
+				}
+				throw new UnsupportedOperationException("TODO support other shape operations");
+			}
+			return 0;
 		}
 
 		private void init() {
@@ -355,6 +397,10 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 					nb++;
 				} while (ob <= or && nb <= nr);
 			} else {
+				if (matchRank) {
+					logger.error("Combining dimensions is currently not supported");
+					throw new IllegalArgumentException("Combining dimensions is currently not supported");
+				}
 				// work out mapping: contiguous dimensions can be grouped or split
 				while (ob <= or && nb <= nr) {
 					int ol = oldShape[ob];
@@ -403,11 +449,6 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 
 			}
 		}
-
-		@Override
-		public Class<? extends Annotation> getAnnClass() {
-			return Reshapeable.class;
-		}	
 
 		@Override
 		public ILazyDataset run(ILazyDataset lz) {
@@ -505,6 +546,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		}
 	}
 
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	private static void processClass(MetadatasetAnnotationOperation op, MetadataType m, Class<? extends MetadataType> mc, boolean throwException) {
 		for (Field f : mc.getDeclaredFields()) {
 			if (!f.isAnnotationPresent(op.getAnnClass()))
@@ -516,19 +558,77 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 				if (o == null)
 					continue;
 
+				op.processField(f);
+				Object r = null;
 				if (o instanceof ILazyDataset) {
-					ILazyDataset l = op.run((ILazyDataset)o);
-					if (l != null) {
-						f.set(m, l);
-					}
+					f.set(m, op.run((ILazyDataset) o));
 				} else if (o.getClass().isArray()) {
-					processArray(op, o);
+					int l = Array.getLength(o);
+					if (l <= 0)
+						continue;
+
+					int n = 0;
+					for (int i = 0; i < l; i++) {
+						n += op.change(i);
+						if (r == null)
+							r = Array.get(o, i);
+					}
+					if (r == null)
+						continue;
+
+					Object narray = Array.newInstance(r.getClass(), l + n);
+					for (int i = 0, si = 0, di = 0; i < l; i++) {
+						int c = op.change(i);
+						if (c == 0) {
+							Array.set(narray, di++, processObject(op, Array.get(o, si++)));
+						} else if (c > 0) {
+							di += c; // add nulls by skipping forward in destination array
+						} else if (c < 0) {
+							si -= c; // remove dimensions by skipping forward in source array
+						}
+					}
+					if (n == 0) {
+						for (int i = 0; i < l; i++) {
+							Array.set(o, i, Array.get(narray, i));
+						}
+					} else {
+						f.set(m, narray);
+					}
 				} else if (o instanceof List<?>) {
-					List<?> list = (List<?>) o;
-					processList(op, list);
+					List list = (List) o;
+					int l = list.size();
+					if (l <= 0)
+						continue;
+
+					int n = 0;
+					for (int i = 0; i < l; i++) {
+						n += op.change(i);
+						if (r == null)
+							r = list.get(i);
+					}
+					if (r == null)
+						continue;
+
+					Object narray = Array.newInstance(r.getClass(), l + n);
+					for (int i = 0, si = 0, di = 0; i < l; i++) {
+						int c = op.change(i);
+						if (c == 0) {
+							Array.set(narray, di++, processObject(op, list.get(si++)));
+						} else if (c > 0) {
+							di += c; // add nulls by skipping forward in destination array
+						} else if (c < 0) {
+							si -= c; // remove dimensions by skipping forward in source array
+						}
+					}
+					list.clear();
+					for (int i = 0, imax = l + n; i < imax; i++) {
+						list.add(Array.get(narray, i));
+					}
 				} else if (o instanceof Map<?,?>) {
-					Map<?, ?> map = (Map<?, ?>) o;
-					processMap(op, map);
+					Map map = (Map) o;
+					for (Object k : map.keySet()) {
+						map.put(k, processObject(op, map.get(k)));
+					}
 				}
 			} catch (Exception e) {
 				logger.error("Problem occurred when processing metadata of class {}: {}", mc.getCanonicalName(), e);
@@ -537,136 +637,28 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 			}
 		}
 	}
-	
-	private static void processArray(MetadatasetAnnotationOperation op, Object o){
-		if (o == null)
-			return;
 
-		Object r = null;
-		int l = Array.getLength(o);
-		if (l > 0) {
-			int j = 0;
-			for (; j < l; j++) {
-				r = Array.get(o, j);
-				if (r != null)
-					break;
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private static Object processObject(MetadatasetAnnotationOperation op, Object o) {
+		if (o instanceof ILazyDataset) {
+			return op.run((ILazyDataset) o);
+		} else if (o.getClass().isArray()) {
+			int l = Array.getLength(o);
+			for (int i = 0; i < l; i++) {
+				Array.set(o, i, processObject(op, Array.get(o, i)));
 			}
-			if (r == null)
-				return;
-			
-			if (r instanceof ILazyDataset) {
-				for (int i = j; i < l; i++) {
-					ILazyDataset ld = (ILazyDataset) Array.get(o, i);
-					Array.set(o, i, op.run(ld));
-				}
-			} else if (r.getClass().isArray()) {
-				for (int i = j; i < l; i++) {
-					processArray(op, Array.get(o, i));
-				}
-			} else if (r instanceof List<?>) {
-				for (int i = j; i < l; i++) {
-					List<?> list = (List<?>) Array.get(o, i);
-					processList(op, list);
-				}
-			} else if (r instanceof Map<?,?>) {
-				for (int i = j; i < l; i++) {
-					Map<?, ?> map = (Map<?, ?>) Array.get(o, i);
-					processMap(op, map);
-				}
+		} else if (o instanceof List<?>) {
+			List list = (List) o;
+			for (int i = 0, imax = list.size(); i < imax; i++) {
+				list.set(i, processObject(op, list.get(i)));
+			}
+		} else if (o instanceof Map<?,?>) {
+			Map map = (Map) o;
+			for (Object k : map.keySet()) {
+				map.put(k, processObject(op, map.get(k)));
 			}
 		}
-	}
-	
-	private static void processList(MetadatasetAnnotationOperation op, List<?> list) {
-		if (list == null)
-			return;
-
-		Object r = null;
-		int l = list.size();
-		if (l > 0) {
-			int j = 0;
-			for (; j < l; j++) {
-				r = list.get(j);
-				if (r != null)
-					break;
-			}
-			if (r == null)
-				return;
-
-			if (r instanceof ILazyDataset) {
-				@SuppressWarnings("unchecked")
-				List<ILazyDataset> ldList = (List<ILazyDataset>) list;
-				for (int i = j; i < l; i++) {
-					ldList.set(i, op.run(ldList.get(i)));
-				}
-			}else if (r.getClass().isArray()) {
-				for (int i = j; i < l; i++) {
-					processArray(op, list.get(i));
-				}
-			} else if (r instanceof List<?>) {
-				for (int i = j; i < l; i++) {
-					List<?> l2 = (List<?>) list.get(i);
-					processList(op, l2);
-				}
-			} else if (r instanceof Map<?,?>) {
-				for (int i = j; i < l; i++) {
-					Map<?, ?> map = (Map<?, ?>) list.get(i);
-					processMap(op, map);
-				}
-			}
-		}
-	}
-	
-	private static void processMap(MetadatasetAnnotationOperation op, Map<?,?> map) {
-		if (map == null)
-			return;
-
-		Object r = null;
-		int l = map.size();
-		if (l > 0) {
-			Iterator<?> kit = map.keySet().iterator();
-			Object k = null;
-			while (r == null && kit.hasNext()) {
-				k = kit.next();
-				r = map.get(k);
-			}
-			if (r == null)
-				return;
-
-			if (r instanceof ILazyDataset) {
-				@SuppressWarnings("unchecked")
-				Map<Object, ILazyDataset> ldMap = (Map<Object, ILazyDataset>) map; 
-				ILazyDataset ld = (ILazyDataset) r;
-				ldMap.put(k, op.run(ld));
-				while (kit.hasNext()) {
-					k = kit.next();
-					ld = ldMap.get(k);
-					ldMap.put(k, op.run(ld));
-				}
-			} else if (r.getClass().isArray()) {
-				processArray(op, map.get(k));
-				while (kit.hasNext()) {
-					k = kit.next();
-					processArray(op, map.get(k));
-				}
-			} else if (r instanceof List<?>) {
-				List<?> list = (List<?>) r;
-				processList(op, list);
-				while (kit.hasNext()) {
-					k = kit.next();
-					list = (List<?>)map.get(k);
-					processList(op, list);
-				}
-			} else if (r instanceof Map<?,?>) {
-				Map<?, ?> m2 = (Map<?, ?>) r;
-				processMap(op, m2);
-				while (kit.hasNext()) {
-					k = kit.next();
-					m2 = (Map<?, ?>)map.get(k);
-					processMap(op, m2);
-				}
-			}
-		}
+		return o;
 	}
 
 	protected ILazyDataset createFromSerializable(Serializable blob, boolean keepLazy) {
