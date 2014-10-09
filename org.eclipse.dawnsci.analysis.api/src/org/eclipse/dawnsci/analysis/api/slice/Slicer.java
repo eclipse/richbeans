@@ -111,7 +111,7 @@ public class Slicer {
 			//TODO dont convert to slices just to create string - use create string on start stop step
 			String sliceName = Slice.createString(slice);
 			
-			IDataset data = lzView.getSlice(slice).squeeze();
+			IDataset data = lzView.getSlice(slice);
 			
 			data.setName((nameFragment!=null ? nameFragment : "") + " ("+ sliceName+")");
 			if (visitor!=null) {

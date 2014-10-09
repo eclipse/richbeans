@@ -31,4 +31,8 @@ public interface AxesMetadata extends MetadataType {
 	 * @return axis datasets, null represent default integer indexes, the order is in inverse importance.
 	 */
 	public ILazyDataset[] getAxis(int axisDim);
+	
+	public void setAxis(int axisDim, ILazyDataset[] axisData);
+	
+	public AxesMetadata createAxesMetadata(int rank);
 }
