@@ -492,7 +492,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 					if (c == 0) {
 						nshape[di++] = lshape[si++];
 					} else if (c > 0) {
-						while (c >= 0 && di < nr) {
+						while (c-- > 0 && di < nr) {
 							nshape[di++] = 1;
 						}
 					} else if (c < 0) {
