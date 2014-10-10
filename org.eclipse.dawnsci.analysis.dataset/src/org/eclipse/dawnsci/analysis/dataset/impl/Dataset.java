@@ -203,7 +203,7 @@ public interface Dataset extends IErrorDataset {
 	public Dataset squeeze();
 
 	@Override
-	public Dataset squeeze(boolean onlyFromEnd);
+	public Dataset squeeze(boolean onlyFromEnds);
 
 	@Override
 	public Dataset clone();

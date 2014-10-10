@@ -92,7 +92,7 @@ public interface IDataset extends ILazyDataset {
 	public IDataset squeeze();
 
 	@Override
-	public IDataset squeeze(boolean onlyFromEnd);
+	public IDataset squeeze(boolean onlyFromEnds);
 
 	/**
 	 * @param switches - Should be null, or one boolean. By default it is false, if the boolean is true, will ignore NaNs and ignore infinities. 

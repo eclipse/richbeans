@@ -82,11 +82,11 @@ public interface ILazyDataset extends Serializable, IMetadataProvider {
 	public ILazyDataset squeeze();
 
 	/**
-	 * Remove dimensions of 1 in shape of the dataset from end only if true
+	 * Remove dimensions of 1 in shape of the dataset from ends only if true
 	 * 
-	 * @param onlyFromEnd
+	 * @param onlyFromEnds
 	 */
-	public ILazyDataset squeeze(boolean onlyFromEnd);
+	public ILazyDataset squeeze(boolean onlyFromEnds);
 
 	/**
 	 * Get a slice of the dataset. The returned dataset is a copied selection of items
