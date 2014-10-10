@@ -245,6 +245,11 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		 * @return number of dimensions to insert or remove
 		 */
 		int change(int axis);
+		/**
+		 * 
+		 * @return rank or -1 to match
+		 */
+		int getNewRank();
 		ILazyDataset run(ILazyDataset lz);
 	}
 
@@ -275,6 +280,11 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		@Override
 		public int change(int axis) {
 			return 0;
+		}
+
+		@Override
+		public int getNewRank() {
+			return -1;
 		}
 
 		@Override
@@ -355,6 +365,11 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 				throw new UnsupportedOperationException("TODO support other shape operations");
 			}
 			return 0;
+		}
+
+		@Override
+		public int getNewRank() {
+			return matchRank ? newShape.length : -1;
 		}
 
 		private void init() {
@@ -577,16 +592,16 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 					if (l <= 0)
 						continue;
 
-					int n = 0;
-					for (int i = 0; i < (l+1); i++) {
-						n += op.change(i);
-						if (r == null && i < l)
-							r = Array.get(o, i);
+					for (int i = 0; r == null && i < l; i++) {
+						r = Array.get(o, i);
 					}
 					if (r == null)
 						continue;
 
-					Object narray = Array.newInstance(r.getClass(), l + n);
+					int n = op.getNewRank();
+					if (n < 0)
+						n = l;
+					Object narray = Array.newInstance(r.getClass(), n);
 					for (int i = 0, si = 0, di = 0; i < l && si < l; i++) {
 						int c = op.change(i);
 						if (c == 0) {
@@ -597,7 +612,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 							si -= c; // remove dimensions by skipping forward in source array
 						}
 					}
-					if (n == 0) {
+					if (n == l) {
 						for (int i = 0; i < l; i++) {
 							Array.set(o, i, Array.get(narray, i));
 						}
@@ -610,16 +625,16 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 					if (l <= 0)
 						continue;
 
-					int n = 0;
-					for (int i = 0; i < l; i++) {
-						n += op.change(i);
-						if (r == null)
-							r = list.get(i);
+					for (int i = 0; r == null && i < l; i++) {
+						r = list.get(i);
 					}
 					if (r == null)
 						continue;
 
-					Object narray = Array.newInstance(r.getClass(), l + n);
+					int n = op.getNewRank();
+					if (n < 0)
+						n = l;
+					Object narray = Array.newInstance(r.getClass(), n);
 					for (int i = 0, si = 0, di = 0; i < l && si < l; i++) {
 						int c = op.change(i);
 						if (c == 0) {
@@ -631,7 +646,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 						}
 					}
 					list.clear();
-					for (int i = 0, imax = l + n; i < imax; i++) {
+					for (int i = 0; i < n; i++) {
 						list.add(Array.get(narray, i));
 					}
 				} else if (o instanceof Map<?,?>) {
