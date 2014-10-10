@@ -289,7 +289,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		return am.getAxes();
 	}
 
-	public ILazyDataset getFirstMask(IDataset slice) {
+	public static ILazyDataset getFirstMask(IDataset slice) {
 
 		List<MaskMetadata> metaList = null;
 
@@ -302,6 +302,8 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		}
 
 		MaskMetadata mm = metaList.get(0);
+		if (mm == null)
+			return null;
 
 		return mm.getMask();
 	}

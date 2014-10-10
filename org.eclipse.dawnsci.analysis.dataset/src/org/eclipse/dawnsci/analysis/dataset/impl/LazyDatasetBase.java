@@ -559,6 +559,9 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 
 		for (Class<? extends MetadataType> c : metadata.keySet()) {
 			for (MetadataType m : metadata.get(c)) {
+				if (m == null)
+					continue;
+
 				Class<? extends MetadataType> mc = m.getClass();
 				do { // iterate over super-classes
 					processClass(op, m, mc, throwException);
