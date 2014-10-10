@@ -119,7 +119,7 @@ public interface IOperationService {
 	 * @param series
 	 * @throws OperationException
 	 */
-	public void executeSeries(IRichDataset dataset, IMonitor monitor, IExecutionVisitor visitor, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
+	public void executeSeries(ISliceConfiguration dataset, IMonitor monitor, IExecutionVisitor visitor, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
 	
 
 	/**
@@ -136,7 +136,7 @@ public interface IOperationService {
 	 * @param series
 	 * @throws OperationException
 	 */
-	public void executeParallelSeries(IRichDataset dataset, IMonitor monitor, IExecutionVisitor visitor, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
+	public void executeParallelSeries(ISliceConfiguration dataset, IMonitor monitor, IExecutionVisitor visitor, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
 
 	/**
 	 * Method to validate a pipeline, throwing an exception if the pipeline is not valid.

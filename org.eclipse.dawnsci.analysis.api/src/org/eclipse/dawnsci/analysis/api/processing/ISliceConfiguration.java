@@ -16,7 +16,7 @@ import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 /**
  * This class is a lazy dataset with the information required to slice it.
  */
-public interface IRichDataset {
+public interface ISliceConfiguration {
 
 	/**
 	 * 

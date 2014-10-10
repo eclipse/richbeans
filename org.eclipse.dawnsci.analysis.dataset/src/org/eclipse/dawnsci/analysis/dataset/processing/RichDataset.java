@@ -19,13 +19,13 @@ import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.MetadataType;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
-import org.eclipse.dawnsci.analysis.api.processing.IRichDataset;
+import org.eclipse.dawnsci.analysis.api.processing.ISliceConfiguration;
 import org.eclipse.dawnsci.analysis.api.roi.IROI;
 
 /**
  * A dataset which holds several bits of information to do with real data.
  */
-public class RichDataset extends RichDatasetBean implements IRichDataset, ILazyDataset {
+public class RichDataset extends RichDatasetBean implements ISliceConfiguration, ILazyDataset {
 
 	
 	public RichDataset(ILazyDataset data, List<IDataset> axes, ILazyDataset mask, IMetadata meta, List<IROI> rois) {
