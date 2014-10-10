@@ -14,19 +14,20 @@ import java.util.Map;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 
 /**
- * This dataset holds several bits of information about scientific data.
- * 
- * The class contains methods for getting/setting the data components and
- * operating on the rich dataset.
+ * This class is a lazy dataset with the information required to slice it.
  */
 public interface IRichDataset {
 
-	// TODO much of what rich dataset performed is now handled by the metadatatype classes,
-	// should probably remove it
-	
-	// Boiler plate getters and setters for data
+	/**
+	 * 
+	 * @return The data which we are slicing
+	 */
 	public ILazyDataset getData();
 
+	/**
+	 * 
+	 * @return A map of data dimension to String representing the slice done on this dimension. 
+	 */
 	public Map<Integer, String> getSlicing();
 
 }
