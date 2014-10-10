@@ -22,7 +22,7 @@ import org.eclipse.swt.widgets.Composite;
 
 public class SurfaceExample extends PlotExample {
 
-	public void createPartControl(Composite parent) {
+	public void createExampleContent(Composite parent) {
 		try {
 			// We create a basic plot
 			system.createPlotPart(parent, "Image Example", getViewSite().getActionBars(), PlotType.IMAGE, this);

@@ -11,9 +11,8 @@ package org.eclipse.dawnsci.plotting.examples;
 import org.eclipse.dawnsci.analysis.api.io.ILoaderService;
 import org.eclipse.dawnsci.plotting.api.IPlottingService;
 import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
-import org.eclipse.ui.part.ViewPart;
 
-public abstract class PlotExample extends ViewPart {
+public abstract class PlotExample extends SourceCodeView {
 
 	protected ILoaderService  service;
 	protected IPlottingSystem system;
@@ -33,6 +32,7 @@ public abstract class PlotExample extends ViewPart {
 	}
 	
 	protected abstract String getFileName();
+	
 
 	@Override
 	public void dispose() {

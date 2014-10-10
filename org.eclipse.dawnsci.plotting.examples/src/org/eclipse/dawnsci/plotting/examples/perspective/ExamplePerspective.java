@@ -24,16 +24,14 @@ public class ExamplePerspective implements IPerspectiveFactory {
 		addViewShortcuts(layout);
 		addPerspectiveShortcuts(layout);
 		{
-			IFolderLayout folderLayout = layout.createFolder("folder", IPageLayout.TOP, 0.5f, IPageLayout.ID_EDITOR_AREA);
-			folderLayout.addView("org.dawnsci.plotting.examples.imageExample");
-			folderLayout.addView("org.dawnsci.plotting.examples.sectorExample");
-		}
-		layout.addView("org.dawnsci.plotting.examples.surfaceExample", IPageLayout.RIGHT, 0.5f, "folder");
-		layout.addView("org.dawnsci.plotting.examples.barExample", IPageLayout.TOP, 0.35f, "org.dawnsci.plotting.examples.surfaceExample");
-		{
-			IFolderLayout folderLayout = layout.createFolder("folder_1", IPageLayout.TOP, 0.35f, "org.dawnsci.plotting.examples.sectorExample");
+			IFolderLayout folderLayout = layout.createFolder("folder", IPageLayout.LEFT, 0.5f, IPageLayout.ID_EDITOR_AREA);
 			folderLayout.addView("org.dawnsci.plotting.examples.xyExample");
 			folderLayout.addView("org.dawnsci.plotting.examples.axisExample");
+			folderLayout.addView("org.dawnsci.plotting.examples.axisExample");
+			folderLayout.addView("org.dawnsci.plotting.examples.barExample");
+			folderLayout.addView("org.dawnsci.plotting.examples.imageExample");
+			folderLayout.addView("org.dawnsci.plotting.examples.sectorExample");
+			folderLayout.addView("org.dawnsci.plotting.examples.surfaceExample");
 		}
 	}
 

@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.Composite;
 public class BarExample extends PlotExample {
 	
 	
-	public void createPartControl(Composite parent) {
+	public void createExampleContent(Composite parent) {
 		try {
 			// We create a basic plot
 			system.createPlotPart(parent, "Bar Example", getViewSite().getActionBars(), PlotType.XY, this);
