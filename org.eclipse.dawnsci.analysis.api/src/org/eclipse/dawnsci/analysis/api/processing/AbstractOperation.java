@@ -83,7 +83,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		int[] datadims = getOriginalDataDimensions(original).clone();
 		Arrays.sort(datadims);
 		
-		if (metadata != null && !metadata.isEmpty()) {
+		if (metadata != null && !metadata.isEmpty() && metadata.get(0) != null) {
 			
 			//update it all for new data;
 			try {
@@ -97,10 +97,10 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			AxesMetadata inMeta = metadata.get(0);
 			
 			AxesMetadata axOut = null;
-			if (metaout == null || !metaout.isEmpty()) axOut = metaout.get(0);
+			if (metaout != null && !metaout.isEmpty()) axOut = metaout.get(0);
 			
 			AxesMetadata corMeta  = null;
-			AxesMetadata cloneMeta = (AxesMetadata)inMeta.clone();
+			AxesMetadata cloneMeta = (AxesMetadata) inMeta.clone();
 			
 			if (getInputRank().getRank() == getOutputRank().getRank()) {
 				//axes will also be same rank
@@ -221,6 +221,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		
 	}
 	
+	@SuppressWarnings("unused")
 	protected D process(IDataset input, IMonitor monitor) throws OperationException {
 		return null;
 	}
@@ -273,7 +274,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		this.model = model;
 	}
 
-	public ILazyDataset[] getFirstAxes(IDataset slice) {
+	public static ILazyDataset[] getFirstAxes(IDataset slice) {
 		List<AxesMetadata> metaList = null;
 
 		try {
@@ -285,6 +286,8 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		}
 
 		AxesMetadata am = metaList.get(0);
+		if (am == null)
+			return null;
 
 		return am.getAxes();
 	}
@@ -308,7 +311,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		return mm.getMask();
 	}
 
-	public IDiffractionMetadata getFirstDiffractionMetadata(IDataset slice) {
+	public static IDiffractionMetadata getFirstDiffractionMetadata(IDataset slice) {
 
 		List<IMetadata> metaList;
 
@@ -327,7 +330,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		return null;
 	}
 
-	public int[] getOriginalDataDimensions(IDataset slice) {
+	public static int[] getOriginalDataDimensions(IDataset slice) {
 
 		List<OriginMetadata> metaList = null;
 
