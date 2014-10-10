@@ -166,7 +166,7 @@ public interface ILazyDataset extends Serializable, IMetadataProvider {
 	/**
 	 * Set metadata on the dataset
 	 * 
-	 * @param metadata
+	 * @param metadata (null is ignored so use clear(null) instead)
 	 */
 	public <T extends MetadataType> void setMetadata(T metadata);
 
