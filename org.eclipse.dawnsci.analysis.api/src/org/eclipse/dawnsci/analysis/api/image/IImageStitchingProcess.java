@@ -11,6 +11,7 @@ package org.eclipse.dawnsci.analysis.api.image;
 import java.util.List;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.roi.IROI;
 
 /**
  * This service can be called to process IDataset using BoofCV stitching algorithms
@@ -39,5 +40,19 @@ public interface IImageStitchingProcess {
 	 * @return output stitched image
 	 */
 	public IDataset stitch(List<IDataset> input, int rows, int columns, double angle);
+
+	/**
+	 * Crops a list of images given a ROI then stitches them together
+	 * 
+	 * @param input
+	 * @param rows
+	 * @param columns
+	 * @param angle
+	 *            rotation in degree
+	 * @param roi
+	 *            region for cropping
+	 * @return output stitched image
+	 */
+	public IDataset stitch(List<IDataset> input, int rows, int columns, double angle, IROI roi);
 
 }
