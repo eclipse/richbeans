@@ -36,4 +36,18 @@ public interface IImageTransform {
 	 * @return rotated image
 	 */
 	public IDataset rotate(IDataset data, double angle) throws Exception;
+
+	/**
+	 * Rotates a 2d dataset by n degrees
+	 * 
+	 * @param data
+	 *            dataset to be rotated
+	 * @param angle
+	 *            in degrees
+	 * @param keepShape
+	 *            if true, the resulting image will have the same shape as the original
+	 * @return rotated image
+	 */
+	public IDataset rotate(IDataset data, double angle, boolean keepShape) throws Exception;
+
 }
