@@ -373,9 +373,14 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		}
 
 		private void init() {
-			// TODO cope with zero-ranked shapes
 			int or = oldShape.length - 1;
 			int nr = newShape.length - 1;
+			if (or < 0 || nr < 0) { // zero-rank shapes
+				onesOnly = true;
+				differences = new int[1];
+				differences[0] = or < 0 ? nr + 1 : or + 1;
+				return;
+			}
 			int ob = 0;
 			int nb = 0;
 			onesOnly = true;
