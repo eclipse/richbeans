@@ -55,4 +55,21 @@ public interface IImageStitchingProcess {
 	 */
 	public IDataset stitch(List<IDataset> input, int rows, int columns, double angle, IROI roi);
 
+	/**
+	 * Stiches a list of images previously cropped with the given roi. Use the theoretical image position from the
+	 * metadata to stitch the images.
+	 * 
+	 * @param input
+	 * @param rows
+	 * @param columns
+	 * @param angle
+	 * @param roi
+	 *            roi used to crop the images
+	 * @param hasFeatureAssociation
+	 *            is True then feature association will be used to find the translation coordinates
+	 * @return output stitched image
+	 */
+	public IDataset stitch(List<IDataset> input, int rows, int columns, double angle, IROI roi,
+			boolean hasFeatureAssociation);
+
 }
