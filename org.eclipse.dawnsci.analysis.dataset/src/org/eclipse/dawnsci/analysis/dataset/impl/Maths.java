@@ -1293,10 +1293,40 @@ public class Maths {
 	/**
 	 * Create a dataset of the arguments from a complex dataset
 	 * @param a
+	 * @return dataset of angles in radians
+	 */
+	public static Dataset angle(final Object a) {
+		return angle(a, false, null);
+	}
+
+	/**
+	 * Create a dataset of the arguments from a complex dataset
+	 * @param a
+	 * @param inDegrees if true then return angles in degrees else in radians
+	 * @return dataset of angles
+	 */
+	public static Dataset angle(final Object a, final boolean inDegrees) {
+		return angle(a, inDegrees, null);
+	}
+
+	/**
+	 * Create a dataset of the arguments from a complex dataset
+	 * @param a
+	 * @param o output can be null - in which case, a new dataset is created
+	 * @return dataset of angles in radians
+	 */
+	public static Dataset angle(final Object a, final Dataset o) {
+		return angle(a, false, o);
+	}
+
+	/**
+	 * Create a dataset of the arguments from a complex dataset
+	 * @param a
+	 * @param inDegrees if true then return angles in degrees else in radians
 	 * @param o output can be null - in which case, a new dataset is created
 	 * @return dataset of angles
 	 */
-	public static Dataset angle(final Object a, final Dataset o) {
+	public static Dataset angle(final Object a, final boolean inDegrees, final Dataset o) {
 		final Dataset da = a instanceof Dataset ? (Dataset) a : DatasetFactory.createFromObject(a);
 
 		if (!da.isComplex()) {
@@ -1312,126 +1342,231 @@ public class Maths {
 		case Dataset.INT8:
 			final byte[] oi8data = ((ByteDataset) result).data;
 			it.setDoubleOutput(false);
-	
-			while (it.hasNext()) {
-				oi8data[it.oIndex] = (byte) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+
+			if (inDegrees) {
+				while (it.hasNext()) {
+					oi8data[it.oIndex] = (byte) toLong(Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble)));
+				}
+			} else {
+				while (it.hasNext()) {
+					oi8data[it.oIndex] = (byte) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+				}
 			}
 			break;
 		case Dataset.INT16:
 			final short[] oi16data = ((ShortDataset) result).data;
 			it.setDoubleOutput(false);
-	
-			while (it.hasNext()) {
-				oi16data[it.oIndex] = (short) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+
+			if (inDegrees) {
+				while (it.hasNext()) {
+					oi16data[it.oIndex] = (short) toLong(Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble)));
+				}
+			} else {
+				while (it.hasNext()) {
+					oi16data[it.oIndex] = (short) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+				}
 			}
 			break;
 		case Dataset.INT32:
 			final int[] oi32data = ((IntegerDataset) result).data;
 			it.setDoubleOutput(false);
-	
-			while (it.hasNext()) {
-				oi32data[it.oIndex] = (int) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+
+			if (inDegrees) {
+				while (it.hasNext()) {
+					oi32data[it.oIndex] = (int) toLong(Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble)));
+				}
+			} else {
+				while (it.hasNext()) {
+					oi32data[it.oIndex] = (int) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+				}
 			}
 			break;
 		case Dataset.INT64:
 			final long[] oi64data = ((LongDataset) result).data;
 			it.setDoubleOutput(false);
-	
-			while (it.hasNext()) {
-				oi64data[it.oIndex] = toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+
+			if (inDegrees) {
+				while (it.hasNext()) {
+					oi64data[it.oIndex] = toLong(Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble)));
+				}
+			} else {
+				while (it.hasNext()) {
+					oi64data[it.oIndex] = toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+				}
 			}
 			break;
 		case Dataset.ARRAYINT8:
 			final byte[] oai8data = ((CompoundByteDataset) result).data;
 			it.setDoubleOutput(false);
-	
-			while (it.hasNext()) {
-				final byte ox = (byte) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
-				for (int j = 0; j < is; j++) {
-					oai8data[it.oIndex + j] = ox;
+
+			if (inDegrees) {
+				while (it.hasNext()) {
+					final byte ox = (byte) toLong(Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble)));
+					for (int j = 0; j < is; j++) {
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					final byte ox = (byte) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+					for (int j = 0; j < is; j++) {
+						oai8data[it.oIndex + j] = ox;
+					}
 				}
 			}
 			break;
 		case Dataset.ARRAYINT16:
 			final short[] oai16data = ((CompoundShortDataset) result).data;
 			it.setDoubleOutput(false);
-	
-			while (it.hasNext()) {
-				final short ox = (short) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
-				for (int j = 0; j < is; j++) {
-					oai16data[it.oIndex + j] = ox;
+
+			if (inDegrees) {
+				while (it.hasNext()) {
+					final short ox = (short) toLong(Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble)));
+					for (int j = 0; j < is; j++) {
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					final short ox = (short) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+					for (int j = 0; j < is; j++) {
+						oai16data[it.oIndex + j] = ox;
+					}
 				}
 			}
 			break;
 		case Dataset.ARRAYINT32:
 			final int[] oai32data = ((CompoundIntegerDataset) result).data;
 			it.setDoubleOutput(false);
-	
-			while (it.hasNext()) {
-				final int ox = (int) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
-				for (int j = 0; j < is; j++) {
-					oai32data[it.oIndex + j] = ox;
+
+			if (inDegrees) {
+				while (it.hasNext()) {
+					final int ox = (int) toLong(Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble)));
+					for (int j = 0; j < is; j++) {
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					final int ox = (int) toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+					for (int j = 0; j < is; j++) {
+						oai32data[it.oIndex + j] = ox;
+					}
 				}
 			}
 			break;
 		case Dataset.ARRAYINT64:
 			final long[] oai64data = ((CompoundLongDataset) result).data;
 			it.setDoubleOutput(false);
-	
-			while (it.hasNext()) {
-				final long ox = toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
-				for (int j = 0; j < is; j++) {
-					oai64data[it.oIndex + j] = ox;
+
+			if (inDegrees) {
+				while (it.hasNext()) {
+					final long ox = toLong(Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble)));
+					for (int j = 0; j < is; j++) {
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					final long ox = toLong(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+					for (int j = 0; j < is; j++) {
+						oai64data[it.oIndex + j] = ox;
+					}
 				}
 			}
 			break;
 		case Dataset.FLOAT32:
 			final float[] of32data = ((FloatDataset) result).data;
 
-			while (it.hasNext()) {
-				of32data[it.oIndex] = (float) Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
+			if (inDegrees) {
+				while (it.hasNext()) {
+					of32data[it.oIndex] = (float) Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+				}
+			} else {
+				while (it.hasNext()) {
+					of32data[it.oIndex] = (float) Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
+				}
 			}
 			break;
 		case Dataset.FLOAT64:
 			final double[] of64data = ((DoubleDataset) result).data;
 
-			while (it.hasNext()) {
-				of64data[it.oIndex] = Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
+			if (inDegrees) {
+				while (it.hasNext()) {
+					of64data[it.oIndex] = Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+				}
+			} else {
+				while (it.hasNext()) {
+					of64data[it.oIndex] = Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
+				}
 			}
 			break;
 		case Dataset.ARRAYFLOAT32:
 			final float[] oaf32data = ((CompoundFloatDataset) result).data;
 
-			while (it.hasNext()) {
-				final float ox = (float) Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
-				for (int j = 0; j < is; j++) {
-					oaf32data[it.oIndex + j] = ox;
+			if (inDegrees) {
+				while (it.hasNext()) {
+					final float ox = (float) Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+					for (int j = 0; j < is; j++) {
+						oaf32data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					final float ox = (float) Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
+					for (int j = 0; j < is; j++) {
+						oaf32data[it.oIndex + j] = ox;
+					}
 				}
 			}
 			break;
 		case Dataset.ARRAYFLOAT64:
 			final double[] oaf64data = ((CompoundDoubleDataset) result).data;
-			while (it.hasNext()) {
-				final double ox = Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
-				for (int j = 0; j < is; j++) {
-					oaf64data[it.oIndex + j] = ox;
+
+			if (inDegrees) {
+				while (it.hasNext()) {
+					final double ox = Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+					for (int j = 0; j < is; j++) {
+						oaf64data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					final double ox = Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
+					for (int j = 0; j < is; j++) {
+						oaf64data[it.oIndex + j] = ox;
+					}
 				}
 			}
 			break;
 		case Dataset.COMPLEX64:
 			final float[] oc64data = ((ComplexFloatDataset) result).data;
 
-			while (it.hasNext()) {
-				oc64data[it.oIndex]      = (float) Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
-				oc64data[it.oIndex + 1]  = 0;
+			if (inDegrees) {
+				while (it.hasNext()) {
+					oc64data[it.oIndex]      = (float) Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+					oc64data[it.oIndex + 1]  = 0;
+				}
+			} else {
+				while (it.hasNext()) {
+					oc64data[it.oIndex]      = (float) Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
+					oc64data[it.oIndex + 1]  = 0;
+				}
 			}
 			break;
 		case Dataset.COMPLEX128:
 			final double[] oc128data = ((ComplexDoubleDataset) result).data;
 
-			while (it.hasNext()) {
-				oc128data[it.oIndex]     = Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
-				oc128data[it.oIndex + 1] = 0;
+			if (inDegrees) {
+				while (it.hasNext()) {
+					oc128data[it.oIndex]     = Math.toDegrees(Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble));
+					oc128data[it.oIndex + 1] = 0;
+				}
+			} else {
+				while (it.hasNext()) {
+					oc128data[it.oIndex]     = Math.atan2(da.getElementDoubleAbs(it.aIndex + 1), it.aDouble);
+					oc128data[it.oIndex + 1] = 0;
+				}
 			}
 			break;
 		default:
