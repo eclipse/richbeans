@@ -182,7 +182,7 @@ public class RGBDataset extends CompoundShortDataset implements Cloneable {
 	/**
 	 * Create a RGB dataset from a compound dataset (no normalisation performed)
 	 * @param a
-	 * @return RGB dataset
+	 * @return RGB dataset (grey if input dataset has less than 3 elements per item)
 	 */
 	public static RGBDataset createFromCompoundDataset(final CompoundDataset a) {
 		if (a instanceof RGBDataset)
@@ -204,12 +204,164 @@ public class RGBDataset extends CompoundShortDataset implements Cloneable {
 		return rgb;
 	}
 
+	/**
+	 * Create a RGB dataset from hue, saturation and value dataset
+	 * @param hue (in degrees from -360 to 360)
+	 * @param saturation (from 0 to 1), can be null to denote 1
+	 * @param value (from 0 to 1)
+	 * @return RGB dataset
+	 */
+	public static RGBDataset createFromHSV(final Dataset hue, final Dataset saturation, final Dataset value) {
+		if ((saturation != null && !hue.isCompatibleWith(saturation)) || !hue.isCompatibleWith(value)) {
+			throw new IllegalArgumentException("Hue, saturation and value datasets must have the same shape");
+		}
+
+		RGBDataset result = new RGBDataset(hue.getShapeRef());
+		IndexIterator it = result.getIterator(true);
+		int[] pos = it.getPos();
+		short[] rgb = new short[3];
+
+		if (saturation == null) {
+			while (it.hasNext()) {
+				convertHSVToRGB(hue.getDouble(pos), 1, value.getDouble(pos), rgb);
+				result.setAbs(it.index, rgb);
+			}
+		} else {
+			while (it.hasNext()) {
+				convertHSVToRGB(hue.getDouble(pos), saturation.getDouble(pos), value.getDouble(pos), rgb);
+				result.setAbs(it.index, rgb);
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * Create a RGB dataset from hue, saturation and lightness dataset
+	 * @param hue (in degrees from -360 to 360)
+	 * @param saturation (from 0 to 1), can be null to denote 1
+	 * @param lightness (from 0 to 1)
+	 * @return RGB dataset
+	 */
+	public static RGBDataset createFromHSL(final Dataset hue, final Dataset saturation, final Dataset lightness) {
+		if ((saturation != null && !hue.isCompatibleWith(saturation)) || !hue.isCompatibleWith(lightness)) {
+			throw new IllegalArgumentException("Hue, saturation and lightness datasets must have the same shape");
+		}
+
+		RGBDataset result = new RGBDataset(hue.getShapeRef());
+		IndexIterator it = result.getIterator(true);
+		int[] pos = it.getPos();
+		short[] rgb = new short[3];
+
+		if (saturation == null) {
+			while (it.hasNext()) {
+				convertHSLToRGB(hue.getDouble(pos), 1, lightness.getDouble(pos), rgb);
+				result.setAbs(it.index, rgb);
+			}
+		} else {
+			while (it.hasNext()) {
+				convertHSLToRGB(hue.getDouble(pos), saturation.getDouble(pos), lightness.getDouble(pos), rgb);
+				result.setAbs(it.index, rgb);
+			}
+		}
+
+		return result;
+	}
+
+	private static void convertHSVToRGB(double h, double s, double v, short[] rgb) {
+		double m = 256 * v;
+		double chroma = s * m;
+		m -= chroma;
+		double hprime = h / 60.;
+		if (hprime < 0) {
+			hprime += 6;
+		}
+		short sx = (short) (chroma * (1 - Math.abs((hprime % 2) - 1)) + m);
+		short sc = (short) (chroma + m);
+		short sm = (short) m;
+		
+		if (hprime < 1) {
+			rgb[0] = sc;
+			rgb[1] = sx;
+			rgb[2] = sm;
+		} else if (hprime < 2) {
+			rgb[0] = sx;
+			rgb[1] = sc;
+			rgb[2] = sm;
+		} else if (hprime < 3) {
+			rgb[0] = sm;
+			rgb[1] = sc;
+			rgb[2] = sx;
+		} else if (hprime < 4) {
+			rgb[0] = sm;
+			rgb[1] = sx;
+			rgb[2] = sc;
+		} else if (hprime < 5) {
+			rgb[0] = sx;
+			rgb[1] = sm;
+			rgb[2] = sc;
+		} else if (hprime < 6) {
+			rgb[0] = sc;
+			rgb[1] = sm;
+			rgb[2] = sx;
+		} else { // if hue is outside domain
+			rgb[0] = sm;
+			rgb[1] = sm;
+			rgb[2] = sm;
+		}
+	}
+
+	private static void convertHSLToRGB(double h, double s, double l, short[] rgb) {
+		double m = l;
+		double chroma = s * (1 - Math.abs(2 * m - 1));
+		m -= chroma * 0.5;
+		m *= 256;
+		chroma *= 256;
+		double hprime = h / 60.;
+		if (hprime < 0) {
+			hprime += 6;
+		}
+		short sx = (short) (chroma * (1 - Math.abs((hprime % 2) - 1)) + m);
+		short sc = (short) (chroma + m);
+		short sm = (short) m;
+		
+		if (hprime < 1) {
+			rgb[0] = sc;
+			rgb[1] = sx;
+			rgb[2] = sm;
+		} else if (hprime < 2) {
+			rgb[0] = sx;
+			rgb[1] = sc;
+			rgb[2] = sm;
+		} else if (hprime < 3) {
+			rgb[0] = sm;
+			rgb[1] = sc;
+			rgb[2] = sx;
+		} else if (hprime < 4) {
+			rgb[0] = sm;
+			rgb[1] = sx;
+			rgb[2] = sc;
+		} else if (hprime < 5) {
+			rgb[0] = sx;
+			rgb[1] = sm;
+			rgb[2] = sc;
+		} else if (hprime < 6) {
+			rgb[0] = sc;
+			rgb[1] = sm;
+			rgb[2] = sx;
+		} else { // if hue is outside domain
+			rgb[0] = sm;
+			rgb[1] = sm;
+			rgb[2] = sm;
+		}
+	}
+
 	@Override
 	public RGBDataset getSlice(final int[] start, final int[] stop, final int[] step) {
 		IndexIterator siter = getSliceIterator(start, stop, step);
 
 		RGBDataset result = new RGBDataset(siter.getShape());
-		short[] rdata = result.data; // PRIM_TYPE
+		short[] rdata = result.data;
 		IndexIterator riter = result.getIterator();
 
 		while (siter.hasNext() && riter.hasNext()) {
