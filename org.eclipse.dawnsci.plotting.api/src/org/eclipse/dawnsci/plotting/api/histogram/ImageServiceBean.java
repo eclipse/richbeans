@@ -165,7 +165,7 @@ public class ImageServiceBean {
 		return monitor;
 	}
 	/**
-	 * Default Color positive infinity with blue
+	 * Default colour for positive infinity with blue
 	 * @return
 	 */
 	public HistogramBound getMaximumCutBound() {
@@ -175,7 +175,7 @@ public class ImageServiceBean {
 		this.maximumCutBound = maximumBound;
 	}
 	/**
-	 * Default Color negative infinity with red
+	 * Default colour for negative infinity with red
 	 * @return
 	 */
 	public HistogramBound getMinimumCutBound() {
@@ -185,7 +185,7 @@ public class ImageServiceBean {
 		this.minimumCutBound = minimumBound;
 	}
 	/**
-	 * Default Color NaN with green
+	 * Default colour for NaN with green
 	 * @return
 	 */
 	public HistogramBound getNanBound() {
@@ -200,9 +200,6 @@ public class ImageServiceBean {
 	public void setHistogramType(HistoType histogramType) {
 		this.histogramType = histogramType;
 	}
-
-	
-
 
 	public int getDepth() {
 		return depth;
