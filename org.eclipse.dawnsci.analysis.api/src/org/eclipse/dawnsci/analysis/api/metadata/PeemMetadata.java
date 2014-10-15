@@ -18,7 +18,7 @@ public interface PeemMetadata extends MetadataType {
 
 	/**
 	 * 
-	 * @return X/y motor position 
+	 * @return X/y motor position in microns
 	 */
 	public double[] getXYMotorPosition();
 
@@ -41,7 +41,7 @@ public interface PeemMetadata extends MetadataType {
 	public double getRotation();
 
 	/**
-	 * Sets X/y motor position 
+	 * Sets X/y motor position in microns
 	 * @param xyMotorPosition
 	 */
 	void setXYMotorPosition(double[] xyMotorPosition);
