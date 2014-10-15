@@ -66,13 +66,16 @@ public interface IImageStitchingProcess {
 	 * @param angle
 	 *            rotation in degree
 	 * @param fieldOfView
+	 *            in microns
+	 * @param translations
+	 *            X/Y expected translations in microns (mainly used if no feature association)
 	 * @param roi
 	 *            roi used to crop the images
 	 * @param hasFeatureAssociation
 	 *            is True then feature association will be used to find the translation coordinates
 	 * @return output stitched image
 	 */
-	public IDataset stitch(List<IDataset> input, int rows, int columns, double angle, double fieldOfView, IROI roi,
+	public IDataset stitch(List<IDataset> input, int rows, int columns, double angle, double fieldOfView, double[] translations, IROI roi,
 			boolean hasFeatureAssociation);
 
 }
