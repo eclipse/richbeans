@@ -30,7 +30,7 @@ public interface PeemMetadata extends MetadataType {
 
 	/**
 	 * 
-	 * @return field of view value 
+	 * @return field of view value in microns
 	 */
 	public double getFieldOfView();
 
@@ -53,7 +53,7 @@ public interface PeemMetadata extends MetadataType {
 	void setScaling(double scaling);
 
 	/**
-	 * Sets fieldOfView value
+	 * Sets fieldOfView value in microns
 	 * @param fieldOfView
 	 */
 	void setFieldOfView(double fieldOfView);
