@@ -73,7 +73,7 @@ public interface IImageService {
 	 * @param bean
 	 * @return [0] = min [1] = max(=mean*constant) [2] = mean [3] max
 	 */
-	public float[] getFastStatistics(ImageServiceBean bean);
+	public double[] getFastStatistics(ImageServiceBean bean);
 	
 	/**
 	 * Call to convert the ImageData to a BufferedImage which may be written to 
