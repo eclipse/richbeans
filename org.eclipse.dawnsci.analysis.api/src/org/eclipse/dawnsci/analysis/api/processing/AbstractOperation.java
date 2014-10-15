@@ -113,14 +113,15 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 					if (axOut != null) {
 						Arrays.fill(shape, 1);
 						axes = axOut.getAxis(c++);
-						for (ILazyDataset axis : axes) {
+						if (axes != null) for (ILazyDataset axis : axes) {
+							if (axis == null) continue;
 							axis.squeeze();
 							shape[i] = axis.getShape()[0];
 							axis.setShape(shape);
 						}
 					}
 					
-					corMeta.setAxis(i, axes);
+					corMeta.setAxis(i, axes == null ? new ILazyDataset[1] : axes);
 				}
 				
 			} else if (getInputRank().getRank() > getOutputRank().getRank()) {
