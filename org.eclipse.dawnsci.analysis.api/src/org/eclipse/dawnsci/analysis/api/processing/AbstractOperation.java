@@ -115,6 +115,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 				int[] shape = new int[inr];
 				
 				for (int i : datadims) {
+					if (c >= outr) continue;
 					ILazyDataset[] axes = null;
 					if (axOut != null) {
 						Arrays.fill(shape, 1);
