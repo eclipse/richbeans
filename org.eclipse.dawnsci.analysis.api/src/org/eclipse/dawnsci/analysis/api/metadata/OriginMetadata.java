@@ -19,6 +19,12 @@ public interface OriginMetadata extends DimensionMetadata {
 
 	public ILazyDataset getParent();
 	
-	public Slice[] getSlice();
+	public Slice[] getInitialSlice();
+	
+	public String getDatasetName();
+	
+	public String getFilePath();
+	
+	public Slice[] getCurrentSlice();
 	
 }
