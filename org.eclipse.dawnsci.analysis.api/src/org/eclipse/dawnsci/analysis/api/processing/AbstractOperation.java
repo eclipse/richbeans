@@ -9,6 +9,7 @@
 
 package org.eclipse.dawnsci.analysis.api.processing;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -211,6 +212,8 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			
 		}
 		
+		updateAuxData(output.getAuxData(), original);
+		
 		return output;
 	}
 	
@@ -227,6 +230,55 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		out.setShape(updated);
 		
 		
+	}
+	
+	private void updateAuxData(Serializable[] auxData, IDataset original){
+		
+		if (auxData == null || auxData[0] == null) return;
+		
+		int[] datadims = getOriginalDataDimensions(original).clone();
+		Arrays.sort(datadims);
+
+		
+		int[] shape = new int[original.getRank()-datadims.length];
+		Arrays.fill(shape, 1);
+		
+		List<AxesMetadata> metadata = null;
+		
+		try {
+			metadata = original.getMetadata(AxesMetadata.class);
+		} catch (Exception e) {
+			throw new OperationException(this, e);
+		}
+		
+		
+		for (int i = 0; i < auxData.length; i++) {
+			if (!(auxData[i] instanceof IDataset) || ((IDataset)auxData[i]).getRank() != 0 ) {
+				continue;
+			}
+			
+			IDataset ds = (IDataset)auxData[i];
+			ds.setShape(shape);
+			
+			if (metadata != null && !metadata.isEmpty() && metadata.get(0) != null) {
+				AxesMetadata outMeta = metadata.get(0).createAxesMetadata(shape.length);
+				AxesMetadata inMeta = metadata.get(0);
+				int counter = 0;
+				for (int j = 0; j < original.getRank();j++) {
+					if (Arrays.binarySearch(datadims, j)<0) {
+						ILazyDataset[] axes = inMeta.getAxis(j);
+						if (axes != null && axes[0] != null) {
+							ILazyDataset view = axes[0].getSliceView();
+							view.setShape(shape);
+							outMeta.setAxis(counter++, new ILazyDataset[]{view});
+						}
+						
+					}
+				}
+				ds.setMetadata(outMeta);
+			}
+			
+		}
 	}
 	
 	@SuppressWarnings("unused")
