@@ -392,6 +392,13 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 
 	public static int[] getOriginalDataDimensions(IDataset slice) {
 
+		OriginMetadata originMetadata = getOriginMetadata(slice);
+
+		return originMetadata == null ? null : originMetadata.getDataDimensions();
+
+	}
+	
+	public static OriginMetadata getOriginMetadata(IDataset slice){
 		List<OriginMetadata> metaList = null;
 
 		try {
@@ -402,10 +409,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			return null;
 		}
 
-		OriginMetadata om = metaList.get(0);
-
-		return om.getDataDimensions();
-
+		return metaList.get(0);
 	}
 
 	public void copyMetadata(IDataset original, IDataset out) {
