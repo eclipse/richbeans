@@ -13,7 +13,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.dawnsci.doe;bundle-version="1.2.0",
  org.apache.commons.beanutils;bundle-version="[1.9.1,1.9.2)",
  ncsa.hdf;bundle-version="2.8.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.dawnsci.slicing.api,
  org.eclipse.dawnsci.slicing.api.data,
