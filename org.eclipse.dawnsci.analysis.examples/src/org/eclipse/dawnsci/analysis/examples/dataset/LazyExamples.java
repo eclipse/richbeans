@@ -10,6 +10,6 @@ package org.eclipse.dawnsci.analysis.examples.dataset;
  * @author Matthew Gerring
  *
  */
-public class LazyExample {
+public class LazyExamples {
 
 }
