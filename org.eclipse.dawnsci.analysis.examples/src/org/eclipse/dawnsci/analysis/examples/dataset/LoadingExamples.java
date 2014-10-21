@@ -22,7 +22,7 @@ import org.junit.Test;
  * @author Matthew Gerring
  *
  */
-public class LoadingExample {
+public class LoadingExamples {
 	
 	private static ILoaderService service;
 	

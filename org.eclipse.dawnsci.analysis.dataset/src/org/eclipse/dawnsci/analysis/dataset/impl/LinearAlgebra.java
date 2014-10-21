@@ -760,4 +760,16 @@ public class LinearAlgebra {
 		double[] s = new SingularValueDecomposition(m).getSingularValues();
 		return s;
 	}
+	
+	public static RealMatrix apacheMatrix(Dataset a) {
+		int[] shape = a.getShapeRef();
+		IndexIterator it = a.getIterator(true);
+		int[] pos = it.getPos();
+		RealMatrix m = MatrixUtils.createRealMatrix(shape[0], shape[1]);
+		while (it.hasNext()) {
+			m.setEntry(pos[0], pos[1], a.getElementDoubleAbs(it.index));
+		}
+		return m;
+	}
+
 }
