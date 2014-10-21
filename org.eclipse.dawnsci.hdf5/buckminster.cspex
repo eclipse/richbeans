@@ -4,7 +4,9 @@
 	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
 	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<dependencies>
+<!-- 
 		<dependency name="org.eclipse.dawnsci.hdf5.test" componentType="osgi.bundle"/>
+-->
 	</dependencies>
 	<generators>
 		<!-- Place your Generators here -->
