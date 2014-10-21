@@ -3,7 +3,6 @@ package org.eclipse.dawnsci.analysis.examples.dataset;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.ConjugateGradient;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.LUDecomposition;
@@ -23,7 +22,6 @@ import org.eclipse.dawnsci.analysis.dataset.impl.FFT;
 import org.eclipse.dawnsci.analysis.dataset.impl.LinearAlgebra;
 import org.eclipse.dawnsci.analysis.dataset.impl.Maths;
 import org.eclipse.dawnsci.analysis.dataset.impl.Random;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
