@@ -74,6 +74,48 @@ public final class LazyMaths {
 		result.setShape(AbstractDataset.squeezeShape(shape, axis));
 		return result;
 	}
+	
+	public static Dataset mean(ILazyDataset data, int[] ignoreAxes) {
+		
+		int[] shape = data.getShape();
+		boolean first = true;
+		Dataset average = null;
+		int count = 1;
+		
+		PositionIterator iter = new PositionIterator(shape, ignoreAxes);
+		iter.toString();
+		int[] pos = iter.getPos();
+		
+		while (iter.hasNext()) {
+			
+			int[] end = pos.clone();
+			for (int i = 0; i<pos.length;i++) {
+				end[i]++;
+			}
+
+			for (int i = 0; i < ignoreAxes.length; i++){
+				end[ignoreAxes[i]] = shape[ignoreAxes[i]];
+			}
+
+			int[] st = pos.clone();
+			for (int i = 0; i < st.length;i++) st[i] = 1;
+			
+			DoubleDataset ds = new DoubleDataset((Dataset)data.getSlice(pos,end,st));
+			ds.squeeze();
+
+			if (first) {
+				average = ds;
+				count++;
+				first = false;
+			} else {
+				ds.isubtract(average);
+				ds.idivide(count++);
+				average.iadd(ds);// = Maths.add(average, ds);
+			}
+		}
+		
+		return average;
+	}
 
 	private static Dataset prepareDataset(int axis, int[] shape, int[][] sliceInfo) {
 		int rank = shape.length;
