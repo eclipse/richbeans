@@ -13,8 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.linear.ArrayRealVector;
 import org.apache.commons.math3.linear.MatrixUtils;
 import org.apache.commons.math3.linear.RealMatrix;
+import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.linear.SingularValueDecomposition;
 
 public class LinearAlgebra {
@@ -770,6 +772,20 @@ public class LinearAlgebra {
 			m.setEntry(pos[0], pos[1], a.getElementDoubleAbs(it.index));
 		}
 		return m;
+	}
+
+	public static RealVector apacheVector(Dataset a) {
+		
+		if (a.getRank()!=1) throw new RuntimeException("Cannot create a vector from data with more than 1 dimension!");
+		
+		// TODO If DoubleDataset could just give real vector the buffer
+		IndexIterator it = a.getIterator(true);
+		int[] pos = it.getPos();
+    	RealVector rv = new ArrayRealVector(a.getSize());
+		while (it.hasNext()) {
+			rv.setEntry(pos[0], a.getElementDoubleAbs(it.index));
+		}
+		return rv;
 	}
 
 }

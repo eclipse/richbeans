@@ -3,8 +3,12 @@ package org.eclipse.dawnsci.analysis.examples.dataset;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.math3.linear.CholeskyDecomposition;
+import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.ConjugateGradient;
 import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.LUDecomposition;
+import org.apache.commons.math3.linear.QRDecomposition;
+import org.apache.commons.math3.linear.RealLinearOperator;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
@@ -15,11 +19,14 @@ import org.eclipse.dawnsci.analysis.dataset.impl.Dataset;
 import org.eclipse.dawnsci.analysis.dataset.impl.DatasetFactory;
 import org.eclipse.dawnsci.analysis.dataset.impl.DatasetUtils;
 import org.eclipse.dawnsci.analysis.dataset.impl.DoubleDataset;
+import org.eclipse.dawnsci.analysis.dataset.impl.FFT;
 import org.eclipse.dawnsci.analysis.dataset.impl.LinearAlgebra;
 import org.eclipse.dawnsci.analysis.dataset.impl.Maths;
 import org.eclipse.dawnsci.analysis.dataset.impl.Random;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * How to do the basics, @see http://wiki.scipy.org/NumPy_for_Matlab_Users
@@ -625,7 +632,7 @@ public class BasicExamples {
     @Test
     public void cholesky() {
     	
-    	// TODO Is something like this right Pete?
+// TODO Is something like this right Pete?
 //    	Dataset    s = DatasetFactory.ones(new int[]{100,100}, Dataset.FLOAT);
 //    	RealMatrix m = LinearAlgebra.apacheMatrix(s);
 //		double det = new CholeskyDecomposition(m).getDeterminant();
@@ -638,12 +645,153 @@ public class BasicExamples {
     @Test
     public void eigen() {
     	
-    	Dataset    s = Random.rand(new int[]{100, 100});
-       	RealMatrix m = LinearAlgebra.apacheMatrix(s);
+    	Dataset    a = Random.rand(new int[]{100, 100});
+       	RealMatrix m = LinearAlgebra.apacheMatrix(a);
         EigenDecomposition e = new EigenDecomposition(m);
         RealVector rv = e.getEigenvector(0);
         System.out.println("Real vector is "+rv);
     }
     
 
+    /**QR decomposition
+     * [Q,R,P]=qr(a,0)                Q,R = Sci.linalg.qr(a)
+     */
+    @Test
+    public void qr() {
+    	
+    	Dataset    a = Random.rand(new int[]{100, 100});
+       	RealMatrix m = LinearAlgebra.apacheMatrix(a);
+       	QRDecomposition qr = new QRDecomposition(m);
+       	System.out.println("q is "+qr.getQ());
+    }
+    
+    /**LU decomposition (note: P(Matlab) == transpose(P(numpy)) 
+    [L,U,P]=lu(a)                     L,U = Sci.linalg.lu(a)
+    */
+    @Test
+    public void lu() {
+    	Dataset    a = Random.rand(new int[]{100, 100});
+       	RealMatrix m = LinearAlgebra.apacheMatrix(a);
+       	LUDecomposition qr = new LUDecomposition(m);
+       	System.out.println("l is "+qr.getL());
+    }
+    
+    /**Conjugate gradients solver
+     * conjgrad                      Sci.linalg.cg
+     */
+    @Test
+    public void conjGrad() {
+    	
+    	Dataset    a  = Random.rand(100);
+    	RealVector rv = LinearAlgebra.apacheVector(a);
+    	
+    	Dataset s = Random.rand(new int[]{100, 100});
+       	RealMatrix m = LinearAlgebra.apacheMatrix(s);
+   	
+    	ConjugateGradient grad = new ConjugateGradient(100, 1, false);
+    	grad.solve((RealLinearOperator)m, rv);
+    }
+    
+    /**Fourier transform of a
+     * fft(a)                       fft(a)
+     */
+    @Test
+    public void fft() {
+    	
+    	Dataset    a = Random.rand(new int[]{100, 100});
+    	Dataset  fft = FFT.fft(a);
+    	System.out.println("The fft is "+fft);
+    }
+    
+    
+    /**
+     * inverse Fourier transform of a
+     * ifft(a)                       ifft(a)
+     * 
+     */
+    @Test
+    public void ifft() {
+    	Dataset    a = Random.rand(new int[]{100, 100});
+    	Dataset ifft = FFT.ifft(a);
+    	System.out.println("The ifft is "+ifft);
+    }
+    
+    /**sort the matrix
+     * sort(a)                       sort(a) or a.sort()
+     */
+    @Test
+    public void sort() {
+    	
+       	Dataset    a = Random.rand(new int[]{100, 100});
+       	Dataset    s = DatasetUtils.sort(a, 0);
+    	System.out.println("The sorted data "+s);
+    }
+    
+    /**sort the rows of the matrix
+     * [b,I] = sortrows(a,i)         I = argsort(a[:,i]), b=a[I,:]
+     */
+    @Test
+    public void sortRows() {
+       	Dataset    a = Random.rand(new int[]{100, 100});
+       	Dataset    s = DatasetUtils.sort(a, 0);
+    	System.out.println("The sorted data "+s);
+    }
+
+    /**multilinear regression
+     * regress(y,X)                  linalg.lstsq(X,y)
+     * */
+    @Test
+    public void multilinear() {
+    	
+    	// You have to use:
+    	// uk.ac.diamond.scisoft.analysis.fitting.Fitter;
+    	// uk.ac.diamond.scisoft.analysis.fitting.functions.Quadratic;
+
+//		DoubleDataset x = new DoubleDataset(new double[] {102,134,156});
+//		DoubleDataset y = new DoubleDataset(new double[] {102.1,134.2,156.3});
+//
+//		Quadratic q = new Quadratic(new double[] {0, 1, 0});
+//		try {
+//			Fitter.llsqFit(new Dataset[] {x}, y, q);
+//
+//			DoubleDataset z = q.calculateValues(x);
+//			Assert.assertEquals(y.getDouble(0), z.getDouble(0), 0.1);
+//			Assert.assertEquals(y.getDouble(1), z.getDouble(1), 0.1);
+//			Assert.assertEquals(y.getDouble(2), z.getDouble(2), 0.2);
+//		} catch (Exception e) {
+//			Assert.fail("" + e);
+//		}
+
+    }
+    
+    /**downsample with low-pass filtering
+     * decimate(x, q)                           Sci.signal.resample(x, len(x)/q)
+     * */
+    @Test
+    public void downsample() {
+    	
+    	// Use
+    	// uk.ac.diamond.scisoft.analysis.dataset.function.Downsample
+    	//Downsample ds      = new Downsample(DownsampleMode.MAXIMUM, 4);
+    	//IDataset   smaller = ds.value(a).get(0);
+    }
+    
+    /**
+    unique(a)
+    unique(a)
+    **/
+    @Test
+    public void unique() {
+    	// TODO needs a sort and loop?
+    }
+    
+    /**Squeeze
+     * squeeze(a)                      a.squeeze()
+     */
+    @Test
+    public void squeeze() {
+    	IDataset s = a.squeeze();
+    	System.out.println("Squeezed is "+s);
+    }
+    
 }
