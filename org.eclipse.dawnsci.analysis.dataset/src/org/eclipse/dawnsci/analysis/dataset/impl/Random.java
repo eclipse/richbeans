@@ -13,6 +13,10 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 import org.apache.commons.math3.random.MersenneTwister;
 import org.apache.commons.math3.random.RandomDataGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
+import org.eclipse.dawnsci.analysis.api.io.ILazyLoader;
+import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 
 /**
  * Class to hold methods to create random datasets
@@ -171,5 +175,27 @@ public class Random {
 		}
 
 		return data;
+	}
+	
+	public static ILazyDataset lazyRand(int... shape) {
+		
+		return new LazyDataset("random", Dataset.FLOAT, shape, new ILazyLoader() {
+
+			@Override
+			public boolean isFileReadable() {
+				return true;
+			}
+
+			@Override
+			public IDataset getDataset(IMonitor mon, int[] oshape, int[] start, int[] stop, int[] step) throws Exception {
+				
+                final int[] rshape = new int[start.length];
+                for (int i = 0; i < rshape.length; i++) {
+                	rshape[i] = (stop[i]-start[i])/step[i];
+				}
+                return rand(rshape);
+			}
+			
+		});
 	}
 }

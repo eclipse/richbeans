@@ -75,7 +75,7 @@ public final class LazyMaths {
 		return result;
 	}
 	
-	public static Dataset mean(ILazyDataset data, int[] ignoreAxes) {
+	public static Dataset mean(ILazyDataset data, int... ignoreAxes) {
 		
 		int[] shape = data.getShape();
 		boolean first = true;

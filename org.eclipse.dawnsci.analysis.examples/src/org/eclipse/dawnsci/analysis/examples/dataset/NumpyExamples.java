@@ -35,8 +35,11 @@ import org.junit.Test;
  * @author Matthew Gerring
  *
  */
-public class BasicExamples {
+public class NumpyExamples {
 	
+	/**
+	 * IDataset is like nparray
+	 */
 	private IDataset a, b;
 
 	@Before
