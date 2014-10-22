@@ -237,6 +237,11 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		if (auxData == null || auxData[0] == null) return;
 		
 		int[] datadims = getOriginalDataDimensions(original).clone();
+		
+		if (datadims.length > getOutputRank().getRank()) {
+			datadims = new int[]{datadims[0]};
+		}
+		
 		Arrays.sort(datadims);
 
 		
