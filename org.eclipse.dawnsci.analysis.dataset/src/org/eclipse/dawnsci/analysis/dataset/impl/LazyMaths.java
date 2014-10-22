@@ -74,46 +74,45 @@ public final class LazyMaths {
 		result.setShape(AbstractDataset.squeezeShape(shape, axis));
 		return result;
 	}
-	
+
+	/**
+	 * 
+	 * @param data
+	 * @param ignoreAxes
+	 * @return mean when given axes are ignored in lazy dataset
+	 */
 	public static Dataset mean(ILazyDataset data, int... ignoreAxes) {
-		
 		int[] shape = data.getShape();
-		boolean first = true;
+		PositionIterator iter = new PositionIterator(shape, ignoreAxes);
+		int[] pos = iter.getPos();
+		boolean[] omit = iter.getOmit();
+
+		int rank = shape.length;
+		int[] st = new int[rank];
+		Arrays.fill(st, 1);
+		int[] end = new int[rank];
+
 		Dataset average = null;
 		int count = 1;
-		
-		PositionIterator iter = new PositionIterator(shape, ignoreAxes);
-		iter.toString();
-		int[] pos = iter.getPos();
-		
 		while (iter.hasNext()) {
-			
-			int[] end = pos.clone();
-			for (int i = 0; i<pos.length;i++) {
-				end[i]++;
+			for (int i = 0; i < rank; i++) {
+				end[i] = omit[i] ? shape[i] : pos[i] + 1;
 			}
 
-			for (int i = 0; i < ignoreAxes.length; i++){
-				end[ignoreAxes[i]] = shape[ignoreAxes[i]];
-			}
+			Dataset ds = DatasetUtils.cast(data.getSlice(pos, end, st), Dataset.FLOAT64);
 
-			int[] st = pos.clone();
-			for (int i = 0; i < st.length;i++) st[i] = 1;
-			
-			DoubleDataset ds = new DoubleDataset((Dataset)data.getSlice(pos,end,st));
-			ds.squeeze();
-
-			if (first) {
+			if (average == null) {
 				average = ds;
 				count++;
-				first = false;
 			} else {
 				ds.isubtract(average);
 				ds.idivide(count++);
-				average.iadd(ds);// = Maths.add(average, ds);
+				average.iadd(ds);
 			}
 		}
-		
+
+		if (average != null)
+			average.squeeze();
 		return average;
 	}
 
