@@ -75,6 +75,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		
 		int outr = output.getData().getRank();
 		int inr = original.getRank();
+		int rankDif = getInputRank().getRank() - getOutputRank().getRank();
 		
 		if (inr == outr) return output;
 		
@@ -90,6 +91,8 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		int[] datadims = getOriginalDataDimensions(original).clone();
 		Arrays.sort(datadims);
 		
+		AxesMetadata corMeta  = null;
+		
 		if (metadata != null && !metadata.isEmpty() && metadata.get(0) != null) {
 			
 			//update it all for new data;
@@ -99,14 +102,12 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 				throw new OperationException(this, e);
 			}
 			
-			int rankDiff = getOutputRank().getRank()-getInputRank().getRank();
-			
 			AxesMetadata inMeta = metadata.get(0);
 			
 			AxesMetadata axOut = null;
 			if (metaout != null && !metaout.isEmpty()) axOut = metaout.get(0);
 			
-			AxesMetadata corMeta  = null;
+			
 			AxesMetadata cloneMeta = (AxesMetadata) inMeta.clone();
 			
 			if (getInputRank().getRank() == getOutputRank().getRank()) {
@@ -135,7 +136,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			} else if (getInputRank().getRank() > getOutputRank().getRank()) {
 				//made smaller
 				
-				int rankDif = getInputRank().getRank() - getOutputRank().getRank();
+				//rankDif = getInputRank().getRank() - getOutputRank().getRank();
 				int[] shape = new int[inr-rankDif];
 				corMeta = inMeta.createAxesMetadata(inr-rankDif);
 				int count = 0;
@@ -152,7 +153,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 									axis.setShape(shape);
 								}
 							}
-							corMeta.setAxis(i, axes);
+							if (i < shape.length) corMeta.setAxis(i, axes == null ? new ILazyDataset[1] : axes);
 						}
 					} else {
 						ILazyDataset[] axes = null;
@@ -172,7 +173,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			} else if (getInputRank().getRank() < getOutputRank().getRank())  {
 				//made bigger
 				//FIXME not actually working yet!!!!!
-				int rankDif = getInputRank().getRank() - getOutputRank().getRank();
+				//int rankDif = getInputRank().getRank() - getOutputRank().getRank();
 				corMeta = inMeta.createAxesMetadata(inr-rankDif);
 				int[] shape = new int[inr-rankDif];
 				int count = 0;
@@ -206,11 +207,14 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			}
 			
 			output.getData().clearMetadata(AxesMetadata.class);
-			updateOutputDataShape(output.getData(), inr+rankDiff, datadims);
+//			updateOutputDataShape(output.getData(), inr+rankDiff, datadims);
 			
-			if (corMeta != null) output.getData().setMetadata(corMeta);
+//			if (corMeta != null) output.getData().setMetadata(corMeta);
 			
 		}
+		
+		updateOutputDataShape(output.getData(), inr-rankDif, datadims);
+		if (corMeta != null) output.getData().setMetadata(corMeta);
 		
 		updateAuxData(output.getAuxData(), original);
 		
