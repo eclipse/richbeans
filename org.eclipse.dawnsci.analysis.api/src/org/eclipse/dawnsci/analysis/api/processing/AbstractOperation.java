@@ -75,7 +75,16 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		
 		int outr = output.getData().getRank();
 		int inr = original.getRank();
-		int rankDif = getInputRank().getRank() - getOutputRank().getRank();
+		
+		//Check ranks acceptable for this step
+		if (getOutputRank().equals(OperationRank.ZERO) || getOutputRank().equals(OperationRank.NONE) || getOutputRank().getRank() > 2) throw new OperationException(null, "Invalid Operation Rank!");
+		
+		int rankDif = 0;
+		
+		if (!getOutputRank().equals(OperationRank.SAME)) {
+			
+			rankDif = getInputRank().getRank() - getOutputRank().getRank();
+		}
 		
 		if (inr == outr) return output;
 		
