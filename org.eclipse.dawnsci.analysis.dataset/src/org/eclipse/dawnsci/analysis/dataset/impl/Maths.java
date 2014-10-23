@@ -8101,6 +8101,2002 @@ public class Maths {
 	}
 
 	/**
+	 * bitwiseAnd operator
+	 * @param a
+	 * @param b
+	 * @return a & b, bitwise AND of a and b
+	 */
+	public static Dataset bitwiseAnd(final Object a, final Object b) {
+		return bitwiseAnd(a, b, null);
+	}
+
+	/**
+	 * bitwiseAnd operator
+	 * @param a
+	 * @param b
+	 * @param o output can be null - in which case, a new dataset is created
+	 * @return a & b, bitwise AND of a and b
+	 */
+	public static Dataset bitwiseAnd(final Object a, final Object b, final Dataset o) {
+		final Dataset da = a instanceof Dataset ? (Dataset) a : DatasetFactory.createFromObject(a);
+		final Dataset db = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
+		final BroadcastIterator it = new BroadcastIterator(da, db, o, true);
+		final Dataset result = it.getOutput();
+		final int is = result.getElementsPerItem();
+		final int dt = result.getDtype();
+
+		switch(dt) {
+		case Dataset.INT8:
+			final byte[] oi8data = ((ByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				byte ox;
+				ox = (byte) (iax & ibx);
+				oi8data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT16:
+			final short[] oi16data = ((ShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				short ox;
+				ox = (short) (iax & ibx);
+				oi16data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT64:
+			final long[] oi64data = ((LongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				long ox;
+				ox = (iax & ibx);
+				oi64data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT32:
+			final int[] oi32data = ((IntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				int ox;
+				ox = (int) (iax & ibx);
+				oi32data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.ARRAYINT8:
+			final byte[] oai8data = ((CompoundByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax & ibx);
+					oai8data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax & ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) (iax & ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax & ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (byte) (iax & ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax & ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) (iax & ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT16:
+			final short[] oai16data = ((CompoundShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax & ibx);
+					oai16data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax & ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) (iax & ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax & ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (short) (iax & ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax & ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) (iax & ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT64:
+			final long[] oai64data = ((CompoundLongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = (iax & ibx);
+					oai64data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = (iax & ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (iax & ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = (iax & ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (iax & ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = (iax & ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (iax & ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT32:
+			final int[] oai32data = ((CompoundIntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax & ibx);
+					oai32data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax & ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) (iax & ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax & ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (int) (iax & ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax & ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) (iax & ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		default:
+			throw new IllegalArgumentException("bitwiseAnd supports integer, compound integer datasets only");
+		}
+
+		addBinaryOperatorName(da, db, result, "&");
+		return result;
+	}
+
+	/**
+	 * bitwiseOr operator
+	 * @param a
+	 * @param b
+	 * @return a | b, bitwise inclusive OR of a and b
+	 */
+	public static Dataset bitwiseOr(final Object a, final Object b) {
+		return bitwiseOr(a, b, null);
+	}
+
+	/**
+	 * bitwiseOr operator
+	 * @param a
+	 * @param b
+	 * @param o output can be null - in which case, a new dataset is created
+	 * @return a | b, bitwise inclusive OR of a and b
+	 */
+	public static Dataset bitwiseOr(final Object a, final Object b, final Dataset o) {
+		final Dataset da = a instanceof Dataset ? (Dataset) a : DatasetFactory.createFromObject(a);
+		final Dataset db = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
+		final BroadcastIterator it = new BroadcastIterator(da, db, o, true);
+		final Dataset result = it.getOutput();
+		final int is = result.getElementsPerItem();
+		final int dt = result.getDtype();
+
+		switch(dt) {
+		case Dataset.INT8:
+			final byte[] oi8data = ((ByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				byte ox;
+				ox = (byte) (iax | ibx);
+				oi8data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT16:
+			final short[] oi16data = ((ShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				short ox;
+				ox = (short) (iax | ibx);
+				oi16data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT64:
+			final long[] oi64data = ((LongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				long ox;
+				ox = (iax | ibx);
+				oi64data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT32:
+			final int[] oi32data = ((IntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				int ox;
+				ox = (int) (iax | ibx);
+				oi32data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.ARRAYINT8:
+			final byte[] oai8data = ((CompoundByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax | ibx);
+					oai8data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax | ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) (iax | ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax | ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (byte) (iax | ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax | ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) (iax | ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT16:
+			final short[] oai16data = ((CompoundShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax | ibx);
+					oai16data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax | ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) (iax | ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax | ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (short) (iax | ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax | ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) (iax | ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT64:
+			final long[] oai64data = ((CompoundLongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = (iax | ibx);
+					oai64data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = (iax | ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (iax | ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = (iax | ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (iax | ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = (iax | ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (iax | ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT32:
+			final int[] oai32data = ((CompoundIntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax | ibx);
+					oai32data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax | ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) (iax | ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax | ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (int) (iax | ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax | ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) (iax | ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		default:
+			throw new IllegalArgumentException("bitwiseOr supports integer, compound integer datasets only");
+		}
+
+		addBinaryOperatorName(da, db, result, "|");
+		return result;
+	}
+
+	/**
+	 * bitwiseXor operator
+	 * @param a
+	 * @param b
+	 * @return a ^ b, bitwise exclusive OR of a and b
+	 */
+	public static Dataset bitwiseXor(final Object a, final Object b) {
+		return bitwiseXor(a, b, null);
+	}
+
+	/**
+	 * bitwiseXor operator
+	 * @param a
+	 * @param b
+	 * @param o output can be null - in which case, a new dataset is created
+	 * @return a ^ b, bitwise exclusive OR of a and b
+	 */
+	public static Dataset bitwiseXor(final Object a, final Object b, final Dataset o) {
+		final Dataset da = a instanceof Dataset ? (Dataset) a : DatasetFactory.createFromObject(a);
+		final Dataset db = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
+		final BroadcastIterator it = new BroadcastIterator(da, db, o, true);
+		final Dataset result = it.getOutput();
+		final int is = result.getElementsPerItem();
+		final int dt = result.getDtype();
+
+		switch(dt) {
+		case Dataset.INT8:
+			final byte[] oi8data = ((ByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				byte ox;
+				ox = (byte) (iax ^ ibx);
+				oi8data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT16:
+			final short[] oi16data = ((ShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				short ox;
+				ox = (short) (iax ^ ibx);
+				oi16data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT64:
+			final long[] oi64data = ((LongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				long ox;
+				ox = (iax ^ ibx);
+				oi64data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT32:
+			final int[] oi32data = ((IntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				int ox;
+				ox = (int) (iax ^ ibx);
+				oi32data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.ARRAYINT8:
+			final byte[] oai8data = ((CompoundByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax ^ ibx);
+					oai8data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax ^ ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) (iax ^ ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax ^ ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (byte) (iax ^ ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax ^ ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) (iax ^ ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT16:
+			final short[] oai16data = ((CompoundShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax ^ ibx);
+					oai16data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax ^ ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) (iax ^ ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax ^ ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (short) (iax ^ ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax ^ ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) (iax ^ ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT64:
+			final long[] oai64data = ((CompoundLongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = (iax ^ ibx);
+					oai64data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = (iax ^ ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (iax ^ ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = (iax ^ ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (iax ^ ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = (iax ^ ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (iax ^ ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT32:
+			final int[] oai32data = ((CompoundIntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax ^ ibx);
+					oai32data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax ^ ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) (iax ^ ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax ^ ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (int) (iax ^ ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax ^ ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) (iax ^ ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		default:
+			throw new IllegalArgumentException("bitwiseXor supports integer, compound integer datasets only");
+		}
+
+		addBinaryOperatorName(da, db, result, "^");
+		return result;
+	}
+
+	/**
+	 * leftShift operator
+	 * @param a
+	 * @param b
+	 * @return a << b, bitwise left shift of a by b
+	 */
+	public static Dataset leftShift(final Object a, final Object b) {
+		return leftShift(a, b, null);
+	}
+
+	/**
+	 * leftShift operator
+	 * @param a
+	 * @param b
+	 * @param o output can be null - in which case, a new dataset is created
+	 * @return a << b, bitwise left shift of a by b
+	 */
+	public static Dataset leftShift(final Object a, final Object b, final Dataset o) {
+		final Dataset da = a instanceof Dataset ? (Dataset) a : DatasetFactory.createFromObject(a);
+		final Dataset db = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
+		final BroadcastIterator it = new BroadcastIterator(da, db, o, true);
+		final Dataset result = it.getOutput();
+		final int is = result.getElementsPerItem();
+		final int dt = result.getDtype();
+
+		switch(dt) {
+		case Dataset.INT8:
+			final byte[] oi8data = ((ByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				byte ox;
+				ox = (byte) (iax << ibx);
+				oi8data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT16:
+			final short[] oi16data = ((ShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				short ox;
+				ox = (short) (iax << ibx);
+				oi16data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT64:
+			final long[] oi64data = ((LongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				long ox;
+				ox = (iax << ibx);
+				oi64data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT32:
+			final int[] oi32data = ((IntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				int ox;
+				ox = (int) (iax << ibx);
+				oi32data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.ARRAYINT8:
+			final byte[] oai8data = ((CompoundByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax << ibx);
+					oai8data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax << ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) (iax << ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax << ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (byte) (iax << ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax << ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) (iax << ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT16:
+			final short[] oai16data = ((CompoundShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax << ibx);
+					oai16data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax << ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) (iax << ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax << ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (short) (iax << ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax << ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) (iax << ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT64:
+			final long[] oai64data = ((CompoundLongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = (iax << ibx);
+					oai64data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = (iax << ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (iax << ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = (iax << ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (iax << ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = (iax << ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (iax << ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT32:
+			final int[] oai32data = ((CompoundIntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax << ibx);
+					oai32data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax << ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) (iax << ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax << ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (int) (iax << ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax << ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) (iax << ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		default:
+			throw new IllegalArgumentException("leftShift supports integer, compound integer datasets only");
+		}
+
+		addBinaryOperatorName(da, db, result, "<<");
+		return result;
+	}
+
+	/**
+	 * rightShift operator
+	 * @param a
+	 * @param b
+	 * @return a >> b, bitwise right shift of a by b
+	 */
+	public static Dataset rightShift(final Object a, final Object b) {
+		return rightShift(a, b, null);
+	}
+
+	/**
+	 * rightShift operator
+	 * @param a
+	 * @param b
+	 * @param o output can be null - in which case, a new dataset is created
+	 * @return a >> b, bitwise right shift of a by b
+	 */
+	public static Dataset rightShift(final Object a, final Object b, final Dataset o) {
+		final Dataset da = a instanceof Dataset ? (Dataset) a : DatasetFactory.createFromObject(a);
+		final Dataset db = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
+		final BroadcastIterator it = new BroadcastIterator(da, db, o, true);
+		final Dataset result = it.getOutput();
+		final int is = result.getElementsPerItem();
+		final int dt = result.getDtype();
+
+		switch(dt) {
+		case Dataset.INT8:
+			final byte[] oi8data = ((ByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				byte ox;
+				ox = (byte) (iax >> ibx);
+				oi8data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT16:
+			final short[] oi16data = ((ShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				short ox;
+				ox = (short) (iax >> ibx);
+				oi16data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT64:
+			final long[] oi64data = ((LongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				long ox;
+				ox = (iax >> ibx);
+				oi64data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT32:
+			final int[] oi32data = ((IntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				int ox;
+				ox = (int) (iax >> ibx);
+				oi32data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.ARRAYINT8:
+			final byte[] oai8data = ((CompoundByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax >> ibx);
+					oai8data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax >> ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) (iax >> ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax >> ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (byte) (iax >> ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) (iax >> ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) (iax >> ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT16:
+			final short[] oai16data = ((CompoundShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax >> ibx);
+					oai16data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax >> ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) (iax >> ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax >> ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (short) (iax >> ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) (iax >> ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) (iax >> ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT64:
+			final long[] oai64data = ((CompoundLongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = (iax >> ibx);
+					oai64data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = (iax >> ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (iax >> ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = (iax >> ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (iax >> ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = (iax >> ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (iax >> ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT32:
+			final int[] oai32data = ((CompoundIntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax >> ibx);
+					oai32data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax >> ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) (iax >> ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax >> ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (int) (iax >> ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) (iax >> ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) (iax >> ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		default:
+			throw new IllegalArgumentException("rightShift supports integer, compound integer datasets only");
+		}
+
+		addBinaryOperatorName(da, db, result, ">>");
+		return result;
+	}
+
+	/**
+	 * unsignedRightShift operator
+	 * @param a
+	 * @param b
+	 * @return a >>> b, bitwise right shift of a by b with zeros added
+	 */
+	public static Dataset unsignedRightShift(final Object a, final Object b) {
+		return unsignedRightShift(a, b, null);
+	}
+
+	/**
+	 * unsignedRightShift operator
+	 * @param a
+	 * @param b
+	 * @param o output can be null - in which case, a new dataset is created
+	 * @return a >>> b, bitwise right shift of a by b with zeros added
+	 */
+	public static Dataset unsignedRightShift(final Object a, final Object b, final Dataset o) {
+		final Dataset da = a instanceof Dataset ? (Dataset) a : DatasetFactory.createFromObject(a);
+		final Dataset db = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
+		final BroadcastIterator it = new BroadcastIterator(da, db, o, true);
+		final long unsignedMask;
+		final Dataset result = it.getOutput();
+		final int is = result.getElementsPerItem();
+		final int dt = result.getDtype();
+
+		switch(dt) {
+		case Dataset.INT8:
+			final byte[] oi8data = ((ByteDataset) result).data;
+			unsignedMask = 0xffL;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				byte ox;
+				ox = (byte) ((unsignedMask & iax) >>> ibx);
+				oi8data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT16:
+			final short[] oi16data = ((ShortDataset) result).data;
+			unsignedMask = 0xffffL;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				short ox;
+				ox = (short) ((unsignedMask & iax) >>> ibx);
+				oi16data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT64:
+			final long[] oi64data = ((LongDataset) result).data;
+			unsignedMask = 0xffffffffffffffffL;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				long ox;
+				ox = ((unsignedMask & iax) >>> ibx);
+				oi64data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT32:
+			final int[] oi32data = ((IntegerDataset) result).data;
+			unsignedMask = 0xffffffffL;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long iax = it.aLong;
+				final long ibx = it.bLong;
+				int ox;
+				ox = (int) ((unsignedMask & iax) >>> ibx);
+				oi32data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.ARRAYINT8:
+			final byte[] oai8data = ((CompoundByteDataset) result).data;
+			unsignedMask = 0xffL;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) ((unsignedMask & iax) >>> ibx);
+					oai8data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) ((unsignedMask & iax) >>> ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) ((unsignedMask & iax) >>> ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					byte ox;
+					ox = (byte) ((unsignedMask & iax) >>> ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (byte) ((unsignedMask & iax) >>> ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					byte ox;
+					ox = (byte) ((unsignedMask & iax) >>> ibx);
+					oai8data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (byte) ((unsignedMask & iax) >>> ibx);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT16:
+			final short[] oai16data = ((CompoundShortDataset) result).data;
+			unsignedMask = 0xffffL;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) ((unsignedMask & iax) >>> ibx);
+					oai16data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) ((unsignedMask & iax) >>> ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) ((unsignedMask & iax) >>> ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					short ox;
+					ox = (short) ((unsignedMask & iax) >>> ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (short) ((unsignedMask & iax) >>> ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					short ox;
+					ox = (short) ((unsignedMask & iax) >>> ibx);
+					oai16data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (short) ((unsignedMask & iax) >>> ibx);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT64:
+			final long[] oai64data = ((CompoundLongDataset) result).data;
+			unsignedMask = 0xffffffffffffffffL;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = ((unsignedMask & iax) >>> ibx);
+					oai64data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = ((unsignedMask & iax) >>> ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = ((unsignedMask & iax) >>> ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					long ox;
+					ox = ((unsignedMask & iax) >>> ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = ((unsignedMask & iax) >>> ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					long ox;
+					ox = ((unsignedMask & iax) >>> ibx);
+					oai64data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = ((unsignedMask & iax) >>> ibx);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT32:
+			final int[] oai32data = ((CompoundIntegerDataset) result).data;
+			unsignedMask = 0xffffffffL;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) ((unsignedMask & iax) >>> ibx);
+					oai32data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) ((unsignedMask & iax) >>> ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) ((unsignedMask & iax) >>> ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else if (db.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					final long ibx = it.bLong;
+					int ox;
+					ox = (int) ((unsignedMask & iax) >>> ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ox = (int) ((unsignedMask & iax) >>> ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					long iax = it.aLong;
+					long ibx = it.bLong;
+					int ox;
+					ox = (int) ((unsignedMask & iax) >>> ibx);
+					oai32data[it.oIndex] = ox;
+					for (int j = 1; j < is; j++) {
+						iax = da.getElementLongAbs(it.aIndex + j);
+						ibx = db.getElementLongAbs(it.bIndex + j);
+						ox = (int) ((unsignedMask & iax) >>> ibx);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		default:
+			throw new IllegalArgumentException("unsignedRightShift supports integer, compound integer datasets only");
+		}
+
+		addBinaryOperatorName(da, db, result, ">>>");
+		return result;
+	}
+
+	/**
+	 * bitwiseInvert - ~a, bitwise invert (or NOT) each element
+	 * @param a
+	 * @return dataset
+	 */
+	public static Dataset bitwiseInvert(final Object a) {
+		return bitwiseInvert(a, null);
+	}
+
+	/**
+	 * bitwiseInvert - ~a, bitwise invert (or NOT) each element
+	 * @param a
+	 * @param o output can be null - in which case, a new dataset is created
+	 * @return dataset
+	 */
+	public static Dataset bitwiseInvert(final Object a, final Dataset o) {
+		final Dataset da = a instanceof Dataset ? (Dataset) a : DatasetFactory.createFromObject(a);
+		final SingleInputBroadcastIterator it = new SingleInputBroadcastIterator(da, o, true, true, true);
+		final Dataset result = it.getOutput();
+		final int is = result.getElementsPerItem();
+		final int dt = result.getDtype();
+
+		switch(dt) {
+		case Dataset.INT8:
+			final byte[] oi8data = ((ByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long ix = it.aLong;
+				byte ox;
+				ox = (byte) toLong(~ix);
+				oi8data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT16:
+			final short[] oi16data = ((ShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long ix = it.aLong;
+				short ox;
+				ox = (short) toLong(~ix);
+				oi16data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT64:
+			final long[] oi64data = ((LongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long ix = it.aLong;
+				long ox;
+				ox = toLong(~ix);
+				oi64data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.INT32:
+			final int[] oi32data = ((IntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			while (it.hasNext()) {
+				final long ix = it.aLong;
+				int ox;
+				ox = (int) toLong(~ix);
+				oi32data[it.oIndex] = ox;
+			}
+			break;
+		case Dataset.ARRAYINT8:
+			final byte[] oai8data = ((CompoundByteDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long ix = it.aLong;
+					byte ox;
+					ox = (byte) toLong(~ix);
+					oai8data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long ix = it.aLong;
+					byte ox;
+					ox = (byte) toLong(~ix);
+					for (int j = 0; j < is; j++) {
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					for (int j = 0; j < is; j++) {
+						final long ix = da.getElementLongAbs(it.aIndex + j);
+						byte ox;
+						ox = (byte) toLong(~ix);
+						oai8data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT16:
+			final short[] oai16data = ((CompoundShortDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long ix = it.aLong;
+					short ox;
+					ox = (short) toLong(~ix);
+					oai16data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long ix = it.aLong;
+					short ox;
+					ox = (short) toLong(~ix);
+					for (int j = 0; j < is; j++) {
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					for (int j = 0; j < is; j++) {
+						final long ix = da.getElementLongAbs(it.aIndex + j);
+						short ox;
+						ox = (short) toLong(~ix);
+						oai16data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT64:
+			final long[] oai64data = ((CompoundLongDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long ix = it.aLong;
+					long ox;
+					ox = toLong(~ix);
+					oai64data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long ix = it.aLong;
+					long ox;
+					ox = toLong(~ix);
+					for (int j = 0; j < is; j++) {
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					for (int j = 0; j < is; j++) {
+						final long ix = da.getElementLongAbs(it.aIndex + j);
+						long ox;
+						ox = toLong(~ix);
+						oai64data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		case Dataset.ARRAYINT32:
+			final int[] oai32data = ((CompoundIntegerDataset) result).data;
+			it.setDoubleOutput(false);
+
+			if (is == 1) {
+				while (it.hasNext()) {
+					final long ix = it.aLong;
+					int ox;
+					ox = (int) toLong(~ix);
+					oai32data[it.oIndex] = ox;
+				}
+			} else if (da.getElementsPerItem() == 1) {
+				while (it.hasNext()) {
+					final long ix = it.aLong;
+					int ox;
+					ox = (int) toLong(~ix);
+					for (int j = 0; j < is; j++) {
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			} else {
+				while (it.hasNext()) {
+					for (int j = 0; j < is; j++) {
+						final long ix = da.getElementLongAbs(it.aIndex + j);
+						int ox;
+						ox = (int) toLong(~ix);
+						oai32data[it.oIndex + j] = ox;
+					}
+				}
+			}
+			break;
+		default:
+			throw new IllegalArgumentException("bitwiseInvert supports integer, compound integer datasets only");
+		}
+
+		addFunctionName(result, "bitwiseInvert");
+		return result;
+	}
+
+	/**
 	 * sin - evaluate the sine function on each element of the dataset
 	 * @param a
 	 * @return dataset

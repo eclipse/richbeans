@@ -129,6 +129,41 @@ complex:
   	oy = Math.min(iay, iby);
   }
 
+biop:
+  bitwiseAnd - a & b, bitwise AND of a and b
+integer:
+  ox = iax & ibx;
+
+biop:
+  bitwiseOr - a | b, bitwise inclusive OR of a and b
+integer:
+  ox = iax | ibx;
+
+biop:
+  bitwiseXor - a ^ b, bitwise exclusive OR of a and b
+integer:
+  ox = iax ^ ibx;
+
+biop:
+  leftShift - a << b, bitwise left shift of a by b
+integer:
+  ox = iax << ibx;
+
+biop:
+  rightShift - a >> b, bitwise right shift of a by b
+integer:
+  ox = iax >> ibx;
+
+biop: 0 u
+  unsignedRightShift - a >>> b, bitwise right shift of a by b with zeros added 
+integer:
+  ox = (unsignedMask & iax) >>> ibx;
+
+ifunc:
+  bitwiseInvert - ~a, bitwise invert (or NOT) each element
+integer:
+  ox = ~ix;
+
 func:
   sin - evaluate the sine function on each element of the dataset
 real:

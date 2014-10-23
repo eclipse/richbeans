@@ -24,7 +24,7 @@ $ python generatefunctions.py functions.txt ../Maths.java > Maths.java
 
 The format is
 
-func: [number of parameters]
+func: [number of parameters]  
   foo - javadoc for foo
 integer:
   ox = ix + 1
@@ -41,8 +41,10 @@ as shown in the example. If integer code is not specified, then a case
 is automatically generated with a promoted dataset type: int 8 & 16 to
 float32 and int 32 & 64 to float64.
 
+An "ifunc" allows integer datasets to be output. 
+
 Or a binary operation can be specified like:
-biop: [number of parameters]
+biop: [number of parameters] [(s|u) [(s|u)]]
   add - a + b, addition of a and b
 integer:
   ox = iax + ibx;
@@ -52,7 +54,10 @@ complex:
   ox = iax + ibx;
   oy = iay + iby;
 
-
+The optional letters after the number of parameters denote whether the
+arguments are treated as signed or unsigned integers - they are "s" by
+default. When "u" is specified, a (long) "unsignedMask" is defined
+that will be available for use.
 
 '''
 
@@ -94,6 +99,7 @@ class StateMachine:
                 handler = newState
 
 is_binaryop = False
+def_unsigned_mask = False
 
 def oldmethod(name, jdoc=None, params=0):
     if is_binaryop:
@@ -136,7 +142,7 @@ def oldmethod(name, jdoc=None, params=0):
             print("\t\treturn %s(a, null);" % name)
     print("\t}\n")
 
-def beginmethod(name, jdoc=None, params=0):
+def beginmethod(name, jdoc=None, params=0, allow_ints=False):
     oldmethod(name, jdoc, params)
     if is_binaryop:
         print("\t/**\n\t * %s operator" %  name)
@@ -176,8 +182,15 @@ def beginmethod(name, jdoc=None, params=0):
         print("\t\tfinal Dataset db = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);")
         print("\t\tfinal BroadcastIterator it = new BroadcastIterator(da, db, o, true);")
     else:
-        # TODO allow integer and complex datasets to be created
-        print("\t\tfinal SingleInputBroadcastIterator it = new SingleInputBroadcastIterator(da, o, true);")
+        if allow_ints:
+            print("\t\tfinal SingleInputBroadcastIterator it = new SingleInputBroadcastIterator(da, o, true, true, true);")
+        else:
+            print("\t\tfinal SingleInputBroadcastIterator it = new SingleInputBroadcastIterator(da, o, true);")
+
+    if def_unsigned_mask:
+        print("\t\tfinal long unsignedMask;")
+
+
     print("\t\tfinal Dataset result = it.getOutput();")
     print("\t\tfinal int is = result.getElementsPerItem();")
     print("\t\tfinal int dt = result.getDtype();")
@@ -204,13 +217,17 @@ def endmethod(name, jdoc, types):
     print("\t\treturn result;")
     print("\t}\n")
 
-def sameloop(codedict, cprefix, vletter, text, use_long=False, override_long=False):
+def sameloop(codedict, cprefix, vletter, text, use_long=False, override_long=False, unsigned=False):
     is_int = cprefix.endswith("INT")
     for w in codedict.keys():
         dtype = "%s%d" % (cprefix, w)
         otype, oclass = codedict[w]
         ovar = "o%s%ddata" % (vletter,w)
-        preloop(dtype, otype, oclass, ovar, is_int, use_long, override_long=override_long)
+        if unsigned:
+            mask = "0x" + (w / 4) * "f" + "L"
+        else:
+            mask = None
+        preloop(dtype, otype, oclass, ovar, is_int, use_long, override_long=override_long, mask=mask)
         loop(text, otype, ovar, is_int, use_long, override_long)
         postloop()
 
@@ -224,13 +241,17 @@ def complexloop(codedict, cprefix, vletter, text, real):
         loopcomplex(text, otype, ovar, real, is_int)
         postloop()
 
-def compoundloop(codedict, cprefix, vletter, text, use_long=False, override_long=False):
+def compoundloop(codedict, cprefix, vletter, text, use_long=False, override_long=False, unsigned=False):
     is_int = cprefix.endswith("INT")
     for w in codedict.keys():
         dtype = "%s%d" % (cprefix, w)
         ovar = "o%s%ddata" % (vletter,w)
         otype, oclass = codedict[w]
-        preloop(dtype, otype, oclass, ovar, is_int, use_long, override_long=override_long)
+        if unsigned:
+            mask = "0x" + (w / 4) * "f" + "L"
+        else:
+            mask = None
+        preloop(dtype, otype, oclass, ovar, is_int, use_long, override_long=override_long, mask=mask)
         loopcompound(text, otype, ovar, is_int, use_long, override_long)
         postloop()
 
@@ -430,11 +451,13 @@ def loopcompound(text, jtype, ovar, is_int, use_long, override_long):
     print("\t\t\t\t}")
     print("\t\t\t}")
 
-def preloop(dtype, otype, oclass, ovar=None, is_int=True, use_long=False, override_long=False):
+def preloop(dtype, otype, oclass, ovar=None, is_int=True, use_long=False, override_long=False, mask=None):
     print("\t\tcase Dataset.%s:" % dtype)
     print("\t\t\tfinal %s[] %s = ((%s) result).data;" % (otype, ovar, oclass))
     if is_binaryop or use_long:
         if is_int and not override_long:
+            if mask is not None:
+                print("\t\t\tunsignedMask = %s;" % mask)
             print("\t\t\tit.setDoubleOutput(false);\n")
         else:
             print("\t\t\tit.setDoubleOutput(true);\n")
@@ -449,17 +472,22 @@ def func(cargo):
     if "func" in last:
         dummy, params = last.split("func:", 1)
         is_binaryop = False
+        allow_ints = "ifunc" in last
     else:
         dummy, params = last.split("biop:", 1)
         is_binaryop = True
+        allow_ints = False
 
-    params = params.strip()
+    params = params.strip().split()
+    global def_unsigned_mask
     if len(params) > 0:
-        nparams = int(params)
+        nparams = int(params[0])
         if nparams > 26:
             raise ValueError, "Number of parameters is greater than the supported 26!"
+        def_unsigned_mask = any([ "u" in p for p in params[1:]])
     else:
         nparams = 0
+        def_unsigned_mask = False
 
     while True:
         l = f.readline()
@@ -468,7 +496,7 @@ def func(cargo):
         l = l.strip(' ')
         name, jdoc = l.split(" - ", 1)
         jdoc = jdoc.strip()
-        beginmethod(name, jdoc, nparams)
+        beginmethod(name, jdoc, nparams, allow_ints)
 #        if len(plist) > 0: print "Parameters", plist
         return cases, (f, '', name, jdoc, [])
 
@@ -541,11 +569,11 @@ def icode(cargo):
 #    print text
     sameloop({ 8 : ("byte", "ByteDataset"), 16 : ("short", "ShortDataset"),
                 32 : ("int", "IntegerDataset"), 64 : ("long", "LongDataset") },
-                "INT", "i", text, use_long=True)
+                "INT", "i", text, use_long=True, unsigned=def_unsigned_mask)
     types.append("integer")
     compoundloop({ 8 : ("byte", "CompoundByteDataset"), 16 : ("short", "CompoundShortDataset"),
                 32 : ("int", "CompoundIntegerDataset"), 64 : ("long", "CompoundLongDataset") },
-                "ARRAYINT", "ai", text, use_long=True)
+                "ARRAYINT", "ai", text, use_long=True, unsigned=def_unsigned_mask)
     types.append("compound integer")
     return cases, (f, last, name, jdoc, types)
 
@@ -556,11 +584,11 @@ def ircode(cargo):
 #    print text
     sameloop({ 8 : ("byte", "ByteDataset"), 16 : ("short", "ShortDataset"),
                 32 : ("int", "IntegerDataset"), 64 : ("long", "LongDataset") },
-                "INT", "i", text, override_long=True)
+                "INT", "i", text, override_long=True, unsigned=def_unsigned_mask)
     types.append("integer")
     compoundloop({ 8 : ("byte", "CompoundByteDataset"), 16 : ("short", "CompoundShortDataset"),
                 32 : ("int", "CompoundIntegerDataset"), 64 : ("long", "CompoundLongDataset") },
-                "ARRAYINT", "ai", text, override_long=True)
+                "ARRAYINT", "ai", text, override_long=True, unsigned=def_unsigned_mask)
     types.append("compound integer")
     return cases, (f, last, name, jdoc, types)
 
