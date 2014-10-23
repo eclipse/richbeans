@@ -10,6 +10,7 @@
 package org.eclipse.dawnsci.analysis.api.processing;
 
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
+import org.eclipse.dawnsci.analysis.api.metadata.OriginMetadata;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
 
@@ -28,7 +29,7 @@ public interface IExecutionVisitor {
 	 * @param series
 	 * @throws Exception
 	 */
-	public void init(IOperation<? extends IOperationModel, ? extends OperationData>[] series) throws Exception;
+	public void init(IOperation<? extends IOperationModel, ? extends OperationData>[] series, OriginMetadata origin) throws Exception;
 	
 	/**
 	 * Tell the execution visitor to close, releasing its resources
@@ -68,7 +69,7 @@ public interface IExecutionVisitor {
 		}
 
 		@Override
-		public void init(IOperation<? extends IOperationModel, ? extends OperationData>[] series) {
+		public void init(IOperation<? extends IOperationModel, ? extends OperationData>[] series, OriginMetadata origin) {
 			
 		}
 
