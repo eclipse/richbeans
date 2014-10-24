@@ -28,8 +28,9 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 
 	protected T model;
 
-	private String name;
-	private String description;
+	private String            name;
+	private String            description;
+	private OperationCategory category;
 	
 	private boolean storeOutput = false;
 	private boolean passUnmodifiedData = false;
@@ -301,6 +302,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		return result;
@@ -314,7 +316,12 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		AbstractOperation<?, ?> other = (AbstractOperation<?, ?>) obj;
+		AbstractOperation other = (AbstractOperation) obj;
+		if (category == null) {
+			if (other.category != null)
+				return false;
+		} else if (!category.equals(other.category))
+			return false;
 		if (description == null) {
 			if (other.description != null)
 				return false;
@@ -452,5 +459,13 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 	@Override
 	public boolean isPassUnmodifiedData() {
 		return passUnmodifiedData;
+	}
+
+	public OperationCategory getCategory() {
+		return category;
+	}
+
+	public void setCategory(OperationCategory category) {
+		this.category = category;
 	}
 }

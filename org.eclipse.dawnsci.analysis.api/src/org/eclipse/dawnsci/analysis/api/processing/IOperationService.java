@@ -10,6 +10,7 @@
 package org.eclipse.dawnsci.analysis.api.processing;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
@@ -94,13 +95,18 @@ public interface IOperationService {
 	public Collection<String> getRegisteredOperations()  throws Exception;
 
 	/**
+	 * Get operations by category.
+	 * @return a Map of operations by category. Sorted alphabetically 
+	 */
+	public Map<String, Collection<IOperation<? extends IOperationModel, ? extends OperationData>>> getCategorizedOperations() throws Exception;
+	
+	/**
 	 * Creates an operation by using its type. This method will create a new
 	 * operation using the no argument constructor.
 	 * 
 	 * @return IOperation
 	 */
 	public IOperation<? extends IOperationModel, ? extends OperationData> create(String operationId) throws Exception;
-	
 	
 	/**
 	 * Checks the extension point for the model class pertinent to this operation.
