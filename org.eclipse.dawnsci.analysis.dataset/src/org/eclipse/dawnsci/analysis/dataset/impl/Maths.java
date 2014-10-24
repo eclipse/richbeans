@@ -6665,24 +6665,22 @@ public class Maths {
 					float q;
 					float den;
 					if (iby == 0) {
-						ox = (float) (iax / ibx);
-						oy = (float) (iay / ibx);
+						ox = (float) (Math.floor(iax / ibx));
+						oy = (float) (Math.floor(iay / ibx));
 					} else if (ibx == 0) {
-						ox = (float) (iay / iby);
-						oy = (float) (-iax / iby);
+						ox = (float) (Math.floor(iay / iby));
+						oy = (float) (Math.floor(-iax / iby));
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (float) (ibx / iby);
 						den = (float) (ibx * q + iby);
-						ox = (float) ((iax * q + iay) / den);
-						oy = (float) ((iay * q - ibx) / den);
+						ox = (float) (Math.floor((iax * q + iay) / den));
+						oy = (float) (Math.floor((iay * q - ibx) / den));
 					} else {
 						q = (float) (iby / ibx);
 						den = (float) (iby * q + ibx);
-						ox = (float) ((iay * q + iax) / den);
-						oy = (float) ((iay - iax * q) / den);
+						ox = (float) (Math.floor((iay * q + iax) / den));
+						oy = (float) (Math.floor((iay - iax * q) / den));
 					}
-					ox = (float) (Math.floor(ox));
-					oy = (float) (Math.floor(oy));
 					oc64data[it.oIndex] = ox;
 					oc64data[it.oIndex + 1] = oy;
 				}
@@ -6697,24 +6695,22 @@ public class Maths {
 					float q;
 					float den;
 					if (iby == 0) {
-						ox = (float) (iax / ibx);
-						oy = (float) (iay / ibx);
+						ox = (float) (Math.floor(iax / ibx));
+						oy = (float) (Math.floor(iay / ibx));
 					} else if (ibx == 0) {
-						ox = (float) (iay / iby);
-						oy = (float) (-iax / iby);
+						ox = (float) (Math.floor(iay / iby));
+						oy = (float) (Math.floor(-iax / iby));
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (float) (ibx / iby);
 						den = (float) (ibx * q + iby);
-						ox = (float) ((iax * q + iay) / den);
-						oy = (float) ((iay * q - ibx) / den);
+						ox = (float) (Math.floor((iax * q + iay) / den));
+						oy = (float) (Math.floor((iay * q - ibx) / den));
 					} else {
 						q = (float) (iby / ibx);
 						den = (float) (iby * q + ibx);
-						ox = (float) ((iay * q + iax) / den);
-						oy = (float) ((iay - iax * q) / den);
+						ox = (float) (Math.floor((iay * q + iax) / den));
+						oy = (float) (Math.floor((iay - iax * q) / den));
 					}
-					ox = (float) (Math.floor(ox));
-					oy = (float) (Math.floor(oy));
 					oc64data[it.oIndex] = ox;
 					oc64data[it.oIndex + 1] = oy;
 				}
@@ -6729,24 +6725,22 @@ public class Maths {
 					float q;
 					float den;
 					if (iby == 0) {
-						ox = (float) (iax / ibx);
-						oy = (float) (iay / ibx);
+						ox = (float) (Math.floor(iax / ibx));
+						oy = (float) (Math.floor(iay / ibx));
 					} else if (ibx == 0) {
-						ox = (float) (iay / iby);
-						oy = (float) (-iax / iby);
+						ox = (float) (Math.floor(iay / iby));
+						oy = (float) (Math.floor(-iax / iby));
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (float) (ibx / iby);
 						den = (float) (ibx * q + iby);
-						ox = (float) ((iax * q + iay) / den);
-						oy = (float) ((iay * q - ibx) / den);
+						ox = (float) (Math.floor((iax * q + iay) / den));
+						oy = (float) (Math.floor((iay * q - ibx) / den));
 					} else {
 						q = (float) (iby / ibx);
 						den = (float) (iby * q + ibx);
-						ox = (float) ((iay * q + iax) / den);
-						oy = (float) ((iay - iax * q) / den);
+						ox = (float) (Math.floor((iay * q + iax) / den));
+						oy = (float) (Math.floor((iay - iax * q) / den));
 					}
-					ox = (float) (Math.floor(ox));
-					oy = (float) (Math.floor(oy));
 					oc64data[it.oIndex] = ox;
 					oc64data[it.oIndex + 1] = oy;
 				}
@@ -6767,24 +6761,22 @@ public class Maths {
 					double q;
 					double den;
 					if (iby == 0) {
-						ox = (iax / ibx);
-						oy = (iay / ibx);
+						ox = (Math.floor(iax / ibx));
+						oy = (Math.floor(iay / ibx));
 					} else if (ibx == 0) {
-						ox = (iay / iby);
-						oy = (-iax / iby);
+						ox = (Math.floor(iay / iby));
+						oy = (Math.floor(-iax / iby));
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (ibx / iby);
 						den = (ibx * q + iby);
-						ox = ((iax * q + iay) / den);
-						oy = ((iay * q - ibx) / den);
+						ox = (Math.floor((iax * q + iay) / den));
+						oy = (Math.floor((iay * q - ibx) / den));
 					} else {
 						q = (iby / ibx);
 						den = (iby * q + ibx);
-						ox = ((iay * q + iax) / den);
-						oy = ((iay - iax * q) / den);
+						ox = (Math.floor((iay * q + iax) / den));
+						oy = (Math.floor((iay - iax * q) / den));
 					}
-					ox = (Math.floor(ox));
-					oy = (Math.floor(oy));
 					oc128data[it.oIndex] = ox;
 					oc128data[it.oIndex + 1] = oy;
 				}
@@ -6799,24 +6791,22 @@ public class Maths {
 					double q;
 					double den;
 					if (iby == 0) {
-						ox = (iax / ibx);
-						oy = (iay / ibx);
+						ox = (Math.floor(iax / ibx));
+						oy = (Math.floor(iay / ibx));
 					} else if (ibx == 0) {
-						ox = (iay / iby);
-						oy = (-iax / iby);
+						ox = (Math.floor(iay / iby));
+						oy = (Math.floor(-iax / iby));
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (ibx / iby);
 						den = (ibx * q + iby);
-						ox = ((iax * q + iay) / den);
-						oy = ((iay * q - ibx) / den);
+						ox = (Math.floor((iax * q + iay) / den));
+						oy = (Math.floor((iay * q - ibx) / den));
 					} else {
 						q = (iby / ibx);
 						den = (iby * q + ibx);
-						ox = ((iay * q + iax) / den);
-						oy = ((iay - iax * q) / den);
+						ox = (Math.floor((iay * q + iax) / den));
+						oy = (Math.floor((iay - iax * q) / den));
 					}
-					ox = (Math.floor(ox));
-					oy = (Math.floor(oy));
 					oc128data[it.oIndex] = ox;
 					oc128data[it.oIndex + 1] = oy;
 				}
@@ -6831,24 +6821,22 @@ public class Maths {
 					double q;
 					double den;
 					if (iby == 0) {
-						ox = (iax / ibx);
-						oy = (iay / ibx);
+						ox = (Math.floor(iax / ibx));
+						oy = (Math.floor(iay / ibx));
 					} else if (ibx == 0) {
-						ox = (iay / iby);
-						oy = (-iax / iby);
+						ox = (Math.floor(iay / iby));
+						oy = (Math.floor(-iax / iby));
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (ibx / iby);
 						den = (ibx * q + iby);
-						ox = ((iax * q + iay) / den);
-						oy = ((iay * q - ibx) / den);
+						ox = (Math.floor((iax * q + iay) / den));
+						oy = (Math.floor((iay * q - ibx) / den));
 					} else {
 						q = (iby / ibx);
 						den = (iby * q + ibx);
-						ox = ((iay * q + iax) / den);
-						oy = ((iay - iax * q) / den);
+						ox = (Math.floor((iay * q + iax) / den));
+						oy = (Math.floor((iay - iax * q) / den));
 					}
-					ox = (Math.floor(ox));
-					oy = (Math.floor(oy));
 					oc128data[it.oIndex] = ox;
 					oc128data[it.oIndex + 1] = oy;
 				}
