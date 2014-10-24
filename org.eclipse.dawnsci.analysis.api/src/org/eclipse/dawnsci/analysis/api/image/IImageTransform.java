@@ -16,6 +16,8 @@
 
 package org.eclipse.dawnsci.analysis.api.image;
 
+import java.util.List;
+
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 
 /**
@@ -47,7 +49,17 @@ public interface IImageTransform {
 	 * @param keepShape
 	 *            if true, the resulting image will have the same shape as the original
 	 * @return rotated image
+	 * @throws Exception
 	 */
 	public IDataset rotate(IDataset data, double angle, boolean keepShape) throws Exception;
 
+	/**
+	 * Aligns a stack of images using feature association
+	 * 
+	 * @param images
+	 *            stack of images
+	 * @return aligned stack of images
+	 * @throws Exception
+	 */
+	public List<IDataset> align(List<IDataset> images) throws Exception;
 }

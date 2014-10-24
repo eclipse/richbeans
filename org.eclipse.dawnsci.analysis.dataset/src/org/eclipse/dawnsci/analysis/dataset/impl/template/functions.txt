@@ -76,6 +76,38 @@ complex:
   }
 
 biop:
+  divideTowardsFloor - a / b, division of a by b but rounded towards negative infinity 
+integer:
+  if (ibx == 0) {
+  	ox = 0;
+  } else {
+  	ox = iax / ibx;
+  	if (iax != ox * ibx && ((iax < 0) ^ (ibx < 0))) {
+  		ox--;
+  	}
+  }
+real:
+  ox = iax / ibx;
+complex:
+  if (iby == 0) {
+  	ox = iax / ibx;
+  	oy = iay / ibx;
+  } else if (ibx == 0) {
+  	ox = iay / iby;
+  	oy = -iax / iby;
+  } else if (Math.abs(ibx) < Math.abs(iby)) {
+  	q = ibx / iby;
+  	den = ibx * q + iby;
+  	ox = (iax * q + iay) / den;
+  	oy = (iay * q - ibx) / den;
+  } else {
+  	q = iby / ibx;
+  	den = iby * q + ibx;
+  	ox = (iay * q + iax) / den;
+  	oy = (iay - iax * q) / den;
+  }
+
+biop:
   power - a ** b, raise a to power of b
 integer_with_reals:
   ox = Math.pow(iax, ibx);

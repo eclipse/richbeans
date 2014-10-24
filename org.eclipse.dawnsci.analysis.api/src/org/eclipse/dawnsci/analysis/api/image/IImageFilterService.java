@@ -141,6 +141,7 @@ public interface IImageFilterService {
 	 * @param colorExternal RGB color
 	 * @param colorInternal RGB color
 	 * @return Dataset contours for each blob.
+	 * @throws Exception 
 	 */
-	public IDataset filterContour(IDataset input, int rule, int colorExternal, int colorInternal);
+	public IDataset filterContour(IDataset input, int rule, int colorExternal, int colorInternal) throws Exception;
 }

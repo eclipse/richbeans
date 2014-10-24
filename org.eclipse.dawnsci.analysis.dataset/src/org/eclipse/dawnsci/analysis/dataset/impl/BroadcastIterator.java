@@ -123,7 +123,7 @@ public class BroadcastIterator extends IndexIterator {
 			oStep = o.getElementsPerItem();
 			oDataset = o;
 		} else if (createIfNull) {
-			oDataset = createDataset(aDataset, bDataset, maxShape);
+			oDataset = createDataset(a, b, maxShape);
 			oStride = AbstractDataset.createBroadcastStrides(oDataset, maxShape);
 			oDelta = new int[rank];
 			oStep = oDataset.getElementsPerItem();
@@ -198,7 +198,18 @@ public class BroadcastIterator extends IndexIterator {
 	}
 
 	private static Dataset createDataset(final Dataset a, final Dataset b, final int[] shape) {
-		final int rt = AbstractDataset.getBestDType(a.getDtype(), b.getDtype());
+		final int rt;
+		final int ar = a.getRank();
+		final int br = b.getRank();
+		if (ar == 0 ^ br == 0) { // ignore type of zero-rank dataset unless it's floating point 
+			if (ar == 0) {
+				rt = a.hasFloatingPointElements() ? a.getDtype() : b.getDtype();
+			} else {
+				rt = b.hasFloatingPointElements() ? b.getDtype() : a.getDtype();
+			}
+		} else {
+			rt = AbstractDataset.getBestDType(a.getDtype(), b.getDtype());
+		}
 		final int ia = a.getElementsPerItem();
 		final int ib = b.getElementsPerItem();
 
