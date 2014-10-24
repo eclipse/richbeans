@@ -76,7 +76,7 @@ complex:
   }
 
 biop:
-  floorDivide - a / b, floor division of a by b
+  divideTowardsFloor - a / b, division of a by b but rounded towards negative infinity 
 integer:
   if (ibx == 0) {
   	ox = 0;
@@ -87,24 +87,24 @@ integer:
   	}
   }
 real:
-  ox = Math.floor(iax / ibx);
+  ox = iax / ibx;
 complex:
   if (iby == 0) {
-  	ox = Math.floor(iax / ibx);
-  	oy = Math.floor(iay / ibx);
+  	ox = iax / ibx;
+  	oy = iay / ibx;
   } else if (ibx == 0) {
-  	ox = Math.floor(iay / iby);
-  	oy = Math.floor(-iax / iby);
+  	ox = iay / iby;
+  	oy = -iax / iby;
   } else if (Math.abs(ibx) < Math.abs(iby)) {
   	q = ibx / iby;
   	den = ibx * q + iby;
-  	ox = Math.floor((iax * q + iay) / den);
-  	oy = Math.floor((iay * q - ibx) / den);
+  	ox = (iax * q + iay) / den;
+  	oy = (iay * q - ibx) / den;
   } else {
   	q = iby / ibx;
   	den = iby * q + ibx;
-  	ox = Math.floor((iay * q + iax) / den);
-  	oy = Math.floor((iay - iax * q) / den);
+  	ox = (iay * q + iax) / den;
+  	oy = (iay - iax * q) / den;
   }
 
 biop:

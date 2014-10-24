@@ -427,6 +427,25 @@ public class Maths {
 	/**
 	 * @param a
 	 * @param b
+	 * @return floor divide of a and b
+	 */
+	public static Dataset floorDivide(final Object a, final Object b) {
+		return floorDivide(a, b, null);
+	}
+
+	/**
+	 * @param a
+	 * @param b
+	 * @param o output can be null - in which case, a new dataset is created
+	 * @return floor divide of a and b
+	 */
+	public static Dataset floorDivide(final Object a, final Object b, final Dataset o) {
+		return divideTowardsFloor(a, b, o).ifloor();
+	}
+
+	/**
+	 * @param a
+	 * @param b
 	 * @return floor remainder of a and b
 	 */
 	public static Dataset floorRemainder(final Object a, final Object b) {
@@ -6005,23 +6024,23 @@ public class Maths {
 	}
 
 	/**
-	 * floorDivide operator
+	 * divideTowardsFloor operator
 	 * @param a
 	 * @param b
-	 * @return a / b, floor division of a by b
+	 * @return a / b, division of a by b but rounded towards negative infinity
 	 */
-	public static Dataset floorDivide(final Object a, final Object b) {
-		return floorDivide(a, b, null);
+	public static Dataset divideTowardsFloor(final Object a, final Object b) {
+		return divideTowardsFloor(a, b, null);
 	}
 
 	/**
-	 * floorDivide operator
+	 * divideTowardsFloor operator
 	 * @param a
 	 * @param b
 	 * @param o output can be null - in which case, a new dataset is created
-	 * @return a / b, floor division of a by b
+	 * @return a / b, division of a by b but rounded towards negative infinity
 	 */
-	public static Dataset floorDivide(final Object a, final Object b, final Dataset o) {
+	public static Dataset divideTowardsFloor(final Object a, final Object b, final Dataset o) {
 		final Dataset da = a instanceof Dataset ? (Dataset) a : DatasetFactory.createFromObject(a);
 		final Dataset db = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(da, db, o, true);
@@ -6526,7 +6545,7 @@ public class Maths {
 				final double iax = it.aDouble;
 				final double ibx = it.bDouble;
 				float ox;
-				ox = (float) (Math.floor(iax / ibx));
+				ox = (float) (iax / ibx);
 				of32data[it.oIndex] = ox;
 			}
 			break;
@@ -6538,7 +6557,7 @@ public class Maths {
 				final double iax = it.aDouble;
 				final double ibx = it.bDouble;
 				double ox;
-				ox = (Math.floor(iax / ibx));
+				ox = (iax / ibx);
 				of64data[it.oIndex] = ox;
 			}
 			break;
@@ -6551,7 +6570,7 @@ public class Maths {
 					final double iax = it.aDouble;
 					final double ibx = it.bDouble;
 					float ox;
-					ox = (float) (Math.floor(iax / ibx));
+					ox = (float) (iax / ibx);
 					oaf32data[it.oIndex] = ox;
 				}
 			} else if (da.getElementsPerItem() == 1) {
@@ -6559,11 +6578,11 @@ public class Maths {
 					final double iax = it.aDouble;
 					double ibx = it.bDouble;
 					float ox;
-					ox = (float) (Math.floor(iax / ibx));
+					ox = (float) (iax / ibx);
 					oaf32data[it.oIndex] = ox;
 					for (int j = 1; j < is; j++) {
 						ibx = db.getElementDoubleAbs(it.bIndex + j);
-						ox = (float) (Math.floor(iax / ibx));
+						ox = (float) (iax / ibx);
 						oaf32data[it.oIndex + j] = ox;
 					}
 				}
@@ -6572,11 +6591,11 @@ public class Maths {
 					double iax = it.aDouble;
 					final double ibx = it.bDouble;
 					float ox;
-					ox = (float) (Math.floor(iax / ibx));
+					ox = (float) (iax / ibx);
 					oaf32data[it.oIndex] = ox;
 					for (int j = 1; j < is; j++) {
 						iax = da.getElementDoubleAbs(it.aIndex + j);
-						ox = (float) (Math.floor(iax / ibx));
+						ox = (float) (iax / ibx);
 						oaf32data[it.oIndex + j] = ox;
 					}
 				}
@@ -6585,12 +6604,12 @@ public class Maths {
 					double iax = it.aDouble;
 					double ibx = it.bDouble;
 					float ox;
-					ox = (float) (Math.floor(iax / ibx));
+					ox = (float) (iax / ibx);
 					oaf32data[it.oIndex] = ox;
 					for (int j = 1; j < is; j++) {
 						iax = da.getElementDoubleAbs(it.aIndex + j);
 						ibx = db.getElementDoubleAbs(it.bIndex + j);
-						ox = (float) (Math.floor(iax / ibx));
+						ox = (float) (iax / ibx);
 						oaf32data[it.oIndex + j] = ox;
 					}
 				}
@@ -6605,7 +6624,7 @@ public class Maths {
 					final double iax = it.aDouble;
 					final double ibx = it.bDouble;
 					double ox;
-					ox = (Math.floor(iax / ibx));
+					ox = (iax / ibx);
 					oaf64data[it.oIndex] = ox;
 				}
 			} else if (da.getElementsPerItem() == 1) {
@@ -6613,11 +6632,11 @@ public class Maths {
 					final double iax = it.aDouble;
 					double ibx = it.bDouble;
 					double ox;
-					ox = (Math.floor(iax / ibx));
+					ox = (iax / ibx);
 					oaf64data[it.oIndex] = ox;
 					for (int j = 1; j < is; j++) {
 						ibx = db.getElementDoubleAbs(it.bIndex + j);
-						ox = (Math.floor(iax / ibx));
+						ox = (iax / ibx);
 						oaf64data[it.oIndex + j] = ox;
 					}
 				}
@@ -6626,11 +6645,11 @@ public class Maths {
 					double iax = it.aDouble;
 					final double ibx = it.bDouble;
 					double ox;
-					ox = (Math.floor(iax / ibx));
+					ox = (iax / ibx);
 					oaf64data[it.oIndex] = ox;
 					for (int j = 1; j < is; j++) {
 						iax = da.getElementDoubleAbs(it.aIndex + j);
-						ox = (Math.floor(iax / ibx));
+						ox = (iax / ibx);
 						oaf64data[it.oIndex + j] = ox;
 					}
 				}
@@ -6639,12 +6658,12 @@ public class Maths {
 					double iax = it.aDouble;
 					double ibx = it.bDouble;
 					double ox;
-					ox = (Math.floor(iax / ibx));
+					ox = (iax / ibx);
 					oaf64data[it.oIndex] = ox;
 					for (int j = 1; j < is; j++) {
 						iax = da.getElementDoubleAbs(it.aIndex + j);
 						ibx = db.getElementDoubleAbs(it.bIndex + j);
-						ox = (Math.floor(iax / ibx));
+						ox = (iax / ibx);
 						oaf64data[it.oIndex + j] = ox;
 					}
 				}
@@ -6665,21 +6684,21 @@ public class Maths {
 					float q;
 					float den;
 					if (iby == 0) {
-						ox = (float) (Math.floor(iax / ibx));
-						oy = (float) (Math.floor(iay / ibx));
+						ox = (float) (iax / ibx);
+						oy = (float) (iay / ibx);
 					} else if (ibx == 0) {
-						ox = (float) (Math.floor(iay / iby));
-						oy = (float) (Math.floor(-iax / iby));
+						ox = (float) (iay / iby);
+						oy = (float) (-iax / iby);
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (float) (ibx / iby);
 						den = (float) (ibx * q + iby);
-						ox = (float) (Math.floor((iax * q + iay) / den));
-						oy = (float) (Math.floor((iay * q - ibx) / den));
+						ox = (float) ((iax * q + iay) / den);
+						oy = (float) ((iay * q - ibx) / den);
 					} else {
 						q = (float) (iby / ibx);
 						den = (float) (iby * q + ibx);
-						ox = (float) (Math.floor((iay * q + iax) / den));
-						oy = (float) (Math.floor((iay - iax * q) / den));
+						ox = (float) ((iay * q + iax) / den);
+						oy = (float) ((iay - iax * q) / den);
 					}
 					oc64data[it.oIndex] = ox;
 					oc64data[it.oIndex + 1] = oy;
@@ -6695,21 +6714,21 @@ public class Maths {
 					float q;
 					float den;
 					if (iby == 0) {
-						ox = (float) (Math.floor(iax / ibx));
-						oy = (float) (Math.floor(iay / ibx));
+						ox = (float) (iax / ibx);
+						oy = (float) (iay / ibx);
 					} else if (ibx == 0) {
-						ox = (float) (Math.floor(iay / iby));
-						oy = (float) (Math.floor(-iax / iby));
+						ox = (float) (iay / iby);
+						oy = (float) (-iax / iby);
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (float) (ibx / iby);
 						den = (float) (ibx * q + iby);
-						ox = (float) (Math.floor((iax * q + iay) / den));
-						oy = (float) (Math.floor((iay * q - ibx) / den));
+						ox = (float) ((iax * q + iay) / den);
+						oy = (float) ((iay * q - ibx) / den);
 					} else {
 						q = (float) (iby / ibx);
 						den = (float) (iby * q + ibx);
-						ox = (float) (Math.floor((iay * q + iax) / den));
-						oy = (float) (Math.floor((iay - iax * q) / den));
+						ox = (float) ((iay * q + iax) / den);
+						oy = (float) ((iay - iax * q) / den);
 					}
 					oc64data[it.oIndex] = ox;
 					oc64data[it.oIndex + 1] = oy;
@@ -6725,21 +6744,21 @@ public class Maths {
 					float q;
 					float den;
 					if (iby == 0) {
-						ox = (float) (Math.floor(iax / ibx));
-						oy = (float) (Math.floor(iay / ibx));
+						ox = (float) (iax / ibx);
+						oy = (float) (iay / ibx);
 					} else if (ibx == 0) {
-						ox = (float) (Math.floor(iay / iby));
-						oy = (float) (Math.floor(-iax / iby));
+						ox = (float) (iay / iby);
+						oy = (float) (-iax / iby);
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (float) (ibx / iby);
 						den = (float) (ibx * q + iby);
-						ox = (float) (Math.floor((iax * q + iay) / den));
-						oy = (float) (Math.floor((iay * q - ibx) / den));
+						ox = (float) ((iax * q + iay) / den);
+						oy = (float) ((iay * q - ibx) / den);
 					} else {
 						q = (float) (iby / ibx);
 						den = (float) (iby * q + ibx);
-						ox = (float) (Math.floor((iay * q + iax) / den));
-						oy = (float) (Math.floor((iay - iax * q) / den));
+						ox = (float) ((iay * q + iax) / den);
+						oy = (float) ((iay - iax * q) / den);
 					}
 					oc64data[it.oIndex] = ox;
 					oc64data[it.oIndex + 1] = oy;
@@ -6761,21 +6780,21 @@ public class Maths {
 					double q;
 					double den;
 					if (iby == 0) {
-						ox = (Math.floor(iax / ibx));
-						oy = (Math.floor(iay / ibx));
+						ox = (iax / ibx);
+						oy = (iay / ibx);
 					} else if (ibx == 0) {
-						ox = (Math.floor(iay / iby));
-						oy = (Math.floor(-iax / iby));
+						ox = (iay / iby);
+						oy = (-iax / iby);
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (ibx / iby);
 						den = (ibx * q + iby);
-						ox = (Math.floor((iax * q + iay) / den));
-						oy = (Math.floor((iay * q - ibx) / den));
+						ox = ((iax * q + iay) / den);
+						oy = ((iay * q - ibx) / den);
 					} else {
 						q = (iby / ibx);
 						den = (iby * q + ibx);
-						ox = (Math.floor((iay * q + iax) / den));
-						oy = (Math.floor((iay - iax * q) / den));
+						ox = ((iay * q + iax) / den);
+						oy = ((iay - iax * q) / den);
 					}
 					oc128data[it.oIndex] = ox;
 					oc128data[it.oIndex + 1] = oy;
@@ -6791,21 +6810,21 @@ public class Maths {
 					double q;
 					double den;
 					if (iby == 0) {
-						ox = (Math.floor(iax / ibx));
-						oy = (Math.floor(iay / ibx));
+						ox = (iax / ibx);
+						oy = (iay / ibx);
 					} else if (ibx == 0) {
-						ox = (Math.floor(iay / iby));
-						oy = (Math.floor(-iax / iby));
+						ox = (iay / iby);
+						oy = (-iax / iby);
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (ibx / iby);
 						den = (ibx * q + iby);
-						ox = (Math.floor((iax * q + iay) / den));
-						oy = (Math.floor((iay * q - ibx) / den));
+						ox = ((iax * q + iay) / den);
+						oy = ((iay * q - ibx) / den);
 					} else {
 						q = (iby / ibx);
 						den = (iby * q + ibx);
-						ox = (Math.floor((iay * q + iax) / den));
-						oy = (Math.floor((iay - iax * q) / den));
+						ox = ((iay * q + iax) / den);
+						oy = ((iay - iax * q) / den);
 					}
 					oc128data[it.oIndex] = ox;
 					oc128data[it.oIndex + 1] = oy;
@@ -6821,21 +6840,21 @@ public class Maths {
 					double q;
 					double den;
 					if (iby == 0) {
-						ox = (Math.floor(iax / ibx));
-						oy = (Math.floor(iay / ibx));
+						ox = (iax / ibx);
+						oy = (iay / ibx);
 					} else if (ibx == 0) {
-						ox = (Math.floor(iay / iby));
-						oy = (Math.floor(-iax / iby));
+						ox = (iay / iby);
+						oy = (-iax / iby);
 					} else if (Math.abs(ibx) < Math.abs(iby)) {
 						q = (ibx / iby);
 						den = (ibx * q + iby);
-						ox = (Math.floor((iax * q + iay) / den));
-						oy = (Math.floor((iay * q - ibx) / den));
+						ox = ((iax * q + iay) / den);
+						oy = ((iay * q - ibx) / den);
 					} else {
 						q = (iby / ibx);
 						den = (iby * q + ibx);
-						ox = (Math.floor((iay * q + iax) / den));
-						oy = (Math.floor((iay - iax * q) / den));
+						ox = ((iay * q + iax) / den);
+						oy = ((iay - iax * q) / den);
 					}
 					oc128data[it.oIndex] = ox;
 					oc128data[it.oIndex + 1] = oy;
@@ -6843,7 +6862,7 @@ public class Maths {
 			}
 			break;
 		default:
-			throw new IllegalArgumentException("floorDivide supports integer, compound integer, real, compound real, complex datasets only");
+			throw new IllegalArgumentException("divideTowardsFloor supports integer, compound integer, real, compound real, complex datasets only");
 		}
 
 		addBinaryOperatorName(da, db, result, "/");
