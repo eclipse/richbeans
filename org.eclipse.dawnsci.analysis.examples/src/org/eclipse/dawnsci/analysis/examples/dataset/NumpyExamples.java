@@ -507,7 +507,7 @@ public class NumpyExamples {
     	
     	m = ((Dataset)a).max(1);
     	
-    	Maths.maximum(a, b);
+    	Dataset c = Maths.maximum(a, b);
     }
     
     
