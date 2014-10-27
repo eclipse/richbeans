@@ -12,6 +12,15 @@ import java.util.List;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 
+/**
+ * This trace is currently only available with Java8 and there is
+ * no DAWN executable based on Java8 available on the website.
+ * 
+ * Probably DAWN 2.0 in 2015 will be Java8 based.
+ * 
+ * @author Matthew Gerring
+ *
+ */
 public interface IIsosurfaceTrace extends IImage3DTrace {
 
 	
