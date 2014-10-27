@@ -418,7 +418,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 						}
 					}
 					j++;
-				} while (ob <= or && nb <= nr);
+				} while (ob <= or && nb <= nr && j <= or);
 				while (ob <= or && oldShape[ob] == 1) {
 					ob++;
 					differences[j]--;
@@ -610,7 +610,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 					if (n < 0)
 						n = l;
 					Object narray = Array.newInstance(r.getClass(), n);
-					for (int i = 0, si = 0, di = 0; i < l && si < l; i++) {
+					for (int i = 0, si = 0, di = 0; di < n; i++) {
 						int c = op.change(i);
 						if (c == 0) {
 							Array.set(narray, di++, processObject(op, Array.get(o, si++)));
