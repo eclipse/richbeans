@@ -4,13 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.math3.linear.ConjugateGradient;
-import org.apache.commons.math3.linear.EigenDecomposition;
-import org.apache.commons.math3.linear.LUDecomposition;
-import org.apache.commons.math3.linear.QRDecomposition;
-import org.apache.commons.math3.linear.RealLinearOperator;
-import org.apache.commons.math3.linear.RealMatrix;
-import org.apache.commons.math3.linear.RealVector;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.dataset.impl.BooleanDataset;
@@ -682,10 +675,8 @@ public class NumpyExamples {
     public void eigen() {
     	
     	Dataset    a = Random.rand(new int[]{100, 100});
-       	RealMatrix m = LinearAlgebra.apacheMatrix(a);
-        EigenDecomposition e = new EigenDecomposition(m);
-        RealVector rv = e.getEigenvector(0);
-        System.out.println("Real vector is "+rv);
+    	Dataset[]  e = LinearAlgebra.calcEigenDecomposition(a);
+        System.out.println("Real vector is "+ e[1].getSliceView(null, new Slice(1)).squeeze());
     }
     
 
@@ -694,11 +685,9 @@ public class NumpyExamples {
      */
     @Test
     public void qr() {
-    	
     	Dataset    a = Random.rand(new int[]{100, 100});
-       	RealMatrix m = LinearAlgebra.apacheMatrix(a);
-       	QRDecomposition qr = new QRDecomposition(m);
-       	System.out.println("q is "+qr.getQ());
+       	Dataset[] qr = LinearAlgebra.calcQRDecomposition(a);
+       	System.out.println("q is " + qr[0]);
     }
     
     /**LU decomposition (note: P(Matlab) == transpose(P(numpy)) 
@@ -707,9 +696,8 @@ public class NumpyExamples {
     @Test
     public void lu() {
     	Dataset    a = Random.rand(new int[]{100, 100});
-       	RealMatrix m = LinearAlgebra.apacheMatrix(a);
-       	LUDecomposition qr = new LUDecomposition(m);
-       	System.out.println("l is "+qr.getL());
+    	Dataset[] lu = LinearAlgebra.calcLUDecomposition(a);
+       	System.out.println("l is " + lu[0]);
     }
     
     /**Conjugate gradients solver
@@ -719,13 +707,11 @@ public class NumpyExamples {
     public void conjGrad() {
     	
     	Dataset    a  = Random.rand(100);
-    	RealVector rv = LinearAlgebra.apacheVector(a);
     	
     	Dataset s = Random.rand(new int[]{100, 100});
-       	RealMatrix m = LinearAlgebra.apacheMatrix(s);
-   	
-    	ConjugateGradient grad = new ConjugateGradient(100, 1, false);
-    	grad.solve((RealLinearOperator)m, rv);
+
+    	Dataset x = LinearAlgebra.calcConjugateGradient(a, s);
+    	System.out.println("x is " + x);
     }
     
     /**Fourier transform of a

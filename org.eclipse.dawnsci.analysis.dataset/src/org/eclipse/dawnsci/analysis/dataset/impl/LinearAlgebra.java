@@ -13,11 +13,18 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.math3.complex.Complex;
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.ConjugateGradient;
+import org.apache.commons.math3.linear.EigenDecomposition;
+import org.apache.commons.math3.linear.LUDecomposition;
 import org.apache.commons.math3.linear.MatrixUtils;
+import org.apache.commons.math3.linear.QRDecomposition;
+import org.apache.commons.math3.linear.RealLinearOperator;
 import org.apache.commons.math3.linear.RealMatrix;
 import org.apache.commons.math3.linear.RealVector;
 import org.apache.commons.math3.linear.SingularValueDecomposition;
+
 
 public class LinearAlgebra {
 
@@ -748,6 +755,90 @@ public class LinearAlgebra {
 	 * @return array of singular values
 	 */
 	public static double[] calcSingularValues(Dataset a) {
+		return (double[]) calcSingularValueDecomposition(a)[1].getBuffer();
+	}
+
+
+	/**
+	 * @param a
+	 * @return array of U - orthogonal matrix, s - singular values vector, V - orthogonal matrix
+	 */
+	public static Dataset[] calcSingularValueDecomposition(Dataset a) {
+		SingularValueDecomposition svd = new SingularValueDecomposition(createRealMatrix(a));
+		return new Dataset[] {createDataset(svd.getU()), new DoubleDataset(svd.getSingularValues()),
+				createDataset(svd.getV())};
+	}
+
+	/**
+	 * @param a
+	 * @return dataset of eigenvalues (can be double or complex double)
+	 */
+	public static Dataset calcEigenvalues(Dataset a) {
+		return calcEigenDecomposition(a)[0];
+	}
+
+	/**
+	 * @param a
+	 * @return dataset of eigenvalues (can be double or complex double) and dataset of eigenvectors
+	 */
+	public static Dataset[] calcEigenDecomposition(Dataset a) {
+		EigenDecomposition evd = new EigenDecomposition(createRealMatrix(a));
+		Dataset[] results = new Dataset[2];
+
+		double[] rev = evd.getRealEigenvalues();
+		if (evd.hasComplexEigenvalues()) {
+			double[] iev = evd.getImagEigenvalues();
+			results[0] = new ComplexDoubleDataset(rev, iev);
+		} else {
+			results[0] = new DoubleDataset(rev);
+		}
+		results[1] = createDataset(evd.getV());
+		return results;
+	}
+
+	/**
+	 * @param a
+	 * @return array of Q and R
+	 */
+	public static Dataset[] calcQRDecomposition(Dataset a) {
+		QRDecomposition qrd = new QRDecomposition(createRealMatrix(a));
+		return new Dataset[] {createDataset(qrd.getQT()).getTransposedView(), createDataset(qrd.getR())};
+	}
+
+	/**
+	 * @param a
+	 * @return array of L, U and P
+	 */
+	public static Dataset[] calcLUDecomposition(Dataset a) {
+		LUDecomposition lud = new LUDecomposition(createRealMatrix(a));
+		return new Dataset[] {createDataset(lud.getL()), createDataset(lud.getU()),
+				createDataset(lud.getP())};
+	}
+
+	/**
+	 * @param a
+	 * @param v
+	 * @return solution of A^-1 v by conjugate gradient method
+	 */
+	public static Dataset calcConjugateGradient(Dataset a, Dataset v) {
+		return calcConjugateGradient(a, v, 100, 1);
+	}
+
+	/**
+	 * Calculation A x = v by conjugate gradient method with the stopping criterion being
+	 * that the estimated residual r = v - A x satisfies ||r|| < delta ||v||
+	 * @param a
+	 * @param v
+	 * @param maxIterations
+	 * @param delta parameter used by stopping criterion
+	 * @return solution of A^-1 v by conjugate gradient method
+	 */
+	public static Dataset calcConjugateGradient(Dataset a, Dataset v, int maxIterations, double delta) {
+		ConjugateGradient cg = new ConjugateGradient(maxIterations, delta, false);
+		return createDataset(cg.solve((RealLinearOperator) createRealMatrix(a), createRealVector(v)));
+	}
+
+	private static RealMatrix createRealMatrix(Dataset a) {
 		if (a.getRank() != 2) {
 			throw new IllegalArgumentException("Dataset must be rank 2");
 		}
@@ -758,34 +849,55 @@ public class LinearAlgebra {
 		while (it.hasNext()) {
 			m.setEntry(pos[0], pos[1], a.getElementDoubleAbs(it.index));
 		}
-
-		double[] s = new SingularValueDecomposition(m).getSingularValues();
-		return s;
+		return m;
 	}
-	
-	public static RealMatrix apacheMatrix(Dataset a) {
-		int[] shape = a.getShapeRef();
+
+	private static RealVector createRealVector(Dataset a) {
+		if (a.getRank() != 1) {
+			throw new IllegalArgumentException("Dataset must be rank 1");
+		}
+		int size = a.getSize();
 		IndexIterator it = a.getIterator(true);
 		int[] pos = it.getPos();
-		RealMatrix m = MatrixUtils.createRealMatrix(shape[0], shape[1]);
+		RealVector m = new ArrayRealVector(size);
 		while (it.hasNext()) {
-			m.setEntry(pos[0], pos[1], a.getElementDoubleAbs(it.index));
+			m.setEntry(pos[0], a.getElementDoubleAbs(it.index));
 		}
 		return m;
 	}
 
-	public static RealVector apacheVector(Dataset a) {
-		
-		if (a.getRank()!=1) throw new RuntimeException("Cannot create a vector from data with more than 1 dimension!");
-		
-		// TODO If DoubleDataset could just give real vector the buffer
-		IndexIterator it = a.getIterator(true);
-		int[] pos = it.getPos();
-    	RealVector rv = new ArrayRealVector(a.getSize());
-		while (it.hasNext()) {
-			rv.setEntry(pos[0], a.getElementDoubleAbs(it.index));
+	private static Dataset createDataset(RealVector v) {
+		DoubleDataset r = new DoubleDataset(v.getDimension());
+		int size = r.getSize();
+		if (v instanceof ArrayRealVector) {
+			double[] data = ((ArrayRealVector) v).getDataRef();
+			for (int i = 0; i < size; i++) {
+				r.setAbs(i, data[i]);
+			}
+		} else {
+			for (int i = 0; i < size; i++) {
+				r.setAbs(i, v.getEntry(i));
+			}
 		}
-		return rv;
+		return r;
 	}
 
+	private static Dataset createDataset(RealMatrix m) {
+		DoubleDataset r = new DoubleDataset(m.getRowDimension(), m.getColumnDimension());
+		if (m instanceof Array2DRowRealMatrix) {
+			double[][] data = ((Array2DRowRealMatrix) m).getDataRef();
+			IndexIterator it = r.getIterator(true);
+			int[] pos = it.getPos();
+			while (it.hasNext()) {
+				r.setAbs(it.index, data[pos[0]][pos[1]]);
+			}
+		} else {
+			IndexIterator it = r.getIterator(true);
+			int[] pos = it.getPos();
+			while (it.hasNext()) {
+				r.setAbs(it.index, m.getEntry(pos[0], pos[1]));
+			}
+		}
+		return r;
+	}
 }
