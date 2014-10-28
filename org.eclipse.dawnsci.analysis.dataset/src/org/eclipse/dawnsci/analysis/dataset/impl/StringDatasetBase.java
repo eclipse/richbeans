@@ -19,7 +19,6 @@ import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 
 
-
 /**
  * Extend dataset for String values // PRIM_TYPE
  */

@@ -886,6 +886,7 @@ public class DoubleDataset extends AbstractDataset {
 	public DoubleDataset iadd(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b); // NAN_OMIT
 		final BroadcastIterator it = new BroadcastIterator(this, bds); // NAN_OMIT
+		it.setOutputDouble(true); // NAN_OMIT
 		while (it.hasNext()) { // NAN_OMIT
 			data[it.aIndex] += it.bDouble; // ADD_CAST // NAN_OMIT
 		} // NAN_OMIT
@@ -897,6 +898,7 @@ public class DoubleDataset extends AbstractDataset {
 	public DoubleDataset isubtract(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b); // NAN_OMIT
 		final BroadcastIterator it = new BroadcastIterator(this, bds); // NAN_OMIT
+		it.setOutputDouble(true); // NAN_OMIT
 		while (it.hasNext()) { // NAN_OMIT
 			data[it.aIndex] -= it.bDouble; // INT_OMIT // ADD_CAST // NAN_OMIT
 			// data[it.aIndex] = (it.aDouble - it.bDouble); // INT_USE // ADD_CAST // NAN_OMIT
@@ -909,6 +911,7 @@ public class DoubleDataset extends AbstractDataset {
 	public DoubleDataset imultiply(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b); // NAN_OMIT
 		final BroadcastIterator it = new BroadcastIterator(this, bds); // NAN_OMIT
+		it.setOutputDouble(true); // NAN_OMIT
 		while (it.hasNext()) { // NAN_OMIT
 			data[it.aIndex] *= it.bDouble; // ADD_CAST // NAN_OMIT
 		} // NAN_OMIT
@@ -920,6 +923,7 @@ public class DoubleDataset extends AbstractDataset {
 	public DoubleDataset idivide(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b); // NAN_OMIT
 		final BroadcastIterator it = new BroadcastIterator(this, bds); // NAN_OMIT
+		it.setOutputDouble(true); // NAN_OMIT
 		while (it.hasNext()) { // NAN_OMIT
 			data[it.aIndex] /= it.bDouble; // INT_OMIT // ADD_CAST // NAN_OMIT
 			// if (it.bDouble == 0) { // INT_USE // NAN_OMIT
@@ -947,6 +951,7 @@ public class DoubleDataset extends AbstractDataset {
 	public DoubleDataset iremainder(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b); // NAN_OMIT
 		final BroadcastIterator it = new BroadcastIterator(this, bds); // NAN_OMIT
+		it.setOutputDouble(true); // NAN_OMIT
 		while (it.hasNext()) { // NAN_OMIT
 			data[it.aIndex] %= it.bDouble; // ADD_CAST // NAN_OMIT // INT_EXCEPTION
 		} // NAN_OMIT
@@ -985,6 +990,7 @@ public class DoubleDataset extends AbstractDataset {
 			} // NAN_OMIT
 		} else { // NAN_OMIT
 			final BroadcastIterator it = new BroadcastIterator(this, bds); // NAN_OMIT
+			it.setOutputDouble(true); // NAN_OMIT
 			while (it.hasNext()) { // NAN_OMIT
 				final double v = Math.pow(it.aDouble, it.bDouble); // NAN_OMIT
 				// if (Double.isInfinite(v) || Double.isNaN(v)) { // INT_ZEROTEST // NAN_OMIT
@@ -1002,6 +1008,7 @@ public class DoubleDataset extends AbstractDataset {
 	public double residual(final Object b, final Dataset w, boolean ignoreNaNs) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b); // NAN_OMIT
 		final BroadcastIterator it = new BroadcastIterator(this, bds); // NAN_OMIT
+		it.setOutputDouble(true); // NAN_OMIT
 		double sum = 0;
 		double comp = 0; // NAN_OMIT
 		if (ignoreNaNs) { // REAL_ONLY // NAN_OMIT

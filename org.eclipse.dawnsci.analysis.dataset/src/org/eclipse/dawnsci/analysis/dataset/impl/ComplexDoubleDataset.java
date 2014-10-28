@@ -618,6 +618,7 @@ public class ComplexDoubleDataset extends CompoundDoubleDataset { // CLASS_TYPE
 	public ComplexDoubleDataset iadd(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		if (bds.getElementsPerItem() == 1) {
 			while (it.hasNext()) {
 				data[it.aIndex] += it.bDouble;
@@ -636,6 +637,7 @@ public class ComplexDoubleDataset extends CompoundDoubleDataset { // CLASS_TYPE
 	public ComplexDoubleDataset isubtract(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		if (bds.getElementsPerItem() == 1) {
 			while (it.hasNext()) {
 				data[it.aIndex] -= it.bDouble;
@@ -654,6 +656,7 @@ public class ComplexDoubleDataset extends CompoundDoubleDataset { // CLASS_TYPE
 	public ComplexDoubleDataset imultiply(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		if (bds.getElementsPerItem() == 1) {
 			while (it.hasNext()) {
 				data[it.aIndex]     *= it.bDouble; // ADD_CAST
@@ -695,6 +698,7 @@ public class ComplexDoubleDataset extends CompoundDoubleDataset { // CLASS_TYPE
 	public ComplexDoubleDataset idivide(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		if (bds.getElementsPerItem() == 1) {
 			while (it.hasNext()) {
 				data[it.aIndex]     /= it.bDouble; // ADD_CAST
@@ -769,6 +773,7 @@ public class ComplexDoubleDataset extends CompoundDoubleDataset { // CLASS_TYPE
 	public ComplexDoubleDataset ipower(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		if (bds.getElementsPerItem() == 1) {
 			while (it.hasNext()) {
 				final Complex zv = new Complex(it.bDouble, 0);
@@ -801,6 +806,7 @@ public class ComplexDoubleDataset extends CompoundDoubleDataset { // CLASS_TYPE
 	public double residual(final Object b, Dataset w, boolean ignoreNaNs) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		double sum = 0;
 		double comp = 0;
 		final int bis = bds.getElementsPerItem();

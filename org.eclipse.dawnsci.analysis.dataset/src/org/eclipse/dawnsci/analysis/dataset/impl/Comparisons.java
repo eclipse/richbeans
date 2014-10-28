@@ -62,12 +62,21 @@ public class Comparisons {
 					boolean rb = it.aDouble == bd && da.getElementDoubleAbs(it.aIndex + 1) == 0;
 					r.setAbs(it.oIndex, rb);
 				}
-			} else {
+			} else if (it.isOutputDouble()) {
 				while (it.hasNext()) {
 					final double bd = it.bDouble;
 					boolean rb = true;
 					for (int j = 0; rb && j < as; j++) {
 						rb &= da.getElementDoubleAbs(it.aIndex + j) == bd;
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else {
+				while (it.hasNext()) {
+					final long bl = it.bLong;
+					boolean rb = true;
+					for (int j = 0; rb && j < as; j++) {
+						rb &= da.getElementLongAbs(it.aIndex + j) == bl;
 					}
 					r.setAbs(it.oIndex, rb);
 				}
@@ -79,7 +88,7 @@ public class Comparisons {
 					boolean rb = ad == it.bDouble && 0 == db.getElementDoubleAbs(it.bIndex + 1);
 					r.setAbs(it.oIndex, rb);
 				}
-			} else {
+			} else if (it.isOutputDouble()) {
 				while (it.hasNext()) {
 					final double ad = it.aDouble;
 					boolean rb = true;
@@ -88,17 +97,40 @@ public class Comparisons {
 					}
 					r.setAbs(it.oIndex, rb);
 				}
+			} else {
+				while (it.hasNext()) {
+					final long al = it.aLong;
+					boolean rb = true;
+					for (int j = 0; rb && j < bs; j++) {
+						rb &= al == db.getElementLongAbs(it.bIndex + j);
+					}
+					r.setAbs(it.oIndex, rb);
+				}
 			}
 		} else {
 			if (as == 1) {
+				if (it.isOutputDouble()) {
+					while (it.hasNext()) {
+						r.setAbs(it.oIndex, it.aDouble == it.bDouble);
+					}
+				} else {
+					while (it.hasNext()) {
+						r.setAbs(it.oIndex, it.aLong == it.bLong);
+					}
+				}
+			} else if (it.isOutputDouble()) {
 				while (it.hasNext()) {
-					r.setAbs(it.oIndex, it.aDouble == it.bDouble);
+					boolean rb = true;
+					for (int j = 0; rb && j < bs; j++) {
+						rb &= da.getElementDoubleAbs(it.aIndex + j) == db.getElementDoubleAbs(it.bIndex + j);
+					}
+					r.setAbs(it.oIndex, rb);
 				}
 			} else {
 				while (it.hasNext()) {
 					boolean rb = true;
 					for (int j = 0; rb && j < bs; j++) {
-						rb &= da.getElementDoubleAbs(it.aIndex + j) == db.getElementDoubleAbs(it.bIndex + j);
+						rb &= da.getElementLongAbs(it.aIndex + j) == db.getElementLongAbs(it.bIndex + j);
 					}
 					r.setAbs(it.oIndex, rb);
 				}
@@ -146,6 +178,7 @@ public class Comparisons {
 		final BooleanDataset r = o == null ? new BooleanDataset(sl.get(0)) : o;
 
 		final BroadcastIterator it = new BroadcastIterator(da, db, r);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 		final int bs = db.getElementsPerItem();
 
@@ -260,36 +293,72 @@ public class Comparisons {
 		final int as = da.getElementsPerItem();
 		final int bs = db.getElementsPerItem();
 
-		if (as > bs) {
-			while (it.hasNext()) {
-				final double bd = it.bDouble;
-				boolean rb = true;
-				for (int j = 0; rb && j < as; j++) {
-					rb &= da.getElementDoubleAbs(it.aIndex + j) > bd;
-				}
-				r.setAbs(it.oIndex, rb);
-			}
-		} else if (as < bs) {
-			while (it.hasNext()) {
-				final double ad = it.aDouble;
-				boolean rb = true;
-				for (int j = 0; rb && j < bs; j++) {
-					rb &= ad > db.getElementDoubleAbs(it.bIndex + j);
-				}
-				r.setAbs(it.oIndex, rb);
-			}
-		} else {
-			if (as == 1) {
+		if (it.isOutputDouble()) {
+			if (as > bs) {
 				while (it.hasNext()) {
-					r.setAbs(it.oIndex, it.aDouble > it.bDouble);
-				}
-			} else {
-				while (it.hasNext()) {
+					final double bd = it.bDouble;
 					boolean rb = true;
-					for (int j = 0; rb && j < bs; j++) {
-						rb &= da.getElementDoubleAbs(it.aIndex + j) > db.getElementDoubleAbs(it.bIndex + j);
+					for (int j = 0; rb && j < as; j++) {
+						rb &= da.getElementDoubleAbs(it.aIndex + j) > bd;
 					}
 					r.setAbs(it.oIndex, rb);
+				}
+			} else if (as < bs) {
+				while (it.hasNext()) {
+					final double ad = it.aDouble;
+					boolean rb = true;
+					for (int j = 0; rb && j < bs; j++) {
+						rb &= ad > db.getElementDoubleAbs(it.bIndex + j);
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else {
+				if (as == 1) {
+					while (it.hasNext()) {
+						r.setAbs(it.oIndex, it.aDouble > it.bDouble);
+					}
+				} else {
+					while (it.hasNext()) {
+						boolean rb = true;
+						for (int j = 0; rb && j < bs; j++) {
+							rb &= da.getElementDoubleAbs(it.aIndex + j) > db.getElementDoubleAbs(it.bIndex + j);
+						}
+						r.setAbs(it.oIndex, rb);
+					}
+				}
+			}
+		} else {
+			if (as > bs) {
+				while (it.hasNext()) {
+					final double bl = it.bLong;
+					boolean rb = true;
+					for (int j = 0; rb && j < as; j++) {
+						rb &= da.getElementLongAbs(it.aIndex + j) > bl;
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else if (as < bs) {
+				while (it.hasNext()) {
+					final double al = it.aLong;
+					boolean rb = true;
+					for (int j = 0; rb && j < bs; j++) {
+						rb &= al > db.getElementLongAbs(it.bIndex + j);
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else {
+				if (as == 1) {
+					while (it.hasNext()) {
+						r.setAbs(it.oIndex, it.aLong > it.bLong);
+					}
+				} else {
+					while (it.hasNext()) {
+						boolean rb = true;
+						for (int j = 0; rb && j < bs; j++) {
+							rb &= da.getElementLongAbs(it.aIndex + j) > db.getElementLongAbs(it.bIndex + j);
+						}
+						r.setAbs(it.oIndex, rb);
+					}
 				}
 			}
 		}
@@ -334,36 +403,72 @@ public class Comparisons {
 		final int as = da.getElementsPerItem();
 		final int bs = db.getElementsPerItem();
 
-		if (as > bs) {
-			while (it.hasNext()) {
-				final double bd = it.bDouble;
-				boolean rb = true;
-				for (int j = 0; rb && j < as; j++) {
-					rb &= da.getElementDoubleAbs(it.aIndex + j) >= bd;
-				}
-				r.setAbs(it.oIndex, rb);
-			}
-		} else if (as < bs) {
-			while (it.hasNext()) {
-				final double ad = it.aDouble;
-				boolean rb = true;
-				for (int j = 0; rb && j < bs; j++) {
-					rb &= ad >= db.getElementDoubleAbs(it.bIndex + j);
-				}
-				r.setAbs(it.oIndex, rb);
-			}
-		} else {
-			if (as == 1) {
+		if (it.isOutputDouble()) {
+			if (as > bs) {
 				while (it.hasNext()) {
-					r.setAbs(it.oIndex, it.aDouble >= it.bDouble);
-				}
-			} else {
-				while (it.hasNext()) {
+					final double bd = it.bDouble;
 					boolean rb = true;
-					for (int j = 0; rb && j < bs; j++) {
-						rb &= da.getElementDoubleAbs(it.aIndex + j) >= db.getElementDoubleAbs(it.bIndex + j);
+					for (int j = 0; rb && j < as; j++) {
+						rb &= da.getElementDoubleAbs(it.aIndex + j) >= bd;
 					}
 					r.setAbs(it.oIndex, rb);
+				}
+			} else if (as < bs) {
+				while (it.hasNext()) {
+					final double ad = it.aDouble;
+					boolean rb = true;
+					for (int j = 0; rb && j < bs; j++) {
+						rb &= ad >= db.getElementDoubleAbs(it.bIndex + j);
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else {
+				if (as == 1) {
+					while (it.hasNext()) {
+						r.setAbs(it.oIndex, it.aDouble >= it.bDouble);
+					}
+				} else {
+					while (it.hasNext()) {
+						boolean rb = true;
+						for (int j = 0; rb && j < bs; j++) {
+							rb &= da.getElementDoubleAbs(it.aIndex + j) >= db.getElementDoubleAbs(it.bIndex + j);
+						}
+						r.setAbs(it.oIndex, rb);
+					}
+				}
+			}
+		} else {
+			if (as > bs) {
+				while (it.hasNext()) {
+					final double bl = it.bLong;
+					boolean rb = true;
+					for (int j = 0; rb && j < as; j++) {
+						rb &= da.getElementLongAbs(it.aIndex + j) >= bl;
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else if (as < bs) {
+				while (it.hasNext()) {
+					final double al = it.aLong;
+					boolean rb = true;
+					for (int j = 0; rb && j < bs; j++) {
+						rb &= al >= db.getElementLongAbs(it.bIndex + j);
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else {
+				if (as == 1) {
+					while (it.hasNext()) {
+						r.setAbs(it.oIndex, it.aLong >= it.bLong);
+					}
+				} else {
+					while (it.hasNext()) {
+						boolean rb = true;
+						for (int j = 0; rb && j < bs; j++) {
+							rb &= da.getElementLongAbs(it.aIndex + j) >= db.getElementLongAbs(it.bIndex + j);
+						}
+						r.setAbs(it.oIndex, rb);
+					}
 				}
 			}
 		}
@@ -405,39 +510,76 @@ public class Comparisons {
 		final BooleanDataset r = o == null ? new BooleanDataset(sl.get(0)) : o;
 
 		final BroadcastIterator it = new BroadcastIterator(da, db, r);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 		final int bs = db.getElementsPerItem();
 
-		if (as > bs) {
-			while (it.hasNext()) {
-				final double bd = it.bDouble;
-				boolean rb = true;
-				for (int j = 0; rb && j < as; j++) {
-					rb &= da.getElementDoubleAbs(it.aIndex + j) < bd;
-				}
-				r.setAbs(it.oIndex, rb);
-			}
-		} else if (as < bs) {
-			while (it.hasNext()) {
-				final double ad = it.aDouble;
-				boolean rb = true;
-				for (int j = 0; rb && j < bs; j++) {
-					rb &= ad < db.getElementDoubleAbs(it.bIndex + j);
-				}
-				r.setAbs(it.oIndex, rb);
-			}
-		} else {
-			if (as == 1) {
+		if (it.isOutputDouble()) {
+			if (as > bs) {
 				while (it.hasNext()) {
-					r.setAbs(it.oIndex, it.aDouble < it.bDouble);
-				}
-			} else {
-				while (it.hasNext()) {
+					final double bd = it.bDouble;
 					boolean rb = true;
-					for (int j = 0; rb && j < bs; j++) {
-						rb &= da.getElementDoubleAbs(it.aIndex + j) < db.getElementDoubleAbs(it.bIndex + j);
+					for (int j = 0; rb && j < as; j++) {
+						rb &= da.getElementDoubleAbs(it.aIndex + j) < bd;
 					}
 					r.setAbs(it.oIndex, rb);
+				}
+			} else if (as < bs) {
+				while (it.hasNext()) {
+					final double ad = it.aDouble;
+					boolean rb = true;
+					for (int j = 0; rb && j < bs; j++) {
+						rb &= ad < db.getElementDoubleAbs(it.bIndex + j);
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else {
+				if (as == 1) {
+					while (it.hasNext()) {
+						r.setAbs(it.oIndex, it.aDouble < it.bDouble);
+					}
+				} else {
+					while (it.hasNext()) {
+						boolean rb = true;
+						for (int j = 0; rb && j < bs; j++) {
+							rb &= da.getElementDoubleAbs(it.aIndex + j) < db.getElementDoubleAbs(it.bIndex + j);
+						}
+						r.setAbs(it.oIndex, rb);
+					}
+				}
+			}
+		} else {
+			if (as > bs) {
+				while (it.hasNext()) {
+					final double bl = it.bLong;
+					boolean rb = true;
+					for (int j = 0; rb && j < as; j++) {
+						rb &= da.getElementLongAbs(it.aIndex + j) < bl;
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else if (as < bs) {
+				while (it.hasNext()) {
+					final double al = it.aLong;
+					boolean rb = true;
+					for (int j = 0; rb && j < bs; j++) {
+						rb &= al < db.getElementLongAbs(it.bIndex + j);
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else {
+				if (as == 1) {
+					while (it.hasNext()) {
+						r.setAbs(it.oIndex, it.aLong < it.bLong);
+					}
+				} else {
+					while (it.hasNext()) {
+						boolean rb = true;
+						for (int j = 0; rb && j < bs; j++) {
+							rb &= da.getElementLongAbs(it.aIndex + j) < db.getElementLongAbs(it.bIndex + j);
+						}
+						r.setAbs(it.oIndex, rb);
+					}
 				}
 			}
 		}
@@ -479,39 +621,76 @@ public class Comparisons {
 		final BooleanDataset r = o == null ? new BooleanDataset(sl.get(0)) : o;
 
 		final BroadcastIterator it = new BroadcastIterator(da, db, r);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 		final int bs = db.getElementsPerItem();
 
-		if (as > bs) {
-			while (it.hasNext()) {
-				final double bd = it.bDouble;
-				boolean rb = true;
-				for (int j = 0; rb && j < as; j++) {
-					rb &= da.getElementDoubleAbs(it.aIndex + j) <= bd;
-				}
-				r.setAbs(it.oIndex, rb);
-			}
-		} else if (as < bs) {
-			while (it.hasNext()) {
-				final double ad = it.aDouble;
-				boolean rb = true;
-				for (int j = 0; rb && j < bs; j++) {
-					rb &= ad <= db.getElementDoubleAbs(it.bIndex + j);
-				}
-				r.setAbs(it.oIndex, rb);
-			}
-		} else {
-			if (as == 1) {
+		if (it.isOutputDouble()) {
+			if (as > bs) {
 				while (it.hasNext()) {
-					r.setAbs(it.oIndex, it.aDouble <= it.bDouble);
-				}
-			} else {
-				while (it.hasNext()) {
+					final double bd = it.bDouble;
 					boolean rb = true;
-					for (int j = 0; rb && j < bs; j++) {
-						rb &= da.getElementDoubleAbs(it.aIndex + j) <= db.getElementDoubleAbs(it.bIndex + j);
+					for (int j = 0; rb && j < as; j++) {
+						rb &= da.getElementDoubleAbs(it.aIndex + j) <= bd;
 					}
 					r.setAbs(it.oIndex, rb);
+				}
+			} else if (as < bs) {
+				while (it.hasNext()) {
+					final double ad = it.aDouble;
+					boolean rb = true;
+					for (int j = 0; rb && j < bs; j++) {
+						rb &= ad <= db.getElementDoubleAbs(it.bIndex + j);
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else {
+				if (as == 1) {
+					while (it.hasNext()) {
+						r.setAbs(it.oIndex, it.aDouble <= it.bDouble);
+					}
+				} else {
+					while (it.hasNext()) {
+						boolean rb = true;
+						for (int j = 0; rb && j < bs; j++) {
+							rb &= da.getElementDoubleAbs(it.aIndex + j) <= db.getElementDoubleAbs(it.bIndex + j);
+						}
+						r.setAbs(it.oIndex, rb);
+					}
+				}
+			}
+		} else {
+			if (as > bs) {
+				while (it.hasNext()) {
+					final double bl = it.bLong;
+					boolean rb = true;
+					for (int j = 0; rb && j < as; j++) {
+						rb &= da.getElementLongAbs(it.aIndex + j) <= bl;
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else if (as < bs) {
+				while (it.hasNext()) {
+					final double al = it.aLong;
+					boolean rb = true;
+					for (int j = 0; rb && j < bs; j++) {
+						rb &= al <= db.getElementLongAbs(it.bIndex + j);
+					}
+					r.setAbs(it.oIndex, rb);
+				}
+			} else {
+				if (as == 1) {
+					while (it.hasNext()) {
+						r.setAbs(it.oIndex, it.aLong <= it.bLong);
+					}
+				} else {
+					while (it.hasNext()) {
+						boolean rb = true;
+						for (int j = 0; rb && j < bs; j++) {
+							rb &= da.getElementLongAbs(it.aIndex + j) <= db.getElementLongAbs(it.bIndex + j);
+						}
+						r.setAbs(it.oIndex, rb);
+					}
 				}
 			}
 		}
@@ -525,7 +704,7 @@ public class Comparisons {
 	 * @param hi upper bound
 	 * @return dataset where item is true if l <= a <= h
 	 */
-	public static BooleanDataset withinRange(Object a, double lo, double hi) {
+	public static BooleanDataset withinRange(Object a, Number lo, Number hi) {
 		return withinRange(a, null, lo, hi);
 	}
 
@@ -536,7 +715,7 @@ public class Comparisons {
 	 * @param o output can be null - in which case, a new dataset is created
 	 * @return dataset where item is true if l <= a <= h
 	 */
-	public static BooleanDataset withinRange(Object a, BooleanDataset o, double lo, double hi) {
+	public static BooleanDataset withinRange(Object a, BooleanDataset o, Number lo, Number hi) {
 		final Dataset da = a instanceof Dataset ? (Dataset) a : DatasetFactory.createFromObject(a);
 
 		List<int[]> sl = BroadcastIterator.broadcastShapes(da.getShapeRef(), o == null ? null : o.getShapeRef());
@@ -546,19 +725,41 @@ public class Comparisons {
 		final SingleInputBroadcastIterator it = new SingleInputBroadcastIterator(da, r);
 		final int as = da.getElementsPerItem();
 
-		if (as == 1) {
-			while (it.hasNext()) {
-				final double ad = it.aDouble;
-				r.setAbs(it.oIndex, ad >= lo && ad <= hi);
+		if (it.isOutputDouble()) {
+			final double l = lo.doubleValue();
+			final double h = hi.doubleValue();
+			if (as == 1) {
+				while (it.hasNext()) {
+					final double ad = it.aDouble;
+					r.setAbs(it.oIndex, ad >= l && ad <= h);
+				}
+			} else {
+				while (it.hasNext()) {
+					boolean rb = true;
+					for (int j = 0; rb && j < as; j++) {
+						final double ad = da.getElementDoubleAbs(it.aIndex);
+						rb &= ad >= l && ad <= h;
+					}
+					r.setAbs(it.oIndex, rb);
+				}
 			}
 		} else {
-			while (it.hasNext()) {
-				boolean rb = true;
-				for (int j = 0; rb && j < as; j++) {
-					final double ad = da.getElementDoubleAbs(it.aIndex);
-					rb &= ad >= lo && ad <= hi;
+			final long l = lo.longValue();
+			final long h = hi.longValue();
+			if (as == 1) {
+				while (it.hasNext()) {
+					final long al = it.aLong;
+					r.setAbs(it.oIndex, al >= l && al <= h);
 				}
-				r.setAbs(it.oIndex, rb);
+			} else {
+				while (it.hasNext()) {
+					boolean rb = true;
+					for (int j = 0; rb && j < as; j++) {
+						final long al = da.getElementLongAbs(it.aIndex);
+						rb &= al >= l && al <= h;
+					}
+					r.setAbs(it.oIndex, rb);
+				}
 			}
 		}
 
@@ -582,6 +783,7 @@ public class Comparisons {
 		final Dataset db = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 
 		final BroadcastIterator it = new BroadcastIterator(da, db);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 		final int bs = db.getElementsPerItem();
 
@@ -866,6 +1068,7 @@ public class Comparisons {
 		final BooleanDataset r = o == null ? new BooleanDataset(sl.get(0)) : o;
 
 		final BroadcastIterator it = new BroadcastIterator(da, db, r);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 		final int bs = db.getElementsPerItem();
 
@@ -940,6 +1143,7 @@ public class Comparisons {
 		final BooleanDataset r = o == null ? new BooleanDataset(sl.get(0)) : o;
 
 		final BroadcastIterator it = new BroadcastIterator(da, db, r);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 		final int bs = db.getElementsPerItem();
 
@@ -1014,6 +1218,7 @@ public class Comparisons {
 		final BooleanDataset r = o == null ? new BooleanDataset(sl.get(0)) : o;
 
 		final BroadcastIterator it = new BroadcastIterator(da, db, r);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 		final int bs = db.getElementsPerItem();
 
@@ -1123,6 +1328,7 @@ public class Comparisons {
 		}
 
 		final SingleInputBroadcastIterator it = new SingleInputBroadcastIterator(da, r);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 
 		if (as == 1) {
@@ -1181,6 +1387,7 @@ public class Comparisons {
 		}
 
 		final SingleInputBroadcastIterator it = new SingleInputBroadcastIterator(da, r);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 
 		if (as == 1) {
@@ -1275,6 +1482,7 @@ public class Comparisons {
 		}
 
 		final SingleInputBroadcastIterator it = new SingleInputBroadcastIterator(da, r);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 
 		if (as == 1) {
@@ -1333,6 +1541,7 @@ public class Comparisons {
 		}
 
 		final SingleInputBroadcastIterator it = new SingleInputBroadcastIterator(da, r);
+		it.setOutputDouble(true);
 		final int as = da.getElementsPerItem();
 
 		if (as == 1) {

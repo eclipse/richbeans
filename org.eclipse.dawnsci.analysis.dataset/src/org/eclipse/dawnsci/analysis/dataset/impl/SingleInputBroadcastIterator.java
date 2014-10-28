@@ -148,14 +148,22 @@ public class SingleInputBroadcastIterator extends IndexIterator {
 		aStart = aDataset.getOffset();
 		aMax += aStart;
 		oStart = oDelta == null ? 0 : oDataset.getOffset();
+		asDouble = aDataset.hasFloatingPointElements();
 		reset();
+	}
+
+	/**
+	 * @return true if output from iterator is double
+	 */
+	public boolean isOutputDouble() {
+		return asDouble;
 	}
 
 	/**
 	 * Set to output doubles
 	 * @param asDouble
 	 */
-	public void setDoubleOutput(boolean asDouble) {
+	public void setOutputDouble(boolean asDouble) {
 		if (this.asDouble != asDouble) {
 			this.asDouble = asDouble;
 			storeCurrentValues();

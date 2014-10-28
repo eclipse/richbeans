@@ -1223,6 +1223,7 @@ public class CompoundShortDataset extends AbstractCompoundDataset {
 	public CompoundShortDataset iadd(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		if (bds.getElementsPerItem() == 1) {
 			while (it.hasNext()) {
 				data[it.aIndex] += it.bDouble;
@@ -1244,6 +1245,7 @@ public class CompoundShortDataset extends AbstractCompoundDataset {
 	public CompoundShortDataset isubtract(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		if (bds.getElementsPerItem() == 1) {
 			while (it.hasNext()) {
 				data[it.aIndex] -= it.bDouble;
@@ -1265,6 +1267,7 @@ public class CompoundShortDataset extends AbstractCompoundDataset {
 	public CompoundShortDataset imultiply(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		if (bds.getElementsPerItem() == 1) {
 			while (it.hasNext()) {
 				data[it.aIndex] *= it.bDouble;
@@ -1286,6 +1289,7 @@ public class CompoundShortDataset extends AbstractCompoundDataset {
 	public CompoundShortDataset idivide(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		if (bds.getElementsPerItem() == 1) {
 			while (it.hasNext()) {
 				final double db = it.bDouble;
@@ -1322,6 +1326,7 @@ public class CompoundShortDataset extends AbstractCompoundDataset {
 	public CompoundShortDataset iremainder(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		if (bds.getElementsPerItem() == 1) {
 			while (it.hasNext()) {
 				final short db = (short) it.bDouble; // PRIM_TYPE // ADD_CAST
@@ -1408,6 +1413,7 @@ public class CompoundShortDataset extends AbstractCompoundDataset {
 	public double residual(final Object b, final Dataset w, boolean ignoreNaNs) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		double sum = 0;
 		double comp = 0;
 		final int bis = bds.getElementsPerItem();

@@ -380,7 +380,7 @@ public interface Dataset extends IErrorDataset {
 	public IndexIterator getIterator();
 
 	/**
-	 * @param axes
+	 * @param axes axes to omit from iterator
 	 * @return a PositionIterator that misses out axes
 	 */
 	public PositionIterator getPositionIterator(int... axes);

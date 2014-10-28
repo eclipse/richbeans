@@ -100,6 +100,7 @@ class StateMachine:
 
 is_binaryop = False
 def_unsigned_mask = False
+allow_ints = False
 
 def oldmethod(name, jdoc=None, params=0):
     if is_binaryop:
@@ -142,7 +143,7 @@ def oldmethod(name, jdoc=None, params=0):
             print("\t\treturn %s(a, null);" % name)
     print("\t}\n")
 
-def beginmethod(name, jdoc=None, params=0, allow_ints=False):
+def beginmethod(name, jdoc=None, params=0):
     oldmethod(name, jdoc, params)
     if is_binaryop:
         print("\t/**\n\t * %s operator" %  name)
@@ -181,6 +182,8 @@ def beginmethod(name, jdoc=None, params=0, allow_ints=False):
     if is_binaryop:
         print("\t\tfinal Dataset db = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);")
         print("\t\tfinal BroadcastIterator it = new BroadcastIterator(da, db, o, true);")
+        if allow_ints:
+            print("\t\tit.setOutputDouble(false);");
     else:
         if allow_ints:
             print("\t\tfinal SingleInputBroadcastIterator it = new SingleInputBroadcastIterator(da, o, true, true, true);")
@@ -228,7 +231,7 @@ def sameloop(codedict, cprefix, vletter, text, use_long=False, override_long=Fal
         else:
             mask = None
         preloop(dtype, otype, oclass, ovar, is_int, use_long, override_long=override_long, mask=mask)
-        loop(text, otype, ovar, is_int, use_long, override_long)
+        loop(text, otype, ovar, override_long)
         postloop()
 
 def complexloop(codedict, cprefix, vletter, text, real):
@@ -252,7 +255,7 @@ def compoundloop(codedict, cprefix, vletter, text, use_long=False, override_long
         else:
             mask = None
         preloop(dtype, otype, oclass, ovar, is_int, use_long, override_long=override_long, mask=mask)
-        loopcompound(text, otype, ovar, is_int, use_long, override_long)
+        loopcompound(text, otype, ovar, use_override_long)
         postloop()
 
 def deftemps(text, jtype, lprefix, vars):
@@ -279,7 +282,7 @@ def deftemps(text, jtype, lprefix, vars):
                     print "%s%s %s;" % (lprefix, jtype, lhs)
     return vars
 
-def transtext(text, jtype, otype=None, lprefix="\t\t\t\t", is_int=True, use_long=False, override_long=False, vars=None):
+def transtext(text, jtype, otype=None, lprefix="\t\t\t\t\t", is_int=True, override_long=False, vars=None):
     if otype == None:
         otype = jtype
     vars = deftemps(text, jtype, lprefix, vars)
@@ -316,22 +319,30 @@ def transtext(text, jtype, otype=None, lprefix="\t\t\t\t", is_int=True, use_long
 
     return vars
 
-def loop(text, jtype, ovar, is_int, use_long, override_long):
-    if is_int and use_long:
-        jprim = "long"
-        jbox = "Long"
+def loop(text, jtype, ovar, override_long):
+    if not allow_ints:
+        print("\t\t\tif (it.isOutputDouble()) {")
+        print("\t\t\t\twhile (it.hasNext()) {")
+        if is_binaryop:
+            print("\t\t\t\t\tfinal double iax = it.aDouble;")
+            print("\t\t\t\t\tfinal double ibx = it.bDouble;")
+        else:
+            print("\t\t\t\t\tfinal double ix = it.aDouble;")
+        transtext(text, jtype, is_int=False, override_long=override_long)
+        print("\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+        print("\t\t\t\t}")
+        print("\t\t\t} else {")
     else:
-        jprim = "double"
-        jbox = "Double"
-
-    print("\t\t\twhile (it.hasNext()) {")
+        print("\t\t\t{")
+    print("\t\t\t\twhile (it.hasNext()) {")
     if is_binaryop:
-        print("\t\t\t\tfinal %s iax = it.a%s;" % (jprim, jbox))
-        print("\t\t\t\tfinal %s ibx = it.b%s;" % (jprim, jbox))
+        print("\t\t\t\t\tfinal long iax = it.aLong;")
+        print("\t\t\t\t\tfinal long ibx = it.bLong;")
     else:
-        print("\t\t\t\tfinal %s ix = it.a%s;" % (jprim, jbox))
-    transtext(text, jtype, is_int=is_int, use_long=use_long, override_long=override_long)
-    print("\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+        print("\t\t\t\t\tfinal long ix = it.aLong;")
+    transtext(text, jtype, is_int=True, override_long=override_long)
+    print("\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+    print("\t\t\t\t}")
     print("\t\t\t}")
 
 def loopcomplex(text, jtype, ovar, real, is_int):
@@ -381,74 +392,157 @@ def loopcomplex(text, jtype, ovar, real, is_int):
     print("\t\t\t\t}")
     print("\t\t\t}")
 
-def loopcompound(text, jtype, ovar, is_int, use_long, override_long):
-    if is_int and use_long:
-        jprim = "long"
-        jbox = "Long"
-    else:
-        jprim = "double"
-        jbox = "Double"
+def loopcompound(text, jtype, ovar, override_long):
     print("\t\t\tif (is == 1) {")
-    print("\t\t\t\twhile (it.hasNext()) {")
-    if is_binaryop:
-        print("\t\t\t\t\tfinal %s iax = it.a%s;" % (jprim, jbox))
-        print("\t\t\t\t\tfinal %s ibx = it.b%s;" % (jprim, jbox))
+    if not allow_ints:
+        print("\t\t\t\tif (it.isOutputDouble()) {")
+        print("\t\t\t\t\twhile (it.hasNext()) {")
+        if is_binaryop:
+            print("\t\t\t\t\t\tfinal double iax = it.aDouble;")
+            print("\t\t\t\t\t\tfinal double ibx = it.bDouble;")
+        else:
+            print("\t\t\t\t\t\tfinal double ix = it.aDouble;")
+        transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=False, override_long=override_long)
+        print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+        print("\t\t\t\t\t}")
+        print("\t\t\t\t} else {")
     else:
-        print("\t\t\t\t\tfinal %s ix = it.a%s;" % (jprim, jbox))
-    transtext(text, jtype, lprefix="\t\t\t\t\t", is_int=is_int, override_long=override_long)
-    print("\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+        print("\t\t\t\t{")
+    print("\t\t\t\t\twhile (it.hasNext()) {")
+    if is_binaryop:
+        print("\t\t\t\t\t\tfinal long iax = it.aLong;")
+        print("\t\t\t\t\t\tfinal long ibx = it.bLong;")
+    else:
+        print("\t\t\t\t\t\tfinal long ix = it.aLong;")
+    transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=True, override_long=override_long)
+    print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+    print("\t\t\t\t\t}")
     print("\t\t\t\t}")
+
     print("\t\t\t} else if (da.getElementsPerItem() == 1) {")
-    print("\t\t\t\twhile (it.hasNext()) {")
     if is_binaryop:
-        print("\t\t\t\t\tfinal %s iax = it.a%s;" % (jprim, jbox))
-        print("\t\t\t\t\t%s ibx = it.b%s;" % (jprim, jbox))
-        vars = transtext(text, jtype, lprefix="\t\t\t\t\t", is_int=is_int, override_long=override_long)
-        print("\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
-        print("\t\t\t\t\tfor (int j = 1; j < is; j++) {")
-        print("\t\t\t\t\t\tibx = db.getElement%sAbs(it.bIndex + j);" % jbox)
-        transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=is_int, vars=vars, override_long=override_long)
-        print("\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+        if not allow_ints:
+            print("\t\t\t\tif (it.isOutputDouble()) {")
+            print("\t\t\t\t\twhile (it.hasNext()) {")
+            print("\t\t\t\t\t\tfinal double iax = it.aDouble;")
+            print("\t\t\t\t\t\tdouble ibx = it.bDouble;")
+            vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=False, override_long=override_long)
+            print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+            print("\t\t\t\t\t\tfor (int j = 1; j < is; j++) {")
+            print("\t\t\t\t\t\t\tibx = db.getElementDoubleAbs(it.bIndex + j);")
+            transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=False, vars=vars, override_long=override_long)
+            print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+            print("\t\t\t\t\t\t}")
+            print("\t\t\t\t\t}")
+            print("\t\t\t\t} else {")
+        else:
+            print("\t\t\t\t{")
+        print("\t\t\t\t\twhile (it.hasNext()) {")
+        print("\t\t\t\t\t\tfinal long iax = it.aLong;")
+        print("\t\t\t\t\t\tlong ibx = it.bLong;")
+        vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=True, override_long=override_long)
+        print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+        print("\t\t\t\t\t\tfor (int j = 1; j < is; j++) {")
+        print("\t\t\t\t\t\t\tibx = db.getElementLongAbs(it.bIndex + j);")
+        transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=True, vars=vars, override_long=override_long)
+        print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+        print("\t\t\t\t\t\t}")
         print("\t\t\t\t\t}")
         print("\t\t\t\t}")
     else:
-        print("\t\t\t\t\tfinal %s ix = it.a%s;" % (jprim, jbox))
-        transtext(text, jtype, lprefix="\t\t\t\t\t", is_int=is_int, override_long=override_long)
-        print("\t\t\t\t\tfor (int j = 0; j < is; j++) {")
-        print("\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+        if not allow_ints:
+            print("\t\t\t\tif (it.isOutputDouble()) {")
+            print("\t\t\t\t\twhile (it.hasNext()) {")
+            print("\t\t\t\t\t\tfinal double ix = it.aDouble;")
+            transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=False, override_long=override_long)
+            print("\t\t\t\t\t\tfor (int j = 0; j < is; j++) {")
+            print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+            print("\t\t\t\t\t\t}")
+            print("\t\t\t\t\t}")
+            print("\t\t\t\t} else {")
+        else:
+            print("\t\t\t\t{")
+        print("\t\t\t\t\twhile (it.hasNext()) {")
+        print("\t\t\t\t\t\tfinal long ix = it.aLong;")
+        transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=True, override_long=override_long)
+        print("\t\t\t\t\t\tfor (int j = 0; j < is; j++) {")
+        print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+        print("\t\t\t\t\t\t}")
         print("\t\t\t\t\t}")
         print("\t\t\t\t}")
+
     if is_binaryop:
         print("\t\t\t} else if (db.getElementsPerItem() == 1) {")
-        print("\t\t\t\twhile (it.hasNext()) {")
-        print("\t\t\t\t\t%s iax = it.a%s;" % (jprim, jbox))
-        print("\t\t\t\t\tfinal %s ibx = it.b%s;" % (jprim, jbox))
-        vars = transtext(text, jtype, lprefix="\t\t\t\t\t", is_int=is_int, override_long=override_long)
-        print("\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
-        print("\t\t\t\t\tfor (int j = 1; j < is; j++) {")
-        print("\t\t\t\t\t\tiax = da.getElement%sAbs(it.aIndex + j);" % jbox)
-        transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=is_int, vars=vars, override_long=override_long)
-        print("\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+        if not allow_ints:
+            print("\t\t\t\tif (it.isOutputDouble()) {")
+            print("\t\t\t\t\twhile (it.hasNext()) {")
+            print("\t\t\t\t\t\tdouble iax = it.aDouble;")
+            print("\t\t\t\t\t\tfinal double ibx = it.bDouble;")
+            vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=False, override_long=override_long)
+            print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+            print("\t\t\t\t\t\tfor (int j = 1; j < is; j++) {")
+            print("\t\t\t\t\t\t\tiax = da.getElementDoubleAbs(it.aIndex + j);")
+            transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=False, vars=vars, override_long=override_long)
+            print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+            print("\t\t\t\t\t\t}")
+            print("\t\t\t\t\t}")
+            print("\t\t\t\t} else {")
+        else:
+            print("\t\t\t\t{")
+        print("\t\t\t\t\twhile (it.hasNext()) {")
+        print("\t\t\t\t\t\tlong iax = it.aLong;")
+        print("\t\t\t\t\t\tfinal long ibx = it.bLong;")
+        vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=True, override_long=override_long)
+        print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+        print("\t\t\t\t\t\tfor (int j = 1; j < is; j++) {")
+        print("\t\t\t\t\t\t\tiax = da.getElementLongAbs(it.aIndex + j);")
+        transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=True, vars=vars, override_long=override_long)
+        print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+        print("\t\t\t\t\t\t}")
         print("\t\t\t\t\t}")
         print("\t\t\t\t}")
     print("\t\t\t} else {")
-    print("\t\t\t\twhile (it.hasNext()) {")
+    if not allow_ints:
+        print("\t\t\t\tif (it.isOutputDouble()) {")
+        print("\t\t\t\t\twhile (it.hasNext()) {")
+        if is_binaryop:
+            print("\t\t\t\t\t\tdouble iax = it.aDouble;")
+            print("\t\t\t\t\t\tdouble ibx = it.bDouble;")
+            vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=False, override_long=override_long)
+            print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+            print("\t\t\t\t\t\tfor (int j = 1; j < is; j++) {")
+            print("\t\t\t\t\t\t\tiax = da.getElementDoubleAbs(it.aIndex + j);")
+            print("\t\t\t\t\t\t\tibx = db.getElementDoubleAbs(it.bIndex + j);")
+        else:
+            vars = None
+            print("\t\t\t\t\t\tfor (int j = 0; j < is; j++) {")
+            print("\t\t\t\t\t\t\tfinal double ix = da.getElementDoubleAbs(it.aIndex + j);")
+        transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=False, vars=vars, override_long=override_long)
+        print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+        print("\t\t\t\t\t\t}")
+        print("\t\t\t\t\t}")
+        print("\t\t\t\t} else {")
+    else:
+        print("\t\t\t\t{")
+    print("\t\t\t\t\twhile (it.hasNext()) {")
     if is_binaryop:
-        print("\t\t\t\t\t%s iax = it.a%s;" % (jprim, jbox))
-        print("\t\t\t\t\t%s ibx = it.b%s;" % (jprim, jbox))
-        vars = transtext(text, jtype, lprefix="\t\t\t\t\t", is_int=is_int, override_long=override_long)
-        print("\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
-        print("\t\t\t\t\tfor (int j = 1; j < is; j++) {")
-        print("\t\t\t\t\t\tiax = da.getElement%sAbs(it.aIndex + j);" % jbox)
-        print("\t\t\t\t\t\tibx = db.getElement%sAbs(it.bIndex + j);" % jbox)
+        print("\t\t\t\t\t\tlong iax = it.aLong;")
+        print("\t\t\t\t\t\tlong ibx = it.bLong;")
+        vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=True, override_long=override_long)
+        print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
+        print("\t\t\t\t\t\tfor (int j = 1; j < is; j++) {")
+        print("\t\t\t\t\t\t\tiax = da.getElementLongAbs(it.aIndex + j);")
+        print("\t\t\t\t\t\t\tibx = db.getElementLongAbs(it.bIndex + j);")
     else:
         vars = None
-        print("\t\t\t\t\tfor (int j = 0; j < is; j++) {")
-        print("\t\t\t\t\t\tfinal %s ix = da.getElement%sAbs(it.aIndex + j);" % (jprim, jbox))
-    transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=is_int, vars=vars, override_long=override_long)
-    print("\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+        print("\t\t\t\t\t\tfor (int j = 0; j < is; j++) {")
+        print("\t\t\t\t\t\t\tfinal long ix = da.getElementLongAbs(it.aIndex + j);")
+    transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=True, vars=vars, override_long=override_long)
+    print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
+    print("\t\t\t\t\t\t}")
     print("\t\t\t\t\t}")
     print("\t\t\t\t}")
+
     print("\t\t\t}")
 
 def preloop(dtype, otype, oclass, ovar=None, is_int=True, use_long=False, override_long=False, mask=None):
@@ -458,9 +552,6 @@ def preloop(dtype, otype, oclass, ovar=None, is_int=True, use_long=False, overri
         if is_int and not override_long:
             if mask is not None:
                 print("\t\t\tunsignedMask = %s;" % mask)
-            print("\t\t\tit.setDoubleOutput(false);\n")
-        else:
-            print("\t\t\tit.setDoubleOutput(true);\n")
 
 def postloop():
     print("\t\t\tbreak;")
@@ -468,7 +559,7 @@ def postloop():
 
 def func(cargo):
     f, last = cargo
-    global is_binaryop
+    global is_binaryop, allow_ints
     if "func" in last:
         dummy, params = last.split("func:", 1)
         is_binaryop = False
@@ -476,7 +567,7 @@ def func(cargo):
     else:
         dummy, params = last.split("biop:", 1)
         is_binaryop = True
-        allow_ints = False
+        allow_ints = "ibiop" in last
 
     params = params.strip().split()
     global def_unsigned_mask
@@ -496,7 +587,7 @@ def func(cargo):
         l = l.strip(' ')
         name, jdoc = l.split(" - ", 1)
         jdoc = jdoc.strip()
-        beginmethod(name, jdoc, nparams, allow_ints)
+        beginmethod(name, jdoc, nparams)
 #        if len(plist) > 0: print "Parameters", plist
         return cases, (f, '', name, jdoc, [])
 
@@ -536,7 +627,7 @@ def whichcode(line):
         return rcode, out
     elif typespec == "complex":
         return ccode, out
-    elif "func" in typespec or typespec == "biop":
+    elif "func" in typespec or "biop" in typespec:
         return None, None
     else:
         return None, out

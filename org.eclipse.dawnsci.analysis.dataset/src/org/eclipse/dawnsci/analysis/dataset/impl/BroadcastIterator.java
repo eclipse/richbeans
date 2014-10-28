@@ -165,14 +165,22 @@ public class BroadcastIterator extends IndexIterator {
 		bStart = bDataset.getOffset();
 		bMax += bStart;
 		oStart = oDelta == null ? 0 : oDataset.getOffset();
+		asDouble = aDataset.hasFloatingPointElements() || bDataset.hasFloatingPointElements();
 		reset();
+	}
+
+	/**
+	 * @return true if output from iterator is double
+	 */
+	public boolean isOutputDouble() {
+		return asDouble;
 	}
 
 	/**
 	 * Set to output doubles
 	 * @param asDouble
 	 */
-	public void setDoubleOutput(boolean asDouble) {
+	public void setOutputDouble(boolean asDouble) {
 		if (this.asDouble != asDouble) {
 			this.asDouble = asDouble;
 			storeCurrentValues();
@@ -201,14 +209,15 @@ public class BroadcastIterator extends IndexIterator {
 		final int rt;
 		final int ar = a.getRank();
 		final int br = b.getRank();
+		final int tt = AbstractDataset.getBestDType(a.getDtype(), b.getDtype());
 		if (ar == 0 ^ br == 0) { // ignore type of zero-rank dataset unless it's floating point 
 			if (ar == 0) {
-				rt = a.hasFloatingPointElements() ? a.getDtype() : b.getDtype();
+				rt = a.hasFloatingPointElements() ? tt : b.getDtype();
 			} else {
-				rt = b.hasFloatingPointElements() ? b.getDtype() : a.getDtype();
+				rt = b.hasFloatingPointElements() ? tt : a.getDtype();
 			}
 		} else {
-			rt = AbstractDataset.getBestDType(a.getDtype(), b.getDtype());
+			rt = tt;
 		}
 		final int ia = a.getElementsPerItem();
 		final int ib = b.getElementsPerItem();

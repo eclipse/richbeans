@@ -161,32 +161,32 @@ complex:
   	oy = Math.min(iay, iby);
   }
 
-biop:
+ibiop:
   bitwiseAnd - a & b, bitwise AND of a and b
 integer:
   ox = iax & ibx;
 
-biop:
+ibiop:
   bitwiseOr - a | b, bitwise inclusive OR of a and b
 integer:
   ox = iax | ibx;
 
-biop:
+ibiop:
   bitwiseXor - a ^ b, bitwise exclusive OR of a and b
 integer:
   ox = iax ^ ibx;
 
-biop:
+ibiop:
   leftShift - a << b, bitwise left shift of a by b
 integer:
   ox = iax << ibx;
 
-biop:
+ibiop:
   rightShift - a >> b, bitwise right shift of a by b
 integer:
   ox = iax >> ibx;
 
-biop: 0 u
+ibiop: 0 u
   unsignedRightShift - a >>> b, bitwise right shift of a by b with zeros added 
 integer:
   ox = (unsignedMask & iax) >>> ibx;

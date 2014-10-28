@@ -863,6 +863,7 @@ public class IntegerDataset extends AbstractDataset {
 	public IntegerDataset iadd(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		while (it.hasNext()) {
 			data[it.aIndex] += (int) it.bDouble; // ADD_CAST
 		}
@@ -874,6 +875,7 @@ public class IntegerDataset extends AbstractDataset {
 	public IntegerDataset isubtract(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		while (it.hasNext()) {
 			data[it.aIndex] = (int) (it.aDouble - it.bDouble); // INT_USE // ADD_CAST
 		}
@@ -885,6 +887,7 @@ public class IntegerDataset extends AbstractDataset {
 	public IntegerDataset imultiply(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		while (it.hasNext()) {
 			data[it.aIndex] *= (int) it.bDouble; // ADD_CAST
 		}
@@ -896,6 +899,7 @@ public class IntegerDataset extends AbstractDataset {
 	public IntegerDataset idivide(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		while (it.hasNext()) {
 			if (it.bDouble == 0) { // INT_USE
 				data[it.aIndex] = 0; // INT_USE
@@ -916,6 +920,7 @@ public class IntegerDataset extends AbstractDataset {
 	public IntegerDataset iremainder(final Object b) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		while (it.hasNext()) {
 				try {
 				data[it.aIndex] %= (int) it.bDouble; // ADD_CAST // INT_EXCEPTION
@@ -958,6 +963,7 @@ public class IntegerDataset extends AbstractDataset {
 			}
 		} else {
 			final BroadcastIterator it = new BroadcastIterator(this, bds);
+			it.setOutputDouble(true);
 			while (it.hasNext()) {
 				final double v = Math.pow(it.aDouble, it.bDouble);
 				if (Double.isInfinite(v) || Double.isNaN(v)) { // INT_ZEROTEST
@@ -975,6 +981,7 @@ public class IntegerDataset extends AbstractDataset {
 	public double residual(final Object b, final Dataset w, boolean ignoreNaNs) {
 		Dataset bds = b instanceof Dataset ? (Dataset) b : DatasetFactory.createFromObject(b);
 		final BroadcastIterator it = new BroadcastIterator(this, bds);
+		it.setOutputDouble(true);
 		double sum = 0;
 		double comp = 0;
 		{
