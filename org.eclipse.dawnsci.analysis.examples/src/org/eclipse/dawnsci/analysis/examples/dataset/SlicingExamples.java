@@ -29,7 +29,7 @@ public class SlicingExamples {
 		int count = 0;
 		for (int i = 0; i < 64; i++) {
 			IDataset image = lz.getSlice(new int[]{i, 0, 0}, new int[]{i+1,100,100}, new int[]{1,1,1});
-			image.squeeze(); // This puts shape from 1,100,100 to 100,100
+			image.squeeze(); // This changes shape from 1,100,100 to 100,100
 			++count;
             System.out.println("Array sliced "+count+" "+image);
 		}
@@ -45,7 +45,7 @@ public class SlicingExamples {
 		int count = 0;
 		for (int i = 0; i < 64; i++) {
 			IDataset image = lz.getSlice(new Slice(i, i+1), null, null);
-			image.squeeze(); // This puts shape from 1,100,100 to 100,100
+			image.squeeze(); // This changes shape from 1,100,100 to 100,100
 			++count;
             System.out.println("Slice object sliced "+count+" "+image);
 		}

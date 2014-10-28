@@ -1,5 +1,6 @@
 package org.eclipse.dawnsci.analysis.examples.dataset;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,8 +28,8 @@ import org.junit.Test;
 
 
 /**
- * How to do the basics, @see http://wiki.scipy.org/NumPy_for_Matlab_Users
- * 
+ * How to do the basics, see <a href="http://wiki.scipy.org/NumPy_for_Matlab_Users">NumPy for Matlab Users</a>.
+ * <p>
  * These examples are done as tests because it is easy to run the code.
  * However they are examples and do not actively test anything.
  *
@@ -38,7 +39,7 @@ import org.junit.Test;
 public class NumpyExamples {
 	
 	/**
-	 * IDataset is like nparray
+	 * IDataset is like ndarray
 	 */
 	private IDataset a, b;
 
@@ -136,7 +137,7 @@ public class NumpyExamples {
 	 */
 	@Test
 	public void entireRow() {
-		IDataset set = a.getSlice(new Slice(1,2), null);
+		IDataset set = a.getSliceView(new Slice(1,2));
 		System.out.println("The row at index 1 is "+set);
 	}
 	
@@ -149,7 +150,7 @@ public class NumpyExamples {
 		// a is 2x3 so we make a bigger one
 		a = Random.rand(new int[]{10, 10});
 		
-		IDataset set = a.getSlice(new Slice(0,5), null);
+		IDataset set = a.getSliceView(new Slice(5));
 		System.out.println("The shape of five rows is "+set);
 
 	}
@@ -162,7 +163,7 @@ public class NumpyExamples {
 		// a is 2x3 so we make a bigger one
 		a = Random.rand(new int[]{10, 10});
 		
-		IDataset set = a.getSlice(new Slice(5,null), null); // FIXME Talk to Peter if this is right? It gives wrong answer...
+		IDataset set = a.getSliceView(new Slice(-5,null));
 		System.out.println("The shape of last five rows is "+set);
 		
 	}
@@ -176,7 +177,7 @@ public class NumpyExamples {
 		// a is 2x3 so we make a bigger one
 		a = Random.rand(new int[]{10, 10});
 		
-		IDataset set = a.getSlice(new Slice(0,3), new Slice(4,9));
+		IDataset set = a.getSliceView(new Slice(0,3), new Slice(4,9));
 		System.out.println("The shape of the slice is "+set);
 		
 	}
@@ -190,7 +191,7 @@ public class NumpyExamples {
 		// a is 2x3 so we make a bigger one
 		a = Random.rand(new int[]{21, 10});
 
-		IDataset set = a.getSlice(new Slice(2,21,2), null);
+		IDataset set = a.getSliceView(new Slice(2,21,2), null);
 		System.out.println("The shape of the slice is "+set);
 
 	}
@@ -204,7 +205,7 @@ public class NumpyExamples {
 		// a is 2x3 so we make a bigger one
 		a = Random.rand(new int[]{21, 10});
 
-		IDataset set = a.getSlice(new Slice(null,null,2), null);
+		IDataset set = a.getSliceView(new Slice(null,null,2), null);
 		System.out.println("The shape of the everyother slice is "+set);
 	}
 
@@ -216,7 +217,7 @@ public class NumpyExamples {
 		// a is 2x3 so we make a bigger one
 		a = Random.rand(new int[]{21, 10});
 
-		IDataset set = a.getSlice(new Slice(null,null,-1), null);
+		IDataset set = a.getSliceView(new Slice(null,null,-1), null);
 		System.out.println("The shape of the reversed slice is "+set);
 
 	}
@@ -237,7 +238,7 @@ public class NumpyExamples {
      */
     @Test
     public void transpose() {
-    	IDataset trans = ((Dataset)a).transpose();
+    	IDataset trans = ((Dataset)a).getTransposedView();
     	System.out.println("a transposed is "+trans);
     }
     
@@ -246,7 +247,7 @@ public class NumpyExamples {
      */
     @Test
     public void conjTranspose() {
-    	IDataset ct = Maths.conjugate(a).transpose();
+    	IDataset ct = Maths.conjugate(a).getTransposedView();
     	System.out.println("a conjugate transposed is "+ct);
     }
     
@@ -295,8 +296,8 @@ public class NumpyExamples {
      */
     @Test
     public void matrixTest1() {
-    	IDataset g = (a.getDouble(1,2)>0.5) ? a : null;
-    	// TODO Is this right? Perhaps they mean a sub-dataset of only the values which are >0.5?
+    	Dataset g = Comparisons.greaterThan(a, 0.5);
+    	System.out.println("" + ((Dataset) a).getByBoolean(g));
     }
     
     /**extract the columms of a where vector v > 0.5
@@ -304,7 +305,9 @@ public class NumpyExamples {
     **/
     @Test
     public void matrixTest2() {
-    	// TODO Peter help please, Something with Comparisions.nonZero(...)
+    	Dataset v = Random.rand(3);
+    	Dataset nz = Comparisons.nonZero(Comparisons.greaterThan(v, 0.5)).get(0);
+    	System.out.println("" + ((Dataset) a).getByIndexes(null, nz));
     }
     
     
@@ -313,7 +316,9 @@ public class NumpyExamples {
      */
     @Test
     public void matrixTest3() {
-    	// TODO Peter help please
+    	Dataset v = Random.rand(new int[] {3, 1});
+    	Dataset nz = Comparisons.nonZero(Comparisons.greaterThan(((Dataset) v).getTransposedView(), 0.5)).get(0);
+    	System.out.println("" + ((Dataset) a).getByIndexes(null, nz));
     }
     
     /**a with elements less than 0.5 zeroed out
@@ -321,8 +326,9 @@ public class NumpyExamples {
      */
     @Test
     public void zeroedLt() {
-    	IDataset lt = Comparisons.lessThan(a, 0.5);
-    	System.out.println("Values less than 0.5 "+lt);
+    	Dataset lt = Comparisons.lessThan(a, 0.5);
+    	((Dataset) a).setByBoolean(0, lt);
+    	System.out.println("Values less than 0.5 "+lt + "" + a);
     }
     
     /**a with elements greater than 0.5 zeroed out
@@ -330,8 +336,9 @@ public class NumpyExamples {
      */
     @Test
     public void zeroedGt() {
-    	IDataset gt = Comparisons.greaterThan(a, 0.5);
-    	System.out.println("Values less than 0.5 "+gt);
+    	Dataset gt = Comparisons.greaterThan(a, 0.5);
+    	((Dataset) a).setByBoolean(0, gt);
+    	System.out.println("Values less than 0.5 "+gt + "" + a);
     }
 	
     /**set all values to the same scalar value
@@ -362,13 +369,13 @@ public class NumpyExamples {
     	IDataset y = a.getSlice(new Slice(1), null);
     	System.out.println("The slice y does not reference the original array used by a "+y);
     }
-    		
+
     /**turn array into vector (note that this forces a copy)	
      * y=x(:)                                 y = x.flatten(1)
      */
     @Test
     public void flatten() {
-    	IDataset y = ((Dataset)a).flatten();
+    	IDataset y = ((Dataset)a).flatten().clone();
     	System.out.println("The flattened dataset is "+y);
     }
     	
@@ -392,7 +399,7 @@ public class NumpyExamples {
     @Test
     public void columnVector() {
     	IDataset aran = DatasetFactory.createRange(1, 11, 1, Dataset.FLOAT64);
-        // TODO Peter need help...    	
+    	aran.resize(aran.getSize(), 1);
     }
     
     /** 
@@ -423,16 +430,16 @@ public class NumpyExamples {
     @Test
     public void various() {
     	
-    	IDataset zeros = DatasetFactory.zeros(new int[]{3, 4}, Dataset.FLOAT);
-    	zeros = DatasetFactory.zeros(new int[]{3, 4, 5}, Dataset.FLOAT);
+    	IDataset zeros = DatasetFactory.zeros(new int[]{3, 4}, Dataset.FLOAT64);
+    	zeros = DatasetFactory.zeros(new int[]{3, 4, 5}, Dataset.FLOAT64);
     	
-    	IDataset ones = DatasetFactory.ones(new int[]{3,4}, Dataset.FLOAT);
+    	IDataset ones = DatasetFactory.ones(new int[]{3,4}, Dataset.FLOAT64);
     	
-    	IDataset eye = DatasetUtils.eye(3, 3, 0, Dataset.FLOAT);
+    	IDataset eye = DatasetUtils.eye(3, 3, 0, Dataset.FLOAT64);
     	
     	IDataset rand = Random.rand(new int[]{3,4});
     	
-    	IDataset line = DatasetUtils.linSpace(1, 3, 4, Dataset.FLOAT);
+    	IDataset line = DatasetUtils.linSpace(1, 3, 4, Dataset.FLOAT64);
     }
      
     /**two 2D arrays: one of x values, the other of y values
@@ -440,8 +447,8 @@ public class NumpyExamples {
      */
     @Test
     public void meshGrid() {
-    	List<Dataset> mg = DatasetUtils.meshGrid(DatasetFactory.createRange(0, 9, 1, Dataset.FLOAT64),
-    			                                 DatasetFactory.createRange(0, 6, 1, Dataset.FLOAT64));
+    	List<Dataset> mg = DatasetUtils.meshGrid(DatasetFactory.createRange(9, Dataset.FLOAT64),
+    			                                 DatasetFactory.createRange(6, Dataset.FLOAT64));
     	System.out.println("Created mesh grid of size "+mg.size());
     }
     
@@ -450,7 +457,17 @@ public class NumpyExamples {
      */
     @Test
     public void oGrid() {
-    	// TODO Peter how to we do ogrid?
+    	Dataset[] indexes = new Dataset[] {DatasetFactory.createRange(9, Dataset.FLOAT64),
+                DatasetFactory.createRange(6, Dataset.FLOAT64)};
+    	List<Dataset> og = new ArrayList<>();
+    	int rank = indexes.length;
+    	int[] shape = new int[rank];
+    	Arrays.fill(shape, 1);
+    	for (int i = 0; i < rank; i++) {
+    		shape[i] = indexes[i].getSize();
+    		og.add(indexes[i].reshape(shape));
+    		shape[i] = 1;
+    	}
     }
     
     /**create m by n copies of a
@@ -560,7 +577,16 @@ public class NumpyExamples {
     */
     @Test
     public void bitAnd() {
-    	// TODO Not possible without looping?
+    	IDataset and;
+    	try {
+    		and = Maths.bitwiseAnd(a, b);
+    		System.err.println("Should raise exception for floating point datasets");
+    	} catch (Exception e) {
+    		
+    	}
+
+    	and = Maths.bitwiseAnd(DatasetUtils.cast(a, Dataset.INT32), DatasetUtils.cast(b, Dataset.INT16));
+      	System.out.println("Result of a & b " + and);
     }
     
     /** bitwise OR operator (Python native and Numpy ufunc)
@@ -568,7 +594,16 @@ public class NumpyExamples {
     */
     @Test
     public void bitOr() {
-    	// TODO Not possible without looping?
+    	IDataset or;
+    	try {
+    		or = Maths.bitwiseOr(a, b);
+    		System.err.println("Should raise exception for floating point datasets");
+    	} catch (Exception e) {
+    		
+    	}
+
+    	or = Maths.bitwiseOr(DatasetUtils.cast(a, Dataset.INT32), DatasetUtils.cast(b, Dataset.INT16));
+      	System.out.println("Result of a | b " + or);
     }
     
     /**inverse of square matrix a

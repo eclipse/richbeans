@@ -16,7 +16,7 @@ import org.junit.Test;
  * This is useful when dealing with UIs and algorithms which can act on 
  * data a slice at a time.
  * 
- * Lazy Data is usually:
+ * Lazy data is usually:
  * 1. An HDF5 file which offers slicing without loading all data
  * 2. A directory of images in which each image is not loaded to memory at the same time.
  * 3. A lazy random which is used for testing.
@@ -27,7 +27,7 @@ import org.junit.Test;
 public class LazyExamples {
 
 	/**
-	 * Lazy datsets can exist which are too big to fit in memory
+	 * Lazy datasets can exist which are too big to fit in memory
 	 */
 	@Test
 	public void lazyLarge1() {

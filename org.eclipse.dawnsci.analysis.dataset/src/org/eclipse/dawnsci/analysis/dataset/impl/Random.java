@@ -176,10 +176,14 @@ public class Random {
 
 		return data;
 	}
-	
+
+	/**
+	 * @param shape
+	 * @return a lazy dataset with uniformly distributed random numbers
+	 */
 	public static ILazyDataset lazyRand(int... shape) {
 		
-		return new LazyDataset("random", Dataset.FLOAT, shape, new ILazyLoader() {
+		return new LazyDataset("random", Dataset.FLOAT64, shape, new ILazyLoader() {
 
 			@Override
 			public boolean isFileReadable() {
@@ -188,14 +192,34 @@ public class Random {
 
 			@Override
 			public IDataset getDataset(IMonitor mon, int[] oshape, int[] start, int[] stop, int[] step) throws Exception {
-				
-                final int[] rshape = new int[start.length];
-                for (int i = 0; i < rshape.length; i++) {
-                	rshape[i] = (stop[i]-start[i])/step[i];
+				final int rank = oshape.length;
+				int[] lstart, lstop, lstep;
+
+				if (step == null) {
+					lstep = new int[rank];
+					for (int i = 0; i < rank; i++) {
+						lstep[i] = 1;
+					}
+				} else {
+					lstep = step;
 				}
-                return rand(rshape);
+
+				if (start == null) {
+					lstart = new int[rank];
+				} else {
+					lstart = start;
+				}
+
+				if (stop == null) {
+					lstop = new int[rank];
+				} else {
+					lstop = stop;
+				}
+
+				int[] newShape = AbstractDataset.checkSlice(oshape, start, stop, lstart, lstop, lstep);
+
+                return rand(newShape);
 			}
-			
 		});
 	}
 }
