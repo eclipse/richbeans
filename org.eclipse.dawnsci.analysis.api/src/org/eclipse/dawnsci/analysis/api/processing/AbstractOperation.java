@@ -24,6 +24,21 @@ import org.eclipse.dawnsci.analysis.api.metadata.OriginMetadata;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
 
+/**
+ * Abstract implementation of IOperation.
+ * 
+ * Simplest method to add a new operation is to extend this class and override the process method, which receives either 1D or 2D
+ * datasets and should return either 2D or 1D datasets with correctly configured axesmetadata, and single value datasets of shape [1]
+ * as auxiliary data.
+ * 
+ * Overriding execute gives access to the unsqueezed data (rank the same as the initial dataset being processed) and all axes items,
+ * but care must be taken to maintain the size 1 dimensions and axes, which the process method does for you.
+ * 
+ * Should return OperationData unless there is a very good reason to extend it.
+ *
+ * @param <T>
+ * @param <D>
+ */
 public abstract class AbstractOperation<T extends IOperationModel, D extends OperationData> implements IOperation<T, D> {
 
 	protected T model;
@@ -72,6 +87,15 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		
 	}
 	
+	/**
+	 * Pads the output dataset (and axes) to the match the rank of the input dataset, accouting for any loss of dimensionality
+	 * in the process. Suitable only for 2D and 1D datasets
+	 * 
+	 * @param output
+	 * @param original
+	 * @return <D>
+	 * @throws OperationException
+	 */
 	private D updateOutputToFullRank(D output, IDataset original) throws OperationException {
 		
 		int outr = output.getData().getRank();
@@ -87,6 +111,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			rankDif = getInputRank().getRank() - getOutputRank().getRank();
 		}
 		
+		//Single image/line case, nothing to alter
 		if (inr == outr) return output;
 		
 		List<AxesMetadata> metadata = null;
@@ -98,10 +123,12 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			throw new OperationException(this, e);
 		}
 		
+		//Clone and sort dimensions for searching
 		int[] datadims = getOriginalDataDimensions(original).clone();
 		Arrays.sort(datadims);
 		
-		AxesMetadata corMeta  = null;
+		//Update rank of dataset (will automatically update rank of axes)
+		updateOutputDataShape(output.getData(), inr-rankDif, datadims, rankDif);
 		
 		if (metadata != null && !metadata.isEmpty() && metadata.get(0) != null) {
 			
@@ -116,126 +143,69 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			
 			AxesMetadata axOut = null;
 			if (metaout != null && !metaout.isEmpty()) axOut = metaout.get(0);
+			if (axOut == null) axOut = inMeta.createAxesMetadata(output.getData().getRank());
 			
-			
+			//Clone to get copies of lazy datasets
 			AxesMetadata cloneMeta = (AxesMetadata) inMeta.clone();
 			
-			if (getInputRank().getRank() == getOutputRank().getRank()) {
-				//axes will also be same rank
-				corMeta = cloneMeta;
-				int c = 0;
-				int[] shape = new int[inr];
+			if (rankDif == 0) {
 				
-				for (int i : datadims) {
-					if (c >= outr) continue;
-					ILazyDataset[] axes = null;
-					if (axOut != null) {
-						Arrays.fill(shape, 1);
-						axes = axOut.getAxis(c++);
-						if (axes != null) for (ILazyDataset axis : axes) {
-							if (axis == null) continue;
-							axis.squeeze();
-							shape[i] = axis.getShape()[0];
-							axis.setShape(shape);
-						}
+				for (int i = 0; i< original.getRank(); i++) {
+					if (Arrays.binarySearch(datadims, i) < 0) {
+						axOut.setAxis(i, cloneMeta.getAxis(i));
 					}
-					
-					corMeta.setAxis(i, axes == null ? new ILazyDataset[1] : axes);
 				}
 				
-			} else if (getInputRank().getRank() > getOutputRank().getRank()) {
-				//made smaller
+			} else {
+				int j = 0;
+				int[] shape = new int[output.getData().getRank()];
+				Arrays.fill(shape, 1);
 				
-				//rankDif = getInputRank().getRank() - getOutputRank().getRank();
-				int[] shape = new int[inr-rankDif];
-				corMeta = inMeta.createAxesMetadata(inr-rankDif);
-				int count = 0;
-				for (int i = 0; i < inr; i++) {
-					if ((Arrays.binarySearch(datadims, i) >= 0 || axOut == null)) {
-						if (count < rankDif) {
-							ILazyDataset[] axes = null;
-							if (axOut != null) {
-								Arrays.fill(shape, 1);
-								axes = axOut.getAxis(count++);
-								if (axes != null) for (ILazyDataset axis : axes) {
-									axis.squeeze();
-									shape[i] = axis.getShape()[0];
-									axis.setShape(shape);
-								}
-							}
-							if (i < shape.length) corMeta.setAxis(i, axes == null ? new ILazyDataset[1] : axes);
-						}
-					} else {
-						ILazyDataset[] axes = null;
-							Arrays.fill(shape, 1);
-							axes = cloneMeta.getAxis(i);
-							if (axes != null) for (ILazyDataset axis : axes) {
-								if (axis == null) continue;
-								ILazyDataset squeeze = axis.getSlice().squeeze();
-								shape[i] = squeeze.getShape().length > 0 ? squeeze.getShape()[0] : 1;
-								axis.setShape(shape);
-							}
-							corMeta.setAxis(i-count, axes == null ? new ILazyDataset[1] : axes);
+				for (int i = 0; i< original.getRank(); i++) {
+					if (Arrays.binarySearch(datadims, i) < 0) {
+						ILazyDataset[] axis = cloneMeta.getAxis(i);
+						if (axis != null) {
+							for (ILazyDataset ax : axis) if (ax != null) ax.setShape(shape); 
+							axOut.setAxis(i+j, cloneMeta.getAxis(i));
 						}
 						
-					}
-				
-			} else if (getInputRank().getRank() < getOutputRank().getRank())  {
-				//made bigger
-				//FIXME not actually working yet!!!!!
-				//int rankDif = getInputRank().getRank() - getOutputRank().getRank();
-				corMeta = inMeta.createAxesMetadata(inr-rankDif);
-				int[] shape = new int[inr-rankDif];
-				int count = 0;
-				for (int i = 0; i < inr-rankDif; i++) {
-					if ((Arrays.binarySearch(datadims, i) < 0 || axOut == null) && count > rankDif) {
-						ILazyDataset[] axes = null;
-						if (axOut != null) {
-							Arrays.fill(shape, 1);
-							axes = axOut.getAxis(i);
-							for (ILazyDataset axis : axes) {
-								ILazyDataset squeeze = axis.getSlice().squeeze();
-								shape[i] = squeeze.getShape()[0];
-								axis.setShape(shape);
-							}
-						}
-						corMeta.setAxis(i, axes);
 					} else {
-						ILazyDataset[] axes = null;
-						if (axOut != null) {
-							Arrays.fill(shape, 1);
-							axes = cloneMeta.getAxis(i);
-							for (ILazyDataset axis : axes) {
-								ILazyDataset squeeze = axis.getSlice().squeeze();
-								shape[i] = squeeze.getShape()[0];
-								axis.setShape(shape);
-							}
-						}
-						corMeta.setAxis(i-count, axes);
+						j--;
 					}
 				}
-			}
-			
-			output.getData().clearMetadata(AxesMetadata.class);
-//			updateOutputDataShape(output.getData(), inr+rankDiff, datadims);
-			
-//			if (corMeta != null) output.getData().setMetadata(corMeta);
-			
+			} 
 		}
-		
-		updateOutputDataShape(output.getData(), inr-rankDif, datadims);
-		if (corMeta != null) output.getData().setMetadata(corMeta);
 		
 		updateAuxData(output.getAuxData(), original);
 		
 		return output;
 	}
 	
-	private void updateOutputDataShape(IDataset out, int rank, int[] dataDims) {
-		int[] shape = out.squeeze().getShape();
+	/**
+	 * Update the rank of the output data, and its axes to be consistent with the input
+	 * 
+	 * @param out
+	 * @param rank
+	 * @param dataDims
+	 * @param rankDif
+	 */
+	private void updateOutputDataShape(IDataset out, int rank, int[] dataDims, int rankDif) {
+		int[] shape = out.getSliceView().squeeze().getShape();
 		
 		int[] updated = new int[rank];
 		Arrays.fill(updated, 1);
+		
+		if (rankDif == 0) {
+			//1D-1D or 2D - 2D
+			for (int i = 0; i< shape.length; i++) updated[dataDims[i]] = shape[i]; 
+		} else if ( rankDif > 0) {
+			//1D
+			updated[dataDims[0]] = shape[0];
+		} else if (rankDif < 0) {
+			//2D from 1D
+			updated[dataDims[0]] = shape[0];
+			updated[updated.length-1] = shape[1];
+		}
 		
 		for (int i = 0 ; i < Math.min(dataDims.length,shape.length); i++) {
 			updated[dataDims[i]] = shape[i]; 
@@ -246,6 +216,11 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		
 	}
 	
+	/**
+	 * Updates the auxiliary data (of shape [1]) to correct rank and adds all axes of rank zero (when squeezed)
+	 * @param auxData
+	 * @param original
+	 */
 	private void updateAuxData(Serializable[] auxData, IDataset original){
 		
 		if (auxData == null || auxData[0] == null) return;
@@ -300,6 +275,16 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		}
 	}
 	
+	/**
+	 * Simplest method to override to produce a new Operation.
+	 * 
+	 * Is given data of the input rank, should produce data of the expected output rank (and aux data of shape [1] if required)
+	 * 
+	 * @param input
+	 * @param monitor
+	 * @return <D>
+	 * @throws OperationException
+	 */
 	@SuppressWarnings("unused")
 	protected D process(IDataset input, IMonitor monitor) throws OperationException {
 		return null;
@@ -359,6 +344,11 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		this.model = model;
 	}
 
+	/**
+	 * Convenience method to get first set of axes from the Datasets metadata, can return null
+	 * @param slice
+	 * @return axes
+	 */
 	public static ILazyDataset[] getFirstAxes(IDataset slice) {
 		List<AxesMetadata> metaList = null;
 
@@ -377,6 +367,11 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		return am.getAxes();
 	}
 
+	/**
+	 * Convenience method to get first mask from the Datasets metadata, can return null
+	 * @param slice
+	 * @return mask
+	 */
 	public static ILazyDataset getFirstMask(IDataset slice) {
 
 		List<MaskMetadata> metaList = null;
@@ -396,6 +391,11 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		return mm.getMask();
 	}
 
+	/**
+	 * Convenience method to get first diffraction metadata from the Dataset, can return null
+	 * @param slice
+	 * @return dm
+	 */
 	public static IDiffractionMetadata getFirstDiffractionMetadata(IDataset slice) {
 
 		List<IMetadata> metaList;
@@ -415,6 +415,11 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		return null;
 	}
 
+	/**
+	 * Convenience method to get the data dimensions of the original Dataset, can return null, but really should never happpen
+	 * @param slice
+	 * @return datadims
+	 */
 	public static int[] getOriginalDataDimensions(IDataset slice) {
 
 		OriginMetadata originMetadata = getOriginMetadata(slice);
@@ -423,6 +428,11 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 
 	}
 	
+	/**
+	 * Convenience method to origin metadata from slice, can return null, but really should never happpen
+	 * @param slice
+	 * @return origin
+	 */
 	public static OriginMetadata getOriginMetadata(IDataset slice){
 		List<OriginMetadata> metaList = null;
 
@@ -437,6 +447,13 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		return metaList.get(0);
 	}
 
+	/**
+	 * Convenience method to copy the metadata from one dataset to another.
+	 * Use if a process doesnt change the shape of the data to maintain axes, masks etc
+	 * 
+	 * @param original
+	 * @param out
+	 */
 	public void copyMetadata(IDataset original, IDataset out) {
 		try {
 			List<MetadataType> metadata = original.getMetadata(null);
