@@ -756,7 +756,8 @@ public class LinearAlgebra {
 	 * @return array of singular values
 	 */
 	public static double[] calcSingularValues(Dataset a) {
-		return (double[]) calcSingularValueDecomposition(a)[1].getBuffer();
+		SingularValueDecomposition svd = new SingularValueDecomposition(createRealMatrix(a));
+		return svd.getSingularValues();
 	}
 
 
@@ -789,6 +790,16 @@ public class LinearAlgebra {
 	public static int calcMatrixRank(Dataset a) {
 		SingularValueDecomposition svd = new SingularValueDecomposition(createRealMatrix(a));
 		return svd.getRank();
+	}
+
+	/**
+	 * Calculate condition number of matrix by singular value decomposition method
+	 * @param a
+	 * @return condition number
+	 */
+	public static double calcConditionNumber(Dataset a) {
+		SingularValueDecomposition svd = new SingularValueDecomposition(createRealMatrix(a));
+		return svd.getConditionNumber();
 	}
 
 	/**
