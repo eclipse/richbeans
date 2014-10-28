@@ -368,6 +368,12 @@ public interface Dataset extends IErrorDataset {
 	public Dataset flatten();
 
 	/**
+	 * Get unique items
+	 * @return a sorted dataset of unique items
+	 */
+	public Dataset getUniqueItems();
+
+	/**
 	 * @param withPosition
 	 *            set true if position is needed
 	 * @return an IndexIterator tailored for this dataset

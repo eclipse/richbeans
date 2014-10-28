@@ -14,6 +14,8 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.commons.math3.complex.Complex;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
@@ -584,6 +586,23 @@ public class FloatDataset extends AbstractDataset {
 		setDirty();
 		return this;
 		// throw new UnsupportedOperationException("Cannot sort dataset"); // BOOLEAN_USE
+	}
+
+	@Override
+	public FloatDataset getUniqueItems() {
+		Set<Float> set = new TreeSet<Float>(); // CLASS_TYPE
+		IndexIterator it = getIterator();
+		while (it.hasNext()) {
+			set.add(data[it.index]);
+		}
+
+		FloatDataset u = new FloatDataset(set.size()); // CLASS_TYPE
+		int i = 0;
+		float[] udata = u.getData(); // PRIM_TYPE
+		for (Float v : set) { // CLASS_TYPE
+			udata[i++] = v;
+		}
+		return u;
 	}
 
 	@Override

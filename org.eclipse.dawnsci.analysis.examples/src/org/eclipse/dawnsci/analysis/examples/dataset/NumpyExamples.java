@@ -802,9 +802,10 @@ public class NumpyExamples {
     **/
     @Test
     public void unique() {
-    	// TODO needs a sort and loop?
+    	Dataset u = Random.rand(100).imultiply(10).cast(Dataset.INT16);
+    	System.out.println("Unique is " + u.getUniqueItems().toString(true));
     }
-    
+
     /**Squeeze
      * squeeze(a)                      a.squeeze()
      */

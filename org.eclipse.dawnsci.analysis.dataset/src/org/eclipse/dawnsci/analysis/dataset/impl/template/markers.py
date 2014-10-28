@@ -163,7 +163,7 @@ class transmutate(object):
         '''
         Java class name for boxed primitive
         '''
-        if self.isobj:
+        if self.isobj and 'valueOf' in line:
             l = line.replace(self.spclass, '')
             l = l.replace('.valueOf(', '')
             l = l.replace(');', ';')

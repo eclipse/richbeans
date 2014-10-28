@@ -14,6 +14,8 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
@@ -518,6 +520,23 @@ public class BooleanDatasetBase extends AbstractDataset {
 	@Override
 	public BooleanDatasetBase sort(Integer axis) {
 		throw new UnsupportedOperationException("Cannot sort dataset"); // BOOLEAN_USE
+	}
+
+	@Override
+	public BooleanDatasetBase getUniqueItems() {
+		Set<Boolean> set = new TreeSet<Boolean>(); // CLASS_TYPE
+		IndexIterator it = getIterator();
+		while (it.hasNext()) {
+			set.add(data[it.index]);
+		}
+
+		BooleanDataset u = new BooleanDataset(set.size()); // CLASS_TYPE
+		int i = 0;
+		boolean[] udata = u.getData(); // PRIM_TYPE
+		for (Boolean v : set) { // CLASS_TYPE
+			udata[i++] = v;
+		}
+		return u;
 	}
 
 	@Override

@@ -57,6 +57,11 @@ public abstract class AbstractCompoundDataset extends AbstractDataset implements
 	}
 
 	@Override
+	public Dataset getUniqueItems() {
+		throw new UnsupportedOperationException("Cannot sort compound datasets");
+	}
+
+	@Override
 	public IndexIterator getIterator(final boolean withPosition) {
 		if (stride != null)
 			return new StrideIterator(isize, shape, stride, offset);
