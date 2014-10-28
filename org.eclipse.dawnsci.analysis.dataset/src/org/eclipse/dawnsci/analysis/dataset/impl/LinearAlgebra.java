@@ -15,6 +15,7 @@ import java.util.List;
 import org.apache.commons.math3.complex.Complex;
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.linear.ArrayRealVector;
+import org.apache.commons.math3.linear.CholeskyDecomposition;
 import org.apache.commons.math3.linear.ConjugateGradient;
 import org.apache.commons.math3.linear.EigenDecomposition;
 import org.apache.commons.math3.linear.LUDecomposition;
@@ -760,6 +761,7 @@ public class LinearAlgebra {
 
 
 	/**
+	 * Calculate singular value decomposition A = U S V^T
 	 * @param a
 	 * @return array of U - orthogonal matrix, s - singular values vector, V - orthogonal matrix
 	 */
@@ -767,6 +769,26 @@ public class LinearAlgebra {
 		SingularValueDecomposition svd = new SingularValueDecomposition(createRealMatrix(a));
 		return new Dataset[] {createDataset(svd.getU()), new DoubleDataset(svd.getSingularValues()),
 				createDataset(svd.getV())};
+	}
+
+	/**
+	 * Calculate (Moore-Penrose) pseudo-inverse
+	 * @param a
+	 * @return pseudo-inverse
+	 */
+	public static Dataset calcPseudoInverse(Dataset a) {
+		SingularValueDecomposition svd = new SingularValueDecomposition(createRealMatrix(a));
+		return createDataset(svd.getSolver().getInverse());
+	}
+
+	/**
+	 * Calculate matrix rank by singular value decomposition method
+	 * @param a
+	 * @return effective numerical rank of matrix
+	 */
+	public static int calcMatrixRank(Dataset a) {
+		SingularValueDecomposition svd = new SingularValueDecomposition(createRealMatrix(a));
+		return svd.getRank();
 	}
 
 	/**
@@ -778,8 +800,9 @@ public class LinearAlgebra {
 	}
 
 	/**
+	 * Calculate eigen decomposition A = V D V^T
 	 * @param a
-	 * @return dataset of eigenvalues (can be double or complex double) and dataset of eigenvectors
+	 * @return array of D eigenvalues (can be double or complex double) and V eigenvectors
 	 */
 	public static Dataset[] calcEigenDecomposition(Dataset a) {
 		EigenDecomposition evd = new EigenDecomposition(createRealMatrix(a));
@@ -797,6 +820,7 @@ public class LinearAlgebra {
 	}
 
 	/**
+	 * Calculate QR decomposition A = Q R
 	 * @param a
 	 * @return array of Q and R
 	 */
@@ -806,6 +830,7 @@ public class LinearAlgebra {
 	}
 
 	/**
+	 * Calculate LU decomposition A = P^-1 L U
 	 * @param a
 	 * @return array of L, U and P
 	 */
@@ -816,6 +841,41 @@ public class LinearAlgebra {
 	}
 
 	/**
+	 * Calculate inverse of square dataset
+	 * @param a
+	 * @return inverse
+	 */
+	public static Dataset calcInverse(Dataset a) {
+		LUDecomposition lud = new LUDecomposition(createRealMatrix(a));
+		return createDataset(lud.getSolver().getInverse());
+	}
+
+	/**
+	 * Solve linear matrix equation A x = v
+	 * @param a
+	 * @param v
+	 * @return x
+	 */
+	public static Dataset solve(Dataset a, Dataset v) {
+		LUDecomposition lud = new LUDecomposition(createRealMatrix(a));
+		RealVector x = createRealVector(v);
+		MatrixUtils.solveLowerTriangularSystem(lud.getL(), x);
+		return createDataset(x);
+	}
+
+	/**
+	 * Calculate Cholesky decomposition A = L L^T
+	 * @param a
+	 * @return L
+	 */
+	public static Dataset calcCholeskyDecomposition(Dataset a) {
+		CholeskyDecomposition cd = new CholeskyDecomposition(createRealMatrix(a));
+		return createDataset(cd.getL());
+	}
+
+	/**
+	 * Calculation A x = v by conjugate gradient method with the stopping criterion being
+	 * that the estimated residual r = v - A x satisfies ||r|| < ||v|| with maximum of 100 iterations
 	 * @param a
 	 * @param v
 	 * @return solution of A^-1 v by conjugate gradient method
@@ -838,6 +898,7 @@ public class LinearAlgebra {
 		return createDataset(cg.solve((RealLinearOperator) createRealMatrix(a), createRealVector(v)));
 	}
 
+	
 	private static RealMatrix createRealMatrix(Dataset a) {
 		if (a.getRank() != 2) {
 			throw new IllegalArgumentException("Dataset must be rank 2");

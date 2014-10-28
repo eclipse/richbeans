@@ -34,12 +34,14 @@ public class NumpyExamples {
 	/**
 	 * IDataset is like ndarray
 	 */
-	private IDataset a, b;
+	private Dataset a, b, c, v;
 
 	@Before
 	public void create() {
-		a = new DoubleDataset(new double[]{1,2,3,4,5,6}, 2, 3);
+		a = new DoubleDataset(new double[]{1,2,3,6,4,5,8,9,7}, 3, 3);
 		b = new DoubleDataset(new double[]{1.1,2.2,3.3,4.4,5.5,6.6}, 2, 3);
+		c = new DoubleDataset(new double[]{1.1,2.2,3.3,4.4,5.5,6.6,7.7,8.8,9.9}, 3, 3);
+		v = new DoubleDataset(new double[]{7,1,9});
 	}
 	
 	/**
@@ -90,10 +92,10 @@ public class NumpyExamples {
 	@Test
 	public void concatenate() {
 		
+		IDataset h1 = DatasetUtils.concatenate(new IDataset[]{a,c},   1);
+
 		IDataset c = new DoubleDataset(new double[]{1,2,3,4,5,6}, 2, 3);
 		IDataset d = new DoubleDataset(new double[]{1,2,3,4,5,6}, 2, 3);
-
-		IDataset h1 = DatasetUtils.concatenate(new IDataset[]{a,b},   1);
 		IDataset h2 = DatasetUtils.concatenate(new IDataset[]{c,d},   1);
 		IDataset m  = DatasetUtils.concatenate(new IDataset[]{h1,h2}, 0);
 		
@@ -231,7 +233,7 @@ public class NumpyExamples {
      */
     @Test
     public void transpose() {
-    	IDataset trans = ((Dataset)a).getTransposedView();
+    	IDataset trans = a.getTransposedView();
     	System.out.println("a transposed is "+trans);
     }
     
@@ -253,7 +255,7 @@ public class NumpyExamples {
     	IDataset c = Maths.multiply(a, b);
        	System.out.println("Multiply element-wise to new array is "+c);
 
-        ((Dataset)a).imultiply(b);
+        a.imultiply(b);
        	System.out.println("Multiply element-wise on a is "+a);
     }
     
@@ -267,7 +269,7 @@ public class NumpyExamples {
     	IDataset c = Maths.divide(a, b);
        	System.out.println("Divide element-wise to new array is "+c);
 
-        ((Dataset)a).idivide(b);
+        a.idivide(b);
        	System.out.println("Divide element-wise on a is "+a);
     }
 
@@ -280,7 +282,7 @@ public class NumpyExamples {
     	IDataset c = Maths.power(a, 3);
        	System.out.println("Exponent element-wise to new array is "+c);
 
-        ((Dataset)a).ipower(3);
+        a.ipower(3);
        	System.out.println("Exponent element-wise on a is "+a);
     }
     
@@ -290,7 +292,7 @@ public class NumpyExamples {
     @Test
     public void matrixTest1() {
     	Dataset g = Comparisons.greaterThan(a, 0.5);
-    	System.out.println("" + ((Dataset) a).getByBoolean(g));
+    	System.out.println("" + a.getByBoolean(g));
     }
     
     /**extract the columms of a where vector v > 0.5
@@ -300,7 +302,7 @@ public class NumpyExamples {
     public void matrixTest2() {
     	Dataset v = Random.rand(3);
     	Dataset nz = Comparisons.nonZero(Comparisons.greaterThan(v, 0.5)).get(0);
-    	System.out.println("" + ((Dataset) a).getByIndexes(null, nz));
+    	System.out.println("" + a.getByIndexes(null, nz));
     }
     
     
@@ -310,8 +312,8 @@ public class NumpyExamples {
     @Test
     public void matrixTest3() {
     	Dataset v = Random.rand(new int[] {3, 1});
-    	Dataset nz = Comparisons.nonZero(Comparisons.greaterThan(((Dataset) v).getTransposedView(), 0.5)).get(0);
-    	System.out.println("" + ((Dataset) a).getByIndexes(null, nz));
+    	Dataset nz = Comparisons.nonZero(Comparisons.greaterThan(( v).getTransposedView(), 0.5)).get(0);
+    	System.out.println("" + a.getByIndexes(null, nz));
     }
     
     /**a with elements less than 0.5 zeroed out
@@ -320,7 +322,7 @@ public class NumpyExamples {
     @Test
     public void zeroedLt() {
     	Dataset lt = Comparisons.lessThan(a, 0.5);
-    	((Dataset) a).setByBoolean(0, lt);
+    	a.setByBoolean(0, lt);
     	System.out.println("Values less than 0.5 "+lt + "" + a);
     }
     
@@ -330,7 +332,7 @@ public class NumpyExamples {
     @Test
     public void zeroedGt() {
     	Dataset gt = Comparisons.greaterThan(a, 0.5);
-    	((Dataset) a).setByBoolean(0, gt);
+    	a.setByBoolean(0, gt);
     	System.out.println("Values less than 0.5 "+gt + "" + a);
     }
 	
@@ -339,7 +341,7 @@ public class NumpyExamples {
      */
     @Test
     public void setScalar() {
-    	((Dataset)a).fill(3);
+    	a.fill(3);
     	System.out.println("Set all values to 3 "+a);
     }
     
@@ -368,7 +370,7 @@ public class NumpyExamples {
      */
     @Test
     public void flatten() {
-    	IDataset y = ((Dataset)a).flatten().clone();
+    	IDataset y = a.flatten().clone();
     	System.out.println("The flattened dataset is "+y);
     }
     	
@@ -479,7 +481,7 @@ public class NumpyExamples {
      */
     @Test
     public void concatenateColumns() {
-		IDataset h1 = DatasetUtils.concatenate(new IDataset[]{a,b},   1);
+		IDataset h1 = DatasetUtils.concatenate(new IDataset[]{a,c},   1);
 		System.out.println("Concatenate (already done!) "+h1);
     }
     
@@ -513,9 +515,9 @@ public class NumpyExamples {
     	double max = a.max().doubleValue();
     	System.out.println("Max value of a is "+max);
     	
-    	IDataset m = ((Dataset)a).max(0);
+    	IDataset m = a.max(0);
     	
-    	m = ((Dataset)a).max(1);
+    	m = a.max(1);
     	
     	Dataset c = Maths.maximum(a, b);
     }
@@ -531,7 +533,7 @@ public class NumpyExamples {
     	double vNorm = LinearAlgebra.norm(oneD);
     	System.out.println("Vector norm is "+vNorm);
     	
-    	double mNorm = LinearAlgebra.norm((Dataset)a);
+    	double mNorm = LinearAlgebra.norm(a);
     	System.out.println("Matrix norm is "+mNorm);
     }
     
@@ -604,7 +606,7 @@ public class NumpyExamples {
      */
     @Test
     public void invSquare() {
-    	// TODO Not possible?
+    	System.out.println("Inverse of a is " + LinearAlgebra.calcInverse(a));
     }
     
     /**    pseudo-inverse of matrix a
@@ -612,7 +614,7 @@ public class NumpyExamples {
      */
     @Test
     public void pinv() {
-    	// TODO Not possible?
+    	System.out.println("Pseudo-inverse of b is " + LinearAlgebra.calcPseudoInverse(b));
     }
     
     
@@ -622,7 +624,7 @@ public class NumpyExamples {
      */
     @Test
     public void matrixRank() {
-    	// TODO What is the meaning of this?
+    	System.out.println("Rank of a is " + LinearAlgebra.calcMatrixRank(a));
     }
     
     /**
@@ -631,7 +633,7 @@ public class NumpyExamples {
      */
     @Test
     public void solve1() {
-    	// TODO Not possible with DAWNSci code?
+    	System.out.println("Solution is " + LinearAlgebra.solve(a, v));
     }
     
     
@@ -641,7 +643,7 @@ public class NumpyExamples {
      */
     @Test
     public void solve2() {
-    	// TODO Not possible with DAWNSci code?
+    	System.out.println("Solution is " + LinearAlgebra.solve(a.getTransposedView(), v.getTransposedView()).getTransposedView());
     }
 
     
@@ -650,7 +652,7 @@ public class NumpyExamples {
      */
     @Test
     public void decomposition() {
-    	double[] da = LinearAlgebra.calcSingularValues((Dataset)a); // TODO Peter is this right?
+    	Dataset[] da = LinearAlgebra.calcSingularValueDecomposition(a);
     	System.out.println("Linear decomposition of a "+Arrays.asList(da));
     }
 
@@ -660,12 +662,8 @@ public class NumpyExamples {
     */
     @Test
     public void cholesky() {
-    	
-// TODO Is something like this right Pete?
-//    	Dataset    s = DatasetFactory.ones(new int[]{100,100}, Dataset.FLOAT);
-//    	RealMatrix m = LinearAlgebra.apacheMatrix(s);
-//		double det = new CholeskyDecomposition(m).getDeterminant();
-//        System.out.println("The determinant is "+det);
+    	Dataset c = LinearAlgebra.calcCholeskyDecomposition(new DoubleDataset(new double[] {9, 0, 1.5, 0, 3, 2, 1.5, 2, 4}, 3, 3));
+    	System.out.println("Choleskey decomposition of a " + c);
     }
     
     /**eigenvalues and eigenvectors of a
@@ -706,9 +704,9 @@ public class NumpyExamples {
     @Test
     public void conjGrad() {
     	
-    	Dataset    a  = Random.rand(100);
+    	Dataset    s  = Random.rand(100);
     	
-    	Dataset s = Random.rand(new int[]{100, 100});
+    	Dataset a = Random.rand(new int[]{100, 100});
 
     	Dataset x = LinearAlgebra.calcConjugateGradient(a, s);
     	System.out.println("x is " + x);
