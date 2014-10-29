@@ -1810,6 +1810,174 @@ public class DatasetUtils {
 	}
 
 	/**
+	 * Find first occurrences in one dataset of values given in another sorted dataset  
+	 * @param a
+	 * @param values sorted 1D dataset of values to find
+	 * @return absolute indexes of those first occurrences (-1 is used to indicate value not found)
+	 */
+	public static IntegerDataset findFirstOccurrences(final Dataset a, final Dataset values) {
+		if (values.getRank() != 1) {
+			throw new IllegalArgumentException("Values dataset must be 1D");
+		}
+		IntegerDataset indexes = new IntegerDataset(values.getSize());
+		indexes.fill(-1);
+
+		IndexIterator it = a.getIterator();
+		final int n = values.getSize();
+		if (values.getDtype() == Dataset.INT64) {
+			while (it.hasNext()) {
+				long x = a.getElementLongAbs(it.index);
+	
+				int l = 0; // binary search to find value in sorted dataset
+				long vl = values.getLong(l);
+				if (x <= vl) {
+					if (x == vl && indexes.getAbs(l) < 0)
+						indexes.setAbs(l, it.index);
+					continue;
+				}
+				int h = n - 1;
+				long vh = values.getLong(h);
+				if (x >= vh) {
+					if (x == vh && indexes.getAbs(h) < 0)
+						indexes.setAbs(h, it.index);
+					continue;
+				}
+				while (h - l > 1) {
+					int m = (l + h) / 2;
+					long vm = values.getLong(m);
+					if (x < vm) {
+						h = m;
+					} else if (x > vm) {
+						l = m;
+					} else {
+						if (indexes.getAbs(m) < 0)
+							indexes.setAbs(m, it.index);
+						break;
+					}
+				}
+			}
+		} else {
+			while (it.hasNext()) {
+				double x = a.getElementDoubleAbs(it.index);
+	
+				int l = 0; // binary search to find value in sorted dataset
+				double vl = values.getDouble(l);
+				if (x <= vl) {
+					if (x == vl && indexes.getAbs(l) < 0)
+						indexes.setAbs(l, it.index);
+					continue;
+				}
+				int h = n - 1;
+				double vh = values.getDouble(h);
+				if (x >= vh) {
+					if (x == vh && indexes.getAbs(h) < 0)
+						indexes.setAbs(h, it.index);
+					continue;
+				}
+				while (h - l > 1) {
+					int m = (l + h) / 2;
+					double vm = values.getDouble(m);
+					if (x < vm) {
+						h = m;
+					} else if (x > vm) {
+						l = m;
+					} else {
+						if (indexes.getAbs(m) < 0)
+							indexes.setAbs(m, it.index);
+						break;
+					}
+				}
+			}
+		}
+		return indexes;
+	}
+
+	/**
+	 * Find indexes in sorted dataset of values for each value in other dataset
+	 * @param a
+	 * @param values sorted 1D dataset of values to find
+	 * @return absolute indexes of values (-1 is used to indicate value not found)
+	 */
+	public static IntegerDataset findIndexesForValues(final Dataset a, final Dataset values) {
+		if (values.getRank() != 1) {
+			throw new IllegalArgumentException("Values dataset must be 1D");
+		}
+		IntegerDataset indexes = new IntegerDataset(a.getSize());
+		indexes.fill(-1);
+
+		IndexIterator it = a.getIterator();
+		int i = -1;
+		final int n = values.getSize();
+		if (values.getDtype() == Dataset.INT64) {
+			while (it.hasNext()) {
+				i++;
+				long x = a.getElementLongAbs(it.index);
+	
+				int l = 0; // binary search to find value in sorted dataset
+				long vl = values.getLong(l);
+				if (x <= vl) {
+					if (x == vl)
+						indexes.setAbs(i, l);
+					continue;
+				}
+				int h = n - 1;
+				long vh = values.getLong(h);
+				if (x >= vh) {
+					if (x == vh)
+						indexes.setAbs(i, h);
+					continue;
+				}
+				while (h - l > 1) {
+					int m = (l + h) / 2;
+					long vm = values.getLong(m);
+					if (x < vm) {
+						h = m;
+					} else if (x > vm) {
+						l = m;
+					} else {
+						indexes.setAbs(i, m);
+						break;
+					}
+				}
+			}
+		} else {
+			while (it.hasNext()) {
+				i++;
+				double x = a.getElementDoubleAbs(it.index);
+	
+				int l = 0; // binary search to find value in sorted dataset
+				double vl = values.getDouble(l);
+				if (x <= vl) {
+					if (x == vl)
+						indexes.setAbs(i, l);
+					continue;
+				}
+				int h = n - 1;
+				double vh = values.getDouble(h);
+				if (x >= vh) {
+					if (x == vh)
+						indexes.setAbs(i, h);
+					continue;
+				}
+				while (h - l > 1) {
+					int m = (l + h) / 2;
+					double vm = values.getDouble(m);
+					if (x < vm) {
+						h = m;
+					} else if (x > vm) {
+						l = m;
+					} else {
+						indexes.setAbs(i, m);
+						break;
+					}
+				}
+			}
+		}
+
+		return indexes;
+	}
+
+	/**
 	 * Roll items over given axis by given amount
 	 * @param a
 	 * @param shift
