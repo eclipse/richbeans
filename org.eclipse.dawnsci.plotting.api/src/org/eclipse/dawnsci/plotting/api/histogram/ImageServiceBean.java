@@ -30,6 +30,7 @@ public class ImageServiceBean {
 	private HistogramBound  minimumCutBound = HistogramBound.DEFAULT_MINIMUM;
 	private HistogramBound  nanBound        = HistogramBound.DEFAULT_NAN;
 	private IDataset        image;
+	private IDataset        value;
 	private IDataset        mask;
 	private PaletteData     palette;
 	private ImageOrigin     origin;
@@ -87,6 +88,7 @@ public class ImageServiceBean {
 
 	public ImageServiceBean(IDataset slice, HistoType histoType) {
 		this.image = slice;
+		value = slice;
 		this.histogramType = histoType;
 	}
 
@@ -98,6 +100,7 @@ public class ImageServiceBean {
 		minimumCutBound=null;
 		nanBound=null;
 		image=null;
+		value = null;
 		palette=null;
 		origin=null;
 		min=null;
@@ -118,7 +121,17 @@ public class ImageServiceBean {
 
 	public void setImage(IDataset image) {
 		this.image = image;
+		value = null;
 	}
+
+	public IDataset getImageValue() {
+		return value;
+	}
+
+	public void setImageValue(IDataset value) {
+		this.value = value;
+	}
+	
 	public PaletteData getPalette() {
 		return palette;
 	}
@@ -279,8 +292,10 @@ public class ImageServiceBean {
 	}
 	public void setLogColorScale(boolean logColorScale) {
 		this.logColorScale = logColorScale;
-		if(logColorScale) {
+		if (logColorScale) {
 			logOffset = image.min().doubleValue()-1.0;
+		} else {
+			logOffset = 0;
 		}
 	}
 	
