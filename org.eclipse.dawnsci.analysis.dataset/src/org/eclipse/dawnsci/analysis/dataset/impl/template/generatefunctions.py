@@ -231,7 +231,7 @@ def sameloop(codedict, cprefix, vletter, text, use_long=False, override_long=Fal
         else:
             mask = None
         preloop(dtype, otype, oclass, ovar, is_int, use_long, override_long=override_long, mask=mask)
-        loop(text, otype, ovar, override_long)
+        loop(text, otype, ovar, is_int, override_long)
         postloop()
 
 def complexloop(codedict, cprefix, vletter, text, real):
@@ -255,7 +255,7 @@ def compoundloop(codedict, cprefix, vletter, text, use_long=False, override_long
         else:
             mask = None
         preloop(dtype, otype, oclass, ovar, is_int, use_long, override_long=override_long, mask=mask)
-        loopcompound(text, otype, ovar, use_override_long)
+        loopcompound(text, otype, ovar, is_int, override_long)
         postloop()
 
 def deftemps(text, jtype, lprefix, vars):
@@ -319,7 +319,7 @@ def transtext(text, jtype, otype=None, lprefix="\t\t\t\t\t", is_int=True, overri
 
     return vars
 
-def loop(text, jtype, ovar, override_long):
+def loop(text, jtype, ovar, is_int, override_long):
     if not allow_ints:
         print("\t\t\tif (it.isOutputDouble()) {")
         print("\t\t\t\twhile (it.hasNext()) {")
@@ -340,7 +340,7 @@ def loop(text, jtype, ovar, override_long):
         print("\t\t\t\t\tfinal long ibx = it.bLong;")
     else:
         print("\t\t\t\t\tfinal long ix = it.aLong;")
-    transtext(text, jtype, is_int=True, override_long=override_long)
+    transtext(text, jtype, is_int=is_int, override_long=override_long)
     print("\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
     print("\t\t\t\t}")
     print("\t\t\t}")
@@ -392,7 +392,7 @@ def loopcomplex(text, jtype, ovar, real, is_int):
     print("\t\t\t\t}")
     print("\t\t\t}")
 
-def loopcompound(text, jtype, ovar, override_long):
+def loopcompound(text, jtype, ovar, is_int, override_long):
     print("\t\t\tif (is == 1) {")
     if not allow_ints:
         print("\t\t\t\tif (it.isOutputDouble()) {")
@@ -414,7 +414,7 @@ def loopcompound(text, jtype, ovar, override_long):
         print("\t\t\t\t\t\tfinal long ibx = it.bLong;")
     else:
         print("\t\t\t\t\t\tfinal long ix = it.aLong;")
-    transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=True, override_long=override_long)
+    transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=is_int, override_long=override_long)
     print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
     print("\t\t\t\t\t}")
     print("\t\t\t\t}")
@@ -440,11 +440,11 @@ def loopcompound(text, jtype, ovar, override_long):
         print("\t\t\t\t\twhile (it.hasNext()) {")
         print("\t\t\t\t\t\tfinal long iax = it.aLong;")
         print("\t\t\t\t\t\tlong ibx = it.bLong;")
-        vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=True, override_long=override_long)
+        vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=is_int, override_long=override_long)
         print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
         print("\t\t\t\t\t\tfor (int j = 1; j < is; j++) {")
         print("\t\t\t\t\t\t\tibx = db.getElementLongAbs(it.bIndex + j);")
-        transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=True, vars=vars, override_long=override_long)
+        transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=is_int, vars=vars, override_long=override_long)
         print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
         print("\t\t\t\t\t\t}")
         print("\t\t\t\t\t}")
@@ -464,7 +464,7 @@ def loopcompound(text, jtype, ovar, override_long):
             print("\t\t\t\t{")
         print("\t\t\t\t\twhile (it.hasNext()) {")
         print("\t\t\t\t\t\tfinal long ix = it.aLong;")
-        transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=True, override_long=override_long)
+        transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=is_int, override_long=override_long)
         print("\t\t\t\t\t\tfor (int j = 0; j < is; j++) {")
         print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
         print("\t\t\t\t\t\t}")
@@ -492,11 +492,11 @@ def loopcompound(text, jtype, ovar, override_long):
         print("\t\t\t\t\twhile (it.hasNext()) {")
         print("\t\t\t\t\t\tlong iax = it.aLong;")
         print("\t\t\t\t\t\tfinal long ibx = it.bLong;")
-        vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=True, override_long=override_long)
+        vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=is_int, override_long=override_long)
         print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
         print("\t\t\t\t\t\tfor (int j = 1; j < is; j++) {")
         print("\t\t\t\t\t\t\tiax = da.getElementLongAbs(it.aIndex + j);")
-        transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=True, vars=vars, override_long=override_long)
+        transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=is_int, vars=vars, override_long=override_long)
         print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
         print("\t\t\t\t\t\t}")
         print("\t\t\t\t\t}")
@@ -528,7 +528,7 @@ def loopcompound(text, jtype, ovar, override_long):
     if is_binaryop:
         print("\t\t\t\t\t\tlong iax = it.aLong;")
         print("\t\t\t\t\t\tlong ibx = it.bLong;")
-        vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=True, override_long=override_long)
+        vars = transtext(text, jtype, lprefix="\t\t\t\t\t\t", is_int=is_int, override_long=override_long)
         print("\t\t\t\t\t\t%s[it.oIndex] = ox;" % ovar)
         print("\t\t\t\t\t\tfor (int j = 1; j < is; j++) {")
         print("\t\t\t\t\t\t\tiax = da.getElementLongAbs(it.aIndex + j);")
@@ -537,7 +537,7 @@ def loopcompound(text, jtype, ovar, override_long):
         vars = None
         print("\t\t\t\t\t\tfor (int j = 0; j < is; j++) {")
         print("\t\t\t\t\t\t\tfinal long ix = da.getElementLongAbs(it.aIndex + j);")
-    transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=True, vars=vars, override_long=override_long)
+    transtext(text, jtype, lprefix="\t\t\t\t\t\t\t", is_int=is_int, vars=vars, override_long=override_long)
     print("\t\t\t\t\t\t\t%s[it.oIndex + j] = ox;" % ovar)
     print("\t\t\t\t\t\t}")
     print("\t\t\t\t\t}")
