@@ -269,7 +269,7 @@ public class RGBDataset extends CompoundShortDataset implements Cloneable {
 	}
 
 	private static void convertHSVToRGB(double h, double s, double v, short[] rgb) {
-		double m = 256 * v;
+		double m = 255 * v;
 		double chroma = s * m;
 		m -= chroma;
 		double hprime = h / 60.;
@@ -315,8 +315,8 @@ public class RGBDataset extends CompoundShortDataset implements Cloneable {
 		double m = l;
 		double chroma = s * (1 - Math.abs(2 * m - 1));
 		m -= chroma * 0.5;
-		m *= 256;
-		chroma *= 256;
+		m *= 255;
+		chroma *= 255;
 		double hprime = h / 60.;
 		if (hprime < 0) {
 			hprime += 6;
