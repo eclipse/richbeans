@@ -305,7 +305,8 @@ public class DoubleDataset extends AbstractDataset {
 
 	@Override
 	public String getStringAbs(final int index) {
-		return String.format("%.8g", data[index]); // FORMAT_STRING
+		return stringFormat == null ? String.format("%.8g", data[index]) : // FORMAT_STRING
+			stringFormat.format(data[index]);
 	}
 
 	/**

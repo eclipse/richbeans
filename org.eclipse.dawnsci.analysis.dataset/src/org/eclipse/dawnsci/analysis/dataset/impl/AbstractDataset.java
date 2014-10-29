@@ -11,6 +11,7 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -229,6 +230,13 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 
 	@Override
 	abstract public AbstractDataset clone();
+
+	protected Format stringFormat = null;
+
+	@Override
+	public void setStringFormat(Format format) {
+		stringFormat = format;
+	}
 
 	@Override
 	public Dataset cast(final int dtype) {

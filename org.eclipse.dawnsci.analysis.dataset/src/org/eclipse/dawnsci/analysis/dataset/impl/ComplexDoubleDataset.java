@@ -253,9 +253,22 @@ public class ComplexDoubleDataset extends CompoundDoubleDataset { // CLASS_TYPE
 
 	@Override
 	public String getStringAbs(final int index) {
-		double di = data[index+1]; // PRIM_TYPE
-		return di >= 0 ? String.format("%.8g + %.8gj", data[index], di) :  // FORMAT_STRING
-			String.format("%.8g - %.8gj", data[index], -di);  // FORMAT_STRING
+		double di = data[index + 1]; // PRIM_TYPE
+		if (stringFormat == null) {
+			return di >= 0 ? String.format("%.8g + %.8gj", data[index], di) : // FORMAT_STRING
+				String.format("%.8g - %.8gj", data[index], -di); // FORMAT_STRING
+		}
+		StringBuilder s = new StringBuilder();
+		s.append(stringFormat.format(data[index]));
+		if (di >= 0) {
+			s.append(" + ");
+			s.append(stringFormat.format(di));
+		} else {
+			s.append(" - ");
+			s.append(stringFormat.format(-di));
+		}
+		s.append('j');
+		return s.toString();
 	}
 
 	/**

@@ -257,7 +257,8 @@ public class ObjectDatasetBase extends AbstractDataset {
 
 	@Override
 	public String getStringAbs(final int index) {
-		return String.format("%s", data[index]); // FORMAT_STRING
+		return stringFormat == null ? String.format("%s", data[index]) : // FORMAT_STRING
+			stringFormat.format(data[index]);
 	}
 
 	/**

@@ -700,10 +700,12 @@ public class CompoundShortDataset extends AbstractCompoundDataset {
 	public String getStringAbs(final int index) {
 		StringBuilder s = new StringBuilder();
 		s.append('(');
-		s.append(String.format("%d", data[index])); // FORMAT_STRING
+		s.append(stringFormat == null ? String.format("%d", data[index]) : // FORMAT_STRING
+			stringFormat.format(data[index]));
 		for (int i = 1; i < isize; i++) {
 			s.append(' ');
-			s.append(String.format("%d", data[index + i])); // FORMAT_STRING
+			s.append(stringFormat == null ? String.format("%d", data[index + i]) : // FORMAT_STRING
+				stringFormat.format(data[index + i]));
 		}
 		s.append(')');
 		return s.toString();

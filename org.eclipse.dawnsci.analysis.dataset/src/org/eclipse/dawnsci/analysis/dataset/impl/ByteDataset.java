@@ -305,7 +305,8 @@ public class ByteDataset extends AbstractDataset {
 
 	@Override
 	public String getStringAbs(final int index) {
-		return String.format("%d", data[index]); // FORMAT_STRING
+		return stringFormat == null ? String.format("%d", data[index]) : // FORMAT_STRING
+			stringFormat.format(data[index]);
 	}
 
 	/**

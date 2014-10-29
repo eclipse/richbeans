@@ -9,6 +9,8 @@
 
 package org.eclipse.dawnsci.analysis.api.dataset;
 
+import java.text.Format;
+
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 
 
@@ -16,6 +18,12 @@ import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
  * This interface defines the implementation-independent and generic parts of a dataset
  */
 public interface IDataset extends ILazyDataset {
+	/**
+	 * Set string output format
+	 * @param format
+	 */
+	public void setStringFormat(Format format);
+
 	/**
 	 * @return Size of an item in dataset (in bytes)
 	 */

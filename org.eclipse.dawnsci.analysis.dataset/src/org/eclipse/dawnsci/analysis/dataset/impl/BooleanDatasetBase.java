@@ -257,7 +257,8 @@ public class BooleanDatasetBase extends AbstractDataset {
 
 	@Override
 	public String getStringAbs(final int index) {
-		return String.format("%b", data[index]); // FORMAT_STRING
+		return stringFormat == null ? String.format("%b", data[index]) : // FORMAT_STRING
+			stringFormat.format(data[index]);
 	}
 
 	/**

@@ -299,6 +299,8 @@ class transmutate(object):
             s = line.find(self.sform)
             b = line.find("String")
             e = line.find(';', s)
+            if e < 0:
+                e = line.find(' :', s)
             return line[:b] + line[s+len(self.sform) + 2:(e-1)] + line[e:]
         return line.replace(self.sform, self.dform)
 
