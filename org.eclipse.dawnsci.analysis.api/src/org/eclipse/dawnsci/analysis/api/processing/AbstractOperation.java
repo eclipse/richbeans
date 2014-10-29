@@ -15,6 +15,7 @@ import java.util.List;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.metadata.AxesMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.IDiffractionMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
@@ -446,6 +447,45 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		}
 
 		return metaList.get(0);
+	}
+	
+	/**
+	 * Get the absolute of the current slice in the view of the parent (starts at 0)
+	 * @param origin
+	 * @return int
+	 */
+	public static int getCurrentSliceNumber(OriginMetadata origin) {
+		
+		int[] dd = origin.getDataDimensions();
+		dd = dd.clone();
+		Arrays.sort(dd);
+		//have to take a view, can't use check slice on AbstractDataset here...
+		ILazyDataset view = origin.getParent().getSliceView(origin.getInitialSlice());
+		int[] shape = view.getShape();
+		Slice[] current = origin.getCurrentSlice();
+		
+		int[] ddsh = new int[shape.length-dd.length];
+		int[] ddpos = new int[shape.length-dd.length];
+		
+		for (int i = 0, j = 0; i < shape.length; i++) {
+			if (Arrays.binarySearch(dd, i) < 0) {
+				ddsh[i-j] = shape[i];
+				ddpos[i-j] = current[i].getStart();
+			} else {
+				j++;
+			}
+		}
+		
+		int c = ddpos[ddpos.length-1];
+		for (int i = ddsh.length-2; i >-1; i--) {
+			int d = ddpos[i];
+			for (int j = i+1; j < ddsh.length; j++) {
+				d *= ddsh[j];
+			}
+			c+=d;
+		}
+		
+		return c;
 	}
 
 	/**
