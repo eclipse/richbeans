@@ -179,7 +179,7 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 	}
 	
 	/**
-	 * Demilitarizes the current tool (if different) and miliarizes this tool.
+	 * Disarms the current tool (if different) and arms this tool.
 	 * 
 	 * @param tool
 	 */
