@@ -319,21 +319,69 @@ public class LinearAlgebra {
 
 	private static int[] removeAxisFromShape(int[] shape, int axis) {
 		int[] s = new int[shape.length - 1];
-		for (int i = 0, j = 0; i < shape.length; i++) {
-			if (i != axis) {
-				s[j++] = shape[i];
+		int i = 0;
+		int j = 0;
+		while (i < axis) {
+			s[j++] = shape[i++];
+		}
+		i++;
+		while (i < shape.length) {
+			s[j++] = shape[i++];
+		}
+		return s;
+	}
+
+	// assume axes is in increasing order
+	private static int[] removeAxesFromShape(int[] shape, int... axes) {
+		int n = axes.length;
+		int[] s = new int[shape.length - n];
+		int i = 0;
+		int j = 0;
+		for (int k = 0; k < n; k++) {
+			int a = axes[k];
+			while (i < a) {
+				s[j++] = shape[i++];
 			}
+			i++;
+		}
+		while (i < shape.length) {
+			s[j++] = shape[i++];
 		}
 		return s;
 	}
 
 	private static int[] addAxisToShape(int[] shape, int axis, int length) {
 		int[] s = new int[shape.length + 1];
-		s[axis] = length;
-		for (int i = 0, j = 0; j < s.length; j++) {
-			if (j != axis) {
-				s[j] = shape[i++];
+		int i = 0;
+		int j = 0;
+		while (i < axis) {
+			s[j++] = shape[i++];
+		}
+		s[j++] = length;
+		while (i < shape.length) {
+			s[j++] = shape[i++];
+		}
+		return s;
+	}
+
+	// assume axes is in increasing order
+	private static int[] addAxesToShape(int[] shape, int[] axes, int[] lengths) {
+		int n = axes.length;
+		if (lengths.length != n) {
+			throw new IllegalArgumentException("Axes and lengths arrays must be same size");
+		}
+		int[] s = new int[shape.length + n];
+		int i = 0;
+		int j = 0;
+		for (int k = 0; k < n; k++) {
+			int a = axes[k];
+			while (i < a) {
+				s[j++] = shape[i++];
 			}
+			s[j++] = lengths[k];
+		}
+		while (i < shape.length) {
+			s[j++] = shape[i++];
 		}
 		return s;
 	}
@@ -370,6 +418,7 @@ public class LinearAlgebra {
 		}
 		return c;
 	}
+
 	private static Dataset crossProduct3D(Dataset a, Dataset b, int axisA, int axisB, int axisC) {
 		int[] shapeA = removeAxisFromShape(a.getShapeRef(), axisA);
 		int[] shapeB = removeAxisFromShape(b.getShapeRef(), axisB);
@@ -490,6 +539,114 @@ public class LinearAlgebra {
 			}
 		}
 		return c;
+	}
+
+	/**
+	 * Calculate trace of dataset - sum of values over 1st axis and 2nd axis
+	 * @param a
+	 * @return trace of dataset
+	 */
+	public static Dataset trace(Dataset a) {
+		return trace(a, 0, 0, 1);
+	}
+
+	/**
+	 * Calculate trace of dataset - sum of values over axis1 and axis2 where axis2 is offset
+	 * @param a
+	 * @param offset
+	 * @param axis1
+	 * @param axis2
+	 * @return trace of dataset
+	 */
+	public static Dataset trace(Dataset a, int offset, int axis1, int axis2) {
+		int[] shape = a.getShapeRef();
+		int[] axes = new int[] { a.checkAxis(axis1), a.checkAxis(axis2) };
+		Arrays.sort(axes);
+		int is = a.getElementsPerItem();
+		Dataset trace = DatasetFactory.zeros(is, removeAxesFromShape(shape, axes), a.getDtype());
+
+		int am = axes[0];
+		int mmax = shape[am];
+		int an = axes[1];
+		int nmax = shape[an];
+		PositionIterator it = new PositionIterator(shape, axes);
+		int[] pos = it.getPos();
+		int i = 0;
+		int mmin;
+		int nmin;
+		if (offset >= 0) {
+			mmin = 0;
+			nmin = offset;
+		} else {
+			mmin = -offset;
+			nmin = 0;
+		}
+		if (is == 1) {
+			if (a.getDtype() == Dataset.INT64) {
+				while (it.hasNext()) {
+					int m = mmin;
+					int n = nmin;
+					long s = 0;
+					while (m < mmax && n < nmax) {
+						pos[am] = m++;
+						pos[an] = n++;
+						s += a.getLong(pos);
+					}
+					trace.setObjectAbs(i++, s);
+				}
+			} else {
+				while (it.hasNext()) {
+					int m = mmin;
+					int n = nmin;
+					double s = 0;
+					while (m < mmax && n < nmax) {
+						pos[am] = m++;
+						pos[an] = n++;
+						s += a.getDouble(pos);
+					}
+					trace.setObjectAbs(i++, s);
+				}
+			}
+		} else {
+			AbstractCompoundDataset ca = (AbstractCompoundDataset) a;
+			if (ca instanceof CompoundLongDataset) {
+				long[] t = new long[is];
+				long[] s = new long[is];
+				while (it.hasNext()) {
+					int m = mmin;
+					int n = nmin;
+					Arrays.fill(s, 0);
+					while (m < mmax && n < nmax) {
+						pos[am] = m++;
+						pos[an] = n++;
+						((CompoundLongDataset)ca).getAbs(ca.get1DIndex(pos), t);
+						for (int k = 0; k < is; k++) {
+							s[k] += t[k];
+						}
+					}
+					trace.setObjectAbs(i++, s);
+				}
+			} else {
+				double[] t = new double[is];
+				double[] s = new double[is];
+				while (it.hasNext()) {
+					int m = mmin;
+					int n = nmin;
+					Arrays.fill(s, 0);
+					while (m < mmax && n < nmax) {
+						pos[am] = m++;
+						pos[an] = n++;
+						ca.getDoubleArray(t, pos);
+						for (int k = 0; k < is; k++) {
+							s[k] += t[k];
+						}
+					}
+					trace.setObjectAbs(i++, s);
+				}
+			}
+		}
+
+		return trace;
 	}
 
 	/**
@@ -804,14 +961,30 @@ public class LinearAlgebra {
 
 	/**
 	 * @param a
-	 * @return dataset of eigenvalues (can be double or complex double)
+	 * @return determinant of dataset
 	 */
-	public static Dataset calcEigenvalues(Dataset a) {
-		return calcEigenDecomposition(a)[0];
+	public static double calcDeterminant(Dataset a) {
+		EigenDecomposition evd = new EigenDecomposition(createRealMatrix(a));
+		return evd.getDeterminant();
 	}
 
 	/**
-	 * Calculate eigen decomposition A = V D V^T
+	 * @param a
+	 * @return dataset of eigenvalues (can be double or complex double)
+	 */
+	public static Dataset calcEigenvalues(Dataset a) {
+		EigenDecomposition evd = new EigenDecomposition(createRealMatrix(a));
+		double[] rev = evd.getRealEigenvalues();
+
+		if (evd.hasComplexEigenvalues()) {
+			double[] iev = evd.getImagEigenvalues();
+			return new ComplexDoubleDataset(rev, iev);
+		}
+		return new DoubleDataset(rev);
+	}
+
+	/**
+	 * Calculate eigen-decomposition A = V D V^T
 	 * @param a
 	 * @return array of D eigenvalues (can be double or complex double) and V eigenvectors
 	 */

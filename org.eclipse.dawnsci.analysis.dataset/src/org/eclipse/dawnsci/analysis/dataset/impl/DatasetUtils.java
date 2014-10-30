@@ -1059,11 +1059,12 @@ public class DatasetUtils {
 			int side = shape[0] + Math.abs(offset);
 			int[] pos = new int[] {side, side};
 			result = DatasetFactory.zeros(is, pos, dtype);
-			pos[0] = 0;
-			pos[1] = offset;
-			while (pos[1] < 0) {
-				pos[0]++;
-				pos[1]++;
+			if (offset >= 0) {
+				pos[0] = 0;
+				pos[1] = offset;
+			} else {
+				pos[0] = -offset;
+				pos[1] = 0;
 			}
 			int i = 0;
 			while (pos[0] < side && pos[1] < side) {
@@ -1078,12 +1079,7 @@ public class DatasetUtils {
 			result = DatasetFactory.zeros(is, new int[] {side}, dtype);
 
 			if (side > 0) {
-				int[] pos = new int[] { 0, offset };
-
-				while (pos[1] < 0) {
-					pos[0]++;
-					pos[1]++;
-				}
+				int[] pos = offset >= 0 ? new int[] { 0, offset } : new int[] { -offset, 0 };
 				int i = 0;
 				while (pos[0] < shape[0] && pos[1] < shape[1]) {
 					result.set(a.getObject(pos), i++);
