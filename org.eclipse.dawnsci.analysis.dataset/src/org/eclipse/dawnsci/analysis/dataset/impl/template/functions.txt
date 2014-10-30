@@ -411,6 +411,16 @@ complex:
   oy = Math.rint(iy);
 
 func:
+  truncate - truncate each element to integers of the dataset
+integer:
+  ox = ix;
+real:
+  ox = toLong(ix);
+complex:
+  ox = toLong(ix);
+  oy = toLong(iy);
+
+func:
   toDegrees - convert to degrees
 real:
   ox = Math.toDegrees(ix);
