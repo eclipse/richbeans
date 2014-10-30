@@ -50,13 +50,13 @@ public class PositionIterator extends IndexIterator {
 	 * @param shape
 	 */
 	public PositionIterator(int[] shape) {
-		this(shape, -1);
+		this(shape, null);
 	}
 
 	/**
 	 * Constructor for an iterator that misses out an axis
 	 * @param shape
-	 * @param axis missing axis (or -1 for full dataset)
+	 * @param axis missing axis
 	 */
 	public PositionIterator(int[] shape, int axis) {
 		this(shape, new int[] {axis});
@@ -65,7 +65,7 @@ public class PositionIterator extends IndexIterator {
 	/**
 	 * Constructor for an iterator that misses out several axes
 	 * @param shape
-	 * @param axes missing axes
+	 * @param axes missing axes, can be null for full dataset
 	 */
 	public PositionIterator(int[] shape, int[] axes) {
 		this.shape = shape;
@@ -73,11 +73,16 @@ public class PositionIterator extends IndexIterator {
 		endrank = rank - 1;
 
 		omit = new boolean[rank];
-		for (int a : axes) {
-			if (a >= 0 && a <= endrank) {
-				omit[a] = true;
-			} else if (a > endrank) {
-				throw new IllegalArgumentException("Specified axis exceeds dataset rank");
+		if (axes != null) {
+			for (int a : axes) {
+				if (a < 0) {
+					a += rank;
+				}
+				if (a >= 0 && a <= endrank) {
+					omit[a] = true;
+				} else if (a > endrank) {
+					throw new IllegalArgumentException("Specified axis exceeds dataset rank");
+				}
 			}
 		}
 		start = new int[rank];
