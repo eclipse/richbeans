@@ -68,7 +68,7 @@ public class ExecutionEvent extends EventObject {
 	 */
 	private int[] dataDims;
 	
-	public ExecutionEvent(Object source) {
+	public ExecutionEvent(IOperationService source) {
 		super(source);
 	}
 
@@ -80,8 +80,8 @@ public class ExecutionEvent extends EventObject {
 	 * @param shape2
 	 * @param dataDims2
 	 */
-	public ExecutionEvent(IOperation<? extends IOperationModel, ? extends OperationData> i, OperationData data2, Slice[] slices2, int[] shape2, int[] dataDims2) {
-		super(i);
+	public ExecutionEvent(IOperationService source, IOperation<? extends IOperationModel, ? extends OperationData> i, OperationData data2, Slice[] slices2, int[] shape2, int[] dataDims2) {
+		super(source);
 		intermediateData = i;
 		data     = data2;
 		slices   = slices2;
@@ -89,7 +89,7 @@ public class ExecutionEvent extends EventObject {
 		dataDims = dataDims2;
 	}
 
-	public ExecutionEvent(Object source, IOperation<? extends IOperationModel, ? extends OperationData>[] series2, OriginMetadata originMetadata) {
+	public ExecutionEvent(IOperationService source, IOperation<? extends IOperationModel, ? extends OperationData>[] series2, OriginMetadata originMetadata) {
 		super(source);
 		this.series = series2;
 		this.origin = originMetadata;
