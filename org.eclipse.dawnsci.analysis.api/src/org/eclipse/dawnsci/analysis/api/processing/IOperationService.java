@@ -116,29 +116,48 @@ public interface IOperationService {
 	public Class<? extends IOperationModel> getModelClass(String operationId) throws Exception;
 
 	/**
-	 * Executes a chain of operations in series. NOTE the fist operation must have
-	 * its data set and other operations should have their parameters set before
-	 * execution.
+	 * Executes a chain of operations in series.
+	 *
+     * NOTE the operations must have their model data set prior to execution.
+     *
+	 * @param dataset
+	 * @param series
+	 * @throws OperationException
+	 */
+	public void executeSeries(ISliceConfiguration dataset, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
+	
+	/**
+	 * Executes a chain of operations in series. 
+	 *
+     * NOTE the operations must have their model data set prior to execution.
 	 * 
 	 * @param dataset
-	 * @param visitor - notified of the result of each slice result after processing
+	 * @param monitor - may be null
+	 * @param visitor - notified of the result of each slice result after processing, may be null
 	 * @param series
 	 * @throws OperationException
 	 */
 	public void executeSeries(ISliceConfiguration dataset, IMonitor monitor, IExecutionVisitor visitor, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
 	
+	/**
+	 * Executes a chain of operations in parallel. NOTE the operations must have their model data set prior to execution.
+     *
+	 * @param dataset
+	 * @param series
+	 * @throws OperationException
+	 */
+	public void executeParallelSeries(ISliceConfiguration dataset, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
 
 	/**
 	 * Executes a chain of operations in series the same as executeSeries however the
 	 * data slices are parallel and will not be sliced necessarily in order. To do this
 	 * a ForkJoinPool is used the size of the available local CPUs.
 	 * 
-	 * NOTE the fist operation must have
-	 * its data set and other operations should have their parameters set before
-	 * execution.
-	 * 
+     * NOTE the operations must have their model data set prior to execution.
+     * 
 	 * @param dataset
-	 * @param visitor - notified of the result of each slice result after processing
+	 * @param monitor - may be null
+	 * @param visitor - notified of the result of each slice result after processing, may be null
 	 * @param series
 	 * @throws OperationException
 	 */

@@ -17,14 +17,34 @@ import org.eclipse.dawnsci.analysis.api.dataset.Slice;
  */
 public interface OriginMetadata extends DimensionMetadata {
 
+	/**
+	 * 
+	 * @return ILazyDataset
+	 */
 	public ILazyDataset getParent();
 	
+	/**
+	 * The starting slice
+	 * @return the initial slice
+	 */
 	public Slice[] getInitialSlice();
 	
+	/**
+	 * 
+	 * @return name of dataset
+	 */
 	public String getDatasetName();
 	
+	/**
+	 * 
+	 * @return file path
+	 */
 	public String getFilePath();
 	
+	/**
+	 * Current slice information.
+	 * @return the current slice.
+	 */
 	public Slice[] getCurrentSlice();
 	
 }
