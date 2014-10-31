@@ -1,10 +1,7 @@
 package org.eclipse.dawnsci.analysis.examples.pipelines;
 
-import java.util.List;
-
-import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
-import org.eclipse.dawnsci.analysis.api.monitor.IMonitor.Stub;
+import org.eclipse.dawnsci.analysis.api.processing.ExecutionEvent;
 import org.eclipse.dawnsci.analysis.api.processing.IExecutionVisitor;
 import org.eclipse.dawnsci.analysis.api.processing.IOperation;
 import org.eclipse.dawnsci.analysis.api.processing.IOperationService;
@@ -129,16 +126,16 @@ public class PipelineExamples {
 		// We do not use IProgressMonitor because it would introduce an eclipse
 		// dependency on the core mathematics.
 		final IExecutionVisitor visitor = new IExecutionVisitor.Stub() {
-			
+			@Override
+			public void notify(ExecutionEvent evt) {
+				System.out.println("Did operation "+evt.getIntermediateData().getName());
+			}
 		};
 		
 		// We do an azimuthal integration on each of the 24 images, we do not do anything with the integration
 		// The series is executed in one thread, in order.
 		service.executeSeries(rand, null, visitor, azi);
-		
-		// We execute using fork/join in Java7
-		service.executeParallelSeries(rand, null, visitor, azi);
-
+	
 	}
 
 }
