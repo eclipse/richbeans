@@ -261,8 +261,13 @@ public abstract class AbstractSliceSystem implements ISliceSystem {
 				for (DimsData dd : dimsDataList.iterable()) {
 					if (dd.isTextRange()) {
 						if (dd.getSliceRange(true)==null) { // Set a range over all the data
-							int max = Math.min(25, getData().getLazySet().getShape()[dd.getDimension()]-1);
-							dd.setSliceRange("0:"+max);
+							if (rangeMode == RangeMode.MULTI_RANGE) {
+								dd.setSliceRange("all");
+							} else {
+								int max = Math.min(25, getData().getLazySet().getShape()[dd.getDimension()]-1);
+								dd.setSliceRange("0:"+max);
+							}
+							
 						}
 						final int size = DOEUtils.getSize(dd.getSliceRange(true), null);
 						if (size>=getData().getLazySet().getShape()[dd.getDimension()] || size<1) {
