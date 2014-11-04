@@ -1,7 +1,7 @@
 package org.eclipse.dawnsci.analysis.examples.pipelines;
 
+import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
-import org.eclipse.dawnsci.analysis.api.processing.ExecutionEvent;
 import org.eclipse.dawnsci.analysis.api.processing.IExecutionVisitor;
 import org.eclipse.dawnsci.analysis.api.processing.IOperation;
 import org.eclipse.dawnsci.analysis.api.processing.IOperationService;
@@ -127,8 +127,8 @@ public class PipelineExamples {
 		// dependency on the core mathematics.
 		final IExecutionVisitor visitor = new IExecutionVisitor.Stub() {
 			@Override
-			public void notify(ExecutionEvent evt) {
-				System.out.println("Did operation "+evt.getIntermediateData().getName());
+			public void notify(IOperation<? extends IOperationModel, ? extends OperationData> intermediateData, OperationData data, Slice[] slices, int[] shape, int[] dataDims) {
+				System.out.println("Did operation "+intermediateData.getName());
 			}
 		};
 		
