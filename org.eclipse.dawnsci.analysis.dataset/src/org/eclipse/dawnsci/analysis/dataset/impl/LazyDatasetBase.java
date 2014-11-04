@@ -212,10 +212,11 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 
 		if (clazz == null) {
 			metadata.clear();
+			return;
 		}
 
 		List<MetadataType> list = metadata.get(findMetadataTypeSubInterfaces(clazz));
-		if( list != null){
+		if( list != null) {
 			list.clear();
 		}
 	}
