@@ -24,13 +24,12 @@ import ncsa.hdf.object.HObject;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
+import org.eclipse.dawnsci.analysis.api.tree.DataNode;
+import org.eclipse.dawnsci.analysis.api.tree.Node;
+import org.eclipse.dawnsci.analysis.api.tree.NodeLink;
 import org.eclipse.dawnsci.hdf5.HierarchicalDataFactory;
 import org.eclipse.dawnsci.hdf5.HierarchicalDataUtils;
 import org.eclipse.dawnsci.hdf5.IHierarchicalDataFile;
-import org.eclipse.dawnsci.hdf5.api.HDF5Attribute;
-import org.eclipse.dawnsci.hdf5.api.HDF5Dataset;
-import org.eclipse.dawnsci.hdf5.api.HDF5Node;
-import org.eclipse.dawnsci.hdf5.api.HDF5NodeLink;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -193,7 +192,7 @@ public class H5ValuePage extends Page  implements ISelectionListener, IPartListe
 			}
  		} else if (sel instanceof H5Path) { // Might be nexus part.
 			try {
-				final String path   = sel instanceof H5Path ? ((H5Path)sel).getPath() : ((HDF5NodeLink)sel).getPath();
+				final String path   = sel instanceof H5Path ? ((H5Path)sel).getPath() : ((NodeLink)sel).getPath();
 				final IEditorPart part = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getActiveEditor();
 				if (part instanceof IH5Editor) {
 					final String filePath = ((IH5Editor)part).getFilePath();
@@ -210,15 +209,15 @@ public class H5ValuePage extends Page  implements ISelectionListener, IPartListe
 			} catch (Exception ne) {
 				logger.error(ne.getMessage()); // Not serious, no need for stack.
 			}
- 		} else if (sel instanceof HDF5NodeLink) {
- 			HDF5NodeLink nl = (HDF5NodeLink) sel;
- 			if (nl.isDestinationAGroup())
+ 		} else if (sel instanceof NodeLink) {
+ 			NodeLink nl = (NodeLink) sel;
+ 			if (nl.isDestinationGroup())
  				label.setText("Group name of '" + nl.getName() + "' children:");
- 			else if (nl.isDestinationADataset())
+ 			else if (nl.isDestinationData())
  				label.setText("Dataset name of '" + nl.getName() + "' value:");
 
  			sourceViewer.getTextWidget().setText(getNodeLinkValue(nl));
-		} else if (sel instanceof HDF5Attribute) { // Might be nexus part.
+		} else if (sel instanceof org.eclipse.dawnsci.analysis.api.tree.Attribute) { // Might be nexus part.
 			sourceViewer.getTextWidget().setText(sel.toString());
 		}
 	}
@@ -226,11 +225,11 @@ public class H5ValuePage extends Page  implements ISelectionListener, IPartListe
 	private NumberFormat format;
 	
 	// Fix for http://jira.diamond.ac.uk/browse/DAWNSCI-747
-	private String getNodeLinkValue(HDF5NodeLink nl) {
+	private String getNodeLinkValue(NodeLink nl) {
 		StringBuilder buf = new StringBuilder();
-		HDF5Node node = nl.getDestination();
-		if (node instanceof HDF5Dataset) {
-			HDF5Dataset  hd = (HDF5Dataset)node;
+		Node node = nl.getDestination();
+		if (node instanceof DataNode) {
+			DataNode hd = (DataNode)node;
 			ILazyDataset lz = hd.getDataset();
 			if (lz.getRank()==1 && lz.getShape()[0]<500) {
 								

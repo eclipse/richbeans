@@ -67,9 +67,7 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 		groups = g.getNumberOfGroupNodes();
 
 		nodes = new LinkedHashMap<String, NodeLink>();
-		Iterator<? extends NodeLink> it = g.getIterator();
-		while (it.hasNext()) {
-			NodeLink n = it.next();
+		for (NodeLink n : g) {
 			nodes.put(n.getFullName(), createNodeLink(n));
 		}
 	}
@@ -405,10 +403,8 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 	@Override
 	public List<ILazyDataset> getDatasets(final String name) {
 		final ArrayList<ILazyDataset> list = new ArrayList<ILazyDataset>();
-	
-		Iterator<? extends NodeLink> it = getIterator();
-		while (it.hasNext()) {
-			NodeLink l = it.next();
+
+		for (NodeLink l : this) {
 			findDatasets(name, list, l);
 		}
 		return list;
@@ -428,9 +424,7 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 			return;
 	
 		if (n instanceof GroupNode) {
-			Iterator<? extends NodeLink> it = ((GroupNode) n).getIterator();
-			while (it.hasNext()) {
-				NodeLink l = it.next();
+			for (NodeLink l : (GroupNode) n) {
 				findDatasets(name, list, l);
 			}
 		} else if (n instanceof DataNode) {
@@ -483,11 +477,8 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 		return null;
 	}
 
-	/**
-	 * @return iterator over links to children in group
-	 */
 	@Override
-	public Iterator<? extends NodeLink> getIterator() {
-		return nodes.values().iterator();
+	public Iterator<NodeLink> iterator() {
+		return (Iterator<NodeLink>)  nodes.values().iterator();
 	}
 }

@@ -21,7 +21,7 @@ import org.eclipse.dawnsci.analysis.tree.impl.GroupNodeImpl;
  * A group acts like a file system directory. It holds a map of node links and can contain a
  * reference to a global pool of nodes which is used for checking linked nodes
  */
-public class HDF5Group extends GroupNodeImpl implements HDF5Node, Serializable, Iterable<HDF5NodeLink> {
+public class HDF5Group extends GroupNodeImpl implements HDF5Node, Serializable {
 	private static final long serialVersionUID = 8830337783420707862L;
 
 	/**
@@ -52,12 +52,6 @@ public class HDF5Group extends GroupNodeImpl implements HDF5Node, Serializable, 
 	@Override
 	public HDF5Attribute getAttribute(String name) {
 		return (HDF5Attribute) super.getAttribute(name);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Iterator<HDF5NodeLink> iterator() {
-		return (Iterator<HDF5NodeLink>) getIterator();
 	}
 
 	@SuppressWarnings("unchecked")

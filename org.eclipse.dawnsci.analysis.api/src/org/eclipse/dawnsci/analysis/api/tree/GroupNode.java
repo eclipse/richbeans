@@ -18,7 +18,7 @@ import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 /**
  * Node to group other nodes using node links
  */
-public interface GroupNode extends Node {
+public interface GroupNode extends Node, Iterable<NodeLink> {
 
 	/**
 	 * Set a reference to the global pool of nodes
@@ -173,5 +173,6 @@ public interface GroupNode extends Node {
 	/**
 	 * @return iterator over links to children in group
 	 */
-	public Iterator<? extends NodeLink> getIterator();
+	@Override
+	public Iterator<NodeLink> iterator();
 }
