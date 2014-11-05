@@ -9,12 +9,15 @@
 
 package org.eclipse.dawnsci.hdf5.api;
 
+import java.util.Iterator;
+
+import org.eclipse.dawnsci.analysis.tree.impl.SymbolicNodeImpl;
+
 /**
  * Symbolic link to another node
  */
-public class HDF5SymLink extends HDF5Node {
-	private HDF5File file;
-	private String path;
+public class HDF5SymLink extends SymbolicNodeImpl implements HDF5Node {
+	private static final long serialVersionUID = SymbolicNodeImpl.serialVersionUID;
 
 	/**
 	 * Construct a HDF5 symbolic link with given object ID, file name and node path
@@ -23,40 +26,22 @@ public class HDF5SymLink extends HDF5Node {
 	 * @param pathToNode (ends in separator if group, otherwise a dataset)
 	 */
 	public HDF5SymLink(final long oid, final HDF5File fileWithNode, final String pathToNode) {
-		super(oid);
-		file = fileWithNode;
-		path = pathToNode;
-	}
-
-	/**
-	 * Get node link referenced by symbolic link
-	 * @return node
-	 */
-	public HDF5NodeLink getNodeLink() {
-		return file.findNodeLink(path);
-	}
-
-	/**
-	 * Get node referenced by symbolic link
-	 * @return node
-	 */
-	public HDF5Node getNode() {
-		HDF5NodeLink l = getNodeLink();
-		return l != null ? l.getDestination() : null;
-	}
-
-	/**
-	 * @return true if linked node is a dataset
-	 */
-	public boolean isDataset() {
-		return !path.endsWith(SEPARATOR);
+		super(oid, fileWithNode, pathToNode);
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder out = new StringBuilder();
-		String attrs = super.toString();
-		out.append(attrs);
-		return out.toString();
+	public HDF5Attribute getAttribute(String name) {
+		return (HDF5Attribute) super.getAttribute(name);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<HDF5Attribute> getAttributeIterator() {
+		return (Iterator<HDF5Attribute>) super.getAttributeIterator();
+	}
+
+	@Override
+	public HDF5NodeLink getNodeLink() {
+		return (HDF5NodeLink) super.getNodeLink();
 	}
 }

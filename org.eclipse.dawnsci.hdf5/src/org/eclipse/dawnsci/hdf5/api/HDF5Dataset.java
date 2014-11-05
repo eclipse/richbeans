@@ -9,21 +9,16 @@
 
 package org.eclipse.dawnsci.hdf5.api;
 
-import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
-import org.eclipse.dawnsci.analysis.dataset.impl.IndexIterator;
-import org.eclipse.dawnsci.analysis.dataset.impl.StringDataset;
+import java.util.Iterator;
+
+import org.eclipse.dawnsci.analysis.tree.impl.DataNodeImpl;
+
 
 /**
  * Leaf node to hold a (lazy) dataset or string
  */
-public class HDF5Dataset extends HDF5Node {
-	private boolean string = false;
-	private boolean supported = false; // inhomogeneous composite datasets are not currently supported
-
-	private ILazyDataset dataset;
-	private long[] maxShape;
-	private String text;
-	private String type;
+public class HDF5Dataset extends DataNodeImpl implements HDF5Node {
+	private static final long serialVersionUID = DataNodeImpl.serialVersionUID;
 
 	/**
 	 * Construct a HDF5 dataset with given object ID
@@ -33,126 +28,14 @@ public class HDF5Dataset extends HDF5Node {
 		super(oid);
 	}
 
-	/**
-	 * This can return null for empty datasets
-	 * @return lazy dataset
-	 */
-	public ILazyDataset getDataset() {
-		return dataset;
-	}
-
-	/**
-	 * Set given (lazy) dataset
-	 * @param lazyDataset
-	 */
-	public void setDataset(final ILazyDataset lazyDataset) {
-		dataset = lazyDataset;
-		supported = true;
-		string = lazyDataset instanceof StringDataset || lazyDataset.elementClass() == String.class;
-	}
-
-	/**
-	 * Set string
-	 * @param text
-	 */
-	public void setString(final String text) {
-		this.text = text;
-		string = true;
-		supported = true;
-	}
-
-	/**
-	 * @return true if dataset is a string or string dataset
-	 */
-	public boolean isString() {
-		return string;
-	}
-
-	/**
-	 * @return true if this dataset is supported
-	 */
-	public boolean isSupported() {
-		return supported;
-	}
-
-	/**
-	 * Set dataset to be empty
-	 */
-	public void setEmpty() {
-		dataset = null;
-		supported = true;
-	}
-
-	/**
-	 * Get a string if this dataset is a string or dataset
-	 * @return string or null
-	 */
-	public String getString() {
-		if (!string)
-			return null;
-		if (text != null)
-			return text;
-
-		StringDataset a;
-		if (dataset instanceof StringDataset)
-			a = (StringDataset) dataset;
-		else
-			a = (StringDataset) dataset.getSlice();
-
-		StringBuilder out = new StringBuilder();
-		IndexIterator it = a.getIterator();
-		while (it.hasNext()) {
-			out.append(a.getAbs(it.index));
-			out.append('\n');
-		}
-		int end = out.length();
-		out.delete(end-1, end);
-		return out.toString();
-	}
-
 	@Override
-	public String toString() {
-		StringBuilder out = new StringBuilder(super.toString());
-
-		out.append(INDENT);
-		if (string) {
-			out.append(getString());
-		} else if (supported) {
-			out.append(dataset == null ? "empty" : dataset.toString());
-		} else {
-			out.append("unsupported");
-		}
-		return out.toString();
+	public HDF5Attribute getAttribute(String name) {
+		return (HDF5Attribute) super.getAttribute(name);
 	}
 
-	/**
-	 * Set HDF5 type name
-	 * @param name
-	 */
-	public void setTypeName(String name) {
-		type = name;
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<HDF5Attribute> getAttributeIterator() {
+		return (Iterator<HDF5Attribute>) super.getAttributeIterator();
 	}
-
-	/**
-	 * @return HDF5 type name
-	 */
-	public String getTypeName() {
-		return type;
-	}
-
-	/**
-	 * Set maximum shape of dataset
-	 * @param maxShape
-	 */
-	public void setMaxShape(long[] maxShape) {
-		this.maxShape = maxShape;
-	}
-
-	/**
-	 * @return maximum shape
-	 */
-	public long[] getMaxShape() {
-		return maxShape;
-	}
-
 }

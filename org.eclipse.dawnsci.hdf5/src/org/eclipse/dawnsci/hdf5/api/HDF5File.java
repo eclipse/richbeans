@@ -11,25 +11,30 @@ package org.eclipse.dawnsci.hdf5.api;
 
 import java.io.File;
 import java.net.URI;
+import java.util.Iterator;
+
+import org.eclipse.dawnsci.analysis.api.tree.Node;
+import org.eclipse.dawnsci.analysis.api.tree.NodeLink;
+import org.eclipse.dawnsci.analysis.api.tree.Tree;
+import org.eclipse.dawnsci.analysis.tree.impl.TreeFileImpl;
+import org.eclipse.dawnsci.analysis.tree.impl.TreeImpl;
 
 /**
  * Top level node for tree
  */
-public class HDF5File extends HDF5Node {
+public class HDF5File extends TreeFileImpl implements HDF5Node {
+	private static final long serialVersionUID = TreeFileImpl.serialVersionUID;
+
+	public static final String ROOT = Tree.ROOT;
 
 	/**
 	 * Attribute name for a NeXus class
 	 */
 	public static final String NXCLASS = "NX_class";
-	public static final String HOST_SEPARATOR = ":";
-	public static final String FILE_STARTER = "//";
 
-	public final static String ROOT = SEPARATOR;
-	final private URI source;
-	private String host;
-	final private String path; // full path to file (including filename)
-	private HDF5NodeLink link; // this is a link to the root group
-	private String prefix; // full path prefix
+	public static String canonicalizePath(final String pathname) {
+		return TreeImpl.canonicalizePath(pathname);
+	}
 
 	/**
 	 * Construct a HDF5 file with given object ID and URI 
@@ -37,16 +42,15 @@ public class HDF5File extends HDF5Node {
 	 * @param uri
 	 */
 	public HDF5File(final long oid, URI uri) {
-		super(oid);
+		super(oid, uri);
+		setGroupNode(super.getGroupNode());
+	}
 
-		source = uri;
-		host = uri.getHost(); // this can return null for "file:/blah"
-		File f = new File(source);
-		
-		path = f.getAbsolutePath();
-		prefix = f.getParentFile().getAbsolutePath();
-
-		link = new HDF5NodeLink(this, null, ROOT, null, new HDF5Group(oid));
+	protected NodeLink createRootNodeLink(long oid) {
+		return new HDF5NodeLink(this, null, ROOT, null, new HDF5Group(oid));
+	}
+	protected NodeLink createRootNodeLink(Node src, Node dest) {
+		return new HDF5NodeLink(this, null, ROOT, (HDF5Node) src, (HDF5Node) dest);
 	}
 
 	/**
@@ -58,130 +62,37 @@ public class HDF5File extends HDF5Node {
 		this(oid, new File(fileName).toURI());
 	}
 
-	/**
-	 * @return source URI
-	 */
-	public URI getSourceURI() {
-		return source;
-	}
-
-	/**
-	 * Set name of host that holds file 
-	 * @param hostname
-	 */
-	public void setHostname(String hostname) {
-		host = hostname;
-	}
-
-	/**
-	 * @return hostname (can be null for localhost)
-	 */
-	public String getHostname() {
-		return host;
-	}
-
-	/**
-	 * @return full path to file (including name)
-	 */
-	public String getFilename() {
-		return path;
-	}
-
-	/**
-	 * @return root group
-	 */
-	public HDF5Group getGroup() {
-		return (HDF5Group) link.getDestination();
-	}
-
-	/**
-	 * Set root group
-	 */
-	public void setGroup(HDF5Group g) {
-		link = new HDF5NodeLink(this, null, ROOT, this, g);
-	}
-
-	/**
-	 * @return link to root group
-	 */
-	public HDF5NodeLink getNodeLink() {
-		return link;
+	@Override
+	public HDF5NodeLink findNodeLink(String pathname) {
+		return (HDF5NodeLink) super.findNodeLink(pathname);
 	}
 
 	@Override
-	public String toString() {
-		return (host != null ? (host + HOST_SEPARATOR + FILE_STARTER) : "") + path;
+	public HDF5Group getGroupNode() {
+		return (HDF5Group) super.getGroupNode();
 	}
 
-	/**
-	 * @return full path of parent directory
-	 */
-	public String getParentDirectory() {
-		return prefix;
+	public HDF5Group getGroup() {
+		return getGroupNode();
 	}
 
-	/**
-	 * @param pathname
-	 * @return node link to given path (needs to be absolute)
-	 */
-	public HDF5NodeLink findNodeLink(final String pathname) {
-		final String path = canonicalizePath(pathname);
-		if (path.indexOf(SEPARATOR) != 0)
-			return null;
-
-		if (path.length() == 1) {
-			return link;
-		}
-
-		// check if group is empty - this indicates an external link created this
-		final HDF5Group g = (HDF5Group) link.getDestination();
-//		if ((g.getNumberOfGroups() + g.getNumberOfDatasets() + g.getNumberOfAttributes()) == 0) {
-//			
-//		}
-		// check if root attribute is needed
-		final String spath = path.substring(1);
-		if (!spath.startsWith(ATTRIBUTE)) {
-			return g.findNodeLink(spath);
-		}
-
-		if (g.containsAttribute(spath.substring(1)))
-			return link;
-
-		return null;
+	public void setGroup(HDF5Group g) {
+		super.setGroupNode(g);
 	}
 
-	private static final String UPDIR = "/..";
-	private static final String CURDIR = "/.";
-
-	/**
-	 * Remove ".." and "." from pathname
-	 * @param pathname
-	 * @return canonical form of pathname
-	 */
-	public static String canonicalizePath(final String pathname) {
-		if (!pathname.contains(UPDIR) && !pathname.contains(CURDIR))
-			return pathname;
-
-		StringBuilder path = new StringBuilder(pathname);
-		int i = 0;
-		while ((i = path.indexOf(UPDIR)) >= 0) {
-			int j = path.lastIndexOf(SEPARATOR, i - 1);
-			if (j <= 0) {
-				// can not find SEPARATOR or preserve ROOT
-				path.insert(0, ROOT);
-				i++;
-				j++;
-			}
-			path.delete(j, i + UPDIR.length());
-		}
-
-		while ((i = path.indexOf(CURDIR)) >= 0) {
-			path.delete(i, i + CURDIR.length());
-		}
-
-		return path.toString();
+	@Override
+	public HDF5NodeLink getNodeLink() {
+		return (HDF5NodeLink) super.getNodeLink();
 	}
 
-	// can add lazy write method (needs modified flag in nodes)
+	@Override
+	public HDF5Attribute getAttribute(String name) {
+		return (HDF5Attribute) super.getAttribute(name);
+	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public Iterator<HDF5Attribute> getAttributeIterator() {
+		return (Iterator<HDF5Attribute>) super.getAttributeIterator();
+	}
 }

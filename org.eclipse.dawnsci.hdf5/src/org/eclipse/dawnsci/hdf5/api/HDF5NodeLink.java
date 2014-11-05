@@ -11,15 +11,16 @@ package org.eclipse.dawnsci.hdf5.api;
 
 import java.io.Serializable;
 
+import org.eclipse.dawnsci.analysis.api.tree.NodeLink;
+import org.eclipse.dawnsci.analysis.tree.impl.NodeLinkImpl;
+
 /**
  * Link two HDF5 nodes together. The name of the link provides a reference for users to the destination node
  */
-public class HDF5NodeLink implements Serializable {
-	private HDF5Node from;
-	private HDF5Node to;
-	private String name;
-	private String path;
-	private HDF5File file;
+public class HDF5NodeLink implements Serializable, NodeLink {
+	private static final long serialVersionUID = -8586668618966201973L;
+
+	private final NodeLinkImpl nlink;
 
 	/**
 	 * A node link
@@ -29,55 +30,79 @@ public class HDF5NodeLink implements Serializable {
 	 * @param destination node which link points to
 	 */
 	public HDF5NodeLink(final HDF5File file, final String path, final String link, final HDF5Node source, final HDF5Node destination) {
-		if (link == null || destination == null) {
-			throw new IllegalArgumentException("Path name, link name and destination must be defined");
-		}
-
-		this.file = file;
-		this.path = path == null ? "" : path;
-		name = link;
-		from = source;
-		to = destination;
+		nlink = new NodeLinkImpl(file, path, link, source, destination);
 	}
 
-	public HDF5Node getSource() {
-		return from;
-	}
-
-	public HDF5Node getDestination() {
-		return to;
-	}
-
-	public boolean isDestinationADataset() {
-		return to instanceof HDF5Dataset;
-	}
-
-	public boolean isDestinationAGroup() {
-		return to instanceof HDF5Group;
-	}
-
-	public boolean isDestinationASymLink() {
-		return to instanceof HDF5SymLink;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	@Override
-	public String toString() {
-		return path + name + '\n' + to.toString();
-	}
-
-	public String getFullName() {
-		return path + name;
+	public HDF5NodeLink(NodeLink link) {
+		nlink = new NodeLinkImpl(link.getTree(), link.getPath(), link.getName(), link.getSource(), link.getDestination());
 	}
 
 	public HDF5File getFile() {
-		return file;
+		return (HDF5File) nlink.getTree();
+	}
+
+	/**
+	 * @return filename
+	 */
+	public String getFilename() {
+		return getTree().getFilename();
+	}
+
+
+	public boolean isDestinationADataset() {
+		return nlink.isDestinationData();
+	}
+
+	public boolean isDestinationAGroup() {
+		return nlink.isDestinationGroup();
+	}
+
+	public boolean isDestinationASymLink() {
+		return nlink.isDestinationSymbolic();
+	}
+
+	@Override
+	public HDF5Node getSource() {
+		return (HDF5Node) nlink.getSource();
+	}
+
+	@Override
+	public HDF5Node getDestination() {
+		return (HDF5Node) nlink.getDestination();
+	}
+
+	@Override
+	public boolean isDestinationData() {
+		return nlink.isDestinationData();
+	}
+
+	@Override
+	public boolean isDestinationGroup() {
+		return nlink.isDestinationGroup();
+	}
+
+	@Override
+	public boolean isDestinationSymbolic() {
+		return nlink.isDestinationSymbolic();
+	}
+
+	@Override
+	public String getName() {
+		return nlink.getName();
+	}
+
+	@Override
+	public String getPath() {
+		return nlink.getPath();
+	}
+
+	@Override
+	public String getFullName() {
+		return nlink.getFullName();
+	}
+
+	@Override
+	public HDF5File getTree() {
+		return (HDF5File) nlink.getTree();
 	}
 }
