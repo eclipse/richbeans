@@ -116,7 +116,6 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		if (inr == outr) return output;
 		
 		List<AxesMetadata> metadata = null;
-		List<AxesMetadata> metaout = null;
 		
 		try {
 			metadata = original.getMetadata(AxesMetadata.class);
@@ -131,54 +130,6 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		//Update rank of dataset (will automatically update rank of axes)
 		updateOutputDataShape(output.getData(), inr-rankDif, datadims, rankDif);
 		updateAxes(output.getData(),original,metadata,rankDif, datadims);
-		
-//		if (metadata != null && !metadata.isEmpty() && metadata.get(0) != null) {
-//			
-//			//update it all for new data;
-//			try {
-//				metaout = output.getData().getMetadata(AxesMetadata.class);
-//			} catch (Exception e) {
-//				throw new OperationException(this, e);
-//			}
-//			
-//			AxesMetadata inMeta = metadata.get(0);
-//			
-//			AxesMetadata axOut = null;
-//			if (metaout != null && !metaout.isEmpty()) axOut = metaout.get(0);
-//			if (axOut == null) axOut = inMeta.createAxesMetadata(output.getData().getRank());
-//			
-//			//Clone to get copies of lazy datasets
-//			AxesMetadata cloneMeta = (AxesMetadata) inMeta.clone();
-//			
-//			if (rankDif == 0) {
-//				
-//				for (int i = 0; i< original.getRank(); i++) {
-//					if (Arrays.binarySearch(datadims, i) < 0) {
-//						ILazyDataset[] axis = cloneMeta.getAxis(i);
-//						if (axis != null) axOut.setAxis(i, cloneMeta.getAxis(i));
-//					}
-//				}
-//				
-//			} else {
-//				int j = 0;
-//				int[] shape = new int[output.getData().getRank()];
-//				Arrays.fill(shape, 1);
-//				
-//				for (int i = 0; i< original.getRank(); i++) {
-//					if (Arrays.binarySearch(datadims, i) < 0) {
-//						ILazyDataset[] axis = cloneMeta.getAxis(i);
-//						if (axis != null) {
-//							for (ILazyDataset ax : axis) if (ax != null) ax.setShape(shape); 
-//							axOut.setAxis(i+j, cloneMeta.getAxis(i));
-//						}
-//						
-//					} else {
-//						j--;
-//					}
-//				}
-//			} 
-//		}
-		
 		updateAuxData(output.getAuxData(), original);
 		
 		return output;
@@ -219,6 +170,15 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		
 	}
 	
+	/**
+	 * Add missing axes to the updated rank axes metadata
+	 * 
+	 * @param output
+	 * @param original
+	 * @param ometadata
+	 * @param rankDif
+	 * @param datadims
+	 */
 	private void updateAxes(IDataset output, IDataset original, List<AxesMetadata> ometadata, int rankDif, int[] datadims) {
 		if (ometadata != null && !ometadata.isEmpty() && ometadata.get(0) != null) {
 			List<AxesMetadata> metaout = null;
@@ -287,7 +247,6 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			throw new OperationException(this, e);
 		}
 		
-		
 		for (int i = 0; i < auxData.length; i++) {
 			if (!(auxData[i] instanceof IDataset)) {
 				continue;
@@ -298,7 +257,6 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			int outr = ds.getRank();
 			int inr = original.getRank();
 			
-
 			int rankDif = 0;
 			
 			if (!getOutputRank().equals(OperationRank.SAME)) {
@@ -310,36 +268,10 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			if (datadims.length > outr) {
 				datadims = new int[]{datadims[0]};
 			}
-			
 			Arrays.sort(datadims);
-
-			
-			int[] shape = new int[original.getRank()-datadims.length];
-			Arrays.fill(shape, 1);
-			
 			
 			updateOutputDataShape(ds, inr-rankDif, datadims, rankDif);
 			updateAxes(ds,original,metadata,rankDif, datadims);
-			
-//			ds.setShape(shape);
-			
-//			if (metadata != null && !metadata.isEmpty() && metadata.get(0) != null) {
-//				AxesMetadata outMeta = metadata.get(0).createAxesMetadata(shape.length);
-//				AxesMetadata inMeta = metadata.get(0);
-//				int counter = 0;
-//				for (int j = 0; j < original.getRank();j++) {
-//					if (Arrays.binarySearch(datadims, j)<0) {
-//						ILazyDataset[] axes = inMeta.getAxis(j);
-//						if (axes != null && axes[0] != null) {
-//							ILazyDataset view = axes[0].getSliceView();
-//							view.setShape(shape);
-//							outMeta.setAxis(counter++, new ILazyDataset[]{view});
-//						}
-//						
-//					}
-//				}
-//				ds.setMetadata(outMeta);
-//			}
 			
 		}
 	}
