@@ -21,11 +21,11 @@ import org.eclipse.dawnsci.analysis.api.tree.Tree;
 public class NodeLinkImpl implements NodeLink, Serializable {
 	protected static final long serialVersionUID = -8586668618966201973L;
 
-	private NodeImpl from;
-	private NodeImpl to;
+	private Node from;
+	private Node to;
 	private String name;
 	private String path;
-	private TreeImpl tree;
+	private Tree tree;
 
 	/**
 	 * A node link
@@ -39,24 +39,20 @@ public class NodeLinkImpl implements NodeLink, Serializable {
 			throw new IllegalArgumentException("Path name, link name and destination must be defined");
 		}
 
-		this.tree = tree instanceof TreeImpl ? (TreeImpl) tree : new TreeImpl(tree);
+		this.tree = tree;
 		this.path = path == null ? "" : path;
 		name = link;
-		from = source == null ? null : (source instanceof NodeImpl ? (NodeImpl) source : new NodeImpl(source));
-		to   = destination instanceof NodeImpl ? (NodeImpl) destination: new NodeImpl(destination);
-	}
-
-	public NodeLinkImpl(NodeLink link) {
-		this(link.getTree(), link.getPath(), link.getName(), link.getSource(), link.getDestination());
+		from = source;
+		to   = destination;
 	}
 
 	@Override
-	public NodeImpl getSource() {
+	public Node getSource() {
 		return from;
 	}
 
 	@Override
-	public NodeImpl getDestination() {
+	public Node getDestination() {
 		return to;
 	}
 
@@ -96,7 +92,7 @@ public class NodeLinkImpl implements NodeLink, Serializable {
 	}
 
 	@Override
-	public TreeImpl getTree() {
+	public Tree getTree() {
 		return tree;
 	}
 }

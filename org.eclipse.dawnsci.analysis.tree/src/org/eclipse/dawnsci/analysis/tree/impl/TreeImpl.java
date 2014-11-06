@@ -9,17 +9,17 @@
 
 package org.eclipse.dawnsci.analysis.tree.impl;
 
+import java.io.Serializable;
 import java.net.URI;
 
 import org.eclipse.dawnsci.analysis.api.tree.GroupNode;
-import org.eclipse.dawnsci.analysis.api.tree.Node;
 import org.eclipse.dawnsci.analysis.api.tree.NodeLink;
 import org.eclipse.dawnsci.analysis.api.tree.Tree;
 
 /**
  * Top-level node for a tree
  */
-public class TreeImpl extends NodeImpl implements Tree {
+public class TreeImpl extends NodeImpl implements Tree, Serializable {
 	protected static final long serialVersionUID = -4612527676015545433L;
 
 	protected final URI source;
@@ -38,22 +38,7 @@ public class TreeImpl extends NodeImpl implements Tree {
 		source = uri;
 		host = uri == null ? null : uri.getHost(); // this can return null for "file:/blah"
 		
-		link = createRootNodeLink(oid);
-	}
-
-	protected NodeLink createRootNodeLink(long oid) {
-		return new NodeLinkImpl(this, null, ROOT, null, new GroupNodeImpl(oid));
-	}
-	protected NodeLink createRootNodeLink(Node src, Node dest) {
-		return new NodeLinkImpl(this, null, ROOT, src, dest);
-	}
-
-	public TreeImpl(final Tree tree) {
-		super(tree.getID());
-		source = tree.getSourceURI();
-		host = tree.getHostname();
-		NodeLink l = tree.getNodeLink();
-		link = l instanceof NodeLinkImpl ? (NodeLinkImpl) l : new NodeLinkImpl(l);
+		link = new NodeLinkImpl(this, null, ROOT, null, new GroupNodeImpl(oid));
 	}
 
 	@Override
@@ -78,7 +63,7 @@ public class TreeImpl extends NodeImpl implements Tree {
 
 	@Override
 	public void setGroupNode(GroupNode g) {
-		link = createRootNodeLink(this,  g);
+		link = new NodeLinkImpl(this, null, ROOT, this, g);
 	}
 
 	@Override

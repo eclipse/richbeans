@@ -11,6 +11,7 @@ package org.eclipse.dawnsci.analysis.tree.impl;
 
 import java.io.Serializable;
 
+import org.eclipse.dawnsci.analysis.api.tree.Node;
 import org.eclipse.dawnsci.analysis.api.tree.NodeLink;
 import org.eclipse.dawnsci.analysis.api.tree.SymbolicNode;
 import org.eclipse.dawnsci.analysis.api.tree.Tree;
@@ -21,7 +22,7 @@ import org.eclipse.dawnsci.analysis.api.tree.Tree;
 public class SymbolicNodeImpl extends NodeImpl implements SymbolicNode, Serializable {
 	protected static final long serialVersionUID = -2348087598312513187L;
 
-	private TreeImpl tree;
+	private Tree tree;
 	private String path;
 
 	/**
@@ -32,15 +33,8 @@ public class SymbolicNodeImpl extends NodeImpl implements SymbolicNode, Serializ
 	 */
 	public SymbolicNodeImpl(final long oid, final Tree treeWithNode, final String pathToNode) {
 		super(oid);
-		tree = treeWithNode instanceof TreeImpl ? (TreeImpl) treeWithNode : new TreeImpl(treeWithNode);
+		tree = treeWithNode;
 		path = pathToNode;
-	}
-
-	public SymbolicNodeImpl(final SymbolicNode sym) {
-		super(sym);
-		Tree t = sym.getTree();
-		tree = t instanceof TreeImpl ? (TreeImpl) t : new TreeImpl(t);
-		path = sym.getPath();
 	}
 
 	@Override
@@ -49,9 +43,9 @@ public class SymbolicNodeImpl extends NodeImpl implements SymbolicNode, Serializ
 	}
 
 	@Override
-	public NodeImpl getNode() {
+	public Node getNode() {
 		NodeLink l = getNodeLink();
-		return l == null ? null : (NodeImpl) l.getDestination();
+		return l == null ? null : l.getDestination();
 	}
 
 	@Override
@@ -60,7 +54,7 @@ public class SymbolicNodeImpl extends NodeImpl implements SymbolicNode, Serializ
 	}
 
 	@Override
-	public TreeImpl getTree() {
+	public Tree getTree() {
 		return tree;
 	}
 

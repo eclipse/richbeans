@@ -34,16 +34,6 @@ public class DataNodeImpl extends NodeImpl implements DataNode, Serializable {
 		super(oid);
 	}
 
-	public DataNodeImpl(final DataNode data) {
-		super(data);
-		string = data.isString();
-		supported = data.isSupported();
-		dataset = data.getDataset();
-		maxShape = data.getMaxShape();
-		text = data.getString();
-		type = data.getTypeName();
-	}
-
 	@Override
 	public boolean isString() {
 		return string;

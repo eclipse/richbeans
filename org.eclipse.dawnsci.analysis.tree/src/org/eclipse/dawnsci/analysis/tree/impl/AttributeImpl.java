@@ -15,13 +15,12 @@ import org.eclipse.dawnsci.analysis.api.tree.Attribute;
 import org.eclipse.dawnsci.analysis.api.tree.Tree;
 import org.eclipse.dawnsci.analysis.dataset.impl.Dataset;
 import org.eclipse.dawnsci.analysis.dataset.impl.DatasetFactory;
-import org.eclipse.dawnsci.analysis.dataset.impl.DatasetUtils;
 import org.eclipse.dawnsci.analysis.dataset.impl.StringDataset;
 
 public class AttributeImpl implements Attribute, Serializable {
 	protected static final long serialVersionUID = -5046142834233727039L;
 
-	private TreeImpl tree;
+	private Tree tree;
 	private String node;
 	private String name;
 	private String type;
@@ -36,18 +35,10 @@ public class AttributeImpl implements Attribute, Serializable {
 	 * @param isUnsigned true if items are unsigned but held in signed primitives
 	 */
 	public AttributeImpl(final Tree tree, final String nodeName, final String attrName, final Object attrValue, final boolean isUnsigned) {
-		this.tree = tree instanceof TreeImpl ? (TreeImpl) tree : new TreeImpl(tree);
+		this.tree = tree;
 		node = nodeName;
 		name = attrName;
 		value = DatasetFactory.createFromObject(attrValue, isUnsigned);
-	}
-
-	public AttributeImpl(final Attribute attr) {
-		Tree t = attr.getTree();
-		tree = t instanceof TreeImpl ? (TreeImpl) t : new TreeImpl(t);
-		node = attr.getNodeName();
-		name = attr.getName();
-		value = DatasetUtils.convertToDataset(attr.getValue());
 	}
 
 	@Override

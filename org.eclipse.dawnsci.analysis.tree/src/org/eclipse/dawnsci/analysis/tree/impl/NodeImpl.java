@@ -19,7 +19,7 @@ import org.eclipse.dawnsci.analysis.api.tree.Node;
 public class NodeImpl implements Node, Serializable {
 	protected static final long serialVersionUID = -662872819341035983L;
 
-	protected LinkedHashMap<String, AttributeImpl> attributes;
+	protected LinkedHashMap<String, Attribute> attributes;
 	protected static final String INDENT = "    ";
 	protected final long id;
 
@@ -28,18 +28,8 @@ public class NodeImpl implements Node, Serializable {
 	 * @param oid object ID
 	 */
 	public NodeImpl(final long oid) {
-		attributes = new LinkedHashMap<String, AttributeImpl>();
+		attributes = new LinkedHashMap<String, Attribute>();
 		id = oid;
-	}
-
-	public NodeImpl(Node node) {
-		this(node.getID());
-		Iterator<String> it = node.getAttributeNameIterator();
-		while (it.hasNext()) {
-			String an = it.next();
-			Attribute a = node.getAttribute(an);
-			attributes.put(an, a instanceof AttributeImpl ? (AttributeImpl) a : new AttributeImpl(a));
-		}
 	}
 
 	@Override
@@ -64,7 +54,7 @@ public class NodeImpl implements Node, Serializable {
 
 	@Override
 	public void addAttribute(final Attribute a) {
-		attributes.put(a.getName(), a instanceof AttributeImpl ? (AttributeImpl) a : new AttributeImpl(a));
+		attributes.put(a.getName(), a);
 	}
 
 	@Override

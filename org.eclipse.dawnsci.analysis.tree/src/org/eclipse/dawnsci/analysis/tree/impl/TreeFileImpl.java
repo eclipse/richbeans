@@ -10,6 +10,7 @@
 package org.eclipse.dawnsci.analysis.tree.impl;
 
 import java.io.File;
+import java.io.Serializable;
 import java.net.URI;
 
 import org.eclipse.dawnsci.analysis.api.tree.TreeFile;
@@ -17,7 +18,7 @@ import org.eclipse.dawnsci.analysis.api.tree.TreeFile;
 /**
  * Top level node for tree-based file
  */
-public class TreeFileImpl extends TreeImpl implements TreeFile {
+public class TreeFileImpl extends TreeImpl implements TreeFile, Serializable {
 	protected static final long serialVersionUID = -1101384820336767759L;
 
 	private final String path;
@@ -44,12 +45,6 @@ public class TreeFileImpl extends TreeImpl implements TreeFile {
 	 */
 	public TreeFileImpl(final long oid, final String fileName) {
 		this(oid, new File(fileName).toURI());
-	}
-
-	public TreeFileImpl(TreeFile tree) {
-		super(tree);
-		path = tree.getFilename();
-		prefix = tree.getParentDirectory();
 	}
 
 	@Override

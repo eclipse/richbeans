@@ -61,17 +61,6 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 		nodes = new LinkedHashMap<String, NodeLink>();
 	}
 
-	public GroupNodeImpl(final GroupNode g) {
-		super(g);
-		datasets = g.getNumberOfDataNodes();
-		groups = g.getNumberOfGroupNodes();
-
-		nodes = new LinkedHashMap<String, NodeLink>();
-		for (NodeLink n : g) {
-			nodes.put(n.getFullName(), createNodeLink(n));
-		}
-	}
-
 	/**
 	 * @return number of node links held in group
 	 */
@@ -115,8 +104,7 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 		} else {
 			datasets++;
 		}
-		NodeLinkImpl nl = (NodeLinkImpl) (link instanceof NodeLinkImpl ? link : createNodeLink(link));
-		nodes.put(name, nl);
+		nodes.put(name, link);
 	}
 
 	/**
@@ -289,10 +277,6 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 
 	protected NodeLink createNodeLink(final Tree file, final String path, final String name, final Node n) {
 		return new NodeLinkImpl(file, path, name, this, n);
-	}
-
-	protected NodeLink createNodeLink(final NodeLink link) {
-		return new NodeLinkImpl(link);
 	}
 
 	/**
