@@ -10,6 +10,7 @@
 package org.eclipse.dawnsci.analysis.api.processing;
 
 import java.io.Serializable;
+import java.lang.reflect.ParameterizedType;
 import java.util.Arrays;
 import java.util.List;
 
@@ -533,5 +534,9 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 
 	public void setCategory(OperationCategory category) {
 		this.category = category;
+	}
+	
+	public Class<?> getModelClass() {
+		return (Class<?>)((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 }
