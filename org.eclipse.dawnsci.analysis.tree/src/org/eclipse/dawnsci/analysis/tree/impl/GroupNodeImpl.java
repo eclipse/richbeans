@@ -51,7 +51,7 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 	}
 
 	/**
-	 * Construct a group with given object ID
+	 * Construct a group node with given object ID
 	 * @param oid object ID
 	 */
 	public GroupNodeImpl(final long oid) {

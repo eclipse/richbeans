@@ -24,7 +24,7 @@ public class TreeFileImpl extends TreeImpl implements TreeFile {
 	private String prefix;
 
 	/**
-	 * Construct a file with given object ID and URI 
+	 * Construct a tree file with given object ID and URI 
 	 * @param oid object ID
 	 * @param uri
 	 */
@@ -38,7 +38,7 @@ public class TreeFileImpl extends TreeImpl implements TreeFile {
 	}
 
 	/**
-	 * Construct a file with given object ID and file name 
+	 * Construct a tree file with given object ID and file name 
 	 * @param oid object ID
 	 * @param fileName
 	 */

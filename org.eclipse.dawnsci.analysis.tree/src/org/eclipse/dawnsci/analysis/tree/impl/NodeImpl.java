@@ -24,11 +24,6 @@ public class NodeImpl implements Node, Serializable {
 	protected final long id;
 
 	/**
-	 * String used as separator between a node and its attributes
-	 */
-	public static final String ATTRIBUTE = "@";
-
-	/**
 	 * Construct a node with given object ID
 	 * @param oid object ID
 	 */

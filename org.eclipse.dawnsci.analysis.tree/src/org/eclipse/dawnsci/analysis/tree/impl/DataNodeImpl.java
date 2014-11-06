@@ -26,6 +26,10 @@ public class DataNodeImpl extends NodeImpl implements DataNode, Serializable {
 	private String text;
 	private String type;
 
+	/**
+	 * Construct a data node with given object ID
+	 * @param oid object ID
+	 */
 	public DataNodeImpl(long oid) {
 		super(oid);
 	}

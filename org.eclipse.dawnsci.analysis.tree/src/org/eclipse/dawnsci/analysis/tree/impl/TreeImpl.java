@@ -9,7 +9,6 @@
 
 package org.eclipse.dawnsci.analysis.tree.impl;
 
-import java.io.File;
 import java.net.URI;
 
 import org.eclipse.dawnsci.analysis.api.tree.GroupNode;
@@ -17,6 +16,9 @@ import org.eclipse.dawnsci.analysis.api.tree.Node;
 import org.eclipse.dawnsci.analysis.api.tree.NodeLink;
 import org.eclipse.dawnsci.analysis.api.tree.Tree;
 
+/**
+ * Top-level node for a tree
+ */
 public class TreeImpl extends NodeImpl implements Tree {
 	protected static final long serialVersionUID = -4612527676015545433L;
 
@@ -26,15 +28,15 @@ public class TreeImpl extends NodeImpl implements Tree {
 	private static final String UPDIR = "/..";
 
 	/**
-	 * Construct a HDF5 file with given object ID and URI 
+	 * Construct a tree with given object ID and URI 
 	 * @param oid object ID
-	 * @param uri
+	 * @param uri (can be null)
 	 */
 	public TreeImpl(final long oid, URI uri) {
 		super(oid);
 
 		source = uri;
-		host = uri.getHost(); // this can return null for "file:/blah"
+		host = uri == null ? null : uri.getHost(); // this can return null for "file:/blah"
 		
 		link = createRootNodeLink(oid);
 	}
@@ -44,15 +46,6 @@ public class TreeImpl extends NodeImpl implements Tree {
 	}
 	protected NodeLink createRootNodeLink(Node src, Node dest) {
 		return new NodeLinkImpl(this, null, ROOT, src, dest);
-	}
-
-	/**
-	 * Construct a HDF5 file with given object ID and file name 
-	 * @param oid object ID
-	 * @param fileName
-	 */
-	public TreeImpl(final long oid, final String fileName) {
-		this(oid, new File(fileName).toURI());
 	}
 
 	public TreeImpl(final Tree tree) {

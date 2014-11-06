@@ -9,13 +9,11 @@ Require-Bundle: org.eclipse.core.runtime,
  ncsa.hdf;bundle-version="2.8.0",
  org.eclipse.core.resources;bundle-version="3.8.1",
  org.eclipse.dawnsci.analysis.api;bundle-version="1.0.0",
- org.eclipse.dawnsci.analysis.dataset;bundle-version="1.0.0",
- org.eclipse.dawnsci.analysis.tree;bundle-version="1.0.0";visibility:=reexport
+ org.eclipse.dawnsci.analysis.dataset;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: org.eclipse.dawnsci.hdf5,
- org.eclipse.dawnsci.hdf5.api,
  org.eclipse.dawnsci.hdf5.model,
  org.eclipse.dawnsci.hdf5.model.internal;x-internal:=true,
  org.eclipse.dawnsci.hdf5.nexus

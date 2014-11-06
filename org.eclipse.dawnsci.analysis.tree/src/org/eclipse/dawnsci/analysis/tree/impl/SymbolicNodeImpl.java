@@ -25,7 +25,7 @@ public class SymbolicNodeImpl extends NodeImpl implements SymbolicNode, Serializ
 	private String path;
 
 	/**
-	 * Construct a HDF5 symbolic link with given object ID, file name and node path
+	 * Construct a symbolic link with given object ID, file name and node path
 	 * @param oid object ID
 	 * @param treeWithNode
 	 * @param pathToNode (ends in separator if group, otherwise a dataset)
