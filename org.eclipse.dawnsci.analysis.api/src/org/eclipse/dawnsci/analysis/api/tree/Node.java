@@ -21,6 +21,11 @@ public interface Node {
 	public static final String SEPARATOR = "/";
 
 	/**
+	 * String used as separator between a node and its attributes
+	 */
+	public static final String ATTRIBUTE = "@";
+
+	/**
 	 * @return ID
 	 */
 	public long getID();
