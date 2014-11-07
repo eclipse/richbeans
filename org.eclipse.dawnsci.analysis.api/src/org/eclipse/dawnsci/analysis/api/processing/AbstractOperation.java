@@ -196,7 +196,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			
 			AxesMetadata axOut = null;
 			if (metaout != null && !metaout.isEmpty()) axOut = metaout.get(0);
-			if (axOut == null) axOut = inMeta.createAxesMetadata(output.getRank());
+			if (axOut == null) axOut = inMeta.createAxesMetadata(output.getRank() - rankDif);
 			
 			//Clone to get copies of lazy datasets
 			AxesMetadata cloneMeta = (AxesMetadata) inMeta.clone();
