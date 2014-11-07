@@ -604,10 +604,13 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 					for (int i = 0; r == null && i < l; i++) {
 						r = Array.get(o, i);
 					}
-					if (r == null)
-						continue;
-
 					int n = op.getNewRank();
+					if (r == null) {
+						if (n < 0 || n != l) { // all nulls be need to match rank as necessary
+							f.set(m, Array.newInstance(o.getClass().getComponentType(), n < 0 ? l : n));
+						}
+						continue;
+					}
 					if (n < 0)
 						n = l;
 					Object narray = Array.newInstance(r.getClass(), n);
@@ -637,10 +640,17 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 					for (int i = 0; r == null && i < l; i++) {
 						r = list.get(i);
 					}
-					if (r == null)
-						continue;
-
 					int n = op.getNewRank();
+					if (r == null) {
+						if (n < 0 || n != l) { // all nulls be need to match rank as necessary
+							list.clear();
+							for (int i = 0, imax = n < 0 ? l : n; i < imax; i++) {
+								list.add(null);
+							}
+						}
+						continue;
+					}
+
 					if (n < 0)
 						n = l;
 					Object narray = Array.newInstance(r.getClass(), n);

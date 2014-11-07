@@ -9,6 +9,8 @@
 
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
+import java.text.MessageFormat;
+
 /**
  * Extend dataset for objects
  */
@@ -222,6 +224,12 @@ public class ObjectDataset extends ObjectDatasetBase {
 	@Override
 	public boolean getBoolean(int... pos) {
 		throw new UnsupportedOperationException("Unsupported method for class");
+	}
+
+	@Override
+	public String getStringAbs(final int index) {
+		return stringFormat instanceof MessageFormat ? stringFormat.format(data[index]) :
+				String.format("%s", data[index]);
 	}
 
 	@Override

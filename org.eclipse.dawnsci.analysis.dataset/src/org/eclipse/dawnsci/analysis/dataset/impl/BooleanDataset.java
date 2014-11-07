@@ -9,6 +9,9 @@
 
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
+import java.text.MessageFormat;
+import java.text.NumberFormat;
+
 
 
 
@@ -208,6 +211,12 @@ public class BooleanDataset extends BooleanDatasetBase {
 	@Override
 	public boolean getBoolean(final int... pos) {
 		return get(pos);
+	}
+
+	@Override
+	public String getStringAbs(final int index) {
+		return stringFormat instanceof MessageFormat ? stringFormat.format(data[index]) :
+				String.format("%b", data[index]);
 	}
 
 	@Override
