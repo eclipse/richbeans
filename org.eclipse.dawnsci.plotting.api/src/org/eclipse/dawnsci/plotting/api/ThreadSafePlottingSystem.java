@@ -197,6 +197,10 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 	public void clearRegions() {
 		call(getMethodName(Thread.currentThread().getStackTrace()));
 	}
+	@Override
+	public void clearTraces() {
+		call(getMethodName(Thread.currentThread().getStackTrace()));
+	}
 
 	@Override
 	public Collection<IRegion> getRegions() {

@@ -129,6 +129,11 @@ public interface ITraceSystem {
 	 * @return
 	 */
 	public Collection<ITrace> getTraces();
+	
+	/**
+	 * Remove the currently plotted traces. Thread safe
+	 */
+	public void clearTraces();
 
 	/**
 	 * Call this method to retrieve what is currently plotted by trace type

@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.IDatasetMathsService;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.io.IDataHolder;
 import org.eclipse.dawnsci.analysis.api.io.ILoaderService;
 import org.eclipse.dawnsci.analysis.api.io.SliceObject;
@@ -331,7 +332,34 @@ public class SliceUtils {
 		}
 		
 		try {
-			return getAxis(currentSlice, varMan, axisName, true, monitor);
+			IDataset x = getAxis(currentSlice, varMan, axisName, true, monitor);
+			
+			// Hack to make EDXD file work in DAWN 1.7.1
+			// TODO FIXME Axes should come from metadata eventually, although
+			// since expressions may be axes, there will still need to be some
+			// manipulation. 
+			try {
+				if (x!=null&& x.getRank()>1) {
+					final int[] dataShape = currentSlice.getFullShape();
+				    if (dataShape!=null && x.getShape()[0]==dataShape[currentSlice.getX()-1]) {
+						int dim  = currentSlice.getX()-1;
+						int from = currentSlice.getSliceStart()[dim];
+						int to   = currentSlice.getSliceStop()[dim];
+						x = x.getSliceView(new Slice(from, to), null);
+						x = x.squeeze();
+						x.setName(axisName);
+				    }
+				}
+			} catch (Exception ignored) {
+				// This is a late on fix, if we cannot get the axes, we set no axis.
+				x = service.createRange(length, IDatasetMathsService.INT); // Save time
+				x.setName("");
+			}
+			if (x.getRank()!=1) {
+				x = service.createRange(length, IDatasetMathsService.INT); // Save time
+				x.setName("");
+			}
+            return x;
 			
 		} catch (Throwable ne) {
 			logger.error("Cannot get nexus axis during slice!", ne);
