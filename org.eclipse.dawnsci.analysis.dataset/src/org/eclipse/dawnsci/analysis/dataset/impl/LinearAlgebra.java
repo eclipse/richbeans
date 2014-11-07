@@ -542,6 +542,97 @@ public class LinearAlgebra {
 	}
 
 	/**
+	 * Raise dataset to given power by matrix multiplication
+	 * @param a
+	 * @param n power
+	 * @return a ** n
+	 */
+	public static Dataset power(Dataset a, int n) {
+		if (n < 0) {
+			LUDecomposition lud = new LUDecomposition(createRealMatrix(a));
+			return createDataset(lud.getSolver().getInverse().power(-n));
+		}
+		Dataset p = createDataset(createRealMatrix(a).power(n));
+		if (!a.hasFloatingPointElements())
+			return p.cast(a.getDtype());
+		return p;
+	}
+
+	/**
+	 * Create the Kronecker product as defined by 
+	 * kron[k0,...,kN] = a[i0,...,iN] * b[j0,...,jN]
+	 * where kn = in + sn * jn for n = 0...N and s is shape of b
+	 * @param a
+	 * @param b
+	 * @return Kronecker product of a and b
+	 */
+	public static Dataset kroneckerProduct(Dataset a, Dataset b) {
+		int ar = a.getRank();
+		int br = b.getRank();
+		int[] aShape;
+		int[] bShape;
+		aShape = a.getShapeRef();
+		bShape = b.getShapeRef();
+		int r = ar;
+		if (ar < br) {
+			r = br;
+			int[] shape = new int[br];
+			int j = 0;
+			for (int i = ar; i < br; i++) {
+				shape[j++] = 1;
+			}
+			int i = 0;
+			while (j < br) {
+				shape[j++] = aShape[i++];
+			}
+			a = a.reshape(shape);
+			aShape = shape;
+		} else {
+			int[] shape = new int[ar];
+			int j = 0;
+			for (int i = br; i < ar; i++) {
+				shape[j++] = 1;
+			}
+			int i = 0;
+			while (j < ar) {
+				shape[j++] = bShape[i++];
+			}
+			b = b.reshape(shape);
+			bShape = shape;
+		}
+
+		int[] nShape = new int[r];
+		for (int i = 0; i < r; i++) {
+			nShape[i] = aShape[i] * bShape[i];
+		}
+		Dataset kron = DatasetFactory.zeros(nShape, AbstractDataset.getBestDType(a.getDtype(), b.getDtype()));
+		IndexIterator ita = a.getIterator(true);
+		IndexIterator itb = b.getIterator(true);
+		int k = 0;
+		if (kron.getDtype() == Dataset.INT64) {
+			while (ita.hasNext()) {
+				long av = a.getElementLongAbs(ita.index);
+				itb.reset();
+				while (itb.hasNext()) {
+					long bv = b.getElementLongAbs(itb.index);
+					kron.setObjectAbs(k++, av * bv);
+				}
+			}
+		} else {
+			while (ita.hasNext()) {
+				double av = a.getElementDoubleAbs(ita.index);
+				itb.reset();
+				while (itb.hasNext()) {
+					double bv = b.getElementDoubleAbs(itb.index);
+					kron.setObjectAbs(k++, av * bv);
+				}
+			}
+		}
+
+		return kron;
+	}
+
+	/**
 	 * Calculate trace of dataset - sum of values over 1st axis and 2nd axis
 	 * @param a
 	 * @return trace of dataset
@@ -1082,7 +1173,6 @@ public class LinearAlgebra {
 		return createDataset(cg.solve((RealLinearOperator) createRealMatrix(a), createRealVector(v)));
 	}
 
-	
 	private static RealMatrix createRealMatrix(Dataset a) {
 		if (a.getRank() != 2) {
 			throw new IllegalArgumentException("Dataset must be rank 2");
