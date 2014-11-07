@@ -18,6 +18,7 @@ import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.metadata.AxesMetadata;
+import org.eclipse.dawnsci.analysis.api.metadata.ErrorMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.IDiffractionMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.MaskMetadata;
@@ -195,7 +196,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			
 			AxesMetadata axOut = null;
 			if (metaout != null && !metaout.isEmpty()) axOut = metaout.get(0);
-			if (axOut == null) axOut = inMeta.createAxesMetadata(output.getRank());
+			if (axOut == null) axOut = inMeta.createAxesMetadata(output.getRank() - rankDif);
 			
 			//Clone to get copies of lazy datasets
 			AxesMetadata cloneMeta = (AxesMetadata) inMeta.clone();
@@ -500,7 +501,8 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 			List<MetadataType> metadata = original.getMetadata(null);
 
 			for (MetadataType m : metadata) {
-				out.addMetadata(m);
+				if (m instanceof ErrorMetadata) continue;
+				out.setMetadata(m);
 			}
 
 		} catch (Exception e) {
