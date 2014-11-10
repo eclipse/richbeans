@@ -399,6 +399,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 		t.offset = toffset[0];
 		t.base = base == null ? this : base;
 		copyStoredValues(this, t, true);
+		t.transposeMetadata(axes);
 		return t;
 	}
 

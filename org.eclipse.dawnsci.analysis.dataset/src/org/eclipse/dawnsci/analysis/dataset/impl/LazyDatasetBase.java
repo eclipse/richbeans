@@ -27,6 +27,7 @@ import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.MetadataType;
 import org.eclipse.dawnsci.analysis.api.metadata.Reshapeable;
 import org.eclipse.dawnsci.analysis.api.metadata.Sliceable;
+import org.eclipse.dawnsci.analysis.api.metadata.Transposable;
 import org.eclipse.dawnsci.analysis.dataset.metadata.ErrorMetadataImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -239,7 +240,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	}
 
 	interface MetadatasetAnnotationOperation {
-		void processField(Field f);
+		Object processField(Field f, Object o);
 		Class<? extends Annotation> getAnnClass();
 		/**
 		 * @param axis
@@ -270,7 +271,8 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		}
 
 		@Override
-		public void processField(Field field) {
+		public Object processField(Field field, Object o) {
+			return o;
 		}
 
 		@Override
@@ -342,11 +344,12 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		}
 
 		@Override
-		public void processField(Field field) {
+		public Object processField(Field field, Object o) {
 			Annotation a = field.getAnnotation(getAnnClass());
 			if (a instanceof Reshapeable) {
 				matchRank = ((Reshapeable) a).matchRank();
 			}
+			return o;
 		}
 
 		@Override
@@ -535,6 +538,68 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		}
 	}
 
+	class MdsTranspose implements MetadatasetAnnotationOperation {
+		int[] map;
+
+		public MdsTranspose(final int[] axesMap) {
+			map = axesMap;
+		}
+
+		@SuppressWarnings({ "rawtypes", "unchecked" })
+		@Override
+		public Object processField(Field f, Object o) {
+			if (o.getClass().isArray()) {
+				int l = Array.getLength(o);
+				if (l == map.length) {
+					Object narray = Array.newInstance(o.getClass().getComponentType(), l);
+					for (int i = 0; i < l; i++) {
+						Array.set(narray, i, Array.get(o, map[i]));
+					}
+					for (int i = 0; i < l; i++) {
+						Array.set(o, i, Array.get(narray, i));
+					}
+				}
+			} else if (o instanceof List<?>) {
+				List list = (List) o;
+				int l = list.size();
+				if (l == map.length) {
+					Object narray = Array.newInstance(o.getClass().getComponentType(), l);
+					for (int i = 0; i < l; i++) {
+						Array.set(narray, i, list.get(map[i]));
+					}
+					list.clear();
+					for (int i = 0; i < l; i++) {
+						list.add(Array.get(narray, i));
+					}
+				}
+			}
+			return o;
+		}
+
+		@Override
+		public Class<? extends Annotation> getAnnClass() {
+			return Transposable.class;
+		}
+
+		@Override
+		public int change(int axis) {
+			return 0;
+		}
+
+		@Override
+		public int getNewRank() {
+			return -1;
+		}
+
+		@Override
+		public ILazyDataset run(ILazyDataset lz) {
+			if (lz instanceof Dataset) {
+				return ((Dataset) lz).getTransposedView(map);
+			}
+			return lz;
+		}
+	}
+
 	/**
 	 * Slice all datasets in metadata that are annotated by @Sliceable. Call this on the new sliced
 	 * dataset after cloning the metadata
@@ -556,6 +621,15 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	 */
 	protected void reshapeMetadata(final int[] oldShape, final int[] newShape) {
 		processAnnotatedMetadata(new MdsReshape(oldShape, newShape), true);
+	}
+
+	/**
+	 * Transpose all datasets in metadata that are annotated by @Transposable. Call this on the transposed
+	 * dataset after cloning the metadata
+	 * @param axesMap
+	 */
+	protected void transposeMetadata(final int[] axesMap) {
+		processAnnotatedMetadata(new MdsTranspose(axesMap), true);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -592,7 +666,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 				if (o == null)
 					continue;
 
-				op.processField(f);
+				o = op.processField(f, o);
 				Object r = null;
 				if (o instanceof ILazyDataset) {
 					f.set(m, op.run((ILazyDataset) o));
