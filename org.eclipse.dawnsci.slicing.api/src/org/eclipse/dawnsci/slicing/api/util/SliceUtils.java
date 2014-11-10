@@ -479,6 +479,16 @@ public class SliceUtils {
 		return iaxis;
 	}
 
+	/**
+	 * Get a slice from a ILazyDataset using a SliceObject which may contain
+	 * information about slicing and operations to apply on the slice.
+	 * 
+	 * @param ld
+	 * @param currentSlice
+	 * @param monitor
+	 * @return
+	 * @throws Exception
+	 */
 	public static IDataset getSlice(final ILazyDataset      ld,
 									final SliceObject       currentSlice,
 									final IProgressMonitor  monitor) throws Exception {
@@ -513,20 +523,24 @@ public class SliceUtils {
 			if (ddl!=null && !ddl.isEmpty()) {	
 				final int       len    = dataShape.length;
 				String title = slice.getName();
-				for (int i = len-1; i >= 0; i--) {
-					final DimsData dd = ddl.getDimsData(i);
-					if (dd.getPlotAxis().isAdvanced()) {
-						slice = dd.getPlotAxis().process(slice,i);
-						try {
-						    title = dd.getPlotAxis().getName()+" of "+currentSlice.getName()+" range "+getRange(ld, currentSlice, dd);
-					
-						} catch (Throwable ne) {
-							logger.error("Cannot get title for operation "+dd.getPlotAxis(), ne);
-							title = slice.getName();
+				
+				int[] ss = currentSlice.getSlicedShape();
+				if (ss.length<slice.getRank()) {
+					for (int i = len-1; i >= 0; i--) {
+						final DimsData dd = ddl.getDimsData(i);
+						if (dd.getPlotAxis().isAdvanced()) {
+							slice = dd.getPlotAxis().process(slice,i);
+							try {
+							    title = dd.getPlotAxis().getName()+" of "+currentSlice.getName()+" range "+getRange(ld, currentSlice, dd);
+						
+							} catch (Throwable ne) {
+								logger.error("Cannot get title for operation "+dd.getPlotAxis(), ne);
+								title = slice.getName();
+							}
 						}
 					}
+					slice.setName(title);
 				}
-				slice.setName(title);
 			} 
 			
 			final String name = slice.getName();
