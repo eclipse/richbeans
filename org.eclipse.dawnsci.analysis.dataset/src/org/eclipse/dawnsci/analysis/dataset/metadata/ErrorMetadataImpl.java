@@ -17,6 +17,7 @@ import org.eclipse.dawnsci.analysis.api.metadata.ErrorMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.MetadataType;
 import org.eclipse.dawnsci.analysis.api.metadata.Reshapeable;
 import org.eclipse.dawnsci.analysis.api.metadata.Sliceable;
+import org.eclipse.dawnsci.analysis.api.metadata.Transposable;
 import org.eclipse.dawnsci.analysis.dataset.impl.Dataset;
 import org.eclipse.dawnsci.analysis.dataset.impl.DatasetUtils;
 import org.eclipse.dawnsci.analysis.dataset.impl.Maths;
@@ -26,6 +27,7 @@ import org.eclipse.dawnsci.analysis.dataset.impl.Maths;
  */
 public class ErrorMetadataImpl implements ErrorMetadata, Serializable {
 
+	@Transposable
 	@Sliceable
 	@Reshapeable
 	private ILazyDataset error = null; // holds linear errors
