@@ -38,7 +38,7 @@ public interface AxesMetadata extends MetadataType {
 	 * @param axisDim
 	 * @param axisData
 	 */
-	public void setAxis(int axisDim, ILazyDataset[] axisData);
+	public void setAxis(int axisDim, ILazyDataset... axisData);
 	
 	public AxesMetadata createAxesMetadata(int rank);
 }
