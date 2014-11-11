@@ -96,7 +96,8 @@ public interface IOperationService {
 
 	/**
 	 * Get operations by category.
-	 * @return a Map of operations by category. Sorted alphabetically 
+	 * @return a Map of operations by category. Sorted alphabetically the key is the category description.
+	 * Uncategorized operations appear at the end.
 	 */
 	public Map<String, Collection<IOperation<? extends IOperationModel, ? extends OperationData>>> getCategorizedOperations() throws Exception;
 	
