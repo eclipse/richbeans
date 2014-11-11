@@ -45,19 +45,6 @@ import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
  */
 public abstract class AbstractOperation<T extends IOperationModel, D extends OperationData> implements IOperation<T, D> {
 
-	public static class OperationComparitor implements Comparator<IOperation<? extends IOperationModel, ? extends OperationData>> {
-
-		@Override
-		public int compare(IOperation<? extends IOperationModel, ? extends OperationData> arg0, IOperation<? extends IOperationModel, ? extends OperationData> arg1) {
-			if (arg0==null) return -1;
-			if (arg1==null) return 0;
-			String a = arg0.getName();
-			String b = arg1.getName();
-			if (a==null) return -1;
-			return a.compareTo(b);
-		}
-
-	}
 
 	protected T model;
 
@@ -555,4 +542,19 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 	public Class<?> getModelClass() {
 		return (Class<?>)((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
+	
+	public static class OperationComparitor implements Comparator<IOperation<? extends IOperationModel, ? extends OperationData>> {
+
+		@Override
+		public int compare(IOperation<? extends IOperationModel, ? extends OperationData> arg0, IOperation<? extends IOperationModel, ? extends OperationData> arg1) {
+			if (arg0==null) return -1;
+			if (arg1==null) return 0;
+			String a = arg0.getName();
+			String b = arg1.getName();
+			if (a==null) return -1;
+			return a.compareTo(b);
+		}
+
+	}
+
 }
