@@ -1,17 +1,10 @@
 /*-
- * Copyright 2011 Diamond Light Source Ltd.
- * 
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright (c) 2011 Diamond Light Source Ltd.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  */
 
 package org.eclipse.dawnsci.analysis.dataset.impl;
@@ -19,6 +12,7 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 import java.io.Serializable;
 import java.util.Arrays;
 
+import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.io.ILazyLoader;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
@@ -26,10 +20,12 @@ import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 public class LazyDataset extends LazyDatasetBase implements Serializable, Cloneable {
 
 	private int[]       oShape; // original shape
-	private long        size;   // number of items
-	private ILazyLoader loader;
+	protected long      size;   // number of items
 	private int         dtype;
 	private int         isize; // number of elements per item
+
+	protected ILazyLoader loader;
+	private LazyDataset base = null; // used for transpose
 
 	// relative to loader or base
 	private int         prepShape = 0; // prepending and post-pending 
@@ -37,7 +33,6 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 	private int[]       begSlice = null; // slice begin
 	private int[]       delSlice = null; // slice delta
 	private int[]       map; // transposition map (same length as current shape)
-	private LazyDataset base = null; // used for transpose
 
 	/**
 	 * Create a lazy dataset
@@ -243,8 +238,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		final int[] stop = new int[rank];
 		final int[] step = new int[rank];
 		Slice.convertFromSlice(slice, shape, start, stop, step);
-		LazyDataset sliceView = getSliceView(start, stop, step);
-		return sliceView;
+		return getSliceView(start, stop, step);
 	}
 
 	private void setShapeInternal(int... nShape) {
@@ -472,15 +466,65 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 				a = new DoubleDataset(1);
 			}
 			a.setName(name + AbstractDataset.BLOCK_OPEN + Slice.createString(oShape, nstart, nstop, nstep) + AbstractDataset.BLOCK_CLOSE);
-		}
-		if (metadata != null && a instanceof LazyDatasetBase) {
-			((LazyDatasetBase) a).metadata = copyMetadata();
-			((LazyDatasetBase) a).sliceMetadata(false, lstart, lstop, lstep, shape);
+			if (metadata != null && a instanceof LazyDatasetBase) {
+				((LazyDatasetBase) a).metadata = copyMetadata();
+				if (a.getSize() != size) { // not already sliced
+					((LazyDatasetBase) a).reshapeMetadata(shape, oShape);
+					((LazyDatasetBase) a).sliceMetadata(false, nstart, nstop, nstep, oShape);
+				}
+			}
 		}
 		if (map != null) {
 			a = a.getTransposedView(map);
 		}
 		a.setShape(lshape);
 		return a;
+	}
+
+	/**
+	 * Gets the maximum size of a slice of a dataset in a given dimension
+	 * which should normally fit in memory. Note that it might be possible
+	 * to get more in memory, this is a conservative estimate and seems to
+	 * almost always work at the size returned; providing Xmx is less than
+	 * the physical memory.
+	 * 
+	 * To get more in memory increase -Xmx setting or use an expression
+	 * which calls a rolling function (like rmean) instead of slicing directly
+	 * to memory.
+	 * 
+	 * @param lazySet
+	 * @param dimension
+	 * @return maximum size of dimension that can be sliced.
+	 */
+	public static int getMaxSliceLength(ILazyDataset lazySet, int dimension) {
+		// size in bytes of each item
+		final double size = AbstractDataset.getItemsize(AbstractDataset.getDTypeFromClass(lazySet.elementClass()), lazySet.getElementsPerItem());
+		
+		// Max in bytes takes into account our minimum requirement
+		final double max  = Math.max(Runtime.getRuntime().totalMemory(), Runtime.getRuntime().maxMemory());
+		
+        // Firstly if the whole dataset it likely to fit in memory, then we allow it.
+		// Space specified in bytes per item available
+		final double space = max/lazySet.getSize();
+
+		// If we have room for this whole dataset, then fine
+		int[] shape = lazySet.getShape();
+		if (space >= size)
+			return shape[dimension];
+		
+		// Otherwise estimate what we can fit in, conservatively.
+		// First get size of one slice, see it that fits, if not, still return 1
+		double sizeOneSlice = size; // in bytes
+		for (int dim = 0; dim < shape.length; dim++) {
+			if (dim == dimension)
+				continue;
+			sizeOneSlice *= shape[dim];
+		}
+		double avail = max / sizeOneSlice;
+		if (avail < 1)
+			return 1;
+
+		// We fudge this to leave some room
+		return (int) Math.floor(avail/4d);
 	}
 }
