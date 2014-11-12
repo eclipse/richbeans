@@ -496,16 +496,20 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 			int[] nshape = new int[nr];
 			if (onesOnly) {
 				// ignore omit removed dimensions
-				for (int i = 0, si = 0, di = 0; i < (or+1) && si <= or && di < nr; i++) {
-					int c = differences[i];
-					if (c == 0) {
-						nshape[di++] = lshape[si++];
-					} else if (c > 0) {
-						while (c-- > 0 && di < nr) {
-							nshape[di++] = 1;
+				if (or == 1 && nr == 1) {
+					nshape[0] = lshape[0];
+				} else {
+					for (int i = 0, si = 0, di = 0; i < (or+1) && si <= or && di < nr; i++) {
+						int c = differences[i];
+						if (c == 0) {
+							nshape[di++] = lshape[si++];
+						} else if (c > 0) {
+							while (c-- > 0 && di < nr) {
+								nshape[di++] = 1;
+							}
+						} else if (c < 0) {
+							si -= c; // remove dimensions by skipping forward in source array
 						}
-					} else if (c < 0) {
-						si -= c; // remove dimensions by skipping forward in source array
 					}
 				}
 			} else {

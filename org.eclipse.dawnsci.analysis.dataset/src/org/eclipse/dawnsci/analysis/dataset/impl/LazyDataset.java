@@ -144,7 +144,31 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			return false;
 		}
 
-		// TODO finish off
+		if (!Arrays.equals(shape, other.shape)) {
+			return false;
+		}
+
+		if (loader != other.loader) {
+			return false;
+		}
+
+		if (prepShape != other.prepShape) {
+			return false;
+		}
+
+		if (postShape != other.postShape) {
+			return false;
+		}
+
+		if (!Arrays.equals(begSlice, other.begSlice)) {
+			return false;
+		}
+		if (!Arrays.equals(delSlice, other.delSlice)) {
+			return false;
+		}
+		if (!Arrays.equals(map, other.map)) {
+			return false;
+		}
 		return true;
 	}
 
@@ -158,6 +182,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		ret.delSlice = delSlice;
 		ret.map = map;
 		ret.base = base;
+		ret.metadata = copyMetadata();
 		return ret;
 	}
 
@@ -253,7 +278,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 
 		int nb = -1; // first non-unit dimension
 		int nr = nShape.length;
-		for (int i = 0; i < or; i++) {
+		for (int i = 0; i < nr; i++) {
 			if (nShape[i] != 1) {
 				nb = i;
 				break;
@@ -270,7 +295,6 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 
 		prepShape += nb - ob;
 		postShape += nr - oe;
-//		metadata = copyMetadata(); TODO needed?
 		reshapeMetadata(shape, nShape);
 		shape = nShape;
 	}
@@ -310,6 +334,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			nShape = new int[rank];
 		}
 		view.shape = nShape;
+		view.size = AbstractDataset.calcSize(nShape);
 		if (begSlice == null) {
 			view.begSlice = lstart.clone();
 			view.delSlice = lstep.clone();
@@ -447,10 +472,10 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 				a = new DoubleDataset(1);
 			}
 			a.setName(name + AbstractDataset.BLOCK_OPEN + Slice.createString(oShape, nstart, nstop, nstep) + AbstractDataset.BLOCK_CLOSE);
-			if (metadata != null && a instanceof LazyDatasetBase) {
-				((LazyDatasetBase) a).metadata = copyMetadata();
-				((LazyDatasetBase) a).sliceMetadata(false, lstart, lstop, lstep, shape);
-			}
+		}
+		if (metadata != null && a instanceof LazyDatasetBase) {
+			((LazyDatasetBase) a).metadata = copyMetadata();
+			((LazyDatasetBase) a).sliceMetadata(false, lstart, lstop, lstep, shape);
 		}
 		if (map != null) {
 			a = a.getTransposedView(map);
