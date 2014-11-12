@@ -333,57 +333,14 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 		return ret;
 	}
 
-	/**
-	 * Check permutation axes
-	 * @param shape
-	 * @param axes
-	 * @return cleaned up axes
-	 */
-	public static int[] checkPermutatedAxes(int[] shape, int... axes) {
-		int rank = shape.length;
-
-		if (axes == null || axes.length == 0) {
-			axes = new int[rank];
-			for (int i = 0; i < rank; i++) {
-				axes[i] = rank-1-i;
-			}
-		}
-
-		int i;
-
-		if (axes.length != rank) {
-			logger.error("axis permutation has length {} that does not match dataset's rank {}", axes.length, rank);
-			throw new IllegalArgumentException("axis permutation does not match shape of dataset");
-		}
-
-		// check all permutation values are within bounds
-		for (int d : axes) {
-			if (d < 0 || d >= rank) {
-				logger.error("axis permutation contains element {} outside rank of dataset", d);
-				throw new IllegalArgumentException("axis permutation contains element outside rank of dataset");
-			}
-		}
-
-		// check for a valid permutation (is this an unnecessary restriction?)
-		int[] perm = axes.clone();
-		Arrays.sort(perm);
-		for (i = 0; i < rank; i++) {
-			if (perm[i] != i) {
-				logger.error("axis permutation is not valid: it does not contain complete set of axes");
-				throw new IllegalArgumentException("axis permutation does not contain complete set of axes");	
-			}
-		}
-
-		return axes;
-	}
-
 	@Override
 	public Dataset getTransposedView(int... axes) {
+		axes = checkPermutatedAxes(shape, axes);
+
 		AbstractDataset t = getView();
-		if (getRank() == 1)
+		if (axes == null || getRank() == 1)
 			return t;
 
-		axes = checkPermutatedAxes(shape, axes);
 		int rank = shape.length;
 		int[] tstride = new int[rank];
 		int[] toffset = new int[1];
@@ -405,7 +362,8 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 
 	@Override
 	public Dataset transpose(int... axes) {
-		return getTransposedView(axes).clone();
+		Dataset t = getTransposedView(axes);
+		return t == null ? clone() : t.clone();
 	}
 
 	@Override

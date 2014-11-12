@@ -1,10 +1,17 @@
-/*
- * Copyright (c) 2011 Diamond Light Source Ltd.
- *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*-
+ * Copyright 2011 Diamond Light Source Ltd.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.eclipse.dawnsci.analysis.dataset.impl;
@@ -12,32 +19,25 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
-import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.io.ILazyLoader;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 
-/**
- * Class that implements lazy dataset interface
- */
-public class LazyDataset extends LazyDatasetBase implements Cloneable, Serializable {
+public class LazyDataset extends LazyDatasetBase implements Serializable, Cloneable {
 
-	/**
-	 * Update this when there are any serious changes to API
-	 */
-	protected static final long serialVersionUID = -2729953855285411120L;
+	private int[]       oShape; // original shape
+	private long        size;   // number of items
+	private ILazyLoader loader;
+	private int         dtype;
+	private int         isize; // number of elements per item
 
-	private int[]        oShape; // original shape
-	protected long       size;   // number of items
-	protected ILazyLoader loader;
-	private int          dtype;
-	private int          isize; // number of elements per item
-	private int          oOffset; // original shape offset (first non-unit dimension)
-	private int          nOffset; // current shape offset
-	protected LazyDataset base = null;
-	private int[] sliceStart = null;
-	private int[] sliceStep  = null;
+	// relative to loader or base
+	private int         prepShape = 0; // prepending and post-pending 
+	private int         postShape = 0; // changes to shape
+	private int[]       begSlice = null; // slice begin
+	private int[]       delSlice = null; // slice delta
+	private int[]       map; // transposition map (same length as current shape)
+	private LazyDataset base = null; // used for transpose
 
 	/**
 	 * Create a lazy dataset
@@ -50,7 +50,7 @@ public class LazyDataset extends LazyDatasetBase implements Cloneable, Serializa
 	public LazyDataset(String name, int dtype, int elements, int[] shape, ILazyLoader loader) {
 		this.name = name;
 		this.shape = shape;
-		oShape = shape;
+		this.oShape = shape;
 		this.loader = loader;
 		this.dtype = dtype;
 		this.isize = elements;
@@ -58,14 +58,6 @@ public class LazyDataset extends LazyDatasetBase implements Cloneable, Serializa
 			size = AbstractDataset.calcLongSize(shape);
 		} catch (IllegalArgumentException e) {
 			size = Long.MAX_VALUE; // this indicates that the entire dataset cannot be read in! 
-		}
-		oOffset = -1;
-		nOffset = -1;
-		for (int i = 0; i < oShape.length; i++) {
-			if (oShape[i] != 1) {
-				oOffset = nOffset = i;
-				break;
-			}
 		}
 	}
 
@@ -80,46 +72,24 @@ public class LazyDataset extends LazyDatasetBase implements Cloneable, Serializa
 		this(name, dtype, 1, shape, loader);
 	}
 
-	@Override
-	public LazyDataset clone() {
-		LazyDataset ret = new LazyDataset(new String(name), dtype, shape.clone(), loader);
-		if (sliceStart != null) {
-			ret.sliceStart = sliceStart.clone();
-			ret.sliceStep = sliceStep.clone();
-		}
-		ret.metadata = copyMetadata();
-		return ret;
-	}
-
-	@Override
-	public int getElementsPerItem() {
-		return isize;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (!super.equals(obj))
-			return false;
-
-		LazyDataset other = (LazyDataset) obj;
-		if (dtype != other.dtype) {
-			return false;
-		}
-		if (isize != other.isize) {
-			return false;
-		}
-		if (!Arrays.equals(sliceStart, other.sliceStart)) {
-			return false;
-		}
-		if (!Arrays.equals(sliceStep, other.sliceStep)) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public int getSize() {
-		return (int) size;
+	/**
+	 * Create a lazy dataset based on in-memory data (handy for testing)
+	 * @param dataset
+	 */
+	public static LazyDataset createLazyDataset(final Dataset dataset) {
+		return new LazyDataset(dataset.getName(), dataset.getDtype(), dataset.getElementsPerItem(), dataset.getShape(),
+		new ILazyLoader() {
+			final Dataset d = dataset;
+			@Override
+			public boolean isFileReadable() {
+				return true;
+			}
+			@Override
+			public Dataset getDataset(IMonitor mon, int[] shape, int[] start, int[] stop, int[] step)
+					throws Exception {
+				return d.getSlice(mon, start, stop, step);
+			}
+		});
 	}
 
 	@Override
@@ -128,65 +98,13 @@ public class LazyDataset extends LazyDatasetBase implements Cloneable, Serializa
 	}
 
 	@Override
-	public void setShape(int... shape) {
-		setShapeInternal(shape);
-	}
-
-	private void setShapeInternal(int... shape) {
-		long nsize = AbstractDataset.calcLongSize(shape);
-		if (nsize != size) {
-			throw new IllegalArgumentException("Size of new shape is not equal to current size");
-		}
-		if (nsize == 1) {
-			this.shape = shape.clone();
-			return;
-		}
-
-		int da = -1; // length of first non-one dimension
-		if (oOffset >= 0) {
-			da = oShape[oOffset];
-		}
-		assert da >= 0;
-
-		int jstop = -1; // index of last non-one dimension + 1
-		for (int i = oShape.length - 1; i >= oOffset; i--) {
-			if (oShape[i] != 1) {
-				jstop = i + 1;
-				break;
-			}
-		}
-
-		int i = 0;
-		for (; i < shape.length; i++) {
-			if (shape[i] == da) {
-				break;
-			}
-		}
-
-		int off = i;
-		if (shape.length - off < jstop - oOffset) {
-			throw new IllegalArgumentException("New shape not allowed - can only increase rank by prepending or postpending ones to old shape");
-		}
-		int j = oOffset;
-		for (; i < shape.length && j < jstop; i++, j++) {
-			if (shape[i] != oShape[j]) {
-				throw new IllegalArgumentException("New shape not allowed - can only increase rank by prepending or postpending ones to old shape");
-			}
-		}
-		nOffset = off;
-		reshapeMetadata(this.shape, shape);
-		this.shape = shape.clone();
+	public int getElementsPerItem() {
+		return isize;
 	}
 
 	@Override
-	public ILazyDataset squeeze() {
-		return squeeze(false);
-	}
-
-	@Override
-	public ILazyDataset squeeze(boolean onlyFromEnd) {
-		setShapeInternal(AbstractDataset.squeezeShape(shape, onlyFromEnd));
-		return this;
+	public int getSize() {
+		return (int) size;
 	}
 
 	@Override
@@ -214,17 +132,48 @@ public class LazyDataset extends LazyDatasetBase implements Cloneable, Serializa
 	}
 
 	@Override
-	public IDataset getSlice(Slice... slice) {
-		try {
-			return getSlice(null, slice);
-		} catch (Exception e) {
-			logger.error("Problem slicing lazy dataset", e);
+	public boolean equals(Object obj) {
+		if (!super.equals(obj))
+			return false;
+
+		LazyDataset other = (LazyDataset) obj;
+		if (dtype != other.dtype) {
+			return false;
 		}
-		return null;
+		if (isize != other.isize) {
+			return false;
+		}
+
+		// TODO finish off
+		return true;
 	}
 
 	@Override
-	public IDataset getSlice(int[] start, int[] stop, int[] step) {
+	public LazyDataset clone() {
+		LazyDataset ret = new LazyDataset(new String(name), dtype, isize, oShape, loader);
+		ret.shape = shape;
+		ret.prepShape = prepShape;
+		ret.postShape = postShape;
+		ret.begSlice = begSlice;
+		ret.delSlice = delSlice;
+		ret.map = map;
+		ret.base = base;
+		return ret;
+	}
+
+	@Override
+	public void setShape(int... shape) {
+		setShapeInternal(shape);
+	}
+
+	@Override
+	public LazyDataset squeeze(boolean onlyFromEnds) {
+		setShapeInternal(AbstractDataset.squeezeShape(shape, onlyFromEnds));
+		return this;
+	}
+
+	@Override
+	public Dataset getSlice(int[] start, int[] stop, int[] step) {
 		try {
 			return getSlice(null, start, stop, step);
 		} catch (Exception e) {
@@ -234,7 +183,23 @@ public class LazyDataset extends LazyDatasetBase implements Cloneable, Serializa
 	}
 
 	@Override
-	public IDataset getSlice(IMonitor monitor, Slice... slice) throws Exception {
+	public Dataset getSlice(Slice... slice) {
+		try {
+			if (slice == null || slice.length == 0) {
+				return getSlice((IMonitor) null, (int[]) null, null, null);
+			}
+			return getSlice(null, slice);
+		} catch (Exception e) {
+			logger.error("Problem slicing lazy dataset", e);
+		}
+		return null;
+	}
+
+	@Override
+	public Dataset getSlice(IMonitor monitor, Slice... slice) throws Exception {
+		if (slice == null || slice.length == 0) {
+			return getSlice((IMonitor) null, (int[]) null, null, null);
+		}
 		final int rank = shape.length;
 		final int[] start = new int[rank];
 		final int[] stop = new int[rank];
@@ -244,123 +209,78 @@ public class LazyDataset extends LazyDatasetBase implements Cloneable, Serializa
 	}
 
 	@Override
-	public IDataset getSlice(IMonitor monitor, int[] start, int[] stop, int[] step) throws Exception {
-		if (loader != null && !loader.isFileReadable())
-			return null; // TODO add interaction to use plot server to load dataset
-
-		int rank = shape.length;
-		int[] lstart;
-		int[] lstop;
-		int[] lstep;
-		if (step == null) {
-			lstep = new int[rank];
-			Arrays.fill(lstep, 1);
-		} else {
-			lstep = step;
-		}
-
-		if (start == null) {
-			lstart = new int[rank];
-		} else {
-			lstart = start;
-		}
-
-		if (stop == null) {
-			lstop = getShape();
-		} else {
-			lstop = stop;
-		}
-
-		int[] lshape = AbstractDataset.checkSlice(shape, start, stop, lstart, lstop, lstep);
-		int[] nstart;
-		int[] nstop;
-		int[] nstep;
-		int[] nshape;
-
-		int r = oShape.length;
-		boolean reshape = r != shape.length || oOffset != nOffset;
-		if (reshape) {
-			nstart = new int[r];
-			nstop = new int[r];
-			nstep = new int[r];
-			nshape = new int[r];
-			int i = 0;
-			for (; i < oOffset; i++) {
-				nstart[i] = 0;
-				nstop[i]  = 1;
-				nstep[i]  = 1;
-				nshape[i] = 1;
-			}
-			int j = nOffset;
-			for (; i < r && j < shape.length; i++, j++) {
-				nstart[i] = lstart[j];
-				nstop[i]  = lstop[j];
-				nstep[i]  = lstep[j];
-				nshape[i] = lshape[j];
-			}
-			for (; i < r; i++) {
-				nstart[i] = 0;
-				nstop[i]  = 1;
-				nstep[i]  = 1;
-				nshape[i] = 1;
-			}
-		} else {
-			nstart = lstart;
-			nstop  = lstop;
-			nstep  = lstep;
-			nshape = lshape;
-		}
-
-		IDataset a;
-		if (base != null) {
-			for (int i = 0; i < r; i++) {
-				nstart[i] = sliceStart[i] + nstart[i] * sliceStep[i];
-				nstop[i]  = sliceStart[i] + (nstop[i] - 1) * sliceStep[i] + 1;
-				nstep[i]  = nstep[i] * sliceStep[i];
-			}
-			a = base.getSlice(monitor, nstart, nstop, nstep);
-			if (reshape) {
-				a.setShape(lshape);
-			}
-			return a;
-		}
-
-		try {
-			a = loader.getDataset(monitor, oShape, nstart, nstop, nstep);
-			if (reshape) {
-				a.setShape(lshape);
-			}
-		} catch (Exception e) {
-			// return a fake dataset to show that this has not worked, should not be used in general though.
-			logger.debug("Problem getting {}: {}", String.format("slice %s %s %s", Arrays.toString(start), Arrays.toString(stop),
-							Arrays.toString(step)), e);
-			a = new DoubleDataset(1);
-		}
-		a.setName(name + AbstractDataset.BLOCK_OPEN + Slice.createString(oShape, nstart, nstop, nstep) + AbstractDataset.BLOCK_CLOSE);
-		if (metadata != null && a instanceof LazyDatasetBase) {
-			((LazyDatasetBase) a).metadata = copyMetadata();
-			((LazyDatasetBase) a).sliceMetadata(false, lstart, lstop, lstep, shape);
-		}
-
-		return a;
-	}
-
-	@Override
-	public ILazyDataset getSliceView(Slice... slice) {
-		final int rank = shape.length;
+	public LazyDataset getSliceView(Slice... slice) {
 		if (slice == null || slice.length == 0) {
 			return getSliceView((int[]) null, null, null);
 		}
+		final int rank = shape.length;
 		final int[] start = new int[rank];
 		final int[] stop = new int[rank];
 		final int[] step = new int[rank];
 		Slice.convertFromSlice(slice, shape, start, stop, step);
-		ILazyDataset sliceView = getSliceView(start, stop, step);
+		LazyDataset sliceView = getSliceView(start, stop, step);
 		return sliceView;
+	}
+
+	private void setShapeInternal(int... nShape) {
+		long nsize = AbstractDataset.calcLongSize(nShape);
+		if (nsize != size) {
+			throw new IllegalArgumentException("Size of new shape is not equal to current size");
+		}
+		if (nsize == 1) {
+			shape = nShape.clone();
+			return;
+		}
+
+		int ob = -1; // first non-unit dimension
+		int or = shape.length;
+		for (int i = 0; i < or; i++) {
+			if (shape[i] != 1) {
+				ob = i;
+				break;
+			}
+		}
+		assert ob >= 0;
+		int oe = -1; // last non-unit dimension
+		for (int i = or - 1; i >= ob; i--) {
+			if (shape[i] != 1) {
+				oe = i;
+				break;
+			}
+		}
+		assert oe >= 0;
+		oe++;
+
+		int nb = -1; // first non-unit dimension
+		int nr = nShape.length;
+		for (int i = 0; i < or; i++) {
+			if (nShape[i] != 1) {
+				nb = i;
+				break;
+			}
+		}
+
+		int i = ob;
+		int j = nb;
+		for (; i < oe && j < nr; i++, j++) {
+			if (shape[i] != nShape[j]) {
+				throw new IllegalArgumentException("New shape not allowed - can only change shape by adding or removing ones to ends of old shape");
+			}
+		}
+
+		prepShape += nb - ob;
+		postShape += nr - oe;
+//		metadata = copyMetadata(); TODO needed?
+		reshapeMetadata(shape, nShape);
+		shape = nShape;
 	}
 
 	@Override
 	public LazyDataset getSliceView(int[] start, int[] stop, int[] step) {
+		LazyDataset view = clone();
+		if (start == null && stop == null && step == null)
+			return view;
+
 		int[] lstart, lstop, lstep;
 		final int rank = shape.length;
 
@@ -389,60 +309,153 @@ public class LazyDataset extends LazyDatasetBase implements Cloneable, Serializa
 		} else {
 			nShape = new int[rank];
 		}
-		LazyDataset lazy = new LazyDataset(name + "[" + Slice.createString(nShape, lstart, lstop, lstep) + "]",
-				dtype, nShape, null);
-		lazy.sliceStart = lstart.clone();
-		lazy.sliceStep  = lstep.clone();
-		lazy.base = base == null ? this : base;
-		lazy.metadata = copyMetadata();
-		lazy.sliceMetadata(true, lstart, lstop, lstep, shape);
-		return lazy;
+		view.shape = nShape;
+		if (begSlice == null) {
+			view.begSlice = lstart.clone();
+			view.delSlice = lstep.clone();
+		} else {
+			view.begSlice = new int[rank];
+			view.delSlice = new int[rank];
+			for (int i = 0; i < rank; i++) {
+				view.begSlice[i] = begSlice[i] + lstart[i] * delSlice[i];
+				view.delSlice[i] = delSlice[i] * lstep[i];
+			}
+		}
+		view.sliceMetadata(true, lstart, lstop, lstep, shape);
+		return view;
 	}
 
-	/**
-	 * Gets the maximum size of a slice of a dataset in a given dimension
-	 * which should normally fit in memory. Note that it might be possible
-	 * to get more in memory, this is a conservative estimate and seems to
-	 * almost always work at the size returned; providing Xmx is less than
-	 * the physical memory.
-	 * 
-	 * To get more in memory increase -Xmx setting or use an expression
-	 * which calls a rolling function (like rmean) instead of slicing directly
-	 * to memory.
-	 * 
-	 * @param lazySet
-	 * @param dimension
-	 * @return maximum size of dimension that can be sliced.
-	 */
-	public static int getMaxSliceLength(ILazyDataset lazySet, int dimension) {
-		// size in bytes of each item
-		final double size = AbstractDataset.getItemsize(AbstractDataset.getDTypeFromClass(lazySet.elementClass()), lazySet.getElementsPerItem());
-		
-		// Max in bytes takes into account our minimum requirement
-		final double max  = Math.max(Runtime.getRuntime().totalMemory(), Runtime.getRuntime().maxMemory());
-		
-        // Firstly if the whole dataset it likely to fit in memory, then we allow it.
-		// Space specified in bytes per item available
-		final double space = max/lazySet.getSize();
+	@Override
+	public LazyDataset getTransposedView(int... axes) {
+		LazyDataset view = clone();
 
-		// If we have room for this whole dataset, then fine
-		int[] shape = lazySet.getShape();
-		if (space >= size)
-			return shape[dimension];
-		
-		// Otherwise estimate what we can fit in, conservatively.
-		// First get size of one slice, see it that fits, if not, still return 1
-		double sizeOneSlice = size; // in bytes
-		for (int dim = 0; dim < shape.length; dim++) {
-			if (dim == dimension)
-				continue;
-			sizeOneSlice *= shape[dim];
+		// everything now is seen through a map
+		axes = checkPermutatedAxes(shape, axes);
+		if (axes == null)
+			return view;
+
+		int r = shape.length;
+		view.shape = new int[r];
+		for (int i = 0; i < r; i++) {
+			view.shape[i] = shape[axes[i]];
 		}
-		double avail = max / sizeOneSlice;
-		if (avail < 1)
-			return 1;
 
-		// We fudge this to leave some room
-		return (int) Math.floor(avail/4d);
+		view.prepShape = 0;
+		view.postShape = 0;
+		view.begSlice = null;
+		view.delSlice = null;
+		view.map = axes;
+		view.base = this;
+		
+		view.transposeMetadata(axes);
+		return view;
+	}
+
+	// reverse transform
+	private int[] getOriginal(int[] values) {
+		if (values == null)
+			return null;
+		int r = values.length;
+		if (map == null || r < 2)
+			return values;
+		int[] ovalues = new int[r];
+		for (int i = 0; i < r; i++) {
+			ovalues[map[i]] = values[i];
+		}
+		return ovalues;
+	}
+
+	@Override
+	public Dataset getSlice(IMonitor monitor, int[] start, int[] stop, int[] step) throws Exception {
+
+		if (loader != null && !loader.isFileReadable())
+			return null; // TODO add interaction to use plot (or remote) server to load dataset
+
+		int rank = shape.length;
+		int[] lstart;
+		int[] lstop;
+		int[] lstep;
+		if (step == null) {
+			lstep = new int[rank];
+			Arrays.fill(lstep, 1);
+		} else {
+			lstep = step;
+		}
+
+		if (start == null) {
+			lstart = new int[rank];
+		} else {
+			lstart = start;
+		}
+
+		if (stop == null) {
+			lstop = getShape();
+		} else {
+			lstop = stop;
+		}
+
+		int[] lshape = AbstractDataset.checkSlice(shape, start, stop, lstart, lstop, lstep);
+
+		int[] nstart;
+		int[] nstop;
+		int[] nstep;
+
+		int r = base == null ? oShape.length : base.shape.length;
+		nstart = new int[r];
+		nstop = new int[r];
+		nstep = new int[r];
+		Arrays.fill(nstop, 1);
+		Arrays.fill(nstep, 1);
+		{
+			int i = 0;
+			int j = 0;
+			if (prepShape < 0) { // ignore entries from new slice 
+				i = -prepShape;
+			} else if (prepShape > 0) {
+				j = prepShape;
+			}
+			if (begSlice == null) {
+				for (; i < r && j < shape.length; i++, j++) {
+					nstart[i] = lstart[j];
+					nstop[i]  = lstop[j];
+					nstep[i]  = lstep[j];
+				}
+			} else {
+				for (; i < r && j < shape.length; i++, j++) {
+					nstart[i] = begSlice[i] + lstart[j] * delSlice[i];
+					nstop[i]  = begSlice[i] + (lstop[j] - 1) * delSlice[i] + 1;
+					nstep[i]  = lstep[j] * delSlice[i];
+				}
+			}
+			if (map != null) {
+				nstart = getOriginal(nstart);
+				nstop  = getOriginal(nstop);
+				nstep  = getOriginal(nstep);
+			}
+		}
+
+		Dataset a;
+		if (base != null) {
+			a = base.getSlice(monitor, nstart, nstop, nstep);
+		} else {
+			try {
+				a = DatasetUtils.convertToDataset(loader.getDataset(monitor, oShape, nstart, nstop, nstep));
+			} catch (Exception e) {
+				// return a fake dataset to show that this has not worked, should not be used in general though.
+				logger.debug("Problem getting {}: {}", String.format("slice %s %s %s", Arrays.toString(start), Arrays.toString(stop),
+								Arrays.toString(step)), e);
+				a = new DoubleDataset(1);
+			}
+			a.setName(name + AbstractDataset.BLOCK_OPEN + Slice.createString(oShape, nstart, nstop, nstep) + AbstractDataset.BLOCK_CLOSE);
+			if (metadata != null && a instanceof LazyDatasetBase) {
+				((LazyDatasetBase) a).metadata = copyMetadata();
+				((LazyDatasetBase) a).sliceMetadata(false, lstart, lstop, lstep, shape);
+			}
+		}
+		if (map != null) {
+			a = a.getTransposedView(map);
+		}
+		a.setShape(lshape);
+		return a;
 	}
 }
