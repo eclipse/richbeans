@@ -50,7 +50,6 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 
 	private String            name;
 	private String            description;
-	private OperationCategory category;
 	
 	private boolean storeOutput = false;
 	private boolean passUnmodifiedData = false;
@@ -294,15 +293,15 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		return null;
 	}
 	
-	
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((category == null) ? 0 : category.hashCode());
 		result = prime * result + ((description == null) ? 0 : description.hashCode());
+		result = prime * result + ((model == null) ? 0 : model.hashCode());
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + (passUnmodifiedData ? 1231 : 1237);
+		result = prime * result + (storeOutput ? 1231 : 1237);
 		return result;
 	}
 
@@ -315,20 +314,24 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		if (getClass() != obj.getClass())
 			return false;
 		AbstractOperation other = (AbstractOperation) obj;
-		if (category == null) {
-			if (other.category != null)
-				return false;
-		} else if (!category.equals(other.category))
-			return false;
 		if (description == null) {
 			if (other.description != null)
 				return false;
 		} else if (!description.equals(other.description))
 			return false;
+		if (model == null) {
+			if (other.model != null)
+				return false;
+		} else if (!model.equals(other.model))
+			return false;
 		if (name == null) {
 			if (other.name != null)
 				return false;
 		} else if (!name.equals(other.name))
+			return false;
+		if (passUnmodifiedData != other.passUnmodifiedData)
+			return false;
+		if (storeOutput != other.storeOutput)
 			return false;
 		return true;
 	}
@@ -529,14 +532,6 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 	@Override
 	public boolean isPassUnmodifiedData() {
 		return passUnmodifiedData;
-	}
-
-	public OperationCategory getCategory() {
-		return category;
-	}
-
-	public void setCategory(OperationCategory category) {
-		this.category = category;
 	}
 	
 	public Class<?> getModelClass() {

@@ -200,6 +200,13 @@ public interface IOperationService {
 	 * @param pakage separated by dots.
 	 */
 	public void createOperations(ClassLoader l, String pakage)  throws Exception;
-
+	
+	/**
+	 * Return the category a the operation with the specified id belongs to
+	 * 
+	 * @param operationId
+	 * @return category
+	 */
+	public OperationCategory getCategory(String operationId);
 	
 }
