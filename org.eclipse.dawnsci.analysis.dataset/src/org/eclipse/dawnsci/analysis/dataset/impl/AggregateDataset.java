@@ -356,6 +356,11 @@ public class AggregateDataset extends LazyDatasetBase implements ILazyDataset {
 	}
 
 	@Override
+	public ILazyDataset getTransposedView(int... axes) {
+		throw new UnsupportedOperationException("Not implemented");
+	}
+
+	@Override
 	public IMetadata getMetadata() {
 		throw new UnsupportedOperationException("Not implemented");
 	}

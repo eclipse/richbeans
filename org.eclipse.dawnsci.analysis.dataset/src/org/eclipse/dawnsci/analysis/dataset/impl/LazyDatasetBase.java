@@ -847,4 +847,50 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		ErrorMetadata emd = getErrorMetadata();
 		return emd == null ? null : emd.getError();
 	}
+
+	/**
+	 * Check permutation axes
+	 * @param shape
+	 * @param axes
+	 * @return cleaned up axes or null if trivial
+	 */
+	public static int[] checkPermutatedAxes(int[] shape, int... axes) {
+		int rank = shape.length;
+	
+		if (axes == null || axes.length == 0) {
+			axes = new int[rank];
+			for (int i = 0; i < rank; i++) {
+				axes[i] = rank - 1 - i;
+			}
+		}
+
+		if (axes.length != rank) {
+			logger.error("axis permutation has length {} that does not match dataset's rank {}", axes.length, rank);
+			throw new IllegalArgumentException("axis permutation does not match shape of dataset");
+		}
+	
+		// check all permutation values are within bounds
+		for (int d : axes) {
+			if (d < 0 || d >= rank) {
+				logger.error("axis permutation contains element {} outside rank of dataset", d);
+				throw new IllegalArgumentException("axis permutation contains element outside rank of dataset");
+			}
+		}
+	
+		// check for a valid permutation (is this an unnecessary restriction?)
+		int[] perm = axes.clone();
+		Arrays.sort(perm);
+
+		for (int i = 0; i < rank; i++) {
+			if (perm[i] != i) {
+				logger.error("axis permutation is not valid: it does not contain complete set of axes");
+				throw new IllegalArgumentException("axis permutation does not contain complete set of axes");	
+			}
+		}
+
+		if (Arrays.equals(axes, perm))
+			return null; // signal identity or trivial permutation
+
+		return axes;
+	}
 }

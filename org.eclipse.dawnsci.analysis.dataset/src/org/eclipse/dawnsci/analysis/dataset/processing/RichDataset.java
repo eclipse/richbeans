@@ -167,6 +167,17 @@ public class RichDataset extends RichDatasetBean implements ISliceConfiguration,
 	}
 
 	@Override
+	public ILazyDataset getTransposedView(int... axes) {
+		final ILazyDataset d = data.getTransposedView(axes);
+		final ILazyDataset m = mask!=null ? mask.getTransposedView(axes) : null;
+		List<IDataset> as = new ArrayList<IDataset>();
+		for (int i = 0; i < axes.length; i++) {
+			as.add(this.axes.get(axes[i]));
+		}
+		return new RichDataset(d, as, m, meta, rois);
+	}
+
+	@Override
 	public void setMetadata(MetadataType metadata) {
 		if (metadata instanceof IMetadata)
 			meta = (IMetadata) metadata;
