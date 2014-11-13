@@ -593,10 +593,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 
 		@Override
 		public ILazyDataset run(ILazyDataset lz) {
-			if (lz instanceof Dataset) {
-				return ((Dataset) lz).getTransposedView(map);
-			}
-			return lz;
+			return lz.getTransposedView(map);
 		}
 	}
 
