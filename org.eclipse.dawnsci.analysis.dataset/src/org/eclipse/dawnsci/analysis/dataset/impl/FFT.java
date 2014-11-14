@@ -475,6 +475,7 @@ public class FFT {
 		boolean[] hit;
 
 		switch (a.getDtype()) {
+		case Dataset.FLOAT32:
 		case Dataset.COMPLEX64:
 			FloatFFT_1D ffft = new FloatFFT_1D(n);
 			float[] fdata = null;
@@ -493,6 +494,7 @@ public class FFT {
 				result.setItemsOnAxes(pos, hit, fdata);
 			}
 			break;
+		case Dataset.FLOAT64:
 		case Dataset.COMPLEX128:
 			DoubleFFT_1D dfft = new DoubleFFT_1D(n);
 			double[] ddata = null;
@@ -512,7 +514,7 @@ public class FFT {
 			}
 			break;
 		default:
-			logger.warn("Non-complex dataset not yet supported");
+			logger.warn("Non-float dataset not yet supported");
 			break;
 		}
 
@@ -528,6 +530,7 @@ public class FFT {
 		boolean[] hit;
 
 		switch (a.getDtype()) {
+		case Dataset.FLOAT32:
 		case Dataset.COMPLEX64:
 			FloatFFT_2D ffft = new FloatFFT_2D(s[0], s[1]);
 			float[] fdata = null;
@@ -544,6 +547,7 @@ public class FFT {
 				result.setItemsOnAxes(pos, hit, fdata);
 			}
 			break;
+		case Dataset.FLOAT64:
 		case Dataset.COMPLEX128:
 			DoubleFFT_2D dfft = new DoubleFFT_2D(s[0], s[1]);
 			double[] ddata = null;
@@ -561,7 +565,7 @@ public class FFT {
 			}
 			break;
 		default:
-			logger.warn("Non-complex dataset not yet supported");
+			logger.warn("Non-float dataset not yet supported");
 			break;
 		}
 
@@ -577,6 +581,7 @@ public class FFT {
 		boolean[] hit;
 
 		switch (a.getDtype()) {
+		case Dataset.FLOAT32:
 		case Dataset.COMPLEX64:
 			FloatFFT_3D ffft = new FloatFFT_3D(s[0], s[1], s[2]);
 			float[] fdata = null;
@@ -593,6 +598,7 @@ public class FFT {
 				result.setItemsOnAxes(pos, hit, fdata);
 			}
 			break;
+		case Dataset.FLOAT64:
 		case Dataset.COMPLEX128:
 				DoubleFFT_3D dfft = new DoubleFFT_3D(s[0], s[1], s[2]);
 				double[] ddata = null;
@@ -610,7 +616,7 @@ public class FFT {
 				}
 				break;
 		default:
-			logger.warn("Non-complex dataset not yet supported");
+			logger.warn("Non-float dataset not yet supported");
 			break;
 		}
 
