@@ -328,7 +328,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			nShape = new int[rank];
 		}
 		view.shape = nShape;
-		view.size = AbstractDataset.calcSize(nShape);
+		view.size = AbstractDataset.calcLongSize(nShape);
 		if (begSlice == null) {
 			view.begSlice = lstart.clone();
 			view.delSlice = lstep.clone();
