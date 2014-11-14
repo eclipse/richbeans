@@ -586,7 +586,7 @@ public class RGBDataset extends CompoundShortDataset implements Cloneable {
 	}
 
 	/**
-	 * @return red view
+	 * @return blue view
 	 */
 	public ShortDataset getBlueView() {
 		return getColourChannelView(2, "blue");
