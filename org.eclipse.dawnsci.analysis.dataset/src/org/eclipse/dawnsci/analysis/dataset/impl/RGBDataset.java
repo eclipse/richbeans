@@ -571,6 +571,33 @@ public class RGBDataset extends CompoundShortDataset implements Cloneable {
 		return channel;
 	}
 
+	/**
+	 * @return red view
+	 */
+	public ShortDataset getRedView() {
+		return getColourChannelView(0, "red");
+	}
+
+	/**
+	 * @return green view
+	 */
+	public ShortDataset getGreenView() {
+		return getColourChannelView(1, "green");
+	}
+
+	/**
+	 * @return red view
+	 */
+	public ShortDataset getBlueView() {
+		return getColourChannelView(2, "blue");
+	}
+
+	private ShortDataset getColourChannelView(final int channelOffset, final String cName) {
+		ShortDataset view = getElements(channelOffset);
+		view.setName(cName);
+		return view;
+	}
+
 	@Override
 	public Number max(boolean... ignored) {
 		short max = Short.MIN_VALUE;
