@@ -13,3 +13,6 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.8.2",
  org.eclipse.dawnsci.analysis.dataset;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.eclipse.dawnsci.plotting.examples.Activator
+Service-Component: OSGI-INF/component.xml
+Import-Package: org.osgi.service.component;version="1.2.0"
+

@@ -42,7 +42,7 @@ public class SurfaceExample extends PlotExample {
 			surface.setWindow(new RectangularROI(300,300,600,600,0), false, null);
 			
 			// Let's make it something colorful!
-			final IPaletteService pservice = (IPaletteService)Activator.getService(IPaletteService.class);
+			final IPaletteService pservice = Examples.getCurrent().getPaletteService();
 			final PaletteData     pData    = pservice.getDirectPaletteData("NCD");
 			surface.setPaletteData(pData); 
 			surface.setMax(10);

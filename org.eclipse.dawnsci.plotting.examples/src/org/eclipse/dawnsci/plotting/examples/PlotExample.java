@@ -20,9 +20,9 @@ public abstract class PlotExample extends SourceCodeView {
 	public PlotExample() {
 		
 		// A service for loading data from any data file format.
-		service = (ILoaderService)Activator.getService(ILoaderService.class);
+		service = Examples.getCurrent().getLoaderService();
 		
-		final IPlottingService pservice = (IPlottingService)Activator.getService(IPlottingService.class);
+		final IPlottingService pservice = Examples.getCurrent().getPlottingService();
 		try {
 			this.system = pservice.createPlottingSystem();
 		} catch (Exception ne) {

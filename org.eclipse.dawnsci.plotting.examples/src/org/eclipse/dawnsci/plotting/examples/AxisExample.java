@@ -36,7 +36,7 @@ public class AxisExample extends XYExample {
 		super.createPartControl(parent); // plots an image for us
 		
 		try {
-			final IDatasetMathsService mservice = (IDatasetMathsService)Activator.getService(IDatasetMathsService.class);
+			final IDatasetMathsService mservice = Examples.getCurrent().getDatasetMathsService();
 			
 			// Create a 1D dataset programmatically. Can also use 
 			final IDataset set = mservice.createRange(0, 100000, 1000, IDatasetMathsService.INT);
