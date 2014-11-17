@@ -33,10 +33,8 @@ public class Image {
 
 	private static IImageFilterService service;
 
-	public static void createImageFilterService() {
-		if (service == null) {
-			service = (IImageFilterService)Activator.getService(IImageFilterService.class);
-		}
+	public static void setImageFilterService(IImageFilterService ifs) {
+		service = ifs;
 	}
 
 	/**
@@ -292,7 +290,6 @@ public class Image {
 	}
 
 	private static Dataset filter(Dataset input, int radius, FilterType type) throws Exception {
-		createImageFilterService();
 		if (type == FilterType.MEDIAN) {
 			return DatasetUtils.convertToDataset(service.filterMedian(input, radius));
 		} else if (type == FilterType.MIN) {
