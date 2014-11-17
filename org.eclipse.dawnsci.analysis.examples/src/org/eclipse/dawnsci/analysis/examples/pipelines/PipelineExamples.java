@@ -10,8 +10,6 @@ import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
 import org.eclipse.dawnsci.analysis.dataset.impl.Random;
 import org.eclipse.dawnsci.analysis.dataset.processing.RichDataset;
 import org.eclipse.dawnsci.analysis.dataset.roi.SectorROI;
-import org.eclipse.dawnsci.analysis.examples.Activator;
-import org.junit.Before;
 import org.junit.Test;
 
 
@@ -23,11 +21,10 @@ import org.junit.Test;
  */
 public class PipelineExamples {
 
-	private IOperationService service;
+	private static IOperationService service;
 	
-	@Before
-	public void assignService() {
-		service = (IOperationService)Activator.getService(IOperationService.class);
+	public static void setOperationService(IOperationService s) {
+		service = s;
 	}
 	
 	/**

@@ -8,7 +8,6 @@ import org.eclipse.dawnsci.analysis.api.io.IDataHolder;
 import org.eclipse.dawnsci.analysis.api.io.ILoaderService;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 import org.eclipse.dawnsci.analysis.examples.Activator;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -26,9 +25,8 @@ public class LoadingExamples {
 	
 	private static ILoaderService service;
 	
-	@BeforeClass
-	public static void service() {
-		service = (ILoaderService)Activator.getService(ILoaderService.class);
+	public static void setLoaderService(ILoaderService s) {
+		service = s;
 	}
 	
 	@Test

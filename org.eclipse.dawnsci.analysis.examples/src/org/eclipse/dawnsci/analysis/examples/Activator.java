@@ -34,15 +34,7 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		Activator.context = null;
-	}
-
-	public static Object getService(Class<?> clazz) {
-		if (context==null) return null;
-		ServiceReference<?> ref = context.getServiceReference(clazz);
-		if (ref==null) return null;
-		return context.getService(ref);
-	}
-	
+	}	
 	
 	/**
 	 * @param bundleName
