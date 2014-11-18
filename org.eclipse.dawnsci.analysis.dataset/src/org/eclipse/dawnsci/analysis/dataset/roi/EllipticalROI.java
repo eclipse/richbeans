@@ -378,4 +378,26 @@ public class EllipticalROI extends OrientableROIBase implements IParametricROI {
 		}
 		return xi;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Arrays.hashCode(saxis);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EllipticalROI other = (EllipticalROI) obj;
+		if (!Arrays.equals(saxis, other.saxis))
+			return false;
+		return true;
+	}
 }

@@ -265,4 +265,32 @@ public class HyperbolicROI extends OrientableROIBase implements IParametricROI, 
 		return super.toString() + String.format("point=%s, semi-latus=%g, eccentricity=%g, angle=%g",
 				Arrays.toString(spt), l, e, getAngleDegrees());
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		long temp;
+		temp = Double.doubleToLongBits(e);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(l);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		HyperbolicROI other = (HyperbolicROI) obj;
+		if (Double.doubleToLongBits(e) != Double.doubleToLongBits(other.e))
+			return false;
+		if (Double.doubleToLongBits(l) != Double.doubleToLongBits(other.l))
+			return false;
+		return true;
+	}
 }

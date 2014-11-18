@@ -232,4 +232,28 @@ public class ParabolicROI extends OrientableROIBase implements IParametricROI, S
 		return super.toString() + String.format("point=%s, focal=%g, angle=%g", Arrays.toString(spt),
 				getFocalParameter(), getAngleDegrees());
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		long temp;
+		temp = Double.doubleToLongBits(tp);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ParabolicROI other = (ParabolicROI) obj;
+		if (Double.doubleToLongBits(tp) != Double.doubleToLongBits(other.tp))
+			return false;
+		return true;
+	}
 }

@@ -110,4 +110,40 @@ public class CircularFitROI extends CircularROI implements IFitROI, Serializable
 	public IPolylineROI getPoints() {
 		return proi;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((fitter == null) ? 0 : fitter.hashCode());
+		result = prime * result + ((proi == null) ? 0 : proi.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(residual);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CircularFitROI other = (CircularFitROI) obj;
+		if (fitter == null) {
+			if (other.fitter != null)
+				return false;
+		} else if (!fitter.equals(other.fitter))
+			return false;
+		if (proi == null) {
+			if (other.proi != null)
+				return false;
+		} else if (!proi.equals(other.proi))
+			return false;
+		if (Double.doubleToLongBits(residual) != Double.doubleToLongBits(other.residual))
+			return false;
+		return true;
+	}
 }

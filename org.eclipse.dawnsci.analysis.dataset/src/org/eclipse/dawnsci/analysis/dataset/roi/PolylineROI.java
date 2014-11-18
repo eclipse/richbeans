@@ -355,4 +355,29 @@ public class PolylineROI extends PointROI implements IPolylineROI, Serializable 
 		}
 		return xi;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((pts == null) ? 0 : pts.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		PolylineROI other = (PolylineROI) obj;
+		if (pts == null) {
+			if (other.pts != null)
+				return false;
+		} else if (!pts.equals(other.pts))
+			return false;
+		return true;
+	}
 }

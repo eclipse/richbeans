@@ -133,4 +133,36 @@ public class OrientableROIBase extends ROIBase implements IOrientableROI, Serial
 		checkAngle();
 		setDirty();
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		long temp;
+		temp = Double.doubleToLongBits(ang);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(cang);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(sang);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OrientableROIBase other = (OrientableROIBase) obj;
+		if (Double.doubleToLongBits(ang) != Double.doubleToLongBits(other.ang))
+			return false;
+		if (Double.doubleToLongBits(cang) != Double.doubleToLongBits(other.cang))
+			return false;
+		if (Double.doubleToLongBits(sang) != Double.doubleToLongBits(other.sang))
+			return false;
+		return true;
+	}
 }

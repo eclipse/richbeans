@@ -408,4 +408,34 @@ public class LinearROI extends OrientableROIBase implements IParametricROI, Seri
 		}
 		return xi;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (crossHair ? 1231 : 1237);
+		result = prime * result + Arrays.hashCode(ept);
+		long temp;
+		temp = Double.doubleToLongBits(len);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LinearROI other = (LinearROI) obj;
+		if (crossHair != other.crossHair)
+			return false;
+		if (!Arrays.equals(ept, other.ept))
+			return false;
+		if (Double.doubleToLongBits(len) != Double.doubleToLongBits(other.len))
+			return false;
+		return true;
+	}
 }

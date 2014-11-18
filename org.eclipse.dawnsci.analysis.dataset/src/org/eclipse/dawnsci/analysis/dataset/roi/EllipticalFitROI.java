@@ -146,4 +146,37 @@ public class EllipticalFitROI extends EllipticalROI implements IFitROI, Serializ
 		return proi;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (circleOnly ? 1231 : 1237);
+		result = prime * result + ((proi == null) ? 0 : proi.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(residual);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		EllipticalFitROI other = (EllipticalFitROI) obj;
+		if (circleOnly != other.circleOnly)
+			return false;
+		if (proi == null) {
+			if (other.proi != null)
+				return false;
+		} else if (!proi.equals(other.proi))
+			return false;
+		if (Double.doubleToLongBits(residual) != Double.doubleToLongBits(other.residual))
+			return false;
+		return true;
+	}
+
 }

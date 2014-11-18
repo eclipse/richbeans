@@ -10,6 +10,7 @@
 package org.eclipse.dawnsci.analysis.dataset.roi;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -650,5 +651,30 @@ public class RectangularROI extends OrientableROIBase implements IRectangularROI
 			xi[i++] = d;
 		}
 		return xi;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (clippingCompensation ? 1231 : 1237);
+		result = prime * result + Arrays.hashCode(len);
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RectangularROI other = (RectangularROI) obj;
+		if (clippingCompensation != other.clippingCompensation)
+			return false;
+		if (!Arrays.equals(len, other.len))
+			return false;
+		return true;
 	}
 }

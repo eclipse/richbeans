@@ -201,5 +201,41 @@ public class GridPreferences implements Serializable {
 	 */
 	public double getYPixelsFromMicronsLen(double microns) {
 		return microns * getYPixelsPerMicron();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(gridScanBeamlinePosX);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(gridScanBeamlinePosY);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(gridScanResolutionX);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(gridScanResolutionY);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GridPreferences other = (GridPreferences) obj;
+		if (Double.doubleToLongBits(gridScanBeamlinePosX) != Double.doubleToLongBits(other.gridScanBeamlinePosX))
+			return false;
+		if (Double.doubleToLongBits(gridScanBeamlinePosY) != Double.doubleToLongBits(other.gridScanBeamlinePosY))
+			return false;
+		if (Double.doubleToLongBits(gridScanResolutionX) != Double.doubleToLongBits(other.gridScanResolutionX))
+			return false;
+		if (Double.doubleToLongBits(gridScanResolutionY) != Double.doubleToLongBits(other.gridScanResolutionY))
+			return false;
+		return true;
 	}	
 }

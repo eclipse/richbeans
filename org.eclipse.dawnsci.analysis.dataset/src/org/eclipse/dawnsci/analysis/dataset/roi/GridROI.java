@@ -299,4 +299,44 @@ public class GridROI extends RectangularROI implements Serializable {
 	public void setGridPreferences(GridPreferences gridPref) {
 		this.gridPref = gridPref;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + (gridLinesOn ? 1231 : 1237);
+		result = prime * result + ((gridPref == null) ? 0 : gridPref.hashCode());
+		result = prime * result + (midPointOn ? 1231 : 1237);
+		long temp;
+		temp = Double.doubleToLongBits(xSpacing);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(ySpacing);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		GridROI other = (GridROI) obj;
+		if (gridLinesOn != other.gridLinesOn)
+			return false;
+		if (gridPref == null) {
+			if (other.gridPref != null)
+				return false;
+		} else if (!gridPref.equals(other.gridPref))
+			return false;
+		if (midPointOn != other.midPointOn)
+			return false;
+		if (Double.doubleToLongBits(xSpacing) != Double.doubleToLongBits(other.xSpacing))
+			return false;
+		if (Double.doubleToLongBits(ySpacing) != Double.doubleToLongBits(other.ySpacing))
+			return false;
+		return true;
+	}
 }

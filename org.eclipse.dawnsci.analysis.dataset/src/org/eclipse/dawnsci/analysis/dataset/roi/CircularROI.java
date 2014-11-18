@@ -231,4 +231,28 @@ public class CircularROI extends ROIBase implements IParametricROI, Serializable
 	public double getEndParameter(double d) {
 		return Math.PI * 2;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		long temp;
+		temp = Double.doubleToLongBits(rad);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		CircularROI other = (CircularROI) obj;
+		if (Double.doubleToLongBits(rad) != Double.doubleToLongBits(other.rad))
+			return false;
+		return true;
+	}
 }
