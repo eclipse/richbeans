@@ -408,7 +408,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		}
 
 		if (stop == null) {
-			lstop = getShape();
+			lstop = shape.clone();
 		} else {
 			lstop = stop;
 		}
@@ -468,10 +468,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			a.setName(name + AbstractDataset.BLOCK_OPEN + Slice.createString(oShape, nstart, nstop, nstep) + AbstractDataset.BLOCK_CLOSE);
 			if (metadata != null && a instanceof LazyDatasetBase) {
 				((LazyDatasetBase) a).metadata = copyMetadata();
-				if (a.getSize() != size) { // not already sliced
-					((LazyDatasetBase) a).reshapeMetadata(shape, oShape);
-					((LazyDatasetBase) a).sliceMetadata(false, nstart, nstop, nstep, oShape);
-				}
+				((LazyDatasetBase) a).sliceMetadata(false, lstart, lstop, lstep, shape);
 			}
 		}
 		if (map != null) {

@@ -76,6 +76,12 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		}
 	
 		LazyDatasetBase other = (LazyDatasetBase) obj;
+		if (getDtype() != other.getDtype()) {
+			return false;
+		}
+		if (getElementsPerItem() != other.getElementsPerItem()) {
+			return false;
+		}
 		if (!Arrays.equals(shape, other.shape)) {
 			return false;
 		}
@@ -261,6 +267,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		private int[] stop;
 		private int[] step;
 		private int[] oShape;
+		private long oSize;
 
 		public MdsSlice(boolean asView, final int[] start, final int[] stop, final int[] step, final int[] oShape) {
 			this.asView = asView;
@@ -268,6 +275,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 			this.stop = stop;
 			this.step = step;
 			this.oShape = oShape;
+			oSize = AbstractDataset.calcLongSize(oShape);
 		}
 
 		@Override
@@ -297,24 +305,26 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 				throw new IllegalArgumentException("Slice dimensions do not match dataset!");
 
 			int[] shape = lz.getShape();
-			int[] stt = start == null ? new int[rank] : start.clone();
-			int[] stp = stop == null ? shape.clone() : stop.clone();
+			int[] stt;
+			int[] stp;
 			int[] ste;
-			if (step == null) {
-				ste = new int[rank];
-				Arrays.fill(ste, 1);
+			if (lz.getSize() == oSize) {
+				stt = start;
+				stp = stop;
+				ste = step;
 			} else {
+				stt = start.clone();
+				stp = stop.clone();
 				ste = step.clone();
-			}
-
-			for (int i = 0; i < rank; i++) {
-				if (shape[i] == oShape[i]) continue;
-				if (shape[i] == 1) {
-					stt[i] = 0;
-					stp[i] = 1;
-					ste[1] = 1;
-				} else {
-					throw new IllegalArgumentException("Sliceable dataset has invalid size!");
+				for (int i = 0; i < rank; i++) {
+					if (shape[i] == oShape[i]) continue;
+					if (shape[i] == 1) {
+						stt[i] = 0;
+						stp[i] = 1;
+						ste[1] = 1;
+					} else {
+						throw new IllegalArgumentException("Sliceable dataset has invalid size!");
+					}
 				}
 			}
 
@@ -490,8 +500,11 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 			if (differences == null)
 				init();
 
-			int or = lz.getRank();
 			int[] lshape = lz.getShape();
+			if (Arrays.equals(newShape, lshape)) {
+				return lz;
+			}
+			int or = lz.getRank();
 			int nr = newShape.length;
 			int[] nshape = new int[nr];
 			if (onesOnly) {
