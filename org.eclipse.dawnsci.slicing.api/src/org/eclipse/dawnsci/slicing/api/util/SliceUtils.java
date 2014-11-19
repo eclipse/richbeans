@@ -26,6 +26,7 @@ import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.io.IDataHolder;
 import org.eclipse.dawnsci.analysis.api.io.ILoaderService;
 import org.eclipse.dawnsci.analysis.api.io.SliceObject;
+import org.eclipse.dawnsci.analysis.dataset.impl.Dataset;
 import org.eclipse.dawnsci.doe.DOEUtils;
 import org.eclipse.dawnsci.hdf5.HierarchicalDataFactory;
 import org.eclipse.dawnsci.hdf5.IHierarchicalDataFile;
@@ -338,6 +339,7 @@ public class SliceUtils {
 			// TODO FIXME Axes should come from metadata eventually, although
 			// since expressions may be axes, there will still need to be some
 			// manipulation. 
+			// Example file is 40788
 			try {
 				if (x!=null&& x.getRank()>1) {
 					final int[] dataShape = currentSlice.getFullShape();
@@ -353,11 +355,16 @@ public class SliceUtils {
 			} catch (Exception ignored) {
 				// This is a late on fix, if we cannot get the axes, we set no axis.
 				x = service.createRange(length, IDatasetMathsService.INT); // Save time
-				x.setName("");
+				x.setName("Indices");
 			}
+			if (x.getRank()==2) {
+				x = ((Dataset)x).mean(0).squeeze();
+				x.setName("Average '"+axisName+"'");
+			}
+
 			if (x.getRank()!=1) {
 				x = service.createRange(length, IDatasetMathsService.INT); // Save time
-				x.setName("");
+				x.setName("Indices");
 			}
             return x;
 			
