@@ -468,9 +468,9 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			a.setName(name + AbstractDataset.BLOCK_OPEN + Slice.createString(oShape, nstart, nstop, nstep) + AbstractDataset.BLOCK_CLOSE);
 			if (metadata != null && a instanceof LazyDatasetBase) {
 				((LazyDatasetBase) a).metadata = copyMetadata();
-				// If this is false, then all axes are sliced when a dataset
-				// is - EVEN if they are never used (usually one is...)
-				((LazyDatasetBase) a).sliceMetadata(true, lstart, lstop, lstep, shape);
+				// TODO Changing this to true makes the axes not all slice but
+				// breaks peak fitting...
+				((LazyDatasetBase) a).sliceMetadata(false, lstart, lstop, lstep, shape);
 			}
 		}
 		if (map != null) {
