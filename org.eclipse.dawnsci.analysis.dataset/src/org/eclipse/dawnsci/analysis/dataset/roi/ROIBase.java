@@ -168,20 +168,26 @@ public class ROIBase implements IROI, Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof ROIBase) {
-			ROIBase that = (ROIBase) obj;
-			if (spt == null || that.spt == null)
-				return false;
-			if (spt.length != that.spt.length)
-				return false;
-
-			for (int i = spt.length-1; i>=0; i--) {
-				if (Double.doubleToLongBits(spt[i]) != Double.doubleToLongBits(that.spt[i]))
-					return false;
-			}
+		
+		if (this == obj)
 			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+
+		ROIBase that = (ROIBase) obj;
+		if (spt == null || that.spt == null)
+			return false;
+		if (spt.length != that.spt.length)
+			return false;
+
+		for (int i = spt.length-1; i>=0; i--) {
+			if (Double.doubleToLongBits(spt[i]) != Double.doubleToLongBits(that.spt[i]))
+				return false;
 		}
-		return false;
+		return true;
+
 	}
 
 	@Override
