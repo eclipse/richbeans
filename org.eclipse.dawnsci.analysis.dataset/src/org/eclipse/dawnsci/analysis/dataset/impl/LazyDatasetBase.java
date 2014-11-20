@@ -679,7 +679,11 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 				o = op.processField(f, o);
 				Object r = null;
 				if (o instanceof ILazyDataset) {
-					f.set(m, op.run((ILazyDataset) o));
+					try {
+						f.set(m, op.run((ILazyDataset) o));
+					} catch (Exception e) {
+						logger.error("Problem processing " + o, e);
+					}
 				} else if (o.getClass().isArray()) {
 					int l = Array.getLength(o);
 					if (l <= 0)
@@ -772,7 +776,11 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 			return o;
 
 		if (o instanceof ILazyDataset) {
-			return op.run((ILazyDataset) o);
+			try {
+				return op.run((ILazyDataset) o);
+			} catch (Exception e) {
+				logger.error("Problem processing " + o, e);
+			}
 		} else if (o.getClass().isArray()) {
 			int l = Array.getLength(o);
 			for (int i = 0; i < l; i++) {
