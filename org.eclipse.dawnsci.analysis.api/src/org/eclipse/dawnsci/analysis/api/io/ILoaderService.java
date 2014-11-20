@@ -28,7 +28,7 @@ import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 public interface ILoaderService {
 	
 	/**
-	 * Reads a dataset and returns it as a Dataset
+	 * Reads a dataholder and returns it as a Dataset
 	 * @param filePath
 	 * @return IDataHolder
 	 * @throws Throwable
@@ -37,7 +37,8 @@ public interface ILoaderService {
 
 
 	/**
-	 * Reads a dataset and returns it as a Dataset, with progress
+	 * Reads a single dataset from a file and returns it as a Dataset, with progress
+	 * Use for image files.
 	 * @param filePath
 	 * @return IDataHolder
 	 * @throws Throwable
@@ -46,6 +47,17 @@ public interface ILoaderService {
     
 	/**
 	 * Reads a dataset and returns it as a Dataset, with progress
+	 * 
+	 * NOTE LazyDatasets will be loaded into memory by this method. To avoid this use:
+	 * <code>
+	 * IDataHolder holder = LoaderFactory.getData(...)
+	 * ILazyDataset lz    = holder.getLazyDataset(...)
+	 * <code>
+	 * 
+	 * Now the ILazyDataset is available rather than loading all into memory.
+	 * If you use this method all the data of the dataset will be loaded to memory.
+     *
+	 * 
 	 * @param filePath
 	 * @param datasetPath for instance nexus path, may be null.
 	 * @return IDataHolder
