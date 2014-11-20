@@ -2,13 +2,14 @@ package org.eclipse.dawnsci.analysis.examples.pipelines;
 
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
+import org.eclipse.dawnsci.analysis.api.processing.ExecutionType;
 import org.eclipse.dawnsci.analysis.api.processing.IExecutionVisitor;
 import org.eclipse.dawnsci.analysis.api.processing.IOperation;
+import org.eclipse.dawnsci.analysis.api.processing.IOperationContext;
 import org.eclipse.dawnsci.analysis.api.processing.IOperationService;
 import org.eclipse.dawnsci.analysis.api.processing.OperationData;
 import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
 import org.eclipse.dawnsci.analysis.dataset.impl.Random;
-import org.eclipse.dawnsci.analysis.dataset.processing.RichDataset;
 import org.eclipse.dawnsci.analysis.dataset.roi.SectorROI;
 import org.junit.Test;
 
@@ -52,8 +53,9 @@ public class PipelineExamples {
 	public void simplePipelineExample() throws Exception {
 				
 		// Create a Rich dataset without the extra information and a random array.
-		final RichDataset   rand = new RichDataset(Random.lazyRand(24, 1000, 1000), null); // Simplest possible 
-		rand.setSlicing("all"); // All 24 images in first dimension.
+		final IOperationContext context = service.createContext();
+		context.setData(Random.lazyRand(24, 1000, 1000)); // Simplest possible 
+		context.setSlicing("all"); // All 24 images in first dimension.
 		
 		// We access the model in a generic way because this is example code unable to see
 		// the internals of pipelines.
@@ -64,10 +66,12 @@ public class PipelineExamples {
 		
 		// We do an azimuthal integration on each of the 24 images, we do not do anything with the integration
 		// The series is executed in one thread, in order.
-		service.executeSeries(rand, azi);
+		context.setSeries(azi);
+		service.execute(context);
 		
 		// We execute using fork/join in Java7
-		service.executeParallelSeries(rand, azi);
+		context.setExecutionType(ExecutionType.PARALLEL);
+		service.execute(context);
 
 	}
 		
@@ -75,8 +79,9 @@ public class PipelineExamples {
 	public void simplePipelineExampleUsingMonitor() throws Exception {
 		
 		// Create a Rich dataset without the extra information and a random array.
-		final RichDataset   rand = new RichDataset(Random.lazyRand(24, 1000, 1000), null); // Simplest possible 
-		rand.setSlicing("all"); // All 24 images in first dimension.
+		final IOperationContext context = service.createContext();
+		context.setData(Random.lazyRand(24, 1000, 1000)); // Simplest possible 
+		context.setSlicing("all"); // All 24 images in first dimension.
 		
 		// We access the model in a generic way because this is example code unable to see
 		// the internals of pipelines.
@@ -95,14 +100,17 @@ public class PipelineExamples {
 				System.out.println("This amount worked "+total);
 			}
 		};
+		context.setMonitor(monitor);
+		
 		
 		// We do an azimuthal integration on each of the 24 images, we do not do anything with the integration
 		// The series is executed in one thread, in order.
-		service.executeSeries(rand, monitor, null, azi);
+		context.setSeries(azi);
+		service.execute(context);
 		
 		// We execute using fork/join in Java7
-		service.executeParallelSeries(rand, monitor, null, azi);
-
+		context.setExecutionType(ExecutionType.PARALLEL);
+		service.execute(context);
 	}
 
 	
@@ -110,8 +118,9 @@ public class PipelineExamples {
 	public void simplePipelineExampleUsingVisitor() throws Exception {
 		
 		// Create a Rich dataset without the extra information and a random array.
-		final RichDataset   rand = new RichDataset(Random.lazyRand(24, 1000, 1000), null); // Simplest possible 
-		rand.setSlicing("all"); // All 24 images in first dimension.
+		final IOperationContext context = service.createContext();
+		context.setData(Random.lazyRand(24, 1000, 1000)); // Simplest possible 
+		context.setSlicing("all"); // All 24 images in first dimension.
 		
 		// We access the model in a generic way because this is example code unable to see
 		// the internals of pipelines.
@@ -128,10 +137,13 @@ public class PipelineExamples {
 				System.out.println("Did operation "+intermediateData.getName());
 			}
 		};
+		context.setVisitor(visitor);
+		
 		
 		// We do an azimuthal integration on each of the 24 images, we do not do anything with the integration
 		// The series is executed in one thread, in order.
-		service.executeSeries(rand, null, visitor, azi);
+		context.setSeries(azi);
+		service.execute(context);
 	
 	}
 

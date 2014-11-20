@@ -13,15 +13,45 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
-import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
 
 /**
  * This is a service for creating and returning operations.
  * 
+ * Usage:
+ * <code>
+ *  IOperationService service = ...  // OSGI injection
+ *  IOperationContext context = service.createContext();
+ *  context.setData(...);
+ *  context.setSlicing(...);
+ *  context.setSeries(...);
+ *  service.execute(context);
+ *  
+ * </code>
+ *  
+ * 
  * The service is provided by another plugin and returned using OSGI.
  */
 public interface IOperationService {
+	
+	/**
+	 * Creates an empty context 
+     * You must set at least the data, slicing and series of operations on this
+     * context.
+	 * @return context
+	 */
+	public IOperationContext createContext();
+	
+	/**
+	 * Executes a chain of operations in series.
+	 *
+     * NOTE the operations must have their model data set prior to execution.
+     *
+	 * @param context
+	 * @throws OperationException
+	 */
+	public void execute(IOperationContext context) throws OperationException;
+	
 	
 	/**
 	 * Get the name of the operation with this ID
@@ -117,54 +147,6 @@ public interface IOperationService {
 	public Class<? extends IOperationModel> getModelClass(String operationId) throws Exception;
 
 	/**
-	 * Executes a chain of operations in series.
-	 *
-     * NOTE the operations must have their model data set prior to execution.
-     *
-	 * @param dataset
-	 * @param series
-	 * @throws OperationException
-	 */
-	public void executeSeries(ISliceConfiguration dataset, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
-	
-	/**
-	 * Executes a chain of operations in series. 
-	 *
-     * NOTE the operations must have their model data set prior to execution.
-	 * 
-	 * @param dataset
-	 * @param monitor - may be null
-	 * @param visitor - notified of the result of each slice result after processing, may be null
-	 * @param series
-	 * @throws OperationException
-	 */
-	public void executeSeries(ISliceConfiguration dataset, IMonitor monitor, IExecutionVisitor visitor, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
-	
-	/**
-	 * Executes a chain of operations in parallel. NOTE the operations must have their model data set prior to execution.
-     *
-	 * @param dataset
-	 * @param series
-	 * @throws OperationException
-	 */
-	public void executeParallelSeries(ISliceConfiguration dataset, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
-
-	/**
-	 * Executes a chain of operations in series the same as executeSeries however the
-	 * data slices are parallel and will not be sliced necessarily in order. To do this
-	 * a ForkJoinPool is used the size of the available local CPUs.
-	 * 
-     * NOTE the operations must have their model data set prior to execution.
-     * 
-	 * @param dataset
-	 * @param monitor - may be null
-	 * @param visitor - notified of the result of each slice result after processing, may be null
-	 * @param series
-	 * @throws OperationException
-	 */
-	public void executeParallelSeries(ISliceConfiguration dataset, IMonitor monitor, IExecutionVisitor visitor, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws OperationException;
-
-	/**
 	 * Method to validate a pipeline, throwing an exception if the pipeline is not valid.
 	 * 
 	 * @param firstSlice
@@ -172,13 +154,6 @@ public interface IOperationService {
 	 * @throws InvalidRankException
 	 */
 	public void validate(IDataset firstSlice, IOperation<? extends IOperationModel, ? extends OperationData>... series) throws InvalidRankException, OperationException;
-
-	/**
-	 * Optionally configure the parallel timeout of this service.
-	 * 
-	 * @param timeoutMs
-	 */
-	public void setParallelTimeout(long timeoutMs);
 
 	/**
 	 * Runs a set of operations by following a graph chaining the operations together.
