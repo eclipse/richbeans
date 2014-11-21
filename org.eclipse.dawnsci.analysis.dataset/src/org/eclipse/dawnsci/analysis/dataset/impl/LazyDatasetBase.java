@@ -42,6 +42,16 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 
 	protected static final Logger logger = LoggerFactory.getLogger(LazyDatasetBase.class);
 
+	protected static boolean catchExceptions;
+	
+	static {
+		/**
+		 * Boolean to set to true if running jython scripts that utilise ScisoftPy in IDE
+		 */
+		final String RUN_IN_ECLIPSE = "run.in.eclipse";
+		catchExceptions = "true".equalsIgnoreCase(System.getProperty(RUN_IN_ECLIPSE));
+	}
+
 	protected String name = "";
 
 	/**
@@ -684,6 +694,8 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 						f.set(m, op.run((ILazyDataset) o));
 					} catch (Exception e) {
 						logger.error("Problem processing " + o, e);
+						if (!catchExceptions)
+							throw e;
 					}
 				} else if (o.getClass().isArray()) {
 					int l = Array.getLength(o);
@@ -772,7 +784,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Object processObject(MetadatasetAnnotationOperation op, Object o) {
+	private static Object processObject(MetadatasetAnnotationOperation op, Object o) throws Exception {
 		if (o == null)
 			return o;
 
@@ -781,6 +793,8 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 				return op.run((ILazyDataset) o);
 			} catch (Exception e) {
 				logger.error("Problem processing " + o, e);
+				if (!catchExceptions)
+					throw e;
 			}
 		} else if (o.getClass().isArray()) {
 			int l = Array.getLength(o);
