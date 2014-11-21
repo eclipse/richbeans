@@ -252,8 +252,7 @@ public class ParabolicROI extends OrientableROIBase implements IParametricROI, S
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		ParabolicROI other = (ParabolicROI) obj;
 		if (Double.doubleToLongBits(tp) != Double.doubleToLongBits(other.tp))
 			return false;

@@ -167,8 +167,7 @@ public class EllipticalFitROI extends EllipticalROI implements IFitROI, Serializ
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		EllipticalFitROI other = (EllipticalFitROI) obj;
 		if (circleOnly != other.circleOnly)
 			return false;

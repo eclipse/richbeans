@@ -396,8 +396,7 @@ public class EllipticalROI extends OrientableROIBase implements IParametricROI {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		EllipticalROI other = (EllipticalROI) obj;
 		if (!Arrays.equals(saxis, other.saxis))
 			return false;

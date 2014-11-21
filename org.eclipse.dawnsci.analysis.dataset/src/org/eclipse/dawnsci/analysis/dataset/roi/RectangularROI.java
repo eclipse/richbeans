@@ -671,8 +671,7 @@ public class RectangularROI extends OrientableROIBase implements IRectangularROI
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		RectangularROI other = (RectangularROI) obj;
 		if (clippingCompensation != other.clippingCompensation)
 			return false;

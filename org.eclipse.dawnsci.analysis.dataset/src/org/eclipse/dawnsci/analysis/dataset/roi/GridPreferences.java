@@ -226,10 +226,9 @@ public class GridPreferences implements Serializable {
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
-		if (obj == null)
+		if (!(obj instanceof GridPreferences))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		GridPreferences other = (GridPreferences) obj;
 		if (Double.doubleToLongBits(gridScanBeamlinePosX) != Double.doubleToLongBits(other.gridScanBeamlinePosX))
 			return false;

@@ -373,8 +373,7 @@ public class PolylineROI extends PointROI implements IPolylineROI, Serializable 
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		PolylineROI other = (PolylineROI) obj;
 		if (pts == null) {
 			if (other.pts != null)

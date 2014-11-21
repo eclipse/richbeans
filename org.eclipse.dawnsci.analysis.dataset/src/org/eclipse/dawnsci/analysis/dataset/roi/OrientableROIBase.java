@@ -153,12 +153,9 @@ public class OrientableROIBase extends ROIBase implements IOrientableROI, Serial
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		OrientableROIBase other = (OrientableROIBase) obj;
 		if (Double.doubleToLongBits(ang) != Double.doubleToLongBits(other.ang))
 			return false;
