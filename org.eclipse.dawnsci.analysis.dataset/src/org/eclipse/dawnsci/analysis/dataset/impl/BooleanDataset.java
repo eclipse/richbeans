@@ -13,9 +13,6 @@
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
 import java.text.MessageFormat;
-import java.text.NumberFormat;
-
-
 
 
 /**
@@ -73,6 +70,15 @@ public class BooleanDataset extends BooleanDatasetBase {
 	@Override
 	public BooleanDataset clone() {
 		return new BooleanDataset(this);
+	}
+
+	@Override
+	public BooleanDataset getSlice(SliceIterator siter) {
+		BooleanDataset slice = new BooleanDataset();
+		BooleanDatasetBase base = super.getSlice(siter);
+		copyToView(base, slice, false, false);
+		slice.setData();
+		return slice;
 	}
 
 	/**
