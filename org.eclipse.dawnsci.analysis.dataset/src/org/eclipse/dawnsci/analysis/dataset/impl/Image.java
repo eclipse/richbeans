@@ -12,14 +12,11 @@
 
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.image.IImageFilterService;
 import org.eclipse.dawnsci.analysis.api.roi.IRectangularROI;
-import org.eclipse.dawnsci.analysis.dataset.delaunay_triangulation.Delaunay_Triangulation;
-import org.eclipse.dawnsci.analysis.dataset.delaunay_triangulation.Point_dt;
 import org.eclipse.dawnsci.analysis.dataset.impl.function.MapToRotatedCartesian;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,47 +105,6 @@ public class Image {
 		logger.info("Shift is {}", shift);
 
 		return shift;
-	}
-
-	public static Dataset regrid_delaunay(Dataset data, Dataset x, Dataset y, Dataset gridX, Dataset gridY) {
-		// create a list of all the points
-		ArrayList<Point_dt> points = new ArrayList<Point_dt>();
-		IndexIterator it = data.getIterator();
-		while(it.hasNext()){
-			
-			Point_dt point_dt = new Point_dt(
-					x.getElementDoubleAbs(it.index)*1000000, 
-					y.getElementDoubleAbs(it.index)*1000000,
-					data.getElementDoubleAbs(it.index));
-			points.add(point_dt);
-		}
-		
-		Point_dt[] pointArray = points.toArray(new Point_dt[0]);
-		
-		
-		// create the Delauney_triangulation_Mesh
-		Delaunay_Triangulation dt = new Delaunay_Triangulation(pointArray);
-		
-		IndexIterator itx = gridX.getIterator();
-		DoubleDataset result = new DoubleDataset(gridX.getShapeRef()[0], gridY.getShapeRef()[0]);
-		while(itx.hasNext()){
-			int xindex = itx.index;
-			double xpos = gridX.getDouble(xindex);
-			IndexIterator ity = gridY.getIterator();
-			
-			while(ity.hasNext()){
-				int yindex = ity.index;
-				double ypos = gridX.getDouble(yindex);
-				if(dt.contains(xpos, ypos)){
-					result.set(dt.z(xpos, ypos), xindex,yindex);
-				} else {
-					result.set(Double.NaN, xindex,yindex);
-				}
-				
-			}
-		}
-		
-		return result;
 	}
 
 	public static Dataset regrid_kabsch(Dataset data, Dataset x, Dataset y, Dataset gridX, Dataset gridY) {
