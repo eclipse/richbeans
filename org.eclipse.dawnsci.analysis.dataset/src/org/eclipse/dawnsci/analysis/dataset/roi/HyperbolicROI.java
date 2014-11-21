@@ -284,8 +284,7 @@ public class HyperbolicROI extends OrientableROIBase implements IParametricROI, 
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		HyperbolicROI other = (HyperbolicROI) obj;
 		if (Double.doubleToLongBits(e) != Double.doubleToLongBits(other.e))
 			return false;

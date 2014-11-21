@@ -674,8 +674,7 @@ public class SectorROI extends RingROI implements Serializable {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		SectorROI other = (SectorROI) obj;
 		if (!Arrays.equals(ang, other.ang))
 			return false;

@@ -129,8 +129,7 @@ public class CircularFitROI extends CircularROI implements IFitROI, Serializable
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		CircularFitROI other = (CircularFitROI) obj;
 		if (fitter == null) {
 			if (other.fitter != null)

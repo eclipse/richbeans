@@ -321,8 +321,7 @@ public class GridROI extends RectangularROI implements Serializable {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		GridROI other = (GridROI) obj;
 		if (gridLinesOn != other.gridLinesOn)
 			return false;

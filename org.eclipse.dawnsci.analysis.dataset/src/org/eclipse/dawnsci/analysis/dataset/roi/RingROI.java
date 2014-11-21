@@ -297,8 +297,7 @@ public class RingROI extends ROIBase implements Serializable {
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		RingROI other = (RingROI) obj;
 		if (averageArea != other.averageArea)
 			return false;

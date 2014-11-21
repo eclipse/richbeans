@@ -248,8 +248,7 @@ public class CircularROI extends ROIBase implements IParametricROI, Serializable
 			return true;
 		if (!super.equals(obj))
 			return false;
-		if (getClass() != obj.getClass())
-			return false;
+
 		CircularROI other = (CircularROI) obj;
 		if (Double.doubleToLongBits(rad) != Double.doubleToLongBits(other.rad))
 			return false;
