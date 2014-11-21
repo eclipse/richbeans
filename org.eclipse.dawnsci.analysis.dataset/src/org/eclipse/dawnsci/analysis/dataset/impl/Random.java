@@ -86,6 +86,9 @@ public class Random {
 	/**
 	 * @param shape
 	 * @return an array of values sampled from a Gaussian distribution with mean 0 and variance 1 
+	 * 
+	 * (The term Gaussian here is a description of a shape of data taken from the mathematician of the
+	 * same name Carl Friedrich Gauss  http://en.wikipedia.org/wiki/Carl_Friedrich_Gauss born in 1777.)
 	 */
 	public static DoubleDataset randn(final int... shape) {
 		DoubleDataset data = new DoubleDataset(shape);

@@ -20,6 +20,8 @@
 #     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 #     OTHER DEALINGS IN THE SOFTWARE.
 
+# We extend the standard python API here:
+# https://docs.python.org/2/library/userdict.html
 from UserDict import DictMixin
 
 class OrderedDict(dict, DictMixin):

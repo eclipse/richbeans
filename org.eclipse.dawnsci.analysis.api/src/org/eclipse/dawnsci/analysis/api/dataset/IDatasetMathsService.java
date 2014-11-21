@@ -20,9 +20,6 @@ package org.eclipse.dawnsci.analysis.api.dataset;
  * So you don't end up with dependencies required by loaders when you do simple
  * dataset manipulation for instance.
  * 
- * The service is donated in the uk.ac.diamond.scisoft.analysis.osgi plugin and
- * will be available - this plugin is started automatically in DAWN
- * based products.
  */
 public interface IDatasetMathsService {
 

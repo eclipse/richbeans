@@ -1,13 +1,6 @@
 /*-
  *******************************************************************************
- * Copyright (c) 2011, 2014 Diamond Light Source Ltd.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *    Peter Chang - initial API and implementation and/or initial documentation
+ * Copyright (c) ?? 
  *******************************************************************************/
 package org.eclipse.dawnsci.analysis.dataset.delaunay_triangulation;
 
@@ -25,6 +18,14 @@ import java.util.TreeSet;
 import java.util.Vector;
 
 /**
+ * 
+ * >> Comment from Diamond Light Source
+            The original published papers for this maths are detailed in:
+            Implementation of the Mostafavia, Gold & Dakowicz algorithm (2002). By Eyal
+	        Roth & Doron Ganel (2009).
+ * This class is a copy of http://herschel.esac.esa.int/hcss-doc-13.0/load/pacs_drm/api/herschel/pacs/share/jdt/DelaunayTriangulation.html
+ * >>
+ * 
  * This class represents a Delaunay Triangulation. The class was written for a large scale triangulation (1000 - 200,000
  * vertices). The application main use is 3D surface (terrain) presentation. <br>
  * The class main properties are the following:<br>
@@ -194,8 +195,12 @@ public class Delaunay_Triangulation {
 	 * Deletes the given point from this.
 	 * 
 	 * @param pointToDelete
-	 *            The given point to delete. Implementation of the Mostafavia, Gold & Dakowicz algorithm (2002). By Eyal
+	 *            The given point to delete. 
+	 *            
+	 *            The original published papers for this maths are detailed in:
+	 *            Implementation of the Mostafavia, Gold & Dakowicz algorithm (2002). By Eyal
 	 *            Roth & Doron Ganel (2009).
+	 *          
 	 */
 	public void deletePoint(Point_dt pointToDelete) {
 
