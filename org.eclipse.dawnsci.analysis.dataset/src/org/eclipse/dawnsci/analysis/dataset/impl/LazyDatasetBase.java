@@ -42,6 +42,16 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 
 	protected static final Logger logger = LoggerFactory.getLogger(LazyDatasetBase.class);
 
+	protected static boolean catchExceptions;
+	
+	static {
+		/**
+		 * Boolean to set to true if running jython scripts that utilise ScisoftPy in IDE
+		 */
+		final String RUN_IN_ECLIPSE = "run.in.eclipse";
+		catchExceptions = "true".equalsIgnoreCase(System.getProperty(RUN_IN_ECLIPSE));
+	}
+
 	protected String name = "";
 
 	/**
@@ -617,13 +627,11 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	 * Slice all datasets in metadata that are annotated by @Sliceable. Call this on the new sliced
 	 * dataset after cloning the metadata
 	 * @param asView if true then just a view
-	 * @param start
-	 * @param stop
-	 * @param step
+	 * @param params
 	 * @param oShape
 	 */
-	protected void sliceMetadata(boolean asView, final int[] start, final int[] stop, final int[] step, final int[] oShape) {
-		processAnnotatedMetadata(new MdsSlice(asView, start, stop, step, oShape), true);
+	protected void sliceMetadata(boolean asView, final int[] oShape, final SliceND params) {
+		processAnnotatedMetadata(new MdsSlice(asView, params.getStart(), params.getStop(), params.getStep(), oShape), true);
 	}
 
 	/**
@@ -686,6 +694,8 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 						f.set(m, op.run((ILazyDataset) o));
 					} catch (Exception e) {
 						logger.error("Problem processing " + o, e);
+						if (!catchExceptions)
+							throw e;
 					}
 				} else if (o.getClass().isArray()) {
 					int l = Array.getLength(o);
@@ -774,7 +784,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private static Object processObject(MetadatasetAnnotationOperation op, Object o) {
+	private static Object processObject(MetadatasetAnnotationOperation op, Object o) throws Exception {
 		if (o == null)
 			return o;
 
@@ -783,6 +793,8 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 				return op.run((ILazyDataset) o);
 			} catch (Exception e) {
 				logger.error("Problem processing " + o, e);
+				if (!catchExceptions)
+					throw e;
 			}
 		} else if (o.getClass().isArray()) {
 			int l = Array.getLength(o);

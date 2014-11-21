@@ -72,6 +72,15 @@ public class StringDataset extends StringDatasetBase {
 		return new StringDataset(this);
 	}
 
+	@Override
+	public StringDataset getSlice(SliceIterator siter) {
+		StringDataset slice = new StringDataset();
+		StringDatasetBase base = super.getSlice(siter);
+		copyToView(base, slice, false, false);
+		slice.setData();
+		return slice;
+	}
+
 	/**
 	 * Create a dataset from an object which could be a Java list, array (of arrays...)
 	 * or Number. Ragged sequences or arrays are padded with zeros.

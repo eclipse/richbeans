@@ -171,10 +171,10 @@ public class AggregateDataset extends LazyDatasetBase implements ILazyDataset {
 		}
 
 		for (ILazyDataset d : data) {
-			if (d instanceof LazyDataset) {
-				dtype = AbstractDataset.getBestDType(dtype, ((LazyDataset) d).getDtype());
+			if (d instanceof LazyDatasetBase) {
+				dtype = AbstractDataset.getBestDType(dtype, ((LazyDatasetBase) d).getDtype());
 			} else {
-				dtype = AbstractDataset.getBestDType(dtype, AbstractDataset.getDTypeFromClass(d.elementClass()));
+				dtype = AbstractDataset.getBestDType(dtype, AbstractDataset.getDTypeFromClass(d.elementClass(), d.getElementsPerItem()));
 			}
 		}
 
@@ -322,38 +322,11 @@ public class AggregateDataset extends LazyDatasetBase implements ILazyDataset {
 
 	@Override
 	public AggregateDataset getSliceView(int[] start, int[] stop, int[] step) {
-		int[] lstart, lstop, lstep;
-		final int rank = shape.length;
-
-		if (step == null) {
-			lstep = new int[rank];
-			Arrays.fill(lstep, 1);
-		} else {
-			lstep = step;
-		}
-
-		if (start == null) {
-			lstart = new int[rank];
-		} else {
-			lstart = start;
-		}
-
-		if (stop == null) {
-			lstop = new int[rank];
-		} else {
-			lstop = stop;
-		}
-
-		int[] nShape;
-		if (rank > 1 || (rank > 0 && shape[0] > 0)) {
-			nShape = AbstractDataset.checkSlice(shape, start, stop, lstart, lstop, lstep);
-		} else {
-			nShape = new int[rank];
-		}
-		AggregateDataset lazy = new AggregateDataset(isize, nShape, dtype);
-		lazy.sliceStart = lstart.clone();
-		lazy.sliceStep  = lstep.clone();
-		lazy.name = name + "[" + Slice.createString(nShape, lstart, lstop, lstep) + "]";
+		SliceND slice = new SliceND(shape, start, stop, step);
+		AggregateDataset lazy = new AggregateDataset(isize, slice.getShape(), dtype);
+		lazy.sliceStart = slice.getStart();
+		lazy.sliceStep  = slice.getStep();
+		lazy.name = name + "[" + slice + "]";
 		lazy.base = base == null ? this : base;
 		return lazy;
 	}

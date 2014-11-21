@@ -198,31 +198,8 @@ public class Random {
 
 			@Override
 			public IDataset getDataset(IMonitor mon, int[] oshape, int[] start, int[] stop, int[] step) throws Exception {
-				final int rank = oshape.length;
-				int[] lstart, lstop, lstep;
-
-				if (step == null) {
-					lstep = new int[rank];
-					for (int i = 0; i < rank; i++) {
-						lstep[i] = 1;
-					}
-				} else {
-					lstep = step;
-				}
-
-				if (start == null) {
-					lstart = new int[rank];
-				} else {
-					lstart = start;
-				}
-
-				if (stop == null) {
-					lstop = new int[rank];
-				} else {
-					lstop = stop;
-				}
-
-				int[] newShape = AbstractDataset.checkSlice(oshape, start, stop, lstart, lstop, lstep);
+				SliceND slice = new SliceND(oshape, start, stop, step);
+				int[] newShape = slice.getShape();
 
                 return rand(newShape);
 			}

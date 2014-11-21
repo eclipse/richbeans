@@ -49,10 +49,14 @@ public class StrideIterator extends SliceIterator {
 	}
 
 	public StrideIterator(final int isize, final int[] shape, final int[] oStrides, final int oOffset, final int[] start, final int[] stop, final int[] step) {
+		this(isize, shape, oStrides, oOffset, new SliceND(shape, start, stop, step));
+	}
+
+	public StrideIterator(final int isize, final int[] shape, final int[] oStrides, final int oOffset, final SliceND slice) {
 		int rank = shape.length;
 		int[] strides = new int[rank];
 		int[] offset = new int[1];
-		int[] newShape = AbstractDataset.createStrides(isize, shape, oStrides, oOffset, start, stop, step, strides, offset);
+		int[] newShape = AbstractDataset.createStrides(slice, isize, shape, oStrides, oOffset, strides, offset);
 
 		init(isize, newShape, strides, offset[0]);
 		reset();
