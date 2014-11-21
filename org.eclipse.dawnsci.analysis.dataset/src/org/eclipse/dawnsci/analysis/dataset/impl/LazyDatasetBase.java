@@ -617,13 +617,11 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	 * Slice all datasets in metadata that are annotated by @Sliceable. Call this on the new sliced
 	 * dataset after cloning the metadata
 	 * @param asView if true then just a view
-	 * @param start
-	 * @param stop
-	 * @param step
+	 * @param params
 	 * @param oShape
 	 */
-	protected void sliceMetadata(boolean asView, final int[] start, final int[] stop, final int[] step, final int[] oShape) {
-		processAnnotatedMetadata(new MdsSlice(asView, start, stop, step, oShape), true);
+	protected void sliceMetadata(boolean asView, final int[] oShape, final SliceND params) {
+		processAnnotatedMetadata(new MdsSlice(asView, params.getStart(), params.getStop(), params.getStep(), oShape), true);
 	}
 
 	/**

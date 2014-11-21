@@ -90,11 +90,17 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		});
 	}
 
+	/**
+	 * Can return -1 for unknown
+	 */
 	@Override
 	public int getDtype() {
 		return dtype;
 	}
 
+	/**
+	 * Can return -1 for unknown
+	 */
 	@Override
 	public int getElementsPerItem() {
 		return isize;
@@ -302,34 +308,12 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		if (start == null && stop == null && step == null)
 			return view;
 
-		int[] lstart, lstop, lstep;
+		SliceND slice = new SliceND(shape, start, stop, step);
+		int[] lstart = slice.getStart();
+		int[] lstep  = slice.getStep();
 		final int rank = shape.length;
 
-		if (step == null) {
-			lstep = new int[rank];
-			Arrays.fill(lstep, 1);
-		} else {
-			lstep = step;
-		}
-
-		if (start == null) {
-			lstart = new int[rank];
-		} else {
-			lstart = start;
-		}
-
-		if (stop == null) {
-			lstop = new int[rank];
-		} else {
-			lstop = stop;
-		}
-
-		int[] nShape;
-		if (rank > 1 || (rank > 0 && shape[0] > 0)) {
-			nShape = AbstractDataset.checkSlice(shape, start, stop, lstart, lstop, lstep);
-		} else {
-			nShape = new int[rank];
-		}
+		int[] nShape = slice.getShape();
 		view.shape = nShape;
 		view.size = AbstractDataset.calcLongSize(nShape);
 		if (begSlice == null) {
@@ -343,7 +327,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 				view.delSlice[i] = delSlice[i] * lstep[i];
 			}
 		}
-		view.sliceMetadata(true, lstart, lstop, lstep, shape);
+		view.sliceMetadata(true, shape, slice);
 		return view;
 	}
 
@@ -393,30 +377,10 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		if (loader != null && !loader.isFileReadable())
 			return null; // TODO add interaction to use plot (or remote) server to load dataset
 
-		int rank = shape.length;
-		int[] lstart;
-		int[] lstop;
-		int[] lstep;
-		if (step == null) {
-			lstep = new int[rank];
-			Arrays.fill(lstep, 1);
-		} else {
-			lstep = step;
-		}
-
-		if (start == null) {
-			lstart = new int[rank];
-		} else {
-			lstart = start;
-		}
-
-		if (stop == null) {
-			lstop = shape.clone();
-		} else {
-			lstop = stop;
-		}
-
-		int[] lshape = AbstractDataset.checkSlice(shape, start, stop, lstart, lstop, lstep);
+		SliceND slice = new SliceND(shape, start, stop, step);
+		int[] lstart = slice.getStart();
+		int[] lstop  = slice.getStop();
+		int[] lstep  = slice.getStep();
 
 		int[] nstart;
 		int[] nstop;
@@ -471,15 +435,13 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			a.setName(name + AbstractDataset.BLOCK_OPEN + Slice.createString(oShape, nstart, nstop, nstep) + AbstractDataset.BLOCK_CLOSE);
 			if (metadata != null && a instanceof LazyDatasetBase) {
 				((LazyDatasetBase) a).metadata = copyMetadata();
-				// TODO Changing this to true makes the axes not all slice but
-				// breaks peak fitting...
-				((LazyDatasetBase) a).sliceMetadata(false, lstart, lstop, lstep, shape);
+				((LazyDatasetBase) a).sliceMetadata(true, shape, slice);
 			}
 		}
 		if (map != null) {
 			a = a.getTransposedView(map);
 		}
-		a.setShape(lshape);
+		a.setShape(slice.getShape());
 		return a;
 	}
 

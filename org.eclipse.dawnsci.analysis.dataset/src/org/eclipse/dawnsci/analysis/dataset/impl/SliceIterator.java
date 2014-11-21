@@ -100,6 +100,29 @@ public class SliceIterator extends IndexIterator {
 	 * 
 	 * @param shape or dataShape
 	 * @param length of entire data array
+	 * @param slice
+	 */
+	public SliceIterator(final int[] shape, final int length, final SliceND slice) {
+		this(shape, length, slice.getStart(), slice.getStep(), slice.getShape(), 1);
+	}
+
+	/**
+	 * Constructor for an iterator over the elements of a sliced dataset
+	 * 
+	 * @param shape or dataShape
+	 * @param length of entire data array
+	 * @param isize number of elements in an item
+	 * @param slice
+	 */
+	public SliceIterator(final int[] shape, final int length, final int isize, final SliceND slice) {
+		this(shape, length, slice.getStart(), slice.getStep(), slice.getShape(), isize);
+	}
+
+	/**
+	 * Constructor for an iterator over the elements of a sliced dataset
+	 * 
+	 * @param shape or dataShape
+	 * @param length of entire data array
 	 * @param start (if null then equivalent to the origin)
 	 * @param step (cannot contain zeros, if null then equivalent to ones)
 	 * @param sshape shape of new dataset, i.e. slice

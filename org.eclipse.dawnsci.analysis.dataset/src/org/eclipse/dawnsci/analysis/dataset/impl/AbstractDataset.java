@@ -347,7 +347,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 		int rank = shape.length;
 		int[] tstride = new int[rank];
 		int[] toffset = new int[1];
-		int[] nshape = createStrides(this, null, null, null, tstride, toffset);
+		int[] nshape = createStrides(new SliceND(shape), this, tstride, toffset);
 		int[] nstride = new int[rank];
 		for (int i = 0; i < rank; i++) {
 			final int ax = axes[i];
@@ -916,40 +916,18 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 
 	@Override
 	public IndexIterator getSliceIterator(final int[] start, final int[] stop, final int[] step) {
+		return getSliceIterator(new SliceND(shape, start, stop, step));
+	}
+
+	/**
+	 * @param slice
+	 * @return an slice iterator that operates like an IndexIterator
+	 */
+	public IndexIterator getSliceIterator(SliceND slice) {
 		if (stride != null)
-			return new StrideIterator(getElementsPerItem(), shape, stride, offset, start, stop, step);
+			return new StrideIterator(getElementsPerItem(), shape, stride, offset, slice);
 
-		int rank = shape.length;
-
-		int[] lstart, lstop, lstep;
-
-		if (step == null) {
-			lstep = new int[rank];
-			Arrays.fill(lstep, 1);
-		} else {
-			lstep = step;
-		}
-
-		if (start == null) {
-			lstart = new int[rank];
-		} else {
-			lstart = start;
-		}
-
-		if (stop == null) {
-			lstop = new int[rank];
-		} else {
-			lstop = stop;
-		}
-
-		int[] newShape;
-		if (rank > 1 || (rank > 0 && shape[0] > 0)) {
-			newShape = checkSlice(start, stop, lstart, lstop, lstep);
-		} else {
-			newShape = new int[rank];
-		}
-
-		return new SliceIterator(shape, size, lstart, lstep, newShape);
+		return new SliceIterator(shape, size, slice);
 	}
 
 	@Override
@@ -1524,61 +1502,33 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	}
 
 	/**
-	 * Create a stride array from a dataset and some slice information
+	 * Create a stride array from slice information and a dataset
+	 * @param slice
 	 * @param a dataset
-	 * @param start
-	 * @param stop
-	 * @param step
 	 * @param stride output stride
 	 * @param offset output offset
 	 * @return new shape
 	 */
-	public static int[] createStrides(Dataset a, final int[] start, final int[] stop, final int[] step, final int[] stride, final int[] offset) {
-		return createStrides(a.getElementsPerItem(), a.getShapeRef(), a.getStrides(), a.getOffset(), start, stop, step, stride, offset);
+	public static int[] createStrides(final SliceND slice, final Dataset a, final int[] stride, final int[] offset) {
+		return createStrides(slice, a.getElementsPerItem(), a.getShapeRef(), a.getStrides(), a.getOffset(), stride, offset);
 	}
 
 	/**
-	 * Create a stride array from dataset and slice information
+	 * Create a stride array from slice and dataset information
+	 * @param slice
 	 * @param isize
 	 * @param shape
 	 * @param oStride original stride
 	 * @param oOffset original offset (only used if there is an original stride)
-	 * @param start
-	 * @param stop
-	 * @param step
 	 * @param stride output stride
 	 * @param offset output offset
 	 * @return new shape
 	 */
-	public static int[] createStrides(final int isize, final int[] shape, final int[] oStride, final int oOffset, final int[] start, final int[] stop, final int[] step, final int[] stride, final int[] offset) {
-		int[] lstart, lstop, lstep;
-		final int rank = shape.length;
-
-		if (step == null) {
-			lstep = new int[rank];
-			Arrays.fill(lstep, 1);
-		} else {
-			lstep = step;
-		}
-
-		if (start == null) {
-			lstart = new int[rank];
-		} else {
-			lstart = start;
-		}
-
-		if (stop == null) {
-			lstop = new int[rank];
-		} else {
-			lstop = stop;
-		}
-
-		int[] newShape;
-		if (rank > 1 || (rank > 0 && shape[0] > 0)) {
-			newShape = checkSlice(shape, start, stop, lstart, lstop, lstep);
-		} else {
-			newShape = new int[rank];
-		}
+	public static int[] createStrides(final SliceND slice, final int isize, final int[] shape, final int[] oStride, final int oOffset, final int[] stride, final int[] offset) {
+		int[] lstart = slice.getStart();
+		int[] lstep = slice.getStep();
+		int[] newShape = slice.getShape();
+		int rank = shape.length;
 
 		if (oStride == null) {
 			int s = isize;
@@ -1650,28 +1600,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 
 	@Override
 	public Dataset getSliceView(final int[] start, final int[] stop, final int[] step) {
-		final int rank = shape.length;
-	
-		int[] sStride = new int[rank];
-		int[] sOffset = new int[1];
-		int[] sShape = createStrides(this, start, stop, step, sStride, sOffset);
-	
-		AbstractDataset s = getView();
-		s.shape = sShape;
-		s.size = calcSize(sShape);
-		s.stride = sStride;
-		s.offset = sOffset[0];
-		s.base = base == null ? this : base;
-
-		s.metadata = copyMetadata();
-		s.sliceMetadata(true, start, stop, step, shape);
-
-		if (Arrays.equals(shape, s.shape)) {
-			s.setName(name);
-		} else {
-			s.setName(name + BLOCK_OPEN + Slice.createString(shape, start, stop, step) + BLOCK_CLOSE);
-		}
-		return s;
+		return getSliceView(new SliceND(shape, start, stop, step));
 	}
 
 	@Override
@@ -1688,13 +1617,37 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 			return s;
 		}
 
-		final int rank = shape.length;
-		final int[] start = new int[rank];
-		final int[] stop = new int[rank];
-		final int[] step = new int[rank];
+		return getSliceView(new SliceND(shape, slice));
+	}
 
-		Slice.convertFromSlice(slice, shape, start, stop, step);
-		return getSliceView(start, stop, step);
+	/**
+	 * Get a slice of the dataset. The returned dataset is a view on a selection of items
+	 * @param slice
+	 * @return slice view
+	 */
+	public Dataset getSliceView(SliceND slice) {
+		final int rank = shape.length;
+		int[] sStride = new int[rank];
+		int[] sOffset = new int[1];
+
+		int[] sShape = createStrides(slice, this, sStride, sOffset);
+	
+		AbstractDataset s = getView();
+		s.shape = sShape;
+		s.size = calcSize(sShape);
+		s.stride = sStride;
+		s.offset = sOffset[0];
+		s.base = base == null ? this : base;
+
+		s.metadata = copyMetadata();
+		s.sliceMetadata(true, shape, slice);
+
+		if (slice.isAll()) {
+			s.setName(name);
+		} else {
+			s.setName(name + BLOCK_OPEN + slice + BLOCK_CLOSE);
+		}
+		return s;
 	}
 
 	/**
@@ -2553,30 +2506,12 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 
 	@Override
 	public Dataset getSlice(final int[] start, final int[] stop, final int[] step) {
-		AbstractDataset s = getSlice((SliceIterator) getSliceIterator(start, stop, step));
-		s.metadata = copyMetadata();
-		s.sliceMetadata(true, start, stop, step, shape);
-		return s;
+		return getSlice(new SliceND(shape, start, stop, step));
 	}
-
-	/**
-	 * Get a slice of the dataset. The returned dataset is a copied selection of items
-	 * 
-	 * @param iterator Slice iterator
-	 * @return The dataset of the sliced data
-	 */
-	abstract public AbstractDataset getSlice(final SliceIterator iterator);
 
 	@Override
 	public Dataset getSlice(Slice... slice) {
-		final int rank = shape.length;
-		final int[] start = new int[rank];
-		final int[] stop = new int[rank];
-		final int[] step = new int[rank];
-
-		Slice.convertFromSlice(slice, shape, start, stop, step);
-
-		return getSlice(start, stop, step);
+		return getSlice(new SliceND(shape, slice));
 	}
 
 	@Override
@@ -2588,6 +2523,27 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	public Dataset getSlice(IMonitor monitor, int[] start, int[] stop, int[] step) {
 		return getSlice(start, stop, step);
 	}
+
+	/**
+	 * Get a slice of the dataset. The returned dataset is a copied selection of items
+	 * @param slice
+	 * @return The dataset of the sliced data
+	 */
+	public Dataset getSlice(final SliceND slice) {
+		SliceIterator it = (SliceIterator) getSliceIterator(slice);
+		AbstractDataset s = getSlice(it);
+		s.metadata = copyMetadata();
+		s.sliceMetadata(true, shape, slice);
+		return s;
+	}
+
+	/**
+	 * Get a slice of the dataset. The returned dataset is a copied selection of items
+	 * 
+	 * @param iterator Slice iterator
+	 * @return The dataset of the sliced data
+	 */
+	abstract public AbstractDataset getSlice(final SliceIterator iterator);
 
 	@Override
 	public Dataset setSlice(final Object obj, final int[] start, final int[] stop, final int[] step) {
