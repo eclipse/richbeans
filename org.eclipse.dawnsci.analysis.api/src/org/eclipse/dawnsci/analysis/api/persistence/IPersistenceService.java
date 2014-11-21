@@ -36,7 +36,7 @@ public interface IPersistenceService {
 	/**
 	 * 
 	 * @param file - currently must be the IHierarchicalDataFile or a class cast exception is thrown 
-	 * @return
+	 * @return file
 	 * @throws Exception
 	 */
 	public IPersistentFile createPersistentFile(Object file) throws Exception;
