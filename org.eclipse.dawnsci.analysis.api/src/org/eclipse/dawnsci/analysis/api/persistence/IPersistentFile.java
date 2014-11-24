@@ -414,7 +414,7 @@ public interface IPersistentFile {
 	 * @param operations - An array of operations
 	 * @throws Exception
 	 */
-	public void setOperations(IOperation<? extends IOperationModel, ? extends OperationData>[] operations) throws Exception;
+	public void setOperations(IOperation<? extends IOperationModel, ? extends OperationData>... operations) throws Exception;
 	
 	/**
 	 * Method to read a series of operations from a Nexus file
