@@ -65,6 +65,31 @@ public class Slicer {
 		visit(lz, sliceDimensions, nameFragment, visitor);
 	}
 	
+	public static int getSize(ILazyDataset lz, Map<Integer, String> sliceDimensions) throws Exception {
+
+		final int[] fullDims = lz.getShape();
+		
+		//Construct Slice String
+
+		if (sliceDimensions == null) sliceDimensions = new HashMap<Integer, String>();
+		
+		Slice[] slices = getSliceArrayFromSliceDimensions(sliceDimensions, lz.getShape());
+		
+		//create array of ignored axes values
+		int[] axes = getDataDimensions(fullDims, sliceDimensions);
+
+		//Take view of original lazy dataset removing start/stop/step
+		//Makes the iteration simpler
+		ILazyDataset lzView = lz.getSliceView(slices);
+
+		PositionIterator pi = new PositionIterator(lzView.getShape(), axes);
+		int size = 0;
+		while (pi.hasNext()) size++; // TODO Is this loop required or is slices.length the same?
+		
+		return size;
+
+	}
+	
 	/**
 	 * 
 	 * @param lz
@@ -94,7 +119,7 @@ public class Slicer {
 		PositionIterator pi = new PositionIterator(lzView.getShape(), axes);
 		int[] pos = pi.getPos();
 		final int[] viewDims = lzView.getShape();
-
+		
 		while (pi.hasNext()) {
 
 			int[] end = pos.clone();
