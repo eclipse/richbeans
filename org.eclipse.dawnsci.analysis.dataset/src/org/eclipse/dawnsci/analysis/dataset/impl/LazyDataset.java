@@ -290,14 +290,30 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 
 		int i = ob;
 		int j = nb;
-		for (; i < oe && j < nr; i++, j++) {
-			if (shape[i] != nShape[j]) {
-				throw new IllegalArgumentException("New shape not allowed - can only change shape by adding or removing ones to ends of old shape");
+		if (begSlice == null) {
+			for (; i < oe && j < nr; i++, j++) {
+				if (shape[i] != nShape[j]) {
+					throw new IllegalArgumentException("New shape not allowed - can only change shape by adding or removing ones to ends of old shape");
+				}
 			}
+		} else {
+			int[] nBegSlice = new int[nr];
+			int[] nDelSlice = new int[nr];
+			Arrays.fill(nDelSlice, 1);
+			for (; i < oe && j < nr; i++, j++) {
+				if (shape[i] != nShape[j]) {
+					throw new IllegalArgumentException("New shape not allowed - can only change shape by adding or removing ones to ends of old shape");
+				}
+				nBegSlice[j] = begSlice[i];
+				nDelSlice[j] = delSlice[i];
+			}
+	
+			begSlice = nBegSlice;
+			delSlice = nDelSlice;
 		}
-
 		prepShape += nb - ob;
 		postShape += nr - oe;
+		
 		reshapeMetadata(shape, nShape);
 		shape = nShape;
 	}
