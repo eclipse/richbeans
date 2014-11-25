@@ -30,6 +30,19 @@ import org.slf4j.LoggerFactory;
  * the file. It is better than alternative ways of doing this as the level of synchronization is
  * lower. Use HierarchicalDataFactory as much as possible to avoid thread problems with HDF5.
  * 
+ * 
+ * <usage><code>
+ * HierarchicalDataFile file = null;
+ * try {
+ *     file = HierarchicalDataFactory.getXXX();
+ *    
+ *     ... use file
+ *     
+ * } finally {
+ *     file.close();
+ * }
+ * </code></usage>
+ * 
  * @author Matthew Gerring
  *
  */
