@@ -837,8 +837,8 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 				d.setShape(shape.clone());
 			}
 		}
-		List<int[]> s = BroadcastIterator.broadcastShapes(shape, d.getShape());
-		d.setShape(s.get(2));
+		List<int[]> s = BroadcastIterator.broadcastShapesToMax(shape, d.getShape());
+		d.setShape(s.get(0));
 
 		return d;
 	}
