@@ -18,19 +18,57 @@ import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
 
+/**
+ * Essential things to set
+ * 1. Either: 
+ *   a) an ILazyDataset (setData(..)) or    [If the lazydataset is there it takes precidence.]
+ *   b) the filePath and datasetPath
+ * 
+ * 2. The slicing
+ * 4. The series to run
+ * 
+ * Optional
+ * 1. execution type
+ * 2. Parallel timeout (default 5000ms) [series runs have no timeout]
+ * 3. Vistor
+ * 4. Monitor
+ */
 public interface IOperationContext {
 
 	/**
 	 * 
 	 * @return The data which we are slicing
 	 */
-	public ILazyDataset getData();
+	public ILazyDataset getData() throws Exception;
 	
 	/**
 	 * 
 	 * The data which we are slicing
 	 */
 	public void setData(ILazyDataset data);
+
+	/**
+	 * Path to data file
+	 */
+	public String getFilePath();
+	
+	/**
+	 * Path to data file
+	 * @param filePath
+	 */
+	public void setFilePath(String filePath);
+	
+	/**
+	 * Path to dataset
+	 * @return path
+	 */
+	public String getDatasetPath();
+	
+	/**
+	 * Path to dataset
+	 * @param datasetPath
+	 */
+	public void setDatasetPath(String datasetPath);
 
 
 	/**
