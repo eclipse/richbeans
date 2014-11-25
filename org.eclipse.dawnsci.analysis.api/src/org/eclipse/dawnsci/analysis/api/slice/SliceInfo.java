@@ -39,7 +39,7 @@ public class SliceInfo {
 	}
 	
 	public IDataset slice() {
-		IDataset s = data.getSlice(slice); // TODO Should this be getSliceView(...) ?
+		IDataset s = data.getSlice(slice);
 		s.setName(sliceName);
 		return s;
 	}
