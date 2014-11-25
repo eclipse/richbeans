@@ -3266,8 +3266,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 				setError(ed); // set back
 			}
 		} else {
-			logger.error("Somehow the error dataset is still a lazy one");
-			throw new IllegalStateException("Somehow the error dataset is still a lazy one");
+			ed = DatasetUtils.convertToDataset(led.getSlice());
 		}
 
 		// check for broadcast strides
@@ -3416,8 +3415,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 			if (led instanceof IDataset) {
 				ed = (Dataset) led;
 			} else {
-				logger.error("Somehow the error dataset is still a lazy one");
-				throw new IllegalStateException("Somehow the error dataset is still a lazy one");
+				ed = DatasetUtils.convertToDataset(led.getSlice());
 			}
 			emd  = new ErrorMetadataImpl();
 			setMetadata(emd);
