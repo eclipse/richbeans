@@ -380,6 +380,43 @@ public class BroadcastIterator extends IndexIterator {
 		return newShapes;
 	}
 
+	/**
+	 * Take in shapes and broadcast them to maximum shape
+	 * @param maxShape
+	 * @param shapes
+	 * @return list of broadcasted shapes
+	 */
+	public static List<int[]> broadcastShapesToMax(int[] maxShape, int[]... shapes) {
+		int maxRank = maxShape.length;
+		for (int[] s : shapes) {
+			if (s == null)
+				continue;
+
+			int r = s.length;
+			if (r > maxRank) {
+				throw new IllegalArgumentException("A shape exceeds given rank of maximum shape");
+			}
+		}
+
+		List<int[]> newShapes = new ArrayList<int[]>();
+		for (int[] s : shapes) {
+			if (s == null)
+				continue;
+			newShapes.add(padShape(s, maxRank - s.length));
+		}
+
+		for (int i = 0; i < maxRank; i++) {
+			int m = maxShape[i];
+			for (int[] s : newShapes) {
+				int l = s[i];
+				if (l > m) {
+					throw new IllegalArgumentException("A shape's dimension was not one or equal to maximum");
+				}
+			}
+		}
+		return newShapes;
+	}
+
 	@Override
 	public int[] getShape() {
 		return maxShape;

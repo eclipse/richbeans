@@ -35,10 +35,15 @@ public class ErrorMetadataImpl implements ErrorMetadata, Serializable {
 	@Reshapeable
 	private ILazyDataset error = null; // holds linear errors
 
+	@Transposable
 	@Sliceable
 	@Reshapeable
 	transient private ILazyDataset sqError = null; // holds squared errors
 
+	/**
+	 * Do not use this constructor to set errors to datasets as it does not allow any shaping
+	 * checking and broadcasting. Use {@link ILazyDataset#setError(Serializable)} instead.
+	 */
 	public ErrorMetadataImpl() {
 	}
 
