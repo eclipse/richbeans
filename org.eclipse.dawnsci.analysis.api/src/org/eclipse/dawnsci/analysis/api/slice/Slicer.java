@@ -15,7 +15,9 @@ package org.eclipse.dawnsci.analysis.api.slice;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +67,13 @@ public class Slicer {
 		visit(lz, sliceDimensions, nameFragment, visitor);
 	}
 	
-	public static int getSize(ILazyDataset lz, Map<Integer, String> sliceDimensions) throws Exception {
+	/**
+	 * 
+	 * @param lz
+	 * @param sliceDimensions
+	 * @return size of expected iteration, slightly faster than calling <code>getSlices(...).size()</code>
+	 */
+	public static int getSize(ILazyDataset lz, Map<Integer, String> sliceDimensions) {
 
 		final int[] fullDims = lz.getShape();
 		
@@ -101,6 +109,30 @@ public class Slicer {
 	 */
 	private static IDataset visit(ILazyDataset lz, Map<Integer, String> sliceDimensions, String nameFragment, SliceVisitor visitor) throws Exception {
 		
+		Queue<SliceInfo> slices = getSlices(lz, sliceDimensions, nameFragment);
+		
+		for (SliceInfo sliceInfo : slices) {
+			
+			IDataset data = sliceInfo.slice();
+			if (visitor!=null) {
+			    visitor.visit(data, sliceInfo.getSlice(), sliceInfo.getData().getShape());
+			} else {
+				return data;
+			}
+			
+			if (visitor.isCancelled()) break;
+		}
+
+		return null;
+	}
+	
+	public static Queue<SliceInfo> getSlices(ILazyDataset lz, Map<Integer, String> sliceDimensions) {
+		return getSlices(lz, sliceDimensions, null);
+	}
+	
+	public static Queue<SliceInfo> getSlices(ILazyDataset lz, Map<Integer, String> sliceDimensions, String nameFragment) {
+		
+		
 		final int[] fullDims = lz.getShape();
 		
 		//Construct Slice String
@@ -120,6 +152,7 @@ public class Slicer {
 		int[] pos = pi.getPos();
 		final int[] viewDims = lzView.getShape();
 		
+		final Queue<SliceInfo> ret = new LinkedList<SliceInfo>();
 		while (pi.hasNext()) {
 
 			int[] end = pos.clone();
@@ -134,24 +167,15 @@ public class Slicer {
 			int[] st = pos.clone();
 			for (int i = 0; i < st.length;i++) st[i] = 1;
 
-			Slice[] slice = Slice.convertToSlice(pos, end, st);
+			Slice[] sa = Slice.convertToSlice(pos, end, st);
 			
 			//TODO dont convert to slices just to create string - use create string on start stop step
-			String sliceName = Slice.createString(slice);
+			String sliceName = Slice.createString(sa);			
+			sliceName = (nameFragment!=null ? nameFragment : "") + " ("+ sliceName+")";
 			
-			IDataset data = lzView.getSlice(slice);
-			
-			data.setName((nameFragment!=null ? nameFragment : "") + " ("+ sliceName+")");
-			if (visitor!=null) {
-			    visitor.visit(data, slice, lzView.getShape());
-			} else {
-				return data;
-			}
-			
-			if (visitor.isCancelled()) break;
+			ret.add(new SliceInfo(sliceName, sa, lzView));
 		}
-
-		return null;
+		return ret;
 	}
 
 	/**
