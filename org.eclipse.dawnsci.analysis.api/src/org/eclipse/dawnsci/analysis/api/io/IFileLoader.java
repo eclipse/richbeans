@@ -12,7 +12,6 @@
 
 package org.eclipse.dawnsci.analysis.api.io;
 
-import org.eclipse.dawnsci.analysis.api.io.IDataHolder;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 
 /**
@@ -46,4 +45,11 @@ public interface IFileLoader {
 	 * @param willLoadMetadata
 	 */
 	void setLoadMetadata(boolean willLoadMetadata);
+
+	/**
+	 * Set the loader to load all datasets lazily
+	 * 
+	 * @param willLoadLazily
+	 */
+	void setLoadAllLazily(boolean willLoadLazily);
 }
