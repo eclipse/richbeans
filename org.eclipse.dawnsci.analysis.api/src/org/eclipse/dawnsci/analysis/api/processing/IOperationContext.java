@@ -151,4 +151,23 @@ public interface IOperationContext {
 	 */
 	public void setParallelTimeout(long timeoutMs);
 
+	/**
+	 * The number of slugs which may be executed in GRAPH mode \
+	 * simultaneously. By default the value is 1. Typically for a parallel
+	 * execution of the graph set this value to Runtime.getRuntime().availableProcessors()
+	 * 
+	 * return the count
+	 */
+	public int getSlugCount();
+	
+	
+	/**
+	 * The number of slugs which may be executed in GRAPH mode \
+	 * simultaneously. By default the value is 1. Typically for a parallel
+	 * execution of the graph set this value to Runtime.getRuntime().availableProcessors()
+	 * 
+	 * @param count
+	 */
+	public void setSlugCount(int count);
+
 }
