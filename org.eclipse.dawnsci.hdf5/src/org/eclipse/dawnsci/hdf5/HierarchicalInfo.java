@@ -34,7 +34,14 @@ public class HierarchicalInfo {
 		dataSetShapes = new HashMap<String,int[]>(31);
 		attributeValues = new LinkedHashMap<String, String>(89);
 	}
-	
+
+	public void clear() {
+		dataSetNames.clear();
+		dataSetSizes.clear();
+		dataSetShapes.clear();
+		attributeValues.clear();
+	}
+
 	public List<String> getDataSetNames() {
 		return dataSetNames;
 	}
