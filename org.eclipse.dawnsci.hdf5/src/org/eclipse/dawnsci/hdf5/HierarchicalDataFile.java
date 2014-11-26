@@ -404,10 +404,7 @@ class HierarchicalDataFile implements IHierarchicalDataFile, IFileFormatDataFile
 					intShape[i] = (int)longShape[i];
 					size*=longShape[i];
 				}
-				info.addName(set.getFullName());
-				info.putShape(set.getFullName(), (int[])intShape);
-				info.putSize(set.getFullName(), (int)size);
-				
+				info.addDataInfo(set.getFullName(), intShape, (int) size);
 			}
 		
 			if (object instanceof Group) {
