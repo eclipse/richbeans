@@ -19,30 +19,41 @@ import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 
 /**
- * A service with loads data using any loader it can, depending on the 
+ * A service which loads data using any loader it can, depending on the 
  * service implementation and returns it as an IDataset or IDataHolder
  * 
- * The implementor or this service contributes using an eclipse extension
+ * The implementor of this service contributes using an eclipse extension
  * point and then later any plugin may ask for an implementation of the service.
  * 
  * @author Matthew Gerring
- *
  */
 public interface ILoaderService {
-	
+
 	/**
-	 * Reads a dataholder and returns it as a Dataset
+	 * Reads a file and returns it as a data holder
 	 * @param filePath
+	 * @param monitor
 	 * @return IDataHolder
 	 * @throws Throwable
 	 */
     public IDataHolder getData(String filePath, final IMonitor monitor) throws Throwable;
 
+	/**
+	 * Reads a file and returns it as a data holder
+	 * @param filePath
+	 * @param lazily if true, <b>all</b> datasets in the data holder will be lazy otherwise the holder
+	 * may contain non-lazy datasets
+	 * @param monitor
+	 * @return IDataHolder
+	 * @throws Throwable
+	 */
+    public IDataHolder getData(String filePath, boolean lazily, final IMonitor monitor) throws Throwable;
 
 	/**
 	 * Reads a single dataset from a file and returns it as a Dataset, with progress
 	 * Use for image files.
 	 * @param filePath
+	 * @param monitor
 	 * @return IDataHolder
 	 * @throws Throwable
 	 */
@@ -63,18 +74,22 @@ public interface ILoaderService {
 	 * 
 	 * @param filePath
 	 * @param datasetPath for instance nexus path, may be null.
+	 * @param monitor
 	 * @return IDataHolder
 	 * @throws Throwable
 	 */
     public IDataset getDataset(String filePath, final String datasetPath, final IMonitor monitor) throws Throwable;
 
-	 
-	 /**
-	  * This method can be used to load meta data. It will use Fabio if
-	  * LoaderFactory does not work.
-	  */
+    /**
+     * This method can be used to load meta data. It will use Fabio if
+     * LoaderFactory does not work.
+     * 
+     * @param filePath
+     * @param monitor
+     * @return metadata
+     * @throws Exception
+     */
     public IMetadata getMetadata(final String filePath, final IMonitor monitor) throws Exception;
-
 
     /**
      * The locked diffraction data if any. Usually this will be null unless someone
@@ -92,7 +107,6 @@ public interface ILoaderService {
      * @return the old one if any.
      */
     public IDiffractionMetadata setLockedDiffractionMetaData(IDiffractionMetadata diffMetaData);
-
 
     /**
      * 
