@@ -23,6 +23,7 @@ import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.fitting.functions.IFunction;
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 import org.eclipse.dawnsci.analysis.api.roi.IROI;
+import org.eclipse.dawnsci.analysis.api.slice.SliceInfo;
 
 /**
  * This class is similar to a DataHolder in the scisoft diamond
@@ -55,6 +56,8 @@ public class DataMessageComponent implements Serializable {
 		 */
 		OVERWRITE_STRING
 	}
+	
+	private SliceInfo sliceInfo;
 	
 	/**
 	 * The data is either primitive array or IDataset
@@ -98,6 +101,12 @@ public class DataMessageComponent implements Serializable {
 	 */
 	private boolean error = false;
 
+	private long time;
+
+	
+	public DataMessageComponent() {
+		time = System.currentTimeMillis();
+	}
 
 	public Map<String, Serializable> getList() {
 		return list;
@@ -126,6 +135,11 @@ public class DataMessageComponent implements Serializable {
 		if (name==null||"".equals(name)) name = "Unknown";
 		putUnique(list, name, set);
 	}
+	
+	public void clearList() {
+		if (list!=null) list.clear();
+	}
+
 	/**
 	 * 
 	 * @param data
@@ -261,14 +275,13 @@ public class DataMessageComponent implements Serializable {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + (error ? 1231 : 1237);
-		result = prime * result
-				+ ((functions == null) ? 0 : functions.hashCode());
+		result = prime * result + ((functions == null) ? 0 : functions.hashCode());
 		result = prime * result + ((list == null) ? 0 : list.hashCode());
-		result = prime * result + ((meta == null) ? 0 : meta.hashCode());
 		result = prime * result + ((rois == null) ? 0 : rois.hashCode());
 		result = prime * result + ((scalar == null) ? 0 : scalar.hashCode());
-		result = prime * result
-				+ ((valueTypes == null) ? 0 : valueTypes.hashCode());
+		result = prime * result + ((sliceInfo == null) ? 0 : sliceInfo.hashCode());
+		result = prime * result + ((userObjects == null) ? 0 : userObjects.hashCode());
+		result = prime * result + ((valueTypes == null) ? 0 : valueTypes.hashCode());
 		return result;
 	}
 
@@ -293,11 +306,6 @@ public class DataMessageComponent implements Serializable {
 				return false;
 		} else if (!list.equals(other.list))
 			return false;
-		if (meta == null) {
-			if (other.meta != null)
-				return false;
-		} else if (!meta.equals(other.meta))
-			return false;
 		if (rois == null) {
 			if (other.rois != null)
 				return false;
@@ -307,6 +315,16 @@ public class DataMessageComponent implements Serializable {
 			if (other.scalar != null)
 				return false;
 		} else if (!scalar.equals(other.scalar))
+			return false;
+		if (sliceInfo == null) {
+			if (other.sliceInfo != null)
+				return false;
+		} else if (!sliceInfo.equals(other.sliceInfo))
+			return false;
+		if (userObjects == null) {
+			if (other.userObjects != null)
+				return false;
+		} else if (!userObjects.equals(other.userObjects))
 			return false;
 		if (valueTypes == null) {
 			if (other.valueTypes != null)
@@ -391,7 +409,7 @@ public class DataMessageComponent implements Serializable {
 	}
 	
 	public void clearROI() {
-		rois.clear();
+		if (rois!=null) rois.clear();
 		rois = null;
 	}
 	public Map<String, Serializable> getRois() {
@@ -443,7 +461,23 @@ public class DataMessageComponent implements Serializable {
 	}
 	
 	public void clearFunctions() {
-		functions.clear();
+		if (functions!=null) functions.clear();
 		functions = null;
+	}
+
+	public SliceInfo getSliceInfo() {
+		return sliceInfo;
+	}
+
+	public void setSliceInfo(SliceInfo sliceInfo) {
+		this.sliceInfo = sliceInfo;
+	}
+
+	public long getTime() {
+		return time;
+	}
+
+	public void setTime(long time) {
+		this.time = time;
 	}
 }
