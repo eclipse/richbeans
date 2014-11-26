@@ -3271,6 +3271,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 			}
 		} else {
 			ed = DatasetUtils.convertToDataset(led.getSlice());
+			setError(ed);
 		}
 
 		// check for broadcast strides
