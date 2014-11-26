@@ -213,16 +213,20 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 		}
 		if (!getClass().equals(obj.getClass())) {
 			if (getRank() == 0) // for zero-rank datasets
-				return obj.equals(getObject());
+				return obj.equals(getObjectAbs(0));
 			return false;
 		}
 
 		Dataset other = (Dataset) obj;
 		if (getElementsPerItem() != other.getElementsPerItem())
 			return false;
+		if (size != other.getSize())
+			return false;
 		if (!Arrays.equals(shape, other.getShapeRef())) {
 			return false;
 		}
+		if (getRank() == 0) // for zero-rank datasets
+			return other.getObjectAbs(0).equals(getObjectAbs(0));
 		return true;
 	}
 
@@ -3267,6 +3271,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 			}
 		} else {
 			ed = DatasetUtils.convertToDataset(led.getSlice());
+			setError(ed);
 		}
 
 		// check for broadcast strides

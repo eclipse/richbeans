@@ -180,6 +180,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 	public LazyDataset clone() {
 		LazyDataset ret = new LazyDataset(new String(name), dtype, isize, oShape, loader);
 		ret.shape = shape;
+		ret.size = size;
 		ret.prepShape = prepShape;
 		ret.postShape = postShape;
 		ret.begSlice = begSlice;
@@ -424,9 +425,9 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 				}
 			} else {
 				for (; i < r && j < shape.length; i++, j++) {
-					nstart[i] = begSlice[i] + lstart[j] * delSlice[i];
-					nstop[i]  = begSlice[i] + (lstop[j] - 1) * delSlice[i] + 1;
-					nstep[i]  = lstep[j] * delSlice[i];
+					nstart[i] = begSlice[j] + lstart[j] * delSlice[j];
+					nstop[i]  = begSlice[j] + (lstop[j] - 1) * delSlice[j] + 1;
+					nstep[i]  = lstep[j] * delSlice[j];
 				}
 			}
 			if (map != null) {
