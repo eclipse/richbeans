@@ -109,13 +109,14 @@ public class Slicer {
 	 */
 	private static IDataset visit(ILazyDataset lz, Map<Integer, String> sliceDimensions, String nameFragment, SliceVisitor visitor) throws Exception {
 		
-		Queue<SliceInfo> slices = getSlices(lz, sliceDimensions, nameFragment);
+		Queue<ILazyDataset> slices = getSlices(lz, sliceDimensions, nameFragment);
 		
-		for (SliceInfo sliceInfo : slices) {
+		for (ILazyDataset slice : slices) {
 			
-			IDataset data = sliceInfo.slice();
+			IDataset data = slice.getSlice();
+			SliceFromSeriesMetadata ssm = slice.getMetadata(SliceFromSeriesMetadata.class).get(0);
 			if (visitor!=null) {
-			    visitor.visit(data, sliceInfo.getSlice(), sliceInfo.getData().getShape());
+			    visitor.visit(data, ssm.getSliceInfo().getCurrentSlice(), ssm.getShapeInfo().getSubSampledShape());
 			} else {
 				return data;
 			}
@@ -126,11 +127,11 @@ public class Slicer {
 		return null;
 	}
 	
-	public static Queue<SliceInfo> getSlices(ILazyDataset lz, Map<Integer, String> sliceDimensions) {
+	public static Queue<ILazyDataset> getSlices(ILazyDataset lz, Map<Integer, String> sliceDimensions) {
 		return getSlices(lz, sliceDimensions, null);
 	}
 	
-	public static Queue<SliceInfo> getSlices(ILazyDataset lz, Map<Integer, String> sliceDimensions, String nameFragment) {
+	public static Queue<ILazyDataset> getSlices(ILazyDataset lz, Map<Integer, String> sliceDimensions, String nameFragment) {
 		
 		
 		final int[] fullDims = lz.getShape();
@@ -152,9 +153,11 @@ public class Slicer {
 		int[] pos = pi.getPos();
 		final int[] viewDims = lzView.getShape();
 		
-		final Queue<SliceInfo> ret = new LinkedList<SliceInfo>();
+		int size = getSize(lz, sliceDimensions);
+		int count = 0;
+		final Queue<ILazyDataset> ret = new LinkedList<ILazyDataset>();
 		while (pi.hasNext()) {
-
+			//View
 			int[] end = pos.clone();
 			for (int i = 0; i<pos.length;i++) {
 				end[i]++;
@@ -167,13 +170,36 @@ public class Slicer {
 			int[] st = pos.clone();
 			for (int i = 0; i < st.length;i++) st[i] = 1;
 
+			//Original
+			int[] startO = pos.clone();
+			for (int i = 0; i<pos.length;i++) {
+				startO[i] += (slices[i].getStart() + startO[i]*slices[i].getStep());
+			}
+			int[] endO = startO.clone();
+			for (int i = 0; i<pos.length;i++) {
+				endO[i]++;
+			}
+			for (int i = 0; i < axes.length; i++){
+				endO[axes[i]] = viewDims[axes[i]];
+			}
+			
 			Slice[] sa = Slice.convertToSlice(pos, end, st);
+			Slice[] sO = Slice.convertToSlice(startO, endO, st);
 			
 			//TODO dont convert to slices just to create string - use create string on start stop step
 			String sliceName = Slice.createString(sa);			
 			sliceName = (nameFragment!=null ? nameFragment : "") + " ("+ sliceName+")";
 			
-			ret.add(new SliceInfo(sliceName, sa, lzView));
+			ShapeInformation shi = new ShapeInformation(viewDims, axes, size);
+			SliceInformation sli = new SliceInformation(sa,slices, count);
+			SliceFromSeriesMetadata ssm = new SliceFromSeriesMetadata(shi, sli);
+			
+			ILazyDataset sliceView = lzView.getSliceView(sa);
+			sliceView.setName(sliceName);
+			sliceView.setMetadata(ssm);
+			
+			count++;
+			ret.add(sliceView);
 		}
 		return ret;
 	}

@@ -144,7 +144,7 @@ public class PipelineExamples {
 		// dependency on the core mathematics.
 		final IExecutionVisitor visitor = new IExecutionVisitor.Stub() {
 			@Override
-			public void notify(IOperation<? extends IOperationModel, ? extends OperationData> intermediateData, OperationData data, Slice[] slices, int[] shape, int[] dataDims) {
+			public void notify(IOperation<? extends IOperationModel, ? extends OperationData> intermediateData, OperationData data) {
 				System.out.println("Did operation "+intermediateData.getName());
 			}
 		};
