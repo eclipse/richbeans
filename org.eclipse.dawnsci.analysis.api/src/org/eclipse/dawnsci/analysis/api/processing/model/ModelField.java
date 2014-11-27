@@ -113,9 +113,12 @@ public class ModelField {
 	/**
 	 * Get fields value
 	 * @return value
-	 * @throws Exception 
 	 */
-	public Object get() throws Exception {
-		return model.get(name);
+	public Object get() {
+		try {
+		    return model.get(name);
+		} catch (Exception ne) {
+			return null;
+		}
 	}
 }

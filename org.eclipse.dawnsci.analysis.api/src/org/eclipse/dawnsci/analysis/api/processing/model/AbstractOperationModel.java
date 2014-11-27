@@ -207,6 +207,7 @@ public abstract class AbstractOperationModel implements IOperationModel {
 	 * @return collection of fields.
 	 * @throws Exception
 	 */
+	@Override
 	public Collection<ModelField> getModelFields() throws Exception {
 		
 		// Decided not to use the obvious BeanMap here because class problems with

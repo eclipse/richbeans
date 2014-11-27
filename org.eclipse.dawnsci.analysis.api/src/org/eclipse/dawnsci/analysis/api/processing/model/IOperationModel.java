@@ -12,6 +12,8 @@
 
 package org.eclipse.dawnsci.analysis.api.processing.model;
 
+import java.util.Collection;
+
 
 /**
  * A model to use with operations. Do not put JSON stuff in here.
@@ -48,5 +50,12 @@ public interface IOperationModel {
 	 * @return true if the given field in in the model and does not have an annotation making it invisible.
 	 */
 	public boolean isModelField(String name) throws Exception;
+
+	/**
+	 * For creating user interface and editing of models in a generic way
+	 * A list of the available user editable fields may be returned.
+	 * @return fields of the model
+	 */
+	public Collection<ModelField> getModelFields() throws Exception;
 
 }
