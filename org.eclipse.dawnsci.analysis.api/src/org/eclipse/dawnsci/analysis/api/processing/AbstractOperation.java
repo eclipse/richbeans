@@ -30,6 +30,7 @@ import org.eclipse.dawnsci.analysis.api.metadata.MetadataType;
 import org.eclipse.dawnsci.analysis.api.metadata.OriginMetadata;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
+import org.eclipse.dawnsci.analysis.api.slice.SliceFromSeriesMetadata;
 
 /**
  * Abstract implementation of IOperation.
@@ -432,69 +433,70 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 	 */
 	public static int[] getOriginalDataDimensions(IDataset slice) {
 
-		OriginMetadata originMetadata = getOriginMetadata(slice);
+		SliceFromSeriesMetadata ssm = getSliceSeriesMetadata(slice);
 
-		return originMetadata == null ? null : originMetadata.getDataDimensions();
+		return ssm == null ? null : ssm.getShapeInfo().getDataDimensions();
 
 	}
 	
-	/**
-	 * Convenience method to origin metadata from slice, can return null, but really should never happpen
-	 * @param slice
-	 * @return origin
-	 */
-	public static OriginMetadata getOriginMetadata(IDataset slice){
-		List<OriginMetadata> metaList = null;
+	public static SliceFromSeriesMetadata getSliceSeriesMetadata(IDataset slice) {
+		
+		List<SliceFromSeriesMetadata> metaList = null;
 
 		try {
-			metaList = slice.getMetadata(OriginMetadata.class);
+			metaList = slice.getMetadata(SliceFromSeriesMetadata.class);
 			if (metaList == null || metaList.isEmpty())
 				return null;
 		} catch (Exception e) {
 			return null;
 		}
 
-		return metaList.get(0);
+		SliceFromSeriesMetadata sm = metaList.get(0);
+		if (sm == null)
+			return null;
+		
+		return sm;
 	}
+	
 	
 	/**
 	 * Get the absolute of the current slice in the view of the parent (starts at 0)
 	 * @param origin
 	 * @return int
 	 */
-	public static int getCurrentSliceNumber(OriginMetadata origin) {
-		
-		int[] dd = origin.getDataDimensions();
-		dd = dd.clone();
-		Arrays.sort(dd);
-		//have to take a view, can't use check slice on AbstractDataset here...
-		ILazyDataset view = origin.getParent().getSliceView(origin.getInitialSlice());
-		int[] shape = view.getShape();
-		Slice[] current = origin.getCurrentSlice();
-		
-		int[] ddsh = new int[shape.length-dd.length];
-		int[] ddpos = new int[shape.length-dd.length];
-		
-		for (int i = 0, j = 0; i < shape.length; i++) {
-			if (Arrays.binarySearch(dd, i) < 0) {
-				ddsh[i-j] = shape[i];
-				ddpos[i-j] = current[i].getStart();
-			} else {
-				j++;
-			}
-		}
-		
-		int c = ddpos[ddpos.length-1];
-		for (int i = ddsh.length-2; i >-1; i--) {
-			int d = ddpos[i];
-			for (int j = i+1; j < ddsh.length; j++) {
-				d *= ddsh[j];
-			}
-			c+=d;
-		}
-		
-		return c;
-	}
+//	public static int getCurrentSliceNumber(OriginMetadata origin) {
+//		
+//		int[] dd = origin.getDataDimensions();
+//		dd = dd.clone();
+//		Arrays.sort(dd);
+//		//have to take a view, can't use check slice on AbstractDataset here...
+//		ILazyDataset view = origin.getParent().getSliceView(origin.getInitialSlice());
+//		int[] shape = view.getShape();
+//		Slice[] current = origin.getCurrentSlice();
+//		
+//		int[] ddsh = new int[shape.length-dd.length];
+//		int[] ddpos = new int[shape.length-dd.length];
+//		
+//		for (int i = 0, j = 0; i < shape.length; i++) {
+//			if (Arrays.binarySearch(dd, i) < 0) {
+//				ddsh[i-j] = shape[i];
+//				ddpos[i-j] = current[i].getStart();
+//			} else {
+//				j++;
+//			}
+//		}
+//		
+//		int c = ddpos[ddpos.length-1];
+//		for (int i = ddsh.length-2; i >-1; i--) {
+//			int d = ddpos[i];
+//			for (int j = i+1; j < ddsh.length; j++) {
+//				d *= ddsh[j];
+//			}
+//			c+=d;
+//		}
+//		
+//		return c;
+//	}
 
 	/**
 	 * Convenience method to copy the metadata from one dataset to another.

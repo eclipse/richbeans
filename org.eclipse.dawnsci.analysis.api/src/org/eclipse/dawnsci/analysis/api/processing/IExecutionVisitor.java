@@ -12,6 +12,7 @@
 
 package org.eclipse.dawnsci.analysis.api.processing;
 
+import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.metadata.OriginMetadata;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
@@ -32,7 +33,7 @@ public interface IExecutionVisitor {
 	 * @param series
 	 * @throws Exception
 	 */
-	public void init(IOperation<? extends IOperationModel, ? extends OperationData>[] series, OriginMetadata origin) throws Exception;
+	public void init(IOperation<? extends IOperationModel, ? extends OperationData>[] series, ILazyDataset dataset ) throws Exception;
 	
 	/**
 	 * Tell the execution visitor to close, releasing its resources.
@@ -50,32 +51,30 @@ public interface IExecutionVisitor {
      * 
      * @param intermediateData
      * @param data
-     * @param dataDims TODO
      */
-	public void notify(IOperation<? extends IOperationModel, ? extends OperationData> intermediateData, OperationData data, Slice[] slices, int[] shape, int[] dataDims);
+	public void notify(IOperation<? extends IOperationModel, ? extends OperationData> intermediateData, OperationData data);
 	
 	/**
 	 * Called when the series of operations has been done, with the current slice
 	 * @param result
-	 * @param dataDims TODO
 	 */
-	public void executed(OperationData result, IMonitor monitor, Slice[] slices, int[] shape, int[] dataDims) throws Exception;
+	public void executed(OperationData result, IMonitor monitor) throws Exception;
 	
 	
 	public class Stub implements IExecutionVisitor {
 
 		@Override
-		public void executed(OperationData result, IMonitor monitor, Slice[] slices, int[] shape, int[] dataDims) throws Exception {
+		public void executed(OperationData result, IMonitor monitor) throws Exception {
 			
 		}
 
 		@Override
-		public void notify(IOperation<? extends IOperationModel, ? extends OperationData> intermeadiateData, OperationData data, Slice[] slices, int[] shape, int[] dataDims) {
+		public void notify(IOperation<? extends IOperationModel, ? extends OperationData> intermeadiateData, OperationData data) {
 			
 		}
 
 		@Override
-		public void init(IOperation<? extends IOperationModel, ? extends OperationData>[] series, OriginMetadata origin) {
+		public void init(IOperation<? extends IOperationModel, ? extends OperationData>[] series, ILazyDataset dataset) {
 			
 		}
 
