@@ -97,7 +97,7 @@ class transmutate(object):
             self.dcdtype = "ARRAY" + self.ddtype
 
         from ordereddict import OrderedDict #@UnresolvedImport
-        self.processors = OrderedDict([ ("// DATA_TYPE", self.data),
+        processors = [("// DATA_TYPE", self.data),
             ("// CLASS_TYPE", self.jpclass),
             ("// PRIM_TYPE", self.primitive),
             ("// ADD_CAST", self.addcast),
@@ -123,7 +123,8 @@ class transmutate(object):
             ("// OMIT_CAST_INT", self.omitcastint),
             ("// OMIT_UPCAST", self.omitupcast),
             ("// DEFAULT_VAL", self.defval),
-            ("@SuppressWarnings(\"cast\")", self.omit) ])
+            ("@SuppressWarnings(\"cast\")", self.omit),
+            (srcclass, self.jclass)]
 
         self.icasts = [ "(byte) ", "(short) ", "(int) ", "(long) "]
         self.rcasts = [ "(float) ", "(double) "]
@@ -133,8 +134,8 @@ class transmutate(object):
 #        if self.dprim in self.dconv:
 #            print 'found primitive matches cast'
 
-        self.processors[srcclass] = self.jclass
-
+        self.plist = [t[0] for t in processors]
+        self.processors = dict(processors)
 
     # Java identifier
     # starts with _, $ and unicode letter and comprises Unicode letters and digits
@@ -343,7 +344,7 @@ class transmutate(object):
         l = line.rstrip()
         if l.find("// IGNORE_CLASS") >= 0:
             return l
-        for m in self.processors:
+        for m in self.plist:
             if l == None or len(l) == 0:
                 break
             if l.find(m) >= 0:
