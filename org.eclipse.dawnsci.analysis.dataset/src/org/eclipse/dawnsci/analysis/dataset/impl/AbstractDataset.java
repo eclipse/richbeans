@@ -160,16 +160,6 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 		return dtype == COMPLEX64 || dtype == COMPLEX128;
 	}
 
-	/**
-	 * Limit to strings output via the toString() method
-	 */
-	private static final int MAX_STRING_LENGTH = 120;
-
-	/**
-	 * Limit to number of sub-blocks output via the toString() method
-	 */
-	private static final int MAX_SUBBLOCKS = 6;
-
 	protected int size; // number of items
 
 	transient protected AbstractDataset base; // is null when not a view
@@ -1848,9 +1838,34 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 		return out.toString();
 	}
 
+	/**
+	 * Limit to strings output via the toString() method
+	 */
+	private static int maxStringLength = 120;
+
+	/**
+	 * Set maximum string length for toString() method
+	 * @param maxStringLength
+	 */
+	public static void setMaxStringLength(int maxStringLength) {
+		AbstractDataset.maxStringLength = maxStringLength;
+	}
+
+	/**
+	 * @return maximum string length for toString() method
+	 */
+	public static int getMaxStringLength() {
+		return maxStringLength;
+	}
+
+	/**
+	 * Limit to number of sub-blocks output via the toString() method
+	 */
+	private static final int MAX_SUBBLOCKS = 6;
+
 	private final static String SEPARATOR = ",";
-	private final static String SPACING = " ";
-	private final static String ELLIPSES = "...";
+	private final static String SPACE = " ";
+	private final static String ELLIPSIS = "...";
 	private final static String NEWLINE = "\n";
 
 	/**
@@ -1874,23 +1889,23 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 		final int length = shape[end];
 
 		// trim elements printed if length exceed estimate of maximum elements
-		int excess = length - MAX_STRING_LENGTH / 3; // space + number + separator
+		int excess = length - maxStringLength / 3; // space + number + separator
 		if (excess > 0) {
 			int index = (length - excess) / 2;
 			for (int y = 1; y < index; y++) {
-				line.append(SEPARATOR + SPACING);
+				line.append(SEPARATOR + SPACE);
 				pos[end] = y;
 				line.append(getString(pos));
 			}
 			index = (length + excess) / 2;
 			for (int y = index; y < length; y++) {
-				line.append(SEPARATOR + SPACING);
+				line.append(SEPARATOR + SPACE);
 				pos[end] = y;
 				line.append(getString(pos));
 			}
 		} else {
 			for (int y = 1; y < length; y++) {
-				line.append(SEPARATOR + SPACING);
+				line.append(SEPARATOR + SPACE);
 				pos[end] = y;
 				line.append(getString(pos));
 			}
@@ -1898,11 +1913,11 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 		line.append(BLOCK_CLOSE);
 
 		// trim string down to limit
-		excess = line.length() - MAX_STRING_LENGTH - ELLIPSES.length() - 1;
+		excess = line.length() - maxStringLength - ELLIPSIS.length() - 1;
 		if (excess > 0) {
 			int index = line.substring(0, (line.length() - excess) / 2).lastIndexOf(SEPARATOR) + 2;
 			StringBuilder out = new StringBuilder(line.subSequence(0, index));
-			out.append(ELLIPSES + SEPARATOR);
+			out.append(ELLIPSIS + SEPARATOR);
 			index = line.substring((line.length() + excess) / 2).indexOf(SEPARATOR) + (line.length() + excess) / 2 + 1;
 			out.append(line.subSequence(index, line.length()));
 			return out;
@@ -1929,7 +1944,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 			// first sub-block
 			pos[level] = 0;
 			StringBuilder newlead = new StringBuilder(lead);
-			newlead.append(SPACING);
+			newlead.append(SPACE);
 			printBlocks(out, newlead, level + 1, pos);
 			if (length < 2) { // escape
 				out.append(BLOCK_CLOSE);
@@ -1965,7 +1980,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 					}
 				}
 				out.append(newlead);
-				out.append(ELLIPSES + SEPARATOR + NEWLINE);
+				out.append(ELLIPSIS + SEPARATOR + NEWLINE);
 				xmax = (length + excess) / 2;
 				for (int x = xmax; x < length - 1; x++) {
 					pos[level] = x;
