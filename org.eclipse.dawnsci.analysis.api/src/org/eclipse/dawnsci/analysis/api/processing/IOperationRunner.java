@@ -18,7 +18,7 @@ public interface IOperationRunner {
 	 * @param context
 	 * @param originMetadata
 	 */
-	public void init(IOperationContext context, OriginMetadata originMetadata);
+	public void init(IOperationContext context, OriginMetadata originMetadata) throws Exception;
 	
 	/**
 	 * Execute the whole pipeline
