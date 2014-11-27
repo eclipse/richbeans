@@ -17,6 +17,12 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -192,6 +198,48 @@ public abstract class AbstractOperationModel implements IOperationModel {
 			Object newValue) {
 		propertyChangeSupport.firePropertyChange(propertyName, oldValue,
 				newValue);
+	}
+
+	/**
+	 * Get a collection of the fields of the model that should be edited in the User interface
+	 * for editing the model.
+	 * 
+	 * @return collection of fields.
+	 * @throws Exception
+	 */
+	public Collection<ModelField> getModelFields() throws Exception {
+		
+		// Decided not to use the obvious BeanMap here because class problems with
+		// GDA and we have to read annotations anyway.
+		final List<Field> allFields = new ArrayList<Field>(31);
+		allFields.addAll(Arrays.asList(getClass().getDeclaredFields()));
+		allFields.addAll(Arrays.asList(getClass().getSuperclass().getDeclaredFields()));
+		
+		// The returned descriptor
+		final List<ModelField> ret = new ArrayList<ModelField>();
+		
+		// fields
+		for (Field field : allFields) {
+			
+			// If there is a getter/isser for the field we assume it is a model field.
+			try {
+				if (isModelField(field.getName())) {			
+					ret.add(new ModelField(this, field.getName()));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		
+		Collections.sort(ret, new Comparator<ModelField>() {
+			@Override
+			public int compare(ModelField o1, ModelField o2) {
+				return o1.getDisplayName().toLowerCase().compareTo(o2.getDisplayName().toLowerCase());
+			}
+		});
+		
+		return ret;
 	}
 
 }
