@@ -28,10 +28,18 @@ import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
  * 4. The series to run
  * 
  * Optional
- * 1. execution type
+ * 1. Execution type
  * 2. Parallel timeout (default 5000ms) [series runs have no timeout]
  * 3. Vistor
  * 4. Monitor
+ * 
+ * Parallel Timeout Handling:
+ * 1. ExecutionType.SERIES has NO timeout
+ * 2. ExecutionType.PARALLEL has 5000 ms applied when setExecutionType(...) is called, if parallelTimeout=-1
+ *    You can use setParallelTimeout(...) to change this.
+ * 3. ExecutionType.GRAPH has 10 minutes applied when setExecutionType(...) is called, if parallelTimeout=-1
+ *    You can use setParallelTimeout(...) to change this.
+
  */
 public interface IOperationContext {
 
@@ -152,22 +160,22 @@ public interface IOperationContext {
 	public void setParallelTimeout(long timeoutMs);
 
 	/**
-	 * The number of slugs which may be executed in GRAPH mode \
-	 * simultaneously. By default the value is 1. Typically for a parallel
-	 * execution of the graph set this value to Runtime.getRuntime().availableProcessors()
+	 * The number of images which may be queued in each actor.
+	 * By default the value is 1. Set it higher if you have the 
+	 * memory as bottle necks will be reduced.
 	 * 
 	 * return the count
 	 */
-	public int getSlugCount();
+	public int getQueueSize();
 	
 	
 	/**
-	 * The number of slugs which may be executed in GRAPH mode \
-	 * simultaneously. By default the value is 1. Typically for a parallel
-	 * execution of the graph set this value to Runtime.getRuntime().availableProcessors()
+	 * The number of images which may be queued in each actor.
+	 * By default the value is 1. Set it higher if you have the 
+	 * memory as bottle necks will be reduced.
 	 * 
-	 * @param count
+	 * return the count
 	 */
-	public void setSlugCount(int count);
+	public void setQueueSize(int count);
 
 }
