@@ -160,13 +160,12 @@ public interface IOperationContext {
 	public void setParallelTimeout(long timeoutMs);
 
 	/**
-	 * The number of images which may be queued in each actor.
-	 * By default the value is 1. Set it higher if you have the 
-	 * memory as bottle necks will be reduced.
+	 * The number of threads in the pool to execute the pipeline
+	 * as an event directory pipeline.
 	 * 
 	 * return the count
 	 */
-	public int getQueueSize();
+	public int getPoolSize();
 	
 	
 	/**
@@ -176,6 +175,6 @@ public interface IOperationContext {
 	 * 
 	 * return the count
 	 */
-	public void setQueueSize(int count);
+	public void setPoolSize(int count);
 
 }
