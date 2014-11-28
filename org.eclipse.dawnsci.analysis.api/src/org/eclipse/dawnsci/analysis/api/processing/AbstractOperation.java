@@ -84,12 +84,6 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		
 		D output = process(view,monitor);
 		
-		try {
-			output.getData().setMetadata(slice.getMetadata(OriginMetadata.class).get(0));
-		} catch (Exception e) {
-			throw new OperationException(this,e);
-		}
-		
 		return updateOutputToFullRank(output, slice);
 		
 	}

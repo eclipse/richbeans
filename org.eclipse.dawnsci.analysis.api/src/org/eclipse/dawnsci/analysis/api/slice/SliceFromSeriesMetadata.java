@@ -16,9 +16,11 @@
 
 package org.eclipse.dawnsci.analysis.api.slice;
 
-import org.eclipse.dawnsci.analysis.api.metadata.MetadataType;
+import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.Slice;
+import org.eclipse.dawnsci.analysis.api.metadata.OriginMetadata;
 
-public class SliceFromSeriesMetadata implements MetadataType {
+public class SliceFromSeriesMetadata implements OriginMetadata {
 	
 	private SourceInformation sourceInfo;
 	private ShapeInformation shapeInfo;
@@ -59,4 +61,34 @@ public class SliceFromSeriesMetadata implements MetadataType {
 		
 		return new SliceFromSeriesMetadata(soi, shi, sli);
 		}
+
+	@Override
+	public int[] getDataDimensions() {
+		return shapeInfo != null ? shapeInfo.getDataDimensions()  : null;
+	}
+
+	@Override
+	public ILazyDataset getParent() {
+		return sourceInfo != null ? sourceInfo.getParent()  : null;
+	}
+
+	@Override
+	public Slice[] getInitialSlice() {
+		return sliceInfo != null ? sliceInfo.getViewSlice()  : null;
+	}
+
+	@Override
+	public String getDatasetName() {
+		return sourceInfo != null ? sourceInfo.getDatasetName()  : null;
+	}
+
+	@Override
+	public String getFilePath() {
+		return sourceInfo != null ? sourceInfo.getFilePath()  : null;
+	}
+
+	@Override
+	public Slice[] getCurrentSlice() {
+		return sliceInfo != null ? sliceInfo.getCurrentSlice()  : null;
+	}
 }

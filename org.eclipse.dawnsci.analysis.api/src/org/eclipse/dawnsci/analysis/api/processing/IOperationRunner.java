@@ -1,6 +1,5 @@
 package org.eclipse.dawnsci.analysis.api.processing;
 
-import org.eclipse.dawnsci.analysis.api.metadata.OriginMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,9 +15,8 @@ public interface IOperationRunner {
 	/**
 	 * 
 	 * @param context
-	 * @param originMetadata
 	 */
-	public void init(IOperationContext context, OriginMetadata originMetadata) throws Exception;
+	public void init(IOperationContext context) throws Exception;
 	
 	/**
 	 * Execute the whole pipeline
