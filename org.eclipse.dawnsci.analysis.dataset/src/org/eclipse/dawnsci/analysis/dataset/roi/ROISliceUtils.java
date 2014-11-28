@@ -103,6 +103,12 @@ public class ROISliceUtils {
 		int start = findPositionOfClosestValueInAxis(axis, roiStart[0]);
 		int end = findPositionOfClosestValueInAxis(axis,  roiStart[0]+roiLength[0]);
 		
+		if (start > end) {
+			int tmp = start;
+			start = end;
+			end = tmp;
+		}
+		
 		Slice xSlice = new Slice(start, end+1, step);
 
 		return xSlice;
@@ -148,7 +154,7 @@ public class ROISliceUtils {
 			datasetEnd = DatasetUtils.cast(dataBlock.getSlice(sl),Dataset.FLOAT32);
 			datasetStart.iadd(datasetEnd);
 			datasetStart.idivide(2.0);
-			double val = axis.getDouble(start+i)-axis.getDouble(start+i-1);
+			double val = Math.abs(axis.getDouble(start+i)-axis.getDouble(start+i-1));
 			datasetStart.imultiply(val);
 			result.iadd(datasetStart);
 			datasetStart = datasetEnd;
@@ -184,7 +190,7 @@ public class ROISliceUtils {
 		sl[dim].setStop(end+1);
 		dataStart.iadd(DatasetUtils.cast(lz.getSlice(sl),Dataset.FLOAT32));
 		dataStart.idivide(2.0);
-		dataStart.imultiply(axis.getDouble(end)-axis.getDouble(start));
+		dataStart.imultiply(Maths.abs(axis.getDouble(end)-axis.getDouble(start)));
 		return dataStart.squeeze();
 	}
 	
