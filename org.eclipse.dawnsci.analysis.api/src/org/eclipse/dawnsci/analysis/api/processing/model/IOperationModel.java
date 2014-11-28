@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *    Peter Chang - initial API and implementation and/or initial documentation
+ *    Matthew Gerring - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
 package org.eclipse.dawnsci.analysis.api.processing.model;
