@@ -51,11 +51,5 @@ public interface IOperationModel {
 	 */
 	public boolean isModelField(String name) throws Exception;
 
-	/**
-	 * For creating user interface and editing of models in a generic way
-	 * A list of the available user editable fields may be returned.
-	 * @return fields of the model
-	 */
-	public Collection<ModelField> getModelFields() throws Exception;
 
 }
