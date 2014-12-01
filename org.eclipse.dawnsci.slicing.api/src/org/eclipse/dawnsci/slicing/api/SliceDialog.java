@@ -117,5 +117,9 @@ public class SliceDialog extends Dialog {
 	public void setRangeMode(RangeMode mode) {
 		sliceComponent.setRangeMode(mode);
 	}
+	
+	public void setSliceActionsEnabled(boolean enabled) {
+		sliceComponent.setSliceActionsEnabled(enabled);
+	}
 
 }

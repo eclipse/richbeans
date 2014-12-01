@@ -15,8 +15,10 @@ import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.AbstractList;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
@@ -463,6 +465,85 @@ public class DimsDataList implements Serializable {
 			}
 		}
 		return ret;	
+	}
+
+	/**
+	 * Export to Map from DimsDataList
+	 * @return
+	 */
+	public Map<Integer, String> toMap() {
+		final Map<Integer, String> ret = new HashMap<Integer, String>(size());
+		for (DimsData dd : iterable()) {
+			if (dd.isSlice()) {
+				ret.put(dd.getDimension(), String.valueOf(dd.getSlice()));
+			} else if (dd.isTextRange()) {
+				ret.put(dd.getDimension(), dd.getSliceRange()!=null ? dd.getSliceRange() : "all");
+			} else if ( dd.getPlotAxis()!=null){
+				ret.put(dd.getDimension(), dd.getPlotAxis().getName());
+			}
+		}
+	    return ret;
+	}
+
+    /**
+     * Set the current DimsDataList to what is defined in the pass in map.
+     * @param map
+     * @param shape
+     */
+	public void fromMap(Map<Integer, String> map, int[] shape) {
+		
+		clear();
+		
+		for (int i = 0; i < shape.length; i++) {
+			add(new DimsData(i));
+		}
+
+		if (map.isEmpty()) { // Make one up
+			getDimsData(0).setSliceRange("all");
+			if (size()==2) {
+				getDimsData(1).setPlotAxis(AxisType.X);
+
+			} else if (size()>2) {
+				getDimsData(1).setPlotAxis(AxisType.Y);
+				getDimsData(2).setPlotAxis(AxisType.X);
+				for (int i = 3; i < size(); i++) {
+					getDimsData(i).setSlice(0);
+				}
+			}
+
+		} else { // Init one from map saved
+
+			int dim = 0;
+			
+			for (DimsData dd : iterable()) {
+				String value = map.get(dd.getDimension());
+				if (value==null) value = map.get(String.valueOf(dd.getDimension()));
+				if (value!=null) {
+					if ("all".equals(value)) {
+						dd.setPlotAxis(AxisType.RANGE);
+						continue;
+					}
+					
+					AxisType at = AxisType.forLabel(value);
+					if (at!=null) {
+						dd.setPlotAxis(at);
+						continue;
+					}
+					
+					try {
+						dd.setSlice(Integer.parseInt(value));
+					} catch (Exception ne) {
+						dd.setSliceRange(value);
+					}
+				} else {
+					AxisType type = AxisType.forAxis(dim);
+					dd.setPlotAxis(type);
+					++dim;
+				}
+			}
+
+		}
+		
 	}
 
 }

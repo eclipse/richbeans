@@ -291,8 +291,13 @@ public class Slicer {
 		
 		//create array of ignored axes values
 		Set<Integer> axesSet = new HashSet<Integer>();
-		for (int i = 0; i < shape.length; i++) axesSet.add(i);
-		axesSet.removeAll(sliceDimensions.keySet());
+		for (int i = 0; i < shape.length; i++) {
+			if (sliceDimensions.containsKey(i)) {
+				if (!isAxis(sliceDimensions.get(i))) continue;
+			}
+			axesSet.add(i);
+		}
+		
 		int[] axes = new int[axesSet.size()];
 		int count = 0;
 		Iterator<Integer> iter = axesSet.iterator();
@@ -310,12 +315,11 @@ public class Slicer {
 		for (int i = 0; i < shape.length; i++) {
 			if (sliceDimensions.containsKey(i)) {
 				String s = sliceDimensions.get(i);
-				if (s.contains("all")) s = ":";
+				if (isFullDim(s)) s = ":";
 				sb.append(s);
 				sb.append(",");
 			} else {
-				sb.append(":");
-				sb.append(',');
+				sb.append(":,");
 			}
 		}
 		
@@ -323,4 +327,20 @@ public class Slicer {
 		return Slice.convertFromString(sb.toString());
 		
 	}
+
+	private static boolean isFullDim(String s) {
+		if (s==null)         return false;
+		if ("all".equals(s)) return true;
+		if (isAxis(s))       return true;
+		return false;
+	}
+	private static boolean isAxis(String s) {
+		if (s==null) return false;
+		// TODO Other axis strings a problem still...
+		if ("X".equals(s)) return true;
+		if ("Y".equals(s)) return true;
+		if ("Z".equals(s))  return true;
+		return false;
+	}
+
 }

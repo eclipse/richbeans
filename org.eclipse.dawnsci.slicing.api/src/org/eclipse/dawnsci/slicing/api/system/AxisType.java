@@ -136,4 +136,20 @@ public enum AxisType {
 		return system.getSliceType()==PlotType.XY_STACKED && this==Y;
 	}
 
+	public static AxisType forAxis(String name) {
+		if (name==null) return null;
+		for (AxisType value : values()) {
+			if (value.name.equals(name)) return value;
+		}
+		return null;
+	}
+	
+	public static AxisType forAxis(int dim) {
+		
+		for (AxisType value : values()) {
+			if (value.index == dim) return value;
+		}
+		return null;
+	}
+
 }
