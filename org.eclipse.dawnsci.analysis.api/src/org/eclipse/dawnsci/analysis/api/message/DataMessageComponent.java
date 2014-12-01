@@ -205,8 +205,9 @@ public class DataMessageComponent implements Serializable {
 	}
 	
 	public void putScalar(final String key, final String value) {
-		if (value == null && scalar!=null) {
-			scalar.remove(key);
+		if (key==null) return;
+		if (value == null) {
+			if (scalar!=null) scalar.remove(key);
 			return;
 		}
 		if (scalar==null) scalar = new Hashtable<String,String>(1);
