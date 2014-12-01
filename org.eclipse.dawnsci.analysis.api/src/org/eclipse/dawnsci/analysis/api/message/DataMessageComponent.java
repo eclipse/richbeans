@@ -20,11 +20,9 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
-import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.fitting.functions.IFunction;
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 import org.eclipse.dawnsci.analysis.api.roi.IROI;
-import org.eclipse.dawnsci.analysis.api.slice.SliceInfo;
 
 /**
  * This class is similar to a DataHolder in the scisoft diamond
@@ -57,8 +55,6 @@ public class DataMessageComponent implements Serializable {
 		 */
 		OVERWRITE_STRING
 	}
-	
-	private ILazyDataset slice;
 	
 	/**
 	 * The data is either primitive array or IDataset
@@ -280,7 +276,6 @@ public class DataMessageComponent implements Serializable {
 		result = prime * result + ((list == null) ? 0 : list.hashCode());
 		result = prime * result + ((rois == null) ? 0 : rois.hashCode());
 		result = prime * result + ((scalar == null) ? 0 : scalar.hashCode());
-		result = prime * result + ((slice == null) ? 0 : slice.hashCode());
 		result = prime * result + ((userObjects == null) ? 0 : userObjects.hashCode());
 		result = prime * result + ((valueTypes == null) ? 0 : valueTypes.hashCode());
 		return result;
@@ -316,11 +311,6 @@ public class DataMessageComponent implements Serializable {
 			if (other.scalar != null)
 				return false;
 		} else if (!scalar.equals(other.scalar))
-			return false;
-		if (slice == null) {
-			if (other.slice != null)
-				return false;
-		} else if (!slice.equals(other.slice))
 			return false;
 		if (userObjects == null) {
 			if (other.userObjects != null)
@@ -464,14 +454,6 @@ public class DataMessageComponent implements Serializable {
 	public void clearFunctions() {
 		if (functions!=null) functions.clear();
 		functions = null;
-	}
-
-	public ILazyDataset getSlice() {
-		return slice;
-	}
-
-	public void setSlice(ILazyDataset slice) {
-		this.slice = slice;
 	}
 
 	public long getTime() {
