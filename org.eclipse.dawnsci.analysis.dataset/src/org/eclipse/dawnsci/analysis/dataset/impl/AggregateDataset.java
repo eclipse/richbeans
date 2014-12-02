@@ -20,8 +20,6 @@ import java.util.List;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
-import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
-import org.eclipse.dawnsci.analysis.api.metadata.MetadataType;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 
 /**
@@ -333,26 +331,6 @@ public class AggregateDataset extends LazyDatasetBase implements ILazyDataset {
 
 	@Override
 	public ILazyDataset getTransposedView(int... axes) {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
-	@Override
-	public IMetadata getMetadata() {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
-	@Override
-	public <T extends MetadataType> List<T> getMetadata(Class<T> clazz) throws Exception {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
-	@Override
-	public void setMetadata(MetadataType metadata) {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
-	@Override
-	public void addMetadata(MetadataType metadata) {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 

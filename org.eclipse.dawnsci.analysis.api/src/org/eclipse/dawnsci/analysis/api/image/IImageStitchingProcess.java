@@ -78,7 +78,7 @@ public interface IImageStitchingProcess {
 	 *            is True then feature association will be used to find the translation coordinates
 	 * @return output stitched image
 	 */
-	public IDataset stitch(List<IDataset> input, int rows, int columns, double angle, double fieldOfView, double[] translations, IROI roi,
+	public IDataset stitch(List<IDataset> input, int rows, int columns, double angle, double fieldOfView, List<double[]> translations, IROI roi,
 			boolean hasFeatureAssociation);
 
 }

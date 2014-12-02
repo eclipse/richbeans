@@ -20,14 +20,12 @@ import java.util.List;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
-import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.metadata.AxesMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.ErrorMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.IDiffractionMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.MaskMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.MetadataType;
-import org.eclipse.dawnsci.analysis.api.metadata.OriginMetadata;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 import org.eclipse.dawnsci.analysis.api.processing.model.IOperationModel;
 import org.eclipse.dawnsci.analysis.api.slice.SliceFromSeriesMetadata;
@@ -533,8 +531,8 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		return passUnmodifiedData;
 	}
 	
-	public Class<?> getModelClass() {
-		return (Class<?>)((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	public Class<? extends IOperationModel> getModelClass() {
+		return (Class<? extends IOperationModel>)((ParameterizedType)this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 	}
 	
 	public static class OperationComparitor implements Comparator<IOperation<? extends IOperationModel, ? extends OperationData>> {
