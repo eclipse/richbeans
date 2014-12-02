@@ -421,7 +421,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 	}
 
 	/**
-	 * Convenience method to get the data dimensions of the original Dataset, can return null, but really should never happpen
+	 * Convenience method to get the data dimensions of the original Dataset, can return null, but really should never happen
 	 * @param slice
 	 * @return datadims
 	 */
