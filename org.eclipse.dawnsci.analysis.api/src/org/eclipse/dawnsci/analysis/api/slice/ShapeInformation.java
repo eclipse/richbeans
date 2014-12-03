@@ -16,6 +16,8 @@
 
 package org.eclipse.dawnsci.analysis.api.slice;
 
+import org.apache.commons.lang.ArrayUtils;
+
 public class ShapeInformation {
 
 	private int[] subSampledShape;
@@ -45,4 +47,7 @@ public class ShapeInformation {
 		return new ShapeInformation(subSampledShape.clone(),dataDimensions.clone(), totalSlices);
 	}
 	
+	public boolean isDataDimension(int dim) {
+		return ArrayUtils.contains(dataDimensions, dim);
+	}
 }

@@ -91,4 +91,16 @@ public class SliceFromSeriesMetadata implements OriginMetadata {
 	public Slice[] getCurrentSlice() {
 		return sliceInfo != null ? sliceInfo.getCurrentSlice()  : null;
 	}
+	
+	public void reducedDimensionToSingular(int dim) {
+		if (shapeInfo.isDataDimension(dim)) throw new IllegalArgumentException("Cannot reduce data dimension!");
+		
+		int[] sss = getShapeInfo().getSubSampledShape();
+		Slice[] cs = getCurrentSlice();
+		sss[dim] = 1;
+		cs[dim].setStart(0);
+		cs[dim].setStop(1);
+		cs[dim].setStep(1);
+		
+	}
 }

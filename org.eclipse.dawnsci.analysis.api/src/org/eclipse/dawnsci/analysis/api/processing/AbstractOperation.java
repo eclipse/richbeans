@@ -82,6 +82,8 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 		
 		D output = process(view,monitor);
 		
+		if (output == null) return null;
+		
 		return updateOutputToFullRank(output, slice);
 		
 	}
