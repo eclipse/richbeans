@@ -34,9 +34,9 @@ public interface ILoaderService {
 	 * @param filePath
 	 * @param monitor
 	 * @return IDataHolder
-	 * @throws Throwable
+	 * @throws Exception
 	 */
-    public IDataHolder getData(String filePath, final IMonitor monitor) throws Throwable;
+    public IDataHolder getData(String filePath, final IMonitor monitor) throws Exception;
 
 	/**
 	 * Reads a file and returns it as a data holder
@@ -45,9 +45,9 @@ public interface ILoaderService {
 	 * may contain non-lazy datasets
 	 * @param monitor
 	 * @return IDataHolder
-	 * @throws Throwable
+	 * @throws Exception
 	 */
-    public IDataHolder getData(String filePath, boolean lazily, final IMonitor monitor) throws Throwable;
+    public IDataHolder getData(String filePath, boolean lazily, final IMonitor monitor) throws Exception;
 
 	/**
 	 * Reads a single dataset from a file and returns it as a Dataset, with progress
@@ -55,9 +55,9 @@ public interface ILoaderService {
 	 * @param filePath
 	 * @param monitor
 	 * @return IDataHolder
-	 * @throws Throwable
+	 * @throws Exception
 	 */
-    public IDataset getDataset(String filePath, final IMonitor monitor) throws Throwable;
+    public IDataset getDataset(String filePath, final IMonitor monitor) throws Exception;
     
 	/**
 	 * Reads a dataset and returns it as a Dataset, with progress
@@ -76,9 +76,9 @@ public interface ILoaderService {
 	 * @param datasetPath for instance nexus path, may be null.
 	 * @param monitor
 	 * @return IDataHolder
-	 * @throws Throwable
+	 * @throws Exception
 	 */
-    public IDataset getDataset(String filePath, final String datasetPath, final IMonitor monitor) throws Throwable;
+    public IDataset getDataset(String filePath, final String datasetPath, final IMonitor monitor) throws Exception;
 
     /**
      * This method can be used to load meta data. It will use Fabio if
