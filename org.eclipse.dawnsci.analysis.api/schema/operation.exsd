@@ -20,6 +20,8 @@
          <sequence minOccurs="1" maxOccurs="unbounded">
             <element ref="category" minOccurs="0" maxOccurs="unbounded"/>
             <element ref="operation" minOccurs="1" maxOccurs="unbounded"/>
+            <element ref="runner" minOccurs="0" maxOccurs="unbounded"/>
+            <element ref="exporter" minOccurs="0" maxOccurs="unbounded"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -150,6 +152,36 @@
                </documentation>
                <appinfo>
                   <meta.attribute kind="resource"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="runner">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  The runner for operation pipelines.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.dawnsci.analysis.api.processing.IOperationRunner"/>
+               </appinfo>
+            </annotation>
+         </attribute>
+      </complexType>
+   </element>
+
+   <element name="exporter">
+      <complexType>
+         <attribute name="class" type="string" use="required">
+            <annotation>
+               <documentation>
+                  Exporter for saving out a pipeline.
+               </documentation>
+               <appinfo>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.dawnsci.analysis.api.processing.IOperationExporter"/>
                </appinfo>
             </annotation>
          </attribute>

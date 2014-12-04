@@ -33,4 +33,10 @@ public interface IOperationRunner {
 	 * Execute the whole pipeline
 	 */
 	public void execute() throws Exception;
+	
+	/**
+	 * 
+	 * @return The types that this runner should be used to run 
+	 */
+	public ExecutionType[] getExecutionTypes();
 }
