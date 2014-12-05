@@ -186,14 +186,26 @@ public class IntegersIterator extends IndexIterator {
 				}
 			}
 			int[] spos = srank > 0 ? Arrays.copyOfRange(opos, i, i+srank) : opos;
-			for (int j = 0; j < irank; j++) {
-				Object obj = indexes.get(j);
-				if (obj instanceof IntegerDataset) {
-					IntegerDataset ind = (IntegerDataset) obj;
-					ipos[i++] = ind.get(spos);
+			if (spos == opos) {
+				for (; i < irank; i++) {
+					Object obj = indexes.get(i);
+					if (obj == null) {
+						ipos[i] = opos[i];
+					} else if (obj instanceof Slice) {
+						Slice s = (Slice) obj;
+						ipos[i] = s.getPosition(opos[i]); // overwrite position
+					} else {
+						throw new IllegalStateException("Bad state: index dataset after subspace");
+					}
 				}
-			}
-			if (srank > 0) {
+			} else {
+				for (int j = 0; j < irank; j++) {
+					Object obj = indexes.get(j);
+					if (obj instanceof IntegerDataset) {
+						IntegerDataset ind = (IntegerDataset) obj;
+						ipos[i++] = ind.get(spos);
+					}
+				}
 				int o = orank - irank;
 				for (; i < irank; i++) {
 					Object obj = indexes.get(i);
