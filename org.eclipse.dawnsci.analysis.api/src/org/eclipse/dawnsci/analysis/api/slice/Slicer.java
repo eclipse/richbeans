@@ -115,6 +115,7 @@ public class Slicer {
 			
 			IDataset data = slice.getSlice();
 			SliceFromSeriesMetadata ssm = slice.getMetadata(SliceFromSeriesMetadata.class).get(0);
+			data.setMetadata(ssm);
 			if (visitor!=null) {
 			    visitor.visit(data, ssm.getSliceInfo().getCurrentSlice(), ssm.getShapeInfo().getSubSampledShape());
 			} else {
