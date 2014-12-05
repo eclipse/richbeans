@@ -10,7 +10,7 @@
  *    Peter Chang - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.dawnsci.analysis.api.slice;
+package org.eclipse.dawnsci.analysis.dataset.slicer;
 
 
 import java.util.Arrays;

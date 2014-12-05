@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.eclipse.dawnsci.analysis.api.slice;
+package org.eclipse.dawnsci.analysis.dataset.slicer;
 
 import java.util.Arrays;
 
