@@ -65,8 +65,11 @@ import org.slf4j.LoggerFactory;
 public class HierarchicalFileExecutionVisitor implements IExecutionVisitor {
 	
 	private static IPersistenceService service;
-	public static void setPersistenceService(IPersistenceService s) {
+	public static void setPersistenceService(IPersistenceService s) { // Injected
 		service = s;
+	}
+	public HierarchicalFileExecutionVisitor() {
+		// Used for OSGI
 	}
 
 	private boolean firstPassDone = false;
