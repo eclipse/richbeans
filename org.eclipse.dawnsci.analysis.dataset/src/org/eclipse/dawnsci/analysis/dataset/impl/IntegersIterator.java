@@ -46,8 +46,18 @@ public class IntegersIterator extends IndexIterator {
 	 * @param shape of entire data array
 	 * @param index an array of integer dataset, boolean dataset, slices or null entries (same as full slices)
 	 */
-	@SuppressWarnings("null")
 	public IntegersIterator(final int[] shape, final Object... index) {
+		this(false, shape, index);
+	}
+
+	/**
+	 * Constructor for an iterator over the items of an array of objects
+	 * @param restrict1D if true, allow only one 1D integer datasets otherwise they must match shape
+	 * @param shape of entire data array
+	 * @param index an array of integer dataset, boolean dataset, slices or null entries (same as full slices)
+	 */
+	@SuppressWarnings("null")
+	public IntegersIterator(final boolean restrict1D, final int[] shape, final Object... index) {
 		ishape = shape.clone();
 		irank = shape.length;
 		if (irank < index.length) {
@@ -59,7 +69,12 @@ public class IntegersIterator extends IndexIterator {
 				for (IntegerDataset id : Comparisons.nonZero((Dataset) i)) {
 					indexes.add(id);
 				}
-			} else if (i == null || i instanceof Slice || i instanceof IntegerDataset) {
+			} else if (i == null || i instanceof Slice) {
+				indexes.add(i);
+			} else if (i instanceof IntegerDataset) {
+				if (restrict1D && ((Dataset) i).getRank() > 1) {
+					throw new IllegalArgumentException("Integer datasets were restricted to zero or one dimensions");
+				}
 				indexes.add(i);
 			} else {
 				throw new IllegalArgumentException("Unsupported object for indexing");
@@ -77,7 +92,7 @@ public class IntegersIterator extends IndexIterator {
 		srank = 0;
 		for (int i = 0; i < irank; i++) { // see if shapes are consistent and subspace is intact
 			Object obj = indexes.get(i);
-			if (obj instanceof IntegerDataset) {
+			if (obj instanceof IntegerDataset && !restrict1D) {
 				IntegerDataset ind = (IntegerDataset) obj;
 				if (first > 0) {
 					intact = false;
@@ -112,7 +127,7 @@ public class IntegersIterator extends IndexIterator {
 				Object obj = indexes.get(i);
 				if (obj instanceof IntegerDataset) {
 					IntegerDataset ind = (IntegerDataset) obj;
-					if (!used) {
+					if (restrict1D || !used) {
 						used = true;
 						for (int j : ind.shape) {
 							oShape.add(j);
@@ -194,6 +209,8 @@ public class IntegersIterator extends IndexIterator {
 					} else if (obj instanceof Slice) {
 						Slice s = (Slice) obj;
 						ipos[i] = s.getPosition(opos[i]); // overwrite position
+					} else if (obj instanceof IntegerDataset) { // allowed when restricted to 1D
+						ipos[i] = ((Dataset) obj).getInt(opos[i]);
 					} else {
 						throw new IllegalStateException("Bad state: index dataset after subspace");
 					}
@@ -219,7 +236,7 @@ public class IntegersIterator extends IndexIterator {
 					}
 				}
 			}
-			System.err.println(Arrays.toString(opos) + ", " + Arrays.toString(spos) + ", " + Arrays.toString(ipos));
+//			System.err.println(Arrays.toString(opos) + ", " + Arrays.toString(spos) + ", " + Arrays.toString(ipos));
 			return true;
 		}
 		return false;
