@@ -13,5 +13,11 @@
             name="Plotting Systems">
       </view>
    </extension>
+   <extension
+         point="org.eclipse.dawnsci.analysis.classloader">
+      <bundle
+            class="org.eclipse.dawnsci.plotting.api.PlottingFactory">
+      </bundle>
+   </extension>
    
 </plugin>

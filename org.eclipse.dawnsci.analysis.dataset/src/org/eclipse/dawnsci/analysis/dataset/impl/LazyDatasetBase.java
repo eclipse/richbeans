@@ -48,8 +48,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		/**
 		 * Boolean to set to true if running jython scripts that utilise ScisoftPy in IDE
 		 */
-		final String RUN_IN_ECLIPSE = "run.in.eclipse";
-		catchExceptions = "true".equalsIgnoreCase(System.getProperty(RUN_IN_ECLIPSE));
+		catchExceptions = Boolean.getBoolean("run.in.eclipse");
 	}
 
 	protected String name = "";
