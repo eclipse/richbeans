@@ -1844,17 +1844,17 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	private static int maxStringLength = 120;
 
 	/**
-	 * Set maximum string length for toString() method
-	 * @param maxStringLength
+	 * Set maximum line length for toString() method
+	 * @param maxLineLength
 	 */
-	public static void setMaxStringLength(int maxStringLength) {
-		AbstractDataset.maxStringLength = maxStringLength;
+	public static void setMaxLineLength(int maxLineLength) {
+		maxStringLength = maxLineLength;
 	}
 
 	/**
-	 * @return maximum string length for toString() method
+	 * @return maximum line length for toString() method
 	 */
-	public static int getMaxStringLength() {
+	public static int getMaxLineLength() {
 		return maxStringLength;
 	}
 
