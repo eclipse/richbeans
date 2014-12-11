@@ -32,4 +32,12 @@ public class RenameEventObject extends MacroEventObject {
 		return buf.toString();
 	}
 
+	/**
+	 * Override to stop the python in the command being auto-generated.
+	 * @return
+	 */
+    public boolean isGeneratable() {
+    	return false;
+    }
+
 }

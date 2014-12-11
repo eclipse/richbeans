@@ -42,6 +42,7 @@ public class MacroEventObject extends EventObject {
 	public String getJythonCommand() {
 		if (jythonCommand!=null) return jythonCommand;
 		if (getSource() instanceof IMacroCommandProvider) return ((IMacroCommandProvider)getSource()).getJythonCommand();
+		if (pythonCommand!=null) return pythonCommand;
 		return null;
 	}
 
@@ -66,5 +67,11 @@ public class MacroEventObject extends EventObject {
 		return setName;
 	}
 
-    
+	/**
+	 * Override to stop the python in the command being auto-generated.
+	 * @return
+	 */
+    public boolean isGeneratable() {
+    	return true;
+    }
 }
