@@ -23,11 +23,11 @@ public class RenameEventObject extends MacroEventObject {
 	}
 
 	private String createCommand(String newName, String oldName) {
-		StringBuilder buf = new StringBuilder(getLegalName(newName));
+		StringBuilder buf = new StringBuilder(MacroUtils.getLegalName(newName));
 		buf.append(" = ");
-		buf.append(getLegalName(oldName));
+		buf.append(MacroUtils.getLegalName(oldName));
 		buf.append("\n");
-		buf.append(getLegalName(oldName));
+		buf.append(MacroUtils.getLegalName(oldName));
 		buf.append(" = None");
 		return buf.toString();
 	}
