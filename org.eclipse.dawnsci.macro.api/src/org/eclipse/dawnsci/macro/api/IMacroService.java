@@ -39,4 +39,14 @@ public interface IMacroService {
 	 */
 	public void removeMacroListener(IMacroEventListener l);
 
+
+	/**
+	 * Get the macro command generator for a given class. This generator
+	 * can return the macro commands for a given object, for instance a
+	 * dataset or region.
+	 * 
+	 * @param clazz
+	 * @return
+	 */
+	public AbstractMacroGenerator getGenerator(Class<? extends Object> clazz);
 }

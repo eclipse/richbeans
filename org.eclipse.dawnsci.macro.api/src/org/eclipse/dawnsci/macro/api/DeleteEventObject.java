@@ -17,7 +17,7 @@ public class DeleteEventObject extends MacroEventObject {
 
 	public DeleteEventObject(Object source, String name) {
 		super(source);
-		String cmd = getLegalName(name)+" = None";
+		String cmd = MacroUtils.getLegalName(name)+" = None";
 		setPythonCommand(cmd);
 	}
 	

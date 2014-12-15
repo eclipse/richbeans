@@ -50,23 +50,6 @@ public class MacroEventObject extends EventObject {
 		this.jythonCommand = jythonCommand;
 	}
 
-	public String getLegalName(String setName) {
-		if (setName.endsWith("/"))   setName = setName.substring(0,setName.length()-1);
-		if (setName.indexOf('/')>-1) setName = setName.substring(setName.lastIndexOf('/'));
-		
-		setName = setName.replaceAll(" ", "_");
-		setName = setName.replaceAll("[^a-zA-Z0-9_]", "");
-		final Matcher matcher = Pattern.compile("(\\d+)(.+)").matcher(setName);
-		if (matcher.matches()) {
-			setName = matcher.group(2);
-		}
-		
-		if (Pattern.compile("(\\d+)").matcher(setName).matches()) {
-			setName= "x"+setName;
-		}
-		return setName;
-	}
-
 	/**
 	 * Override to stop the python in the command being auto-generated.
 	 * @return
