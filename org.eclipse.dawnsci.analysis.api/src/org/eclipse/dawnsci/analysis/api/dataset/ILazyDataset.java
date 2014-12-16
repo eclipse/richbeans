@@ -14,6 +14,7 @@ package org.eclipse.dawnsci.analysis.api.dataset;
 
 import java.io.Serializable;
 
+import org.eclipse.dawnsci.analysis.api.INameable;
 import org.eclipse.dawnsci.analysis.api.metadata.MetadataType;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 
@@ -22,7 +23,7 @@ import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
  * where N can be zero to represent a zero-rank or single-valued dataset. A zero-rank dataset has
  * an empty array for shape. An item comprises a number of elements.
  */
-public interface ILazyDataset extends Serializable, IMetadataProvider {
+public interface ILazyDataset extends Serializable, IMetadataProvider, INameable {
 		
 	/**
 	 * @return Class of element
@@ -33,20 +34,6 @@ public interface ILazyDataset extends Serializable, IMetadataProvider {
 	 * @return Number of elements per item
 	 */
 	public int getElementsPerItem();
-
-	/**
-	 * The dataset's name. This can be useful for labelling an axis, etc.
-	 * 
-	 * @return name
-	 */
-	public String getName();
-
-	/**
-	 * Set the name of the dataset
-	 * 
-	 * @param name
-	 */
-	public void setName(final String name);
 
 	/**
 	 * The size of the dataset is the number of items in the array

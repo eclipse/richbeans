@@ -14,22 +14,14 @@ package org.eclipse.dawnsci.analysis.api.roi;
 
 import java.io.Serializable;
 
+import org.eclipse.dawnsci.analysis.api.INameable;
+
 /**
  * Region of interest interface. A region may be one or two dimensional and may enclose an area.
  * If it is open (or does not enclose an area) then a point is consider to be inside it when it
  * lies on its outline to within the accuracy given by that point's coordinates.
  */
-public interface IROI extends Serializable {
-
-	/**
-	 * @return the name
-	 */
-	public String getName();
-
-	/**
-	 * @param name
-	 */
-	public void setName(String name);
+public interface IROI extends Serializable, INameable {
 
 	/**
 	 * @param point The start (or centre) point to set
