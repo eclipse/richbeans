@@ -1,8 +1,6 @@
 package org.eclipse.dawnsci.macro.api;
 
 import java.util.Arrays;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public abstract class AbstractMacroGenerator {
 
