@@ -1589,7 +1589,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 
 	private static void throwAIOOBException(int i, int s, int d) {
 		throw new ArrayIndexOutOfBoundsException("Index (" + i + ") out of range [-" + s + "," + s
-				+ ") in dimension " + d);
+				+ "] in dimension " + d);
 	}
 
 	/**
