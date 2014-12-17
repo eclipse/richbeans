@@ -57,4 +57,8 @@ public class MacroEventObject extends EventObject {
     public boolean isGeneratable() {
     	return true;
     }
+    
+    public String toString() {
+    	return getPythonCommand();
+    }
 }
