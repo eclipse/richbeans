@@ -11,19 +11,9 @@
  *******************************************************************************/
 package org.eclipse.dawnsci.plotting.api;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import javax.management.ListenerNotFoundException;
-import javax.management.MBeanNotificationInfo;
-import javax.management.Notification;
-import javax.management.NotificationBroadcaster;
-import javax.management.NotificationBroadcasterSupport;
-import javax.management.NotificationFilter;
-import javax.management.NotificationListener;
-import javax.management.StandardMBean;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
@@ -51,25 +41,20 @@ import org.eclipse.dawnsci.plotting.api.trace.TraceWillPlotEvent;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchPart;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 /**
  * Will be a thread safe version of all the plotting system methods.
  * 
  * @author Matthew Gerring
  *
  */
-public class ThreadSafePlottingSystem extends StandardMBean implements IPlottingSystem, NotificationBroadcaster {
-
-	private static final Logger logger = LoggerFactory.getLogger(ThreadSafePlottingSystem.class);
+public class ThreadSafePlottingSystem extends ThreadSafeObject implements IPlottingSystem {
 	
 	private IPlottingSystem delegate;
 
 	public ThreadSafePlottingSystem(IPlottingSystem delegate) throws Exception {
-		super(IPlottingSystem.class);
+		super(delegate);
 		this.delegate = delegate;
 	}
 
@@ -217,28 +202,30 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 
 	@Override
 	public IAxis createAxis(String title, boolean isYAxis, int side) {
-		return 	(IAxis)call(getMethodName(Thread.currentThread().getStackTrace()), 
+		return 	new ThreadSafeAxis((IAxis)call(getMethodName(Thread.currentThread().getStackTrace()), 
 				           new Class[]{String.class, boolean.class, int.class},
-				           title, isYAxis, side);
+				           title, isYAxis, side));
 	}
 
 	@Override
 	public IAxis getSelectedYAxis() {
-		return delegate.getSelectedYAxis();
+		return new ThreadSafeAxis(delegate.getSelectedYAxis());
 	}
 
 	@Override
 	public void setSelectedYAxis(IAxis yAxis) {
+		if (yAxis instanceof ThreadSafeAxis) yAxis = ((ThreadSafeAxis)yAxis).getDelegate();
 		call(getMethodName(Thread.currentThread().getStackTrace()), yAxis);
 	}
 
 	@Override
 	public IAxis getSelectedXAxis() {
-		return delegate.getSelectedXAxis();
+		return new ThreadSafeAxis(delegate.getSelectedXAxis());
 	}
 
 	@Override
 	public void setSelectedXAxis(IAxis xAxis) {
+		if (xAxis instanceof ThreadSafeAxis) xAxis = ((ThreadSafeAxis)xAxis).getDelegate();
 		call(getMethodName(Thread.currentThread().getStackTrace()), xAxis);
 	}
 
@@ -425,75 +412,26 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 	public void setDefaultCursor(int cursorType) {
 		call(getMethodName(Thread.currentThread().getStackTrace()), new Class[]{int.class}, cursorType);
 	}
-	
-	/**
-	 * Calls method in a SWT thread safe way.
-	 * @param methodName
-	 * @param args
-	 */
-	private Object call(final String methodName, final Object... args) {
-		
-		@SuppressWarnings("rawtypes")
-		final Class[] classes = args!=null ? new Class[args.length] : null;
-		if (classes!=null) {
-			for (int i = 0; i < args.length; i++) classes[i]=args[i].getClass();
-		}
-		return call(methodName, classes, args);
-	}
-	
-	/**
-	 * Calls method in a SWT thread safe way.
-	 * @param methodName
-	 * @param args
-	 */
-	private Object call(final String methodName, @SuppressWarnings("rawtypes") final Class[] classes, final Object... args) {
-		
-		final List<Object> ret = new ArrayList<Object>(1);
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				try {
-				    Method method = delegate.getClass().getMethod(methodName, classes);
-				    Object val    = method.invoke(delegate, args);
-				    ret.add(val);
-				} catch (Exception ne) {
-					logger.error("Cannot execute "+methodName+" with "+args, ne);
-				}
-			}
-		});
-		return ret.get(0);
-	}
-
-	public static String getMethodName ( StackTraceElement ste[] ) {  
-		   
-	    String methodName = "";  
-	    boolean flag = false;  
-	   
-	    for ( StackTraceElement s : ste ) {  
-	   
-	        if ( flag ) {  
-	   
-	            methodName = s.getMethodName();  
-	            break;  
-	        }  
-	        flag = s.getMethodName().equals( "getStackTrace" );  
-	    }  
-	    return methodName;  
-	}
 
 	@Override
 	public IAxis removeAxis(IAxis axis) {
+		if (axis instanceof ThreadSafeAxis) axis = ((ThreadSafeAxis)axis).getDelegate();
 		return (IAxis)call(getMethodName(Thread.currentThread().getStackTrace()), axis);	
 	}  
 	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<IAxis> getAxes() {
-		return (List<IAxis>)call(getMethodName(Thread.currentThread().getStackTrace()));	
+		List<IAxis> axes = (List<IAxis>)call(getMethodName(Thread.currentThread().getStackTrace()));
+		if (axes==null) return null;
+		List<IAxis> ret = new ArrayList<IAxis>(axes.size());
+		for (IAxis iAxis : axes) ret.add(new ThreadSafeAxis(iAxis));
+		return ret;
 	}
 	
 	@Override
 	public IAxis getAxis(String name) {
-		return (IAxis)call(getMethodName(Thread.currentThread().getStackTrace()), name);	
+		return new ThreadSafeAxis((IAxis)call(getMethodName(Thread.currentThread().getStackTrace()), name));	
 	}
 
 	
@@ -505,34 +443,6 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 	@Override
 	public void removePositionListener(IPositionListener l) {
 		call(getMethodName(Thread.currentThread().getStackTrace()), new Class[]{IPositionListener.class}, l);
-	}
-
-	private NotificationBroadcasterSupport generalBroadcaster;
-
-	@Override
-	public void addNotificationListener(NotificationListener listener,
-			                            NotificationFilter filter, Object handback) throws IllegalArgumentException {
-		
-		if (generalBroadcaster == null)  generalBroadcaster = new NotificationBroadcasterSupport();		
-		generalBroadcaster.addNotificationListener(listener, filter, handback);
-		
-	}
-
-	@Override
-	public void removeNotificationListener(NotificationListener listener) throws ListenerNotFoundException {
-		if (generalBroadcaster == null)  return;	
-		generalBroadcaster.removeNotificationListener(listener);
-	}
-
-	@Override
-	public MBeanNotificationInfo[] getNotificationInfo() {
-		return new MBeanNotificationInfo[] {
-				new MBeanNotificationInfo(
-						new String[] { "plotting code 1" },   // notif. types
-						Notification.class.getName(), // notif. class
-						"User Notifications."         // description
-				)
-		};
 	}
 
 	@Override

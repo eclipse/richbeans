@@ -1,8 +1,6 @@
 package org.eclipse.dawnsci.macro.api;
 
 import java.util.EventObject;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class MacroEventObject extends EventObject {	
 
@@ -13,19 +11,19 @@ public class MacroEventObject extends EventObject {
 
 	private String pythonCommand;
 	private String jythonCommand;
+	private boolean isGen = true;
 
 	public MacroEventObject(Object arg0) {
 		super(arg0);
 	}
 	public MacroEventObject(Object arg0, String cmd) {
-		super(arg0);
-		pythonCommand=cmd;
-		jythonCommand=cmd;
+		this(arg0, cmd, cmd);
 	}
 	public MacroEventObject(Object arg0, String pcmd, String jcmd) {
 		super(arg0);
 		pythonCommand=pcmd;
 		jythonCommand=jcmd;
+		isGen = false;
 	}
 
 
@@ -55,7 +53,7 @@ public class MacroEventObject extends EventObject {
 	 * @return
 	 */
     public boolean isGeneratable() {
-    	return true;
+    	return isGen;
     }
     
     public String toString() {
