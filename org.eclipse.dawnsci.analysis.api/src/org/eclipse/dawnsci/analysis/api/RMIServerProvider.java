@@ -14,14 +14,16 @@ package org.eclipse.dawnsci.analysis.api;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.rmi.AccessException;
 import java.rmi.AlreadyBoundException;
+import java.rmi.NotBoundException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,7 +45,7 @@ public class RMIServerProvider extends ServerProvider{
 	 * "java.rmi.NoSuchObjectException: no such object in table" Numerous references on the web about this, for example:
 	 * http://stackoverflow.com/questions/645208/java-rmi-nosuchobjectexception-no-such-object-in-table
 	 */
-	private List<Remote> remotes = new ArrayList<Remote>();
+	private Map<String, Remote> remotes = new HashMap<String, Remote>();
 
 	/**
 	 * Get Instance of provider
@@ -70,6 +72,7 @@ public class RMIServerProvider extends ServerProvider{
 	 * @throws IOException if automatic port selection fails
 	 */
 	public synchronized void exportAndRegisterObject(String serviceName, Remote object) throws AlreadyBoundException, IOException {
+
 		if (Boolean.getBoolean("uk.ac.diamond.scisoft.analysis.rmiserverprovider.disable")) {
 			throw new RemoteException("Analysis RPC Server disabled with property uk.ac.diamond.scisoft.analysis.rmiserverprovider.disable");
 		}
@@ -101,8 +104,15 @@ public class RMIServerProvider extends ServerProvider{
 			logger.info("Starting RMI Server on port " + port);
 		}
 		logger.info("Adding " + serviceName);
-		serverRegistry.bind(serviceName, stub);
-		remotes.add(object);
+		serverRegistry.rebind(serviceName, stub);
+		remotes.put(serviceName, object);
+	}
+
+
+	public void unbind(String name) throws AccessException, RemoteException, NotBoundException {
+		if (serverRegistry == null) return;
+		serverRegistry.unbind(name);
+		remotes.remove(name);
 	}
 
 	/**
