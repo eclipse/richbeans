@@ -79,7 +79,7 @@ public class ThreadSafePlottingSystem extends StandardMBean implements IPlotting
 	}
 	
 	public Control setControl(Control alternative, boolean isToolbar) {
-		throw new RuntimeException("Expert method "+getMethodName(Thread.currentThread().getStackTrace())+" is not allowed in JMX mode!");
+		throw new RuntimeException("Expert method "+getMethodName(Thread.currentThread().getStackTrace())+" is not allowed in remote mode!");
 	}
 
 	@Override

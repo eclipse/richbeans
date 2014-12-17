@@ -11,6 +11,7 @@
  *******************************************************************************/ 
 package org.eclipse.dawnsci.plotting.api;
 
+import java.rmi.Remote;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -20,7 +21,6 @@ import org.eclipse.dawnsci.plotting.api.annotation.IAnnotationSystem;
 import org.eclipse.dawnsci.plotting.api.axis.IAxisSystem;
 import org.eclipse.dawnsci.plotting.api.region.IRegionSystem;
 import org.eclipse.dawnsci.plotting.api.trace.ColorOption;
-import org.eclipse.dawnsci.plotting.api.trace.IIsosurfaceTrace;
 import org.eclipse.dawnsci.plotting.api.trace.ITrace;
 import org.eclipse.dawnsci.plotting.api.trace.ITraceSystem;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -71,6 +71,7 @@ import org.eclipse.ui.IWorkbenchPart;
  */
 public interface IPlottingSystem extends IAdaptable, ITraceSystem, IRegionSystem, IAxisSystem, IAnnotationSystem, IPrintablePlotting{
 
+	public final static String RMI_PREFIX = "PlottingSystem:"; // Hard coded into jyplottingsystem.py as well.
 	public final static String RESCALE_ID = "org.dawb.common.ui.plot.rescale";
 	
 	public static final int NORMAL_CURSOR = 0;
