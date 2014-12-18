@@ -26,7 +26,7 @@ import java.util.Iterator;
  * @author fcp94556
  *
  */
-public class MethodEventObject extends MacroEventObject {
+public class MethodEventObject<T> extends MacroEventObject {
 
 
 	/**
@@ -40,10 +40,16 @@ public class MethodEventObject extends MacroEventObject {
 	 * @param source
 	 * @param args
 	 */
-	public MethodEventObject(String varName, Object source, Object... args) {
+	public MethodEventObject(String varName, Object source, T... args) {
 		
 		this(varName, getCallingMethodName(Thread.currentThread().getStackTrace()), source, args);
 	}
+	
+	public MethodEventObject(String varName, StackTraceElement[] stack, Object source, T... args) {
+		
+		this(varName, getCallingMethodName(stack), source, args);
+	}
+
 	
 	/**
 	 * Specifies the method name to call on the object varName.
@@ -52,13 +58,37 @@ public class MethodEventObject extends MacroEventObject {
 	 * @param source
 	 * @param args
 	 */
-	public MethodEventObject(String varName, String methodName, Object source, Object... args) {
+	public MethodEventObject(String varName, String methodName, Object source, T... args) {
 		super(source);
-		setPythonCommand(varName+"."+methodName+"("+getPythonArgs(args)+")");
+		setPythonCommand(createPythonCommand(varName, methodName, source, args));
 	}
 
 
-	private String getPythonArgs(Object[] args) {
+	/**
+	 * This may be overridden to provide custom string commands.
+	 * 
+	 * @param varName
+	 * @param methodName
+	 * @param source
+	 * @param args
+	 * @return
+	 */
+	protected String createPythonCommand(String varName, String methodName, Object source, T... args) {
+		
+		StringBuilder buf = new StringBuilder();
+				
+		// Make method call
+		buf.append(varName);
+		buf.append(".");
+		buf.append(methodName);
+		buf.append("(");
+		buf.append(getPythonArgs(args));
+		buf.append(")");
+		
+		return buf.toString();
+	}
+
+	protected String getPythonArgs(Object[] args) {
 		
 		if (args==null || args.length<1) return "";
 		StringBuilder buf = new StringBuilder();
