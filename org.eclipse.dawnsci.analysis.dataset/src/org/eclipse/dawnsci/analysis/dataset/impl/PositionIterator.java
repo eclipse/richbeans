@@ -12,8 +12,6 @@
 
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
-import java.util.Arrays;
-
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 
 
@@ -33,9 +31,9 @@ import org.eclipse.dawnsci.analysis.api.dataset.Slice;
  */
 public class PositionIterator extends IndexIterator {
 	final private int[] shape;
-	private int[] start;
-	private int[] stop;
-	private int[] step;
+	final private int[] start;
+	final private int[] stop;
+	final private int[] step;
 	final private int endrank;
 
 	final private boolean[] omit; // axes to miss out
@@ -43,7 +41,7 @@ public class PositionIterator extends IndexIterator {
 	/**
 	 * position in dataset
 	 */
-	private int[] pos;
+	final private int[] pos;
 	private boolean once;
 
 	/**
@@ -71,29 +69,7 @@ public class PositionIterator extends IndexIterator {
 	 * @param axes missing axes, can be null for full dataset
 	 */
 	public PositionIterator(int[] shape, int[] axes) {
-		this.shape = shape;
-		int rank = shape.length;
-		endrank = rank - 1;
-
-		omit = new boolean[rank];
-		if (axes != null) {
-			for (int a : axes) {
-				if (a < 0) {
-					a += rank;
-				}
-				if (a >= 0 && a <= endrank) {
-					omit[a] = true;
-				} else if (a > endrank) {
-					throw new IllegalArgumentException("Specified axis exceeds dataset rank");
-				}
-			}
-		}
-		start = new int[rank];
-		stop = shape.clone();
-		step = new int[rank];
-		pos = new int[rank];
-		Arrays.fill(step, 1);
-		reset();
+		this(new SliceND(shape), axes);
 	}
 
 	/**
@@ -103,9 +79,7 @@ public class PositionIterator extends IndexIterator {
 	 * @param axes missing axes
 	 */
 	public PositionIterator(int[] shape, Slice[] slice, int[] axes) {
-		this(shape, axes);
-		Slice.convertFromSlice(slice, shape, start, stop, step);
-		reset();
+		this(new SliceND(shape, slice), axes);
 	}
 
 	/**
@@ -117,29 +91,51 @@ public class PositionIterator extends IndexIterator {
 	 * @param axes missing axes
 	 */
 	public PositionIterator(int[] shape, int[] start, int[] stop, int[] step, int[] axes) {
-		this(shape, axes);
-		int rank = shape.length;
-		if (step == null) {
-			this.step = new int[rank];
-			Arrays.fill(this.step, 1);
-		} else {
-			this.step = step;
-			for (int s : step) {
-				if (s < 0) {
-					throw new UnsupportedOperationException("Negative steps not implemented");
+		this(new SliceND(shape, start, stop, step), axes);
+	}
+
+	/**
+	 * Constructor for an iterator that misses out several axes
+	 * @param slice
+	 * @param axes missing axes
+	 */
+	public PositionIterator(SliceND slice, int[] axes) {
+		int[] oshape = slice.getShape();
+		start = slice.getStart();
+		stop  = slice.getStop();
+		step  = slice.getStep();
+		for (int s : step) {
+			if (s < 0) {
+				throw new UnsupportedOperationException("Negative steps not implemented");
+			}
+		}
+		int rank = oshape.length;
+		endrank = rank - 1;
+
+		omit = new boolean[rank];
+		int nrank = rank;
+		if (axes != null) {
+			for (int a : axes) {
+				if (a < 0) {
+					a += rank;
+				}
+				if (a >= 0 && a <= endrank) {
+					omit[a] = true;
+					nrank--;
+				} else if (a > endrank) {
+					throw new IllegalArgumentException("Specified axis exceeds dataset rank");
 				}
 			}
 		}
-		if (start == null) {
-			this.start = new int[rank];
-		} else {
-			this.start = start;
+
+		pos = new int[rank];
+		shape = new int[nrank];
+		for (int i = 0, j = 0; i < rank; i++) {
+			if (omit[i])
+				continue;
+			shape[j++] = oshape[i];
 		}
-		if (stop == null) {
-			this.stop = shape.clone();
-		} else {
-			this.stop = stop;
-		}
+
 		reset();
 	}
 
