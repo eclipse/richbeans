@@ -7,14 +7,19 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.eclipse.dawnsci.plotting.api;
+package org.eclipse.dawnsci.plotting.api.remote;
 
 import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.plotting.api.IPlotActionSystem;
+import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
+import org.eclipse.dawnsci.plotting.api.PlotType;
+import org.eclipse.dawnsci.plotting.api.ThreadSafePlottingSystem;
 import org.eclipse.dawnsci.plotting.api.annotation.IAnnotation;
 import org.eclipse.dawnsci.plotting.api.axis.IAxis;
 import org.eclipse.dawnsci.plotting.api.axis.IClickListener;
@@ -75,8 +80,8 @@ public class RemotePlottingSystem implements IRemotePlottingSystem {
 		delegate.printPlotting();
 	}
 
-	public IAxis createAxis(String title, boolean isYAxis, int side) throws RemoteException {
-		return delegate.createAxis(title, isYAxis, side);
+	public IRemoteAxis createAxis(String title, boolean isYAxis, int side) throws RemoteException {
+		return new RemoteAxis(delegate.createAxis(title, isYAxis, side));
 	}
 
 	public IRegion createRegion(String name, RegionType regionType)
@@ -104,8 +109,8 @@ public class RemotePlottingSystem implements IRemotePlottingSystem {
 		return delegate.createLineTrace(traceName);
 	}
 
-	public IAxis removeAxis(IAxis axis) throws RemoteException {
-		return delegate.removeAxis(axis);
+	public IRemoteAxis removeAxis(IRemoteAxis axis) throws RemoteException {
+		return new RemoteAxis(delegate.removeAxis(axis.getDelegate()));
 	}
 
 	public void savePlotting(String filename, String filetype) throws RemoteException {
@@ -137,8 +142,12 @@ public class RemotePlottingSystem implements IRemotePlottingSystem {
 		delegate.addRegion(region);
 	}
 
-	public List<IAxis> getAxes() throws RemoteException {
-		return delegate.getAxes();
+	public List<IRemoteAxis> getAxes() throws RemoteException {
+		List<IAxis> axes = delegate.getAxes();
+		if (axes == null) return null;
+		final List<IRemoteAxis> ret = new ArrayList<IRemoteAxis>(axes.size());
+		for (IAxis axis : axes) ret.add(new RemoteAxis(axis));
+		return ret;
 	}
 
 	public ISurfaceTrace createSurfaceTrace(String traceName) throws RemoteException {
@@ -149,8 +158,8 @@ public class RemotePlottingSystem implements IRemotePlottingSystem {
 		return delegate.getAnnotation(name);
 	}
 
-	public IAxis getAxis(String name) throws RemoteException {
-		return delegate.getAxis(name);
+	public IRemoteAxis getAxis(String name) throws RemoteException {
+		return new RemoteAxis(delegate.getAxis(name));
 	}
 
 	public void removeRegion(IRegion region) throws RemoteException {
@@ -169,8 +178,8 @@ public class RemotePlottingSystem implements IRemotePlottingSystem {
 		return delegate.createIsosurfaceTrace(string);
 	}
 
-	public IAxis getSelectedYAxis() throws RemoteException {
-		return delegate.getSelectedYAxis();
+	public IRemoteAxis getSelectedYAxis() throws RemoteException {
+		return new RemoteAxis(delegate.getSelectedYAxis());
 	}
 
 	public IRegion getRegion(String name) throws RemoteException {
@@ -185,16 +194,16 @@ public class RemotePlottingSystem implements IRemotePlottingSystem {
 		return delegate.getRegions(type);
 	}
 
-	public void setSelectedYAxis(IAxis yAxis) throws RemoteException {
-		delegate.setSelectedYAxis(yAxis);
+	public void setSelectedYAxis(IRemoteAxis yAxis) throws RemoteException {
+		delegate.setSelectedYAxis(yAxis.getDelegate());
 	}
 
 	public ILineStackTrace createLineStackTrace(String traceName) throws RemoteException {
 		return delegate.createLineStackTrace(traceName);
 	}
 
-	public IAxis getSelectedXAxis() throws RemoteException {
-		return delegate.getSelectedXAxis();
+	public IRemoteAxis getSelectedXAxis() throws RemoteException {
+		return new RemoteAxis(delegate.getSelectedXAxis());
 	}
 
 	public boolean addRegionListener(IRegionListener l) throws RemoteException {
@@ -205,8 +214,8 @@ public class RemotePlottingSystem implements IRemotePlottingSystem {
 		return delegate.removeRegionListener(l);
 	}
 
-	public void setSelectedXAxis(IAxis xAxis) throws RemoteException {
-		delegate.setSelectedXAxis(xAxis);
+	public void setSelectedXAxis(IRemoteAxis xAxis) throws RemoteException {
+		delegate.setSelectedXAxis(xAxis.getDelegate());
 	}
 
 	public void clearRegions() throws RemoteException {

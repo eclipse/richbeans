@@ -48,6 +48,8 @@ public class ThreadSafeObject {
 	 */
 	protected Object call(final String methodName, @SuppressWarnings("rawtypes") final Class[] classes, final Object... args) {
 		
+		if( delegate == null) return null;
+		
 		final List<Object> ret = new ArrayList<Object>(1);
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {

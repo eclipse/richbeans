@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.eclipse.dawnsci.plotting.api;
+package org.eclipse.dawnsci.plotting.api.remote;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -16,8 +16,9 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.plotting.api.IPlotActionSystem;
+import org.eclipse.dawnsci.plotting.api.PlotType;
 import org.eclipse.dawnsci.plotting.api.annotation.IAnnotation;
-import org.eclipse.dawnsci.plotting.api.axis.IAxis;
 import org.eclipse.dawnsci.plotting.api.axis.IClickListener;
 import org.eclipse.dawnsci.plotting.api.axis.IPositionListener;
 import org.eclipse.dawnsci.plotting.api.region.IRegion;
@@ -101,15 +102,15 @@ public interface IRemotePlottingSystem extends Remote {
 
 	public void renameRegion(IRegion region, String name) throws RemoteException;
 
-	public IAxis createAxis(String title, boolean isYAxis, int side) throws RemoteException;
+	public IRemoteAxis createAxis(String title, boolean isYAxis, int side) throws RemoteException;
 
-	public IAxis getSelectedYAxis() throws RemoteException;
+	public IRemoteAxis getSelectedYAxis() throws RemoteException;
 
-	public void setSelectedYAxis(IAxis yAxis) throws RemoteException;
+	public void setSelectedYAxis(IRemoteAxis yAxis) throws RemoteException;
 
-	public IAxis getSelectedXAxis() throws RemoteException;
+	public IRemoteAxis getSelectedXAxis() throws RemoteException;
 
-	public void setSelectedXAxis(IAxis xAxis) throws RemoteException;
+	public void setSelectedXAxis(IRemoteAxis xAxis) throws RemoteException;
 
 	public void autoscaleAxes() throws RemoteException;
 
@@ -179,11 +180,11 @@ public interface IRemotePlottingSystem extends Remote {
 
 	public void setDefaultCursor(int cursorType) throws RemoteException;
 
-	public IAxis removeAxis(IAxis axis) throws RemoteException;
+	public IRemoteAxis removeAxis(IRemoteAxis axis) throws RemoteException;
 
-	public List<IAxis> getAxes() throws RemoteException;
+	public List<IRemoteAxis> getAxes() throws RemoteException;
 
-	public IAxis getAxis(String name) throws RemoteException;
+	public IRemoteAxis getAxis(String name) throws RemoteException;
 
 	public void addPositionListener(IPositionListener l) throws RemoteException;
 

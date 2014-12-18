@@ -11,7 +11,6 @@
  *******************************************************************************/ 
 package org.eclipse.dawnsci.plotting.api;
 
-import java.rmi.Remote;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -24,6 +23,7 @@ import org.eclipse.dawnsci.plotting.api.trace.ColorOption;
 import org.eclipse.dawnsci.plotting.api.trace.ITrace;
 import org.eclipse.dawnsci.plotting.api.trace.ITraceSystem;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IActionBars;
@@ -91,6 +91,20 @@ public interface IPlottingSystem extends IAdaptable, ITraceSystem, IRegionSystem
 	 */
 	public void setTitle(final String title);
 	
+	/**
+	 * Call to set the plot title color. 
+	 * 
+	 * @param title
+	 */
+	public void setTitleColor(final Color color);
+	
+	/**
+	 * Set the back ground color of the plot.
+	 * 
+	 * @param title
+	 */
+	public void setBackgroundColor(final Color color);
+
 	/**
 	 * Call to create the UI component dealing with the plotting.
 	 * @param parent

@@ -34,6 +34,7 @@ Export-Package: org.eclipse.dawnsci.plotting.api,
  org.eclipse.dawnsci.plotting.api.jreality.util,
  org.eclipse.dawnsci.plotting.api.preferences,
  org.eclipse.dawnsci.plotting.api.region,
+ org.eclipse.dawnsci.plotting.api.remote,
  org.eclipse.dawnsci.plotting.api.tool,
  org.eclipse.dawnsci.plotting.api.trace,
  org.eclipse.dawnsci.plotting.api.views

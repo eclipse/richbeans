@@ -9,14 +9,21 @@
 
 package org.eclipse.dawnsci.plotting.api;
 
+import java.io.Serializable;
+
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.plotting.api.axis.IAxis;
 import org.eclipse.dawnsci.plotting.api.axis.IAxisListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
-public class ThreadSafeAxis extends ThreadSafeObject implements IAxis {
+public class ThreadSafeAxis extends ThreadSafeObject implements IAxis, Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5295646820477687920L;
+	
 	private IAxis delegate;
 
 	public ThreadSafeAxis(IAxis axis) {

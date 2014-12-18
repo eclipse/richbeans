@@ -121,6 +121,18 @@ public interface IPlottingSystemViewer extends IAxisSystem, IRegionSystem, IAnno
 	 */
 	public void setTitle(String title);
 	
+    /**
+     * 
+     * @param color
+     */
+	public void setTitleColor(Color color);
+	
+	/**
+     * 
+     * @param color
+     */
+	public void setBackgroundColor(Color color);
+
 	/**
 	 * 
 	 * @return title
@@ -619,8 +631,21 @@ public interface IPlottingSystemViewer extends IAxisSystem, IRegionSystem, IAnno
 			
 			
 		}
+
+		@Override
+		public void setTitleColor(Color color) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void setBackgroundColor(Color color) {
+			// TODO Auto-generated method stub
+			
+		}
 		
 	}
+
 
 
 }
