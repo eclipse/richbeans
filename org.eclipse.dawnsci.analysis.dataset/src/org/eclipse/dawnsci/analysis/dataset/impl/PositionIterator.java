@@ -51,16 +51,7 @@ public class PositionIterator extends IndexIterator {
 	 * @param shape
 	 */
 	public PositionIterator(int[] shape) {
-		this(shape, null);
-	}
-
-	/**
-	 * Constructor for an iterator that misses out an axis
-	 * @param shape
-	 * @param axis missing axis
-	 */
-	public PositionIterator(int[] shape, int axis) {
-		this(shape, new int[] {axis});
+		this(new SliceND(shape), null);
 	}
 
 	/**
@@ -68,7 +59,7 @@ public class PositionIterator extends IndexIterator {
 	 * @param shape
 	 * @param axes missing axes, can be null for full dataset
 	 */
-	public PositionIterator(int[] shape, int[] axes) {
+	public PositionIterator(int[] shape, int... axes) {
 		this(new SliceND(shape), axes);
 	}
 
