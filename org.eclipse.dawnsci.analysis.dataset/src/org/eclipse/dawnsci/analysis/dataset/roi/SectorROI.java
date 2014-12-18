@@ -569,7 +569,7 @@ public class SectorROI extends RingROI implements Serializable {
 
 	@Override
 	public String toString() {
-		return super.toString() + String.format("point=%s, radii=%s, angles=[%g, %g]", Arrays.toString(spt), Arrays.toString(rad), getAngleDegrees(0), getAngleDegrees(1));
+		return super.toString() + String.format("point=%s, radii=%s, angles=[%g, %g], symmetry=%s", Arrays.toString(spt), Arrays.toString(rad), getAngleDegrees(0), getAngleDegrees(1), getSymmetryText());
 	}
 
 	protected static double[] calculateArcIntersections(final double[] angles, final double xc, final double yc, final double r) {

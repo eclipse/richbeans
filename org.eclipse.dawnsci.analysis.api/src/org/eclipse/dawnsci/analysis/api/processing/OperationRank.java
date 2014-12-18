@@ -46,10 +46,6 @@ public enum OperationRank {
 		}
 		return null;
 	}
-	
-	public OperationRank oneLess() {
-		return get(rank-1);
-	}
 
 	public boolean isDiscrete() {
 		return this!=ANY && this!=NONE;
