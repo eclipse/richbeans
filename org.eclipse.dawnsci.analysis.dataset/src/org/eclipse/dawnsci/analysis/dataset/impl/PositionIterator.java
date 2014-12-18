@@ -104,7 +104,7 @@ public class PositionIterator extends IndexIterator {
 		endrank = rank - 1;
 
 		omit = new boolean[rank];
-		int nrank = rank;
+		shape = oshape.clone();
 		if (axes != null) {
 			for (int a : axes) {
 				if (a < 0) {
@@ -112,7 +112,7 @@ public class PositionIterator extends IndexIterator {
 				}
 				if (a >= 0 && a <= endrank) {
 					omit[a] = true;
-					nrank--;
+					shape[a] = 1;
 				} else if (a > endrank) {
 					throw new IllegalArgumentException("Specified axis exceeds dataset rank");
 				}
@@ -120,12 +120,6 @@ public class PositionIterator extends IndexIterator {
 		}
 
 		pos = new int[rank];
-		shape = new int[nrank];
-		for (int i = 0, j = 0; i < rank; i++) {
-			if (omit[i])
-				continue;
-			shape[j++] = oshape[i];
-		}
 
 		reset();
 	}
