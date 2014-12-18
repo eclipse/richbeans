@@ -165,7 +165,13 @@ public interface ITraceSystem {
 	 */
 	public void renameTrace(ITrace trace, String name) throws Exception;
 
-	
+	/**
+	 * Moves the trace definition in the internal hastable. 
+	 * Used internally only - do not call.
+	 * @internal
+	 */
+	public void moveTrace(String oldName, String name);
+
 	
 	/**
 	 * For 1D plotting, if the first plot is the x-axis, returns true.

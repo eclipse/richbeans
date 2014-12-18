@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.eclipse.dawnsci.plotting.api;
+package org.eclipse.dawnsci.plotting.api.remote;
 
 import java.io.Serializable;
 
@@ -17,7 +17,7 @@ import org.eclipse.dawnsci.plotting.api.axis.IAxisListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 
-public class ThreadSafeAxis extends ThreadSafeObject implements IAxis, Serializable {
+class ThreadSafeAxis extends ThreadSafeObject implements IAxis, Serializable {
 
 	/**
 	 * 
@@ -252,7 +252,7 @@ public class ThreadSafeAxis extends ThreadSafeObject implements IAxis, Serializa
 		return (Boolean)call(getMethodName(Thread.currentThread().getStackTrace()));
 	}
 
-	public IAxis getDelegate() {
+	IAxis getDelegate() {
 		return delegate;
 	}
 

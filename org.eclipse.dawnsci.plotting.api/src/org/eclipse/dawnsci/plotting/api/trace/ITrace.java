@@ -12,6 +12,7 @@
 package org.eclipse.dawnsci.plotting.api.trace;
 
 
+import org.eclipse.dawnsci.analysis.api.INameable;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 
 /**
@@ -22,20 +23,8 @@ import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
  * @author Matthew Gerring
  *
  */
-public interface ITrace {
-	
-	
-	/**
-	 * Name of trace, matches name of the abstract data set that originally created it.
-	 * @return
-	 */
-	public String getName();
-	/**
-	 * Name of trace, matches name of the abstract data set that originally created it.
-	 * @return
-	 */
-	public void setName(String name);
-	
+public interface ITrace extends INameable {
+		
 	/**
 	 * The name of the original data that this trace was plotted from or null
 	 * @return

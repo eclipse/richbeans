@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.eclipse.dawnsci.plotting.api;
+package org.eclipse.dawnsci.plotting.api.remote;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ThreadSafeObject {
+class ThreadSafeObject {
 	
 	private static Logger logger = LoggerFactory.getLogger(ThreadSafeObject.class);
 

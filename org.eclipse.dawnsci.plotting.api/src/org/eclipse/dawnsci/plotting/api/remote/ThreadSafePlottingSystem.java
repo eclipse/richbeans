@@ -9,14 +9,18 @@
  * Contributors:
  *    Matthew Gerring - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.dawnsci.plotting.api;
+package org.eclipse.dawnsci.plotting.api.remote;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.plotting.api.IPlotActionSystem;
+import org.eclipse.dawnsci.plotting.api.IPlottingSystem;
+import org.eclipse.dawnsci.plotting.api.PlotType;
 import org.eclipse.dawnsci.plotting.api.annotation.IAnnotation;
 import org.eclipse.dawnsci.plotting.api.axis.IAxis;
 import org.eclipse.dawnsci.plotting.api.axis.IClickListener;
@@ -61,7 +65,7 @@ public class ThreadSafePlottingSystem extends ThreadSafeObject implements IPlott
 
 	@Override
 	public IImageTrace createImageTrace(String traceName) {
-		return (IImageTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName);
+		return new ThreadSafeTrace((IImageTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName));
 	}
 	
 	public Control setControl(Control alternative, boolean isToolbar) {
@@ -70,66 +74,76 @@ public class ThreadSafePlottingSystem extends ThreadSafeObject implements IPlott
 
 	@Override
 	public ILineTrace createLineTrace(String traceName) {
-		return (ILineTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName);
+		return new ThreadSafeTrace((ILineTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName));
 	}
 
 	@Override
 	public IVectorTrace createVectorTrace(String traceName) {
-		return (IVectorTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName);
+		return new ThreadSafeTrace((IVectorTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName));
 	}
 
 	@Override
 	public ISurfaceTrace createSurfaceTrace(String traceName) {
-		return (ISurfaceTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName);
+		return new ThreadSafeTrace((ISurfaceTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName));
 	}
 	@Override
 	public IIsosurfaceTrace createIsosurfaceTrace(String traceName) {
-		return (IIsosurfaceTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName);
+		return new ThreadSafeTrace((IIsosurfaceTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName));
 	}
 
 	@Override
 	public IMulti2DTrace createMulti2DTrace(String traceName) {
-		return (IMulti2DTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName);
+		return new ThreadSafeTrace((IMulti2DTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName));
 	}
 
 	@Override
 	public ILineStackTrace createLineStackTrace(String traceName) {
-		return (ILineStackTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName);
+		return new ThreadSafeTrace((ILineStackTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName));
 	}
 
 	@Override
 	public IScatter3DTrace createScatter3DTrace(String traceName) {
-		return (IScatter3DTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName);
+		return new ThreadSafeTrace((IScatter3DTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName));
 	}
 
 	@Override
 	public IImageStackTrace createImageStackTrace(String traceName) {
-		return (IImageStackTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName);
+		return new ThreadSafeTrace((IImageStackTrace)call(getMethodName(Thread.currentThread().getStackTrace()), traceName));
 	}
 
 	@Override
 	public void addTrace(ITrace trace) {
+		if (trace instanceof ThreadSafeTrace) trace = ((ThreadSafeTrace)trace).getDelegate();
 		call(getMethodName(Thread.currentThread().getStackTrace()), trace);
 	}
 
 	@Override
 	public void removeTrace(ITrace trace) {
+		if (trace instanceof ThreadSafeTrace) trace = ((ThreadSafeTrace)trace).getDelegate();
 		call(getMethodName(Thread.currentThread().getStackTrace()), trace);
 	}
 
 	@Override
 	public ITrace getTrace(String name) {
-		return delegate.getTrace(name);
+		return new ThreadSafeTrace(delegate.getTrace(name));
 	}
 
 	@Override
 	public Collection<ITrace> getTraces() {
-		return delegate.getTraces();
+		return getThreadSafe(delegate.getTraces());
+	}
+
+	private List<ITrace> getThreadSafe(Collection<ITrace> traces) {
+		if (traces==null) return null;
+		if (traces.isEmpty()) return Collections.emptyList();
+		List<ITrace> ret = new ArrayList<ITrace>(traces.size());
+		for (ITrace iTrace : traces) ret.add(new ThreadSafeTrace(iTrace));
+		return ret;
 	}
 
 	@Override
 	public Collection<ITrace> getTraces(Class<? extends ITrace> clazz) {
-		return delegate.getTraces(clazz);
+		return getThreadSafe(delegate.getTraces(clazz));
 	}
 
 	@Override
@@ -144,6 +158,7 @@ public class ThreadSafePlottingSystem extends ThreadSafeObject implements IPlott
 
 	@Override
 	public void renameTrace(ITrace trace, String name) throws Exception {
+		if (trace instanceof ThreadSafeTrace) trace = ((ThreadSafeTrace)trace).getDelegate();
 		call(getMethodName(Thread.currentThread().getStackTrace()), trace, name);
 	}
 
@@ -320,31 +335,31 @@ public class ThreadSafePlottingSystem extends ThreadSafeObject implements IPlott
 
 	@Override
 	public List<ITrace> createPlot1D(IDataset x, List<? extends IDataset> ys, IProgressMonitor monitor) {
-		return delegate.createPlot1D(x, ys, monitor);
+		return getThreadSafe(delegate.createPlot1D(x, ys, monitor));
 	}
 
 	@Override
 	public List<ITrace> createPlot1D(IDataset x,
 			List<? extends IDataset> ys, String title, IProgressMonitor monitor) {
-		return delegate.createPlot1D(x, ys, title, monitor);
+		return getThreadSafe(delegate.createPlot1D(x, ys, title, monitor));
 	}
 
 	@Override
 	public List<ITrace> updatePlot1D(IDataset x,
 			List<? extends IDataset> ys, IProgressMonitor monitor) {
-		return delegate.updatePlot1D(x, ys, monitor);
+		return getThreadSafe(delegate.updatePlot1D(x, ys, monitor));
 	}
 
 	@Override
 	public ITrace createPlot2D(IDataset image,
 			List<? extends IDataset> axes, IProgressMonitor monitor) {
-		return delegate.createPlot2D(image, axes, monitor);
+		return new ThreadSafeTrace(createPlot2D(image, axes, monitor));
 	}
 
 	@Override
 	public ITrace updatePlot2D(IDataset image,
 			List<? extends IDataset> axes, IProgressMonitor monitor) {
-		return delegate.updatePlot2D(image, axes, monitor);
+		return new ThreadSafeTrace(delegate.updatePlot2D(image, axes, monitor));
 	}
 
 	@Override
@@ -541,25 +556,25 @@ public class ThreadSafePlottingSystem extends ThreadSafeObject implements IPlott
 	@Override
 	public List<ITrace> createPlot1D(IDataset x, List<? extends IDataset> ys,
 			List<String> dataNames, String title, IProgressMonitor monitor) {
-		return (List<ITrace>)call(getMethodName(Thread.currentThread().getStackTrace()), x,ys,dataNames, title, monitor);
+		return getThreadSafe(delegate.createPlot1D(x,ys,dataNames, title, monitor));
 	}
 
 	@Override
 	public List<ITrace> updatePlot1D(IDataset x, List<? extends IDataset> ys,
 			List<String> dataNames, IProgressMonitor monitor) {
-		return (List<ITrace>)call(getMethodName(Thread.currentThread().getStackTrace()), x,ys,dataNames, monitor);
+		return getThreadSafe(delegate.updatePlot1D( x,ys,dataNames, monitor));
 	}
 
 	@Override
 	public ITrace createPlot2D(IDataset image, List<? extends IDataset> axes,
 			String dataName, IProgressMonitor monitor) {
-		return (ITrace)call(getMethodName(Thread.currentThread().getStackTrace()), image, axes, dataName, monitor);
+		return new ThreadSafeTrace(delegate.createPlot2D(image, axes, dataName, monitor));
 	}
 
 	@Override
 	public ITrace updatePlot2D(IDataset image, List<? extends IDataset> axes,
 			String dataName, IProgressMonitor monitor) {
-		return (ITrace)call(getMethodName(Thread.currentThread().getStackTrace()), image, axes, dataName, monitor);
+		return new ThreadSafeTrace(delegate.updatePlot2D(image, axes, dataName, monitor));
 	}
 
 	@Override
@@ -591,6 +606,11 @@ public class ThreadSafePlottingSystem extends ThreadSafeObject implements IPlott
 	@Override
 	public void printScaledPlotting() {
 		call(getMethodName(Thread.currentThread().getStackTrace()));
+	}
+
+	@Override
+	public void moveTrace(String oldName, String name) {
+		call(getMethodName(Thread.currentThread().getStackTrace()), oldName, name);
 	}
 
 }
