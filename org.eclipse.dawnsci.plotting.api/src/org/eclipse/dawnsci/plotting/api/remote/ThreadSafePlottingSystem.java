@@ -125,7 +125,9 @@ public class ThreadSafePlottingSystem extends ThreadSafeObject implements IPlott
 
 	@Override
 	public ITrace getTrace(String name) {
-		return new ThreadSafeTrace(delegate.getTrace(name));
+		ITrace trace = delegate.getTrace(name);
+		if (trace==null) return null;
+		return new ThreadSafeTrace(trace);
 	}
 
 	@Override

@@ -62,7 +62,17 @@ public class MethodEventObject<T> extends MacroEventObject {
 		super(source);
 		setPythonCommand(createPythonCommand(varName, methodName, source, args));
 	}
+	
+	public void prepend(String command) {
+		if (!command.endsWith("\n")) command = command+"\n";
+		setPythonCommand(command+getPythonCommand());
+		setJythonCommand(command+getJythonCommand());
+	}
 
+	public void append(String command) {
+		setPythonCommand(getPythonCommand()+"\n"+command);
+		setJythonCommand(getJythonCommand()+"\n"+command);
+	}
 
 	/**
 	 * This may be overridden to provide custom string commands.

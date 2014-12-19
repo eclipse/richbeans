@@ -12,12 +12,17 @@ public class MacroEventObject extends EventObject {
 	private String pythonCommand;
 	private String jythonCommand;
 	private boolean isGen = true;
+	private boolean isImmediate = false;
 
 	public MacroEventObject(Object arg0) {
 		super(arg0);
 	}
 	public MacroEventObject(Object arg0, String cmd) {
 		this(arg0, cmd, cmd);
+	}
+	public MacroEventObject(Object arg0, String cmd, boolean immediate) {
+		this(arg0, cmd, cmd);
+		isImmediate = immediate;
 	}
 	public MacroEventObject(Object arg0, String pcmd, String jcmd) {
 		super(arg0);
@@ -59,4 +64,13 @@ public class MacroEventObject extends EventObject {
     public String toString() {
     	return getPythonCommand();
     }
+    
+
+	public boolean isImmediate() {
+		return isImmediate;
+	}
+	public void setImmediate(boolean isImmediate) {
+		this.isImmediate = isImmediate;
+	}
+
 }
