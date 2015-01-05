@@ -49,9 +49,9 @@ public class SliceNDGenerator {
 		this.datadimensions = dataDimensions;
 		this.inputShape = shape;
 		
-		int[] start = slice.getStart();
-		int[] stop = slice.getStop();
-		int[] step = slice.getStep();
+		int[] start = slice.getStart().clone();
+		int[] stop = slice.getStop().clone();
+		int[] step = slice.getStep().clone();
 		
 		
 		for (int i : dataDimensions) {
@@ -60,7 +60,7 @@ public class SliceNDGenerator {
 			step[i] = 1;
 		}
 		
-		iter = new PositionIterator(shape, slice.convertToSlice(),null);
+		iter = new PositionIterator(shape, slice.convertToSlice(),dataDimensions);
 	}
 	
 	public int[] getOutputShape() {

@@ -150,9 +150,9 @@ public class HierarchicalFileExecutionVisitor implements IExecutionVisitor {
 		//Write data to file
 		final IDataset integrated = result.getData();
 		SliceFromSeriesMetadata metadata = integrated.getMetadata(SliceFromSeriesMetadata.class).get(0);
-		int[] dataDims = metadata.getShapeInfo().getDataDimensions();
-		int[] shape = metadata.getShapeInfo().getSubSampledShape();
-		Slice[] slices = metadata.getSliceInfo().getCurrentSlice();
+		int[] dataDims = metadata.getDataDimensions();
+		int[] shape = metadata.getSubSampledShape();
+		Slice[] slices = metadata.getSliceInOutput();
 		updateAxes(integrated, slices, shape, dataDims, results);
 		integrated.setName("data");
 		appendData(integrated,results, slices,shape, file);
@@ -181,9 +181,9 @@ public class HierarchicalFileExecutionVisitor implements IExecutionVisitor {
 		}
 		
 		
-		int[] dataDims = metadata.getShapeInfo().getDataDimensions();
-		int[] shape = metadata.getShapeInfo().getSubSampledShape();
-		Slice[] slices = metadata.getSliceInfo().getCurrentSlice();
+		int[] dataDims = metadata.getDataDimensions();
+		int[] shape = metadata.getSubSampledShape();
+		Slice[] slices = metadata.getSliceInOutput();
 		
 		//if specified to save data, do it
 		if (intermeadiateData.isStoreOutput()) {

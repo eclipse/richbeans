@@ -23,17 +23,14 @@ import org.eclipse.dawnsci.analysis.api.metadata.OriginMetadata;
 public class SliceFromSeriesMetadata implements OriginMetadata {
 	
 	private SourceInformation sourceInfo;
-	private ShapeInformation shapeInfo;
 	private SliceInformation sliceInfo;
 	
-	public SliceFromSeriesMetadata(SourceInformation source, ShapeInformation shape, SliceInformation slice) {
+	public SliceFromSeriesMetadata(SourceInformation source, SliceInformation slice) {
 		this.sourceInfo = source;
-		this.shapeInfo = shape;
 		this.sliceInfo = slice;
 	}
 	
-	public SliceFromSeriesMetadata(ShapeInformation shape, SliceInformation slice) {
-		this.shapeInfo = shape;
+	public SliceFromSeriesMetadata(SliceInformation slice) {
 		this.sliceInfo = slice;
 	}
 	
@@ -45,26 +42,21 @@ public class SliceFromSeriesMetadata implements OriginMetadata {
 		return sourceInfo;
 	}
 
-	public ShapeInformation getShapeInfo() {
-		return shapeInfo;
-	}
-
 	public SliceInformation getSliceInfo() {
 		return sliceInfo;
 	}
 	
 	@Override
 	public SliceFromSeriesMetadata clone() {
-		ShapeInformation shi = shapeInfo != null ? shapeInfo.clone() : null;
 		SourceInformation soi = sourceInfo != null ? sourceInfo.clone() : null;
 		SliceInformation sli = sliceInfo != null ? sliceInfo.clone() : null;
 		
-		return new SliceFromSeriesMetadata(soi, shi, sli);
+		return new SliceFromSeriesMetadata(soi, sli);
 		}
 
 	@Override
 	public int[] getDataDimensions() {
-		return shapeInfo != null ? shapeInfo.getDataDimensions()  : null;
+		return sliceInfo != null ? sliceInfo.getDataDimensions()  : null;
 	}
 
 	@Override
@@ -73,8 +65,8 @@ public class SliceFromSeriesMetadata implements OriginMetadata {
 	}
 
 	@Override
-	public Slice[] getInitialSlice() {
-		return sliceInfo != null ? sliceInfo.getViewSlice()  : null;
+	public Slice[] getSliceInOutput() {
+		return sliceInfo != null ? sliceInfo.getSliceInOutput()  : null;
 	}
 
 	@Override
@@ -88,19 +80,25 @@ public class SliceFromSeriesMetadata implements OriginMetadata {
 	}
 
 	@Override
-	public Slice[] getCurrentSlice() {
-		return sliceInfo != null ? sliceInfo.getCurrentSlice()  : null;
+	public Slice[] getSliceFromInput() {
+		return sliceInfo != null ? sliceInfo.getSliceFromInput()  : null;
+	}
+	
+	public int[] getSubSampledShape() {
+		return sliceInfo != null ? sliceInfo.getSubSampledShape() : null;
+	}
+	
+	public int getTotalSlices() {
+		return sliceInfo != null ? sliceInfo.getTotalSlices() : -1;
+	}
+	
+	public boolean isDataDimension(int dim) {
+		return sliceInfo != null ? sliceInfo.isDataDimension(dim) : false;
 	}
 	
 	public void reducedDimensionToSingular(int dim) {
-		if (shapeInfo.isDataDimension(dim)) throw new IllegalArgumentException("Cannot reduce data dimension!");
-		
-		int[] sss = getShapeInfo().getSubSampledShape();
-		Slice[] cs = getCurrentSlice();
-		sss[dim] = 1;
-		cs[dim].setStart(0);
-		cs[dim].setStop(1);
-		cs[dim].setStep(1);
+		if (sliceInfo.isDataDimension(dim)) throw new IllegalArgumentException("Cannot reduce data dimension!");
+		sliceInfo.reducedDimensionToSingular(dim);
 		
 	}
 }

@@ -433,7 +433,7 @@ public abstract class AbstractOperation<T extends IOperationModel, D extends Ope
 
 		SliceFromSeriesMetadata ssm = getSliceSeriesMetadata(slice);
 
-		return ssm == null ? null : ssm.getShapeInfo().getDataDimensions();
+		return ssm == null ? null : ssm.getDataDimensions();
 
 	}
 	

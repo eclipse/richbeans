@@ -16,16 +16,16 @@ import org.eclipse.dawnsci.analysis.api.metadata.OriginMetadata;
 public class OriginMetadataImpl implements OriginMetadata {
 	
 	private ILazyDataset parent;
-	private Slice[] viewSlice;
+	private Slice[] outSlice;
 	private Slice[] currentSlice;
 	private int[] dataDims;
 	
 	private String datasetName;
 	private String filePath;
 
-	public OriginMetadataImpl(ILazyDataset parent, Slice[] viewSlice, int[] dataDims, String filePath, String datasetName) {
+	public OriginMetadataImpl(ILazyDataset parent, Slice[] outSlice, int[] dataDims, String filePath, String datasetName) {
 		this.parent = parent;
-		this.viewSlice = viewSlice;
+		this.outSlice = outSlice;
 		this.dataDims = dataDims;
 		this.datasetName = datasetName;
 		this.filePath = filePath;
@@ -33,7 +33,7 @@ public class OriginMetadataImpl implements OriginMetadata {
 
 	public OriginMetadataImpl(OriginMetadataImpl origin) {
 		parent = origin.parent == null ? null : origin.parent;
-		viewSlice = origin.viewSlice == null ? null : origin.viewSlice.clone();
+		outSlice = origin.outSlice == null ? null : origin.outSlice.clone();
 		dataDims = origin.dataDims == null ? null : origin.dataDims.clone();
 		datasetName = origin.datasetName == null ? null : new String(origin.datasetName);
 		filePath = origin.filePath == null ? null : new String(origin.filePath);
@@ -51,7 +51,7 @@ public class OriginMetadataImpl implements OriginMetadata {
 	}
 
 	@Override
-	public Slice[] getCurrentSlice() {
+	public Slice[] getSliceFromInput() {
 		return currentSlice;
 	}
 	
@@ -65,8 +65,8 @@ public class OriginMetadataImpl implements OriginMetadata {
 	}
 
 	@Override
-	public Slice[] getInitialSlice() {
-		return viewSlice;
+	public Slice[] getSliceInOutput() {
+		return outSlice;
 	}
 
 	@Override

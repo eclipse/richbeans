@@ -12,10 +12,12 @@
 
 package org.eclipse.dawnsci.analysis.dataset.slicer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
@@ -27,6 +29,7 @@ import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.dataset.impl.PositionIterator;
+import org.eclipse.dawnsci.analysis.dataset.impl.SliceND;
 
 /**
  * Methods for slicing data using visit patterns.
@@ -118,7 +121,7 @@ public class Slicer {
 			SliceFromSeriesMetadata ssm = slice.getMetadata(SliceFromSeriesMetadata.class).get(0);
 			data.setMetadata(ssm);
 			if (visitor!=null) {
-			    visitor.visit(data, ssm.getSliceInfo().getCurrentSlice(), ssm.getShapeInfo().getSubSampledShape());
+			    visitor.visit(data, ssm.getSliceInfo().getSliceInOutput(), ssm.getSubSampledShape());
 			} else {
 				return data;
 			}
@@ -146,63 +149,37 @@ public class Slicer {
 		
 		//create array of ignored axes values
 		int[] axes = getDataDimensions(fullDims, sliceDimensions);
-
-		//Take view of original lazy dataset removing start/stop/step
-		//Makes the iteration simpler
-		ILazyDataset lzView = lz.getSliceView(slices);
-
-		PositionIterator pi = new PositionIterator(lzView.getShape(), axes);
-		int[] pos = pi.getPos();
-		final int[] viewDims = lzView.getShape();
 		
-		int size = getSize(lz, sliceDimensions);
 		int count = 0;
 		final Queue<ILazyDataset> ret = new LinkedList<ILazyDataset>();
-		while (pi.hasNext()) {
-			//View
-			int[] end = pos.clone();
-			for (int i = 0; i<pos.length;i++) {
-				end[i]++;
-			}
-
-			for (int i = 0; i < axes.length; i++){
-				end[axes[i]] = viewDims[axes[i]];
-			}
-
-			int[] st = pos.clone();
-			for (int i = 0; i < st.length;i++) st[i] = 1;
-
-			//Original
-			int[] startO = pos.clone();
-			for (int i = 0; i<pos.length;i++) {
-				startO[i] += (slices[i].getStart() + startO[i]*slices[i].getStep());
-			}
-			int[] endO = startO.clone();
-			for (int i = 0; i<pos.length;i++) {
-				endO[i]++;
-			}
-			for (int i = 0; i < axes.length; i++){
-				endO[axes[i]] = viewDims[axes[i]];
-			}
+		
+		SliceND sampling = new SliceND(lz.getShape(), slices);
+		
+		SliceNDGenerator g = new SliceNDGenerator(lz.getShape(), axes, sampling);
+		
+		List<SliceND> outpos = new ArrayList<SliceND>();
+		
+		List<SliceND> dslices = g.generateDataSlices(outpos);
+		int size = dslices.size();
+		
+		for (int i = 0; i < dslices.size(); i++) {
+			SliceND in = dslices.get(i);
+			SliceND out = outpos.get(i);
 			
-			Slice[] sa = Slice.convertToSlice(pos, end, st);
-			Slice[] sO = Slice.convertToSlice(startO, endO, st);
-			
-			//TODO dont convert to slices just to create string - use create string on start stop step
-			String sliceName = Slice.createString(sa);			
+			String sliceName = in.toString();		
 			sliceName = (nameFragment!=null ? nameFragment : "") + " ("+ sliceName+")";
+
+			SliceInformation sli = new SliceInformation(in,out,sampling,lz.getShape(),axes, size,count);
+			SliceFromSeriesMetadata ssm = new SliceFromSeriesMetadata(sli);
 			
-			ShapeInformation shi = new ShapeInformation(viewDims, axes, size);
-			SliceInformation sli = new SliceInformation(sa,slices, count);
-			SliceFromSeriesMetadata ssm = new SliceFromSeriesMetadata(shi, sli);
-			
-			ILazyDataset sliceView = lzView.getSliceView(sa);
+			ILazyDataset sliceView = lz.getSliceView(in.convertToSlice());
 			sliceView.setName(sliceName);
 			sliceView.setMetadata(ssm);
 			
 			count++;
 			ret.add(sliceView);
 		}
+		
 		return ret;
 	}
 

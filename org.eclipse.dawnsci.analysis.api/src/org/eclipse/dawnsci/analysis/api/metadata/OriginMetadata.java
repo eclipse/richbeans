@@ -30,7 +30,7 @@ public interface OriginMetadata extends DimensionMetadata {
 	 * The starting slice
 	 * @return the initial slice
 	 */
-	public Slice[] getInitialSlice();
+	public Slice[] getSliceFromInput();
 	
 	/**
 	 * 
@@ -48,6 +48,6 @@ public interface OriginMetadata extends DimensionMetadata {
 	 * Current slice information.
 	 * @return the current slice.
 	 */
-	public Slice[] getCurrentSlice();
+	public Slice[] getSliceInOutput();
 	
 }
