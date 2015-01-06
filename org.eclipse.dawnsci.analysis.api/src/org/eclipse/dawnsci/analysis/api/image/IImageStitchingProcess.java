@@ -74,11 +74,12 @@ public interface IImageStitchingProcess {
 	 *            X/Y expected translations in microns (mainly used if no feature association)
 	 * @param roi
 	 *            roi used to crop the images
-	 * @param hasFeatureAssociation
+	 * @param stitchingOptions
 	 *            is True then feature association will be used to find the translation coordinates
+	 *            is True then the source of the image input is a dat file
 	 * @return output stitched image
 	 */
 	public IDataset stitch(List<IDataset> input, int rows, int columns, double angle, double fieldOfView, List<double[]> translations, IROI roi,
-			boolean hasFeatureAssociation);
+			boolean ...stitchingOptions);
 
 }
