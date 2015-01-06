@@ -16,6 +16,10 @@
 
 package org.eclipse.dawnsci.analysis.dataset.slicer;
 
+import java.util.Arrays;
+
+import org.apache.commons.lang.ArrayUtils;
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.metadata.OriginMetadata;
@@ -100,5 +104,102 @@ public class SliceFromSeriesMetadata implements OriginMetadata {
 		if (sliceInfo.isDataDimension(dim)) throw new IllegalArgumentException("Cannot reduce data dimension!");
 		sliceInfo.reducedDimensionToSingular(dim);
 		
+	}
+	/**
+	 * For when external data is a different series of the same data shape.
+	 * 
+	 * Returns the dimensions of the input shape compatible with the series parent,
+	 * null if no suitable dimensions found.
+	 * 
+	 * i.e. if parent is [p,q,x,y] and shape is [v,x,y] returns [1,2]
+	 * 
+	 * @param shape
+	 * @return datadims
+	 */
+	public int[] getCompatibleDataDimensions(int[] shape) {
+		
+		int[] datadims = getDataDimensions();
+		int[] oShape = getParent().getShape();
+		
+		//same rank, dims must be same shape
+		if (shape.length == oShape.length) {
+			for (int i : datadims) {
+				if (shape[i] != oShape[i]) return null;
+			}
+			
+			return datadims.clone();
+		}
+		
+		boolean suitable = true;
+		
+		for (int i : datadims) {
+			if (i >= shape.length) {
+				suitable = false;
+				break;
+			}
+			if (shape[i] != oShape[i]){
+				suitable = false;
+				break;
+			}
+		}
+		
+		if (suitable) return datadims.clone();
+		
+		suitable = true;
+		
+		int[] shift = datadims.clone();
+		int rankdif = oShape.length-shape.length;
+		for (int i = 0; i < shift.length; i++) shift[i] -=rankdif;
+		
+		for (int i = 0; i < shift.length; i++) {
+			if (shift[i] >= shape.length || shift[i] < 0) {
+				suitable = false;
+				break;
+			}
+			if (shape[shift[i]] != oShape[datadims[i]]){
+				suitable = false;
+				break;
+			}
+		}
+		
+		if (suitable) return shift;
+			
+		return null;
+	}
+	
+	/**
+	 * Returns the slice corresponding to matching slice of parent, currently assumes
+	 * rank of input <= rank of parent
+	 * 
+	 * returns null if ds not suitable shape
+	 * 
+	 * i.e. if current slice is [3,4,x,y] and ds has shape [p,q,2] returns [3,4,:] 
+	 * 
+	 * @param ds
+	 * @return slice
+	 */
+	public IDataset getMatchingSlice(ILazyDataset ds) {
+		
+		int[] oShape = getParent().getShape();
+		int[] shape = ds.getShape();
+		int[] datadims = getDataDimensions();
+		
+		if (Arrays.equals(oShape, shape)){
+			return ds.getSlice(getSliceFromInput());
+		}
+		
+		Slice[] oSlices = getSliceFromInput();
+		Slice[] slices = new Slice[shape.length];
+		
+		for (int i = 0; i < slices.length; i++) {
+			if (ArrayUtils.contains(datadims, i)) {
+				slices[i] = null;
+			} else {
+				if (shape[i] != oShape[i]) return null;
+				slices[i] = oSlices[i];
+			}
+		}
+		
+		return ds.getSlice(slices);
 	}
 }
