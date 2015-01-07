@@ -79,4 +79,14 @@ public interface DataNode extends Node {
 	 * @param lazyDataset
 	 */
 	public void setDataset(ILazyDataset lazyDataset);
+
+	/**
+	 * @return true if dataset has been augmented with metadata
+	 */
+	public boolean isAugmented();
+
+	/**
+	 * Set state to indicate dataset has been augmented with metadata
+	 */
+	public void setAugmented();
 }

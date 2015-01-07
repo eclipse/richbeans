@@ -24,6 +24,7 @@ public class DataNodeImpl extends NodeImpl implements DataNode, Serializable {
 
 	private boolean string = false;
 	private boolean supported = false;
+	private boolean augmented = false;
 	private ILazyDataset dataset;
 	private long[] maxShape;
 	private String text;
@@ -114,6 +115,16 @@ public class DataNodeImpl extends NodeImpl implements DataNode, Serializable {
 		dataset = lazyDataset;
 		supported = true;
 		string = lazyDataset instanceof StringDataset || lazyDataset.elementClass() == String.class;
+	}
+
+	@Override
+	public boolean isAugmented() {
+		return augmented;
+	}
+
+	@Override
+	public void setAugmented() {
+		augmented = true;
 	}
 
 	@Override

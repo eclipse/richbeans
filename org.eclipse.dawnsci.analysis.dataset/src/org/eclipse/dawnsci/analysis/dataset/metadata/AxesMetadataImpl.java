@@ -113,5 +113,4 @@ public class AxesMetadataImpl implements AxesMetadata {
 	public AxesMetadata createAxesMetadata(int rank) {
 		return new AxesMetadataImpl(rank);
 	}
-	
 }
