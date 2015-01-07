@@ -47,13 +47,13 @@ public @interface OperationModelField {
 	 * 
 	 * @return maximum allowed legal value for field
 	 */
-	public double max() default 1000d;
+	public double max() default Double.POSITIVE_INFINITY;
 	
 	/**
 	 * 
 	 * @return minimum allowed legal value for field
 	 */
-	public double min() default 0d;
+	public double min() default Double.NEGATIVE_INFINITY;
 
 	/**
 	 * 
@@ -77,4 +77,11 @@ public @interface OperationModelField {
 	 * @return the file type.
 	 */
 	public FileType file() default FileType.NONE;
+	
+	/**
+	 * Used to specify a dataset from a specific file
+	 * 
+	 * @return the field name the corresponds to file path in the model
+	 */
+	public String dataset() default "";
 }
