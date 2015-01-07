@@ -28,11 +28,11 @@ public class TraceWillPlotEvent extends EventObject {
 	public  boolean         doit = true;
 	
 	private IDataset image=null;
-	private boolean         newImageDataSet = false;
+	private boolean         newImageDataset = false;
 	
 	private List<IDataset> axes=null;
 	private IDataset xLineData=null, yLineData=null;
-	private boolean         newLineDataSet = false;
+	private boolean         newLineDataset = false;
 	
 	private final boolean applyStraightAway;
 
@@ -86,7 +86,7 @@ public class TraceWillPlotEvent extends EventObject {
 	public void setImageData(IDataset image, List<? extends IDataset> axes) {
 		this.image = image;
 		this.axes = (List<IDataset>) axes;
-		newImageDataSet = true;
+		newImageDataset = true;
 		
 		if (applyStraightAway && source instanceof IImageTrace) {
 			IImageTrace it = (IImageTrace)source;
@@ -95,7 +95,7 @@ public class TraceWillPlotEvent extends EventObject {
 	}
 
 	public void setNewImageDataSet(boolean newImageDataSet) {
-		this.newImageDataSet = newImageDataSet;
+		this.newImageDataset = newImageDataSet;
 	}
 
 	public List<IDataset> getAxes() {
@@ -112,7 +112,7 @@ public class TraceWillPlotEvent extends EventObject {
 	public void setLineData(IDataset xLineData, IDataset yLineData) {
 		this.xLineData = xLineData;
 		this.yLineData = yLineData;
-		newLineDataSet = true;
+		newLineDataset = true;
 		
 		if (applyStraightAway && source instanceof ILineTrace) {
 			ILineTrace lt = (ILineTrace)source;
@@ -121,11 +121,11 @@ public class TraceWillPlotEvent extends EventObject {
 	}
 
 	public boolean isNewImageDataSet() {
-		return newImageDataSet;
+		return newImageDataset;
 	}
 
 	public boolean isNewLineDataSet() {
-		return newLineDataSet;
+		return newLineDataset;
 	}
 
 	public ITrace getTrace() {
