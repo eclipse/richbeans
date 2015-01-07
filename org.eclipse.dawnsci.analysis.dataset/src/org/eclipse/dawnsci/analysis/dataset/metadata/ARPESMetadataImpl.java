@@ -26,7 +26,7 @@ public class ARPESMetadataImpl implements ARPESMetadata {
 	private static final String NX_ARPES_ANALYSER_PASS_ENERGY = "/entry1/instrument/analyser/pass_energy";
 	private static final String NX_ARPES_ANALYSER_DATA = "/entry1/instrument/analyser/data";
 	
-	public static ILazyDataset GetFromDataHolder(IDataHolder dh) {
+	public static ILazyDataset getFromDataHolder(IDataHolder dh) {
 		// TODO this needs to be fixed up a little to be useful, but this will do to start.
 		// Add ARPES specific metadata where required.
 		if (dh.contains(NX_ARPES_ANALYSER_DATA)) {
@@ -205,9 +205,9 @@ public class ARPESMetadataImpl implements ARPESMetadata {
 		this.polarAngles = polarAngles;
 	}
 
-	public void setPolarAngles(double staticPolarAngle) {
-		// TODO Auto-generated method stub
-	}
+//	public void setPolarAngles(double staticPolarAngle) {
+//		polarAngles = DatasetFactory.createFromObject(staticPolarAngle);
+//	}
 
 	@Override
 	public ILazyDataset getTiltAngles() {
