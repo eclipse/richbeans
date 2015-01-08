@@ -84,4 +84,11 @@ public @interface OperationModelField {
 	 * @return the field name the corresponds to file path in the model
 	 */
 	public String dataset() default "";
+	
+	/**
+	 * used to show this value corresponds to an x or y axis range
+	 * 
+	 * @return the range type
+	 */
+	public RangeType rangevalue() default RangeType.NONE;
 }
