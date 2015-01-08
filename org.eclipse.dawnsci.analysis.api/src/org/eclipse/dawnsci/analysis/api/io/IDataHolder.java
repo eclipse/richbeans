@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.metadata.IMetadata;
+import org.eclipse.dawnsci.analysis.api.tree.Tree;
 
 public interface IDataHolder extends IDataAnalysisObject {
 	
@@ -133,7 +134,6 @@ public interface IDataHolder extends IDataAnalysisObject {
 	public void setLoaderClass(Class<? extends IFileLoader> clazz);
 
 	/**
-	 * 
 	 * @return the loader class, if any used to load this data.
 	 */
 	public Class<? extends IFileLoader> getLoaderClass();
@@ -147,10 +147,12 @@ public interface IDataHolder extends IDataAnalysisObject {
 	public void clear();
 
 	/**
-	 *
 	 * @return  The list of data in the holder (lazy)
 	 */
 	public List<ILazyDataset> getList();
 
-
+	/**
+	 * @return tree (can be null)
+	 */
+	public Tree getTree();
 }
