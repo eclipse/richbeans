@@ -12,6 +12,7 @@
 
 package org.eclipse.dawnsci.analysis.api.tree;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -178,4 +179,9 @@ public interface GroupNode extends Node, Iterable<NodeLink> {
 	 */
 	@Override
 	public Iterator<NodeLink> iterator();
+
+	/**
+	 * @return names of nodes
+	 */
+	public Collection<String> getNames();
 }

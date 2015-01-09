@@ -14,6 +14,7 @@ package org.eclipse.dawnsci.analysis.tree.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,11 +23,11 @@ import java.util.Map.Entry;
 
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.tree.DataNode;
-import org.eclipse.dawnsci.analysis.api.tree.Tree;
 import org.eclipse.dawnsci.analysis.api.tree.GroupNode;
 import org.eclipse.dawnsci.analysis.api.tree.Node;
 import org.eclipse.dawnsci.analysis.api.tree.NodeLink;
 import org.eclipse.dawnsci.analysis.api.tree.SymbolicNode;
+import org.eclipse.dawnsci.analysis.api.tree.Tree;
 
 public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 	protected static final long serialVersionUID = 8830337783420707862L;
@@ -87,27 +88,29 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 	 */
 	@Override
 	public void addNodeLink(final NodeLink link) {
-		final String name = link.getName();
-		if (nodes.containsKey(name)) {
-			Node n = nodes.get(name).getDestination();
+		synchronized (nodes) {
+			final String name = link.getName();
+			if (nodes.containsKey(name)) {
+				Node n = nodes.get(name).getDestination();
+				if (n instanceof SymbolicNode)
+					n = ((SymbolicNode) n).getNode();
+				if (link.isDestinationData() && !(n instanceof DataNode)) {
+					throw new IllegalArgumentException("Cannot add a group as there is a non-group of same name: " + name);
+				}
+				if (link.isDestinationGroup() && !(n instanceof GroupNode)) {
+					throw new IllegalArgumentException("Cannot add a group as there is a non-dataset of same name: " + name);
+				}
+			}
+			Node n = link.getDestination();
 			if (n instanceof SymbolicNode)
 				n = ((SymbolicNode) n).getNode();
-			if (link.isDestinationData() && !(n instanceof DataNode)) {
-				throw new IllegalArgumentException("Cannot add a group as there is a non-group of same name: " + name);
+			if (n instanceof GroupNode) {
+				groups++;
+			} else {
+				datasets++;
 			}
-			if (link.isDestinationGroup() && !(n instanceof GroupNode)) {
-				throw new IllegalArgumentException("Cannot add a group as there is a non-dataset of same name: " + name);
-			}
+			nodes.put(name, link);
 		}
-		Node n = link.getDestination();
-		if (n instanceof SymbolicNode)
-			n = ((SymbolicNode) n).getNode();
-		if (n instanceof GroupNode) {
-			groups++;
-		} else {
-			datasets++;
-		}
-		nodes.put(name, link);
 	}
 
 	/**
@@ -173,17 +176,19 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 	 * @param g group
 	 */
 	public void addGroupNode(final Tree file, final String path, final String name, final GroupNode g) {
-		if (nodes.containsKey(name)) {
-			Node n = nodes.get(name).getDestination();
-			if (n instanceof SymbolicNode)
-				n = ((SymbolicNode) n).getNode();
-			if (n instanceof DataNode) {
-				throw new IllegalArgumentException("Cannot add a group as there is a dataset of same name: " + name);
+		synchronized (nodes) {
+			if (nodes.containsKey(name)) {
+				Node n = nodes.get(name).getDestination();
+				if (n instanceof SymbolicNode)
+					n = ((SymbolicNode) n).getNode();
+				if (n instanceof DataNode) {
+					throw new IllegalArgumentException("Cannot add a group as there is a dataset of same name: " + name);
+				}
+			} else {
+				groups++;
 			}
-		} else {
-			groups++;
+			nodes.put(name, createNodeLink(file, path, name, g));
 		}
-		nodes.put(name, createNodeLink(file, path, name, g));
 	}
 
 	/**
@@ -265,17 +270,19 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 	 */
 	@Override
 	public void addDataNode(final Tree file, final String path, final String name, final DataNode d) {
-		if (nodes.containsKey(name)) {
-			Node n = nodes.get(name).getDestination();
-			if (n instanceof SymbolicNode)
-				n = ((SymbolicNode) n).getNode();
-			if (n instanceof GroupNode) {
-				throw new IllegalArgumentException("Cannot add a dataset as there is a group of same name: " + name);
+		synchronized (nodes) {
+			if (nodes.containsKey(name)) {
+				Node n = nodes.get(name).getDestination();
+				if (n instanceof SymbolicNode)
+					n = ((SymbolicNode) n).getNode();
+				if (n instanceof GroupNode) {
+					throw new IllegalArgumentException("Cannot add a dataset as there is a group of same name: " + name);
+				}
+			} else {
+				datasets++;
 			}
-		} else {
-			datasets++;
+			nodes.put(name, createNodeLink(file, path, name, d));
 		}
-		nodes.put(name, createNodeLink(file, path, name, d));
 	}
 
 	protected NodeLink createNodeLink(final Tree file, final String path, final String name, final Node n) {
@@ -325,19 +332,21 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 	 * @param s symbolic node
 	 */
 	public void addSymbolicNode(final Tree file, final String path, final String name, final SymbolicNode s) {
-		if (nodes.containsKey(name)) {
-			Node n = nodes.get(name).getDestination();
-			if (n instanceof SymbolicNode)
-				n = ((SymbolicNode) n).getNode();
-			if (n instanceof DataNode) {
-				throw new IllegalArgumentException("Cannot add a group as there is a dataset of same name: " + name);
+		synchronized (nodes) {
+			if (nodes.containsKey(name)) {
+				Node n = nodes.get(name).getDestination();
+				if (n instanceof SymbolicNode)
+					n = ((SymbolicNode) n).getNode();
+				if (n instanceof DataNode) {
+					throw new IllegalArgumentException("Cannot add a group as there is a dataset of same name: " + name);
+				}
+			} else {
+				if (name.endsWith(Node.SEPARATOR)) {
+					groups++;
+				}
 			}
-		} else {
-			if (name.endsWith(Node.SEPARATOR)) {
-				groups++;
-			}
+			nodes.put(name, createNodeLink(file, path, name, s));
 		}
-		nodes.put(name, createNodeLink(file, path, name, s));
 	}
 
 	/**
@@ -467,5 +476,12 @@ public class GroupNodeImpl extends NodeImpl implements GroupNode, Serializable {
 	@Override
 	public Iterator<NodeLink> iterator() {
 		return (Iterator<NodeLink>)  nodes.values().iterator();
+	}
+
+	@Override
+	public Collection<String> getNames() {
+		synchronized (nodes) {
+			return new ArrayList<String>(nodes.keySet());
+		}
 	}
 }
