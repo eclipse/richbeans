@@ -81,8 +81,7 @@ public class ErrorMetadataImpl implements ErrorMetadata, Serializable {
 	}
 
 	private ILazyDataset sanitizeErrorData(ILazyDataset errorData) {
-		// remove any axes metadata to prevent infinite recursion
-		// and also check rank
+		// remove any axes metadata as parent already has them
 		if (errorData == null) return null;
 		ILazyDataset view = errorData.getSliceView();
 		view.clearMetadata(AxesMetadata.class);
