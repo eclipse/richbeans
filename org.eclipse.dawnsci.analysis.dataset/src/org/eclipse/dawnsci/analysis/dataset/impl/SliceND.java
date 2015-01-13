@@ -22,6 +22,7 @@ public class SliceND {
 	private int[] lstop;
 	private int[] lstep;
 	private int[] lshape;
+	private int[] oshape;
 
 	private boolean allData;
 
@@ -36,6 +37,7 @@ public class SliceND {
 		lstep  = new int[rank];
 		Arrays.fill(lstep, 1);
 		lshape = shape.clone();
+		oshape = shape.clone();
 		allData = true;
 	}
 
@@ -50,6 +52,7 @@ public class SliceND {
 		lstop  = new int[rank];
 		lstep  = new int[rank];
 		lshape  = new int[rank];
+		oshape = shape.clone();
 		final int length = slice == null ? 0 : slice.length;
 		int i = 0;
 		if (slice != null && length <= rank) {
@@ -165,6 +168,7 @@ public class SliceND {
 		}
 
 		lshape = new int[rank];
+		oshape = shape.clone();
 
 		// sanitise input
 		for (int i = 0; i < rank; i++) {
@@ -188,7 +192,7 @@ public class SliceND {
 				if (e < 0) {
 					lstop[i] = e += s;
 				}
-				if (e < -1 || e > s) {
+				if (e < -1 || e > (s + d)) {
 					throw new IllegalArgumentException("Stop entry is outside bounds");
 				}
 				if (b == e) {
@@ -289,7 +293,7 @@ public class SliceND {
 		}
 		StringBuilder s = new StringBuilder();
 		for (int i = 0; i < rank; i++) {
-			Slice.appendSliceToString(s, lshape[i], lstart[i], lstop[i], lstep[i]);
+			Slice.appendSliceToString(s, oshape[i], lstart[i], lstop[i], lstep[i]);
 			s.append(',');
 		}
 	
