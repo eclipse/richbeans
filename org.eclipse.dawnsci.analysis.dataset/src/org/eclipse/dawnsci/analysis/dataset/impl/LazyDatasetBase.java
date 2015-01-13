@@ -519,6 +519,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 			int or = lz.getRank();
 			int nr = newShape.length;
 			int[] nshape = new int[nr];
+			Arrays.fill(nshape, 1);
 			if (onesOnly) {
 				// ignore omit removed dimensions
 				for (int i = 0, si = 0, di = 0; i < (or+1) && si <= or && di < nr; i++) {
@@ -527,7 +528,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 						nshape[di++] = lshape[si++];
 					} else if (c > 0) {
 						while (c-- > 0 && di < nr) {
-							nshape[di++] = 1;
+							di++;
 						}
 					} else if (c < 0) {
 						si -= c; // remove dimensions by skipping forward in source array
@@ -549,7 +550,6 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 							logger.error("Metadata contains a broadcast axis which cannot be reshaped");
 							throw new IllegalArgumentException("Metadata contains a broadcast axis which cannot be reshaped");
 						}
-						nshape[i] = 1;
 					} else {
 						nshape[i] = nsize < osize ? newShape[i] : 1;
 					}
@@ -626,11 +626,11 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	 * Slice all datasets in metadata that are annotated by @Sliceable. Call this on the new sliced
 	 * dataset after cloning the metadata
 	 * @param asView if true then just a view
-	 * @param params
-	 * @param oShape
+	 * @param oldShape
+	 * @param slice
 	 */
-	protected void sliceMetadata(boolean asView, final int[] oShape, final SliceND params) {
-		processAnnotatedMetadata(new MdsSlice(asView, params.getStart(), params.getStop(), params.getStep(), oShape), true);
+	protected void sliceMetadata(boolean asView, final int[] oldShape, final SliceND slice) {
+		processAnnotatedMetadata(new MdsSlice(asView, slice.getStart(), slice.getStop(), slice.getStep(), oldShape), true);
 	}
 
 	/**
@@ -714,7 +714,7 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 					if (n < 0)
 						n = l;
 					Object narray = Array.newInstance(r.getClass(), n);
-					for (int i = 0, si = 0, di = 0; di < n; i++) {
+					for (int i = 0, si = 0, di = 0; di < n && si < l; i++) {
 						int c = op.change(i);
 						if (c == 0) {
 							Array.set(narray, di++, processObject(op, Array.get(o, si++)));

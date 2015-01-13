@@ -437,6 +437,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			}
 		}
 
+		SliceND nslice = new SliceND(oShape, nstart, nstop, nstep);
 		Dataset a;
 		if (base != null) {
 			a = base.getSlice(monitor, nstart, nstop, nstep);
@@ -445,14 +446,17 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 				a = DatasetUtils.convertToDataset(loader.getDataset(monitor, oShape, nstart, nstop, nstep));
 			} catch (Exception e) {
 				// return a fake dataset to show that this has not worked, should not be used in general though.
-				logger.debug("Problem getting {}: {}", String.format("slice %s %s %s", Arrays.toString(start), Arrays.toString(stop),
-								Arrays.toString(step)), e);
+				logger.debug("Problem getting {}: {}", String.format("slice %s %s %s", Arrays.toString(slice.getStart()), Arrays.toString(slice.getStop()),
+								Arrays.toString(slice.getStep())), e);
 				a = new DoubleDataset(1);
 			}
-			a.setName(name + AbstractDataset.BLOCK_OPEN + Slice.createString(oShape, nstart, nstop, nstep) + AbstractDataset.BLOCK_CLOSE);
+			a.setName(name + AbstractDataset.BLOCK_OPEN + nslice.toString() + AbstractDataset.BLOCK_CLOSE);
 			if (metadata != null && a instanceof LazyDatasetBase) {
 				((LazyDatasetBase) a).metadata = copyMetadata();
-				((LazyDatasetBase) a).sliceMetadata(true, shape, slice);
+				if (oShape.length != shape.length)
+					((LazyDatasetBase) a).reshapeMetadata(shape, oShape);
+				if (!nslice.isAll())
+					((LazyDatasetBase) a).sliceMetadata(true, shape, nslice);
 			}
 		}
 		if (map != null) {
