@@ -190,7 +190,7 @@ public class SliceND {
 				if (e < 0) {
 					lstop[i] = e += s;
 				}
-				if (e < -1 || e > (s + d)) {
+				if (e < -1 || e >= (s + d)) {
 					throw new IllegalArgumentException("Stop entry is outside bounds");
 				}
 				if (b == e) {
