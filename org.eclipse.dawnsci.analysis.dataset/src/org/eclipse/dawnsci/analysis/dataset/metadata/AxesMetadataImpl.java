@@ -97,8 +97,9 @@ public class AxesMetadataImpl implements AxesMetadata {
 		if (axisData == null) return null;
 		ILazyDataset view = axisData.getSliceView();
 		view.clearMetadata(AxesMetadata.class);
-		if (axisData.getRank() != allAxes.length) {
-			if (axisData.getRank() != 1) {
+		int r = axisData.getRank(); 
+		if (r != allAxes.length) {
+			if (r > 1) {
 				throw new IllegalArgumentException("Given axis dataset must be one dimensional or match rank");
 			}
 			int[] newShape = new int[allAxes.length];
