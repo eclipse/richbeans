@@ -16,6 +16,7 @@ import java.io.Serializable;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
+import org.eclipse.dawnsci.analysis.api.metadata.AxesMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.ErrorMetadata;
 import org.eclipse.dawnsci.analysis.api.metadata.MetadataType;
 import org.eclipse.dawnsci.analysis.api.metadata.Reshapeable;
@@ -63,7 +64,7 @@ public class ErrorMetadataImpl implements ErrorMetadata, Serializable {
 	}
 
 	public void setError(ILazyDataset error) {
-		this.error = error;
+		this.error = sanitizeErrorData(error);
 		this.sqError = null;
 	}
 
@@ -74,7 +75,17 @@ public class ErrorMetadataImpl implements ErrorMetadata, Serializable {
 	}
 
 	public void setSquaredError(IDataset sqErrors) {
-		sqError = DatasetUtils.convertToDataset(sqErrors);
-		error = Maths.sqrt(sqErrors);
+		sqError = DatasetUtils.convertToDataset(sanitizeErrorData(sqErrors));
+		if (sqError != null)
+			error = Maths.sqrt(sqError);
+	}
+
+	private ILazyDataset sanitizeErrorData(ILazyDataset errorData) {
+		// remove any axes metadata to prevent infinite recursion
+		// and also check rank
+		if (errorData == null) return null;
+		ILazyDataset view = errorData.getSliceView();
+		view.clearMetadata(AxesMetadata.class);
+		return view;
 	}
 }
