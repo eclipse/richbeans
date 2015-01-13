@@ -449,7 +449,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			}
 		}
 
-		SliceND nslice = new SliceND(oShape, nstart, nstop, nstep);
+		SliceND nslice = new SliceND(base == null ? oShape : base.shape, nstart, nstop, nstep);
 		Dataset a;
 		if (base != null) {
 			a = base.getSlice(monitor, nstart, nstop, nstep);
