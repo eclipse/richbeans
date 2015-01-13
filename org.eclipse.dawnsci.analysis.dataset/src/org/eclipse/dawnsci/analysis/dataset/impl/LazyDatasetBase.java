@@ -241,6 +241,10 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 	}
 
 	protected Map<Class<? extends MetadataType>, List<MetadataType>> copyMetadata() {
+		return copyMetadata(metadata);
+	}
+
+	protected static Map<Class<? extends MetadataType>, List<MetadataType>> copyMetadata(Map<Class<? extends MetadataType>, List<MetadataType>> metadata) {
 		if (metadata == null)
 			return null;
 
