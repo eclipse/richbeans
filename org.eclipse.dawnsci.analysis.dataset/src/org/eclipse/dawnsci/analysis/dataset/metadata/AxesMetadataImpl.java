@@ -100,7 +100,7 @@ public class AxesMetadataImpl implements AxesMetadata {
 		int r = axisData.getRank(); 
 		if (r != allAxes.length) {
 			if (r > 1) {
-				throw new IllegalArgumentException("Given axis dataset must be one dimensional or match rank");
+				throw new IllegalArgumentException("Given axis dataset must be zero or one dimensional, or match rank");
 			}
 			int[] newShape = new int[allAxes.length];
 			Arrays.fill(newShape, 1);
