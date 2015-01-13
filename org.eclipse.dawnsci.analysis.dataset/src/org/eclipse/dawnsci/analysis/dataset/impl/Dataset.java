@@ -17,6 +17,7 @@ import java.io.Serializable;
 import org.eclipse.dawnsci.analysis.api.dataset.IErrorDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
+import org.eclipse.dawnsci.analysis.api.dataset.SliceND;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 
 /**
@@ -763,10 +764,19 @@ public interface Dataset extends IErrorDataset {
 	public Dataset getSlice(IMonitor mon, Slice... slice);
 
 	@Override
+	public Dataset getSlice(SliceND slice);
+
+	@Override
+	public Dataset getSlice(IMonitor mon, SliceND slice);
+
+	@Override
 	public Dataset getSliceView(int[] start, int[] stop, int[] step);
 
 	@Override
 	public Dataset getSliceView(Slice... slice);
+
+	@Override
+	public Dataset getSliceView(SliceND slice);
 
 	/**
 	 * This is modelled after the NumPy array slice
@@ -791,6 +801,14 @@ public interface Dataset extends IErrorDataset {
 	 * @param slice
 	 */
 	public Dataset setSlice(Object obj, Slice... slice);
+
+	/**
+	 * This is modelled after the NumPy array slice
+	 * 
+	 * @param obj
+	 * @param slice
+	 */
+	public Dataset setSlice(Object obj, SliceND slice);
 
 	/**
 	 * @param obj

@@ -176,4 +176,13 @@ public interface IDataset extends ILazyDataset {
 	 */
 	@Override
 	public IDataset getSliceView(Slice... slice);
+
+	/**
+	 * Get a slice of the dataset. The returned dataset is a view on a selection of items
+	 * 
+	 * @param slice an nD slice object
+	 * @return The sliced view of a dataset 
+	 */
+	@Override
+	public IDataset getSliceView(SliceND slice);
 }

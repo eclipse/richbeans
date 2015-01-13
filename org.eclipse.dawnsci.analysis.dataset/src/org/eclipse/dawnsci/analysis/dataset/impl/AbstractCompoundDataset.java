@@ -163,12 +163,22 @@ public abstract class AbstractCompoundDataset extends AbstractDataset implements
 	}
 
 	@Override
+	public CompoundDataset getSlice(IMonitor mon, SliceND slice) {
+		return (CompoundDataset) super.getSlice(mon, slice);
+	}
+
+	@Override
 	public CompoundDataset getSlice(int[] start, int[] stop, int[] step) {
 		return (CompoundDataset) super.getSlice(start, stop, step);
 	}
 
 	@Override
 	public CompoundDataset getSlice(Slice... slice) {
+		return (CompoundDataset) super.getSlice(slice);
+	}
+
+	@Override
+	public CompoundDataset getSlice(SliceND slice) {
 		return (CompoundDataset) super.getSlice(slice);
 	}
 
@@ -182,6 +192,11 @@ public abstract class AbstractCompoundDataset extends AbstractDataset implements
 
 	@Override
 	public CompoundDataset getSliceView(Slice... slice) {
+		return (CompoundDataset) super.getSliceView(slice);
+	}
+
+	@Override
+	public CompoundDataset getSliceView(SliceND slice) {
 		return (CompoundDataset) super.getSliceView(slice);
 	}
 

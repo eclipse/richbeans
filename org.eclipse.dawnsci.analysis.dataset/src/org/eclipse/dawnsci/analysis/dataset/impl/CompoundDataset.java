@@ -13,6 +13,7 @@
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
+import org.eclipse.dawnsci.analysis.api.dataset.SliceND;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 
 public interface CompoundDataset extends Dataset {
@@ -48,16 +49,25 @@ public interface CompoundDataset extends Dataset {
 	public CompoundDataset getSlice(IMonitor mon, Slice... slice);
 
 	@Override
+	public CompoundDataset getSlice(IMonitor mon, SliceND slice);
+
+	@Override
 	public CompoundDataset getSlice(int[] start, int[] stop, int[] step);
 
 	@Override
 	public CompoundDataset getSlice(Slice... slice);
 
 	@Override
+	public CompoundDataset getSlice(SliceND slice);
+
+	@Override
 	public CompoundDataset getSliceView(int[] start, int[] stop, int[] step);
 
 	@Override
 	public CompoundDataset getSliceView(Slice... slice);
+
+	@Override
+	public CompoundDataset getSliceView(SliceND slice);
 
 	@Override
 	public CompoundDataset getTransposedView(int... axes);

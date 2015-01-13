@@ -222,8 +222,18 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 	public Dataset getSlice(Slice... slice) {
 		try {
 			if (slice == null || slice.length == 0) {
-				return getSlice((IMonitor) null, (int[]) null, null, null);
+				return getSlice(null, new SliceND(shape));
 			}
+			return getSlice(null, new SliceND(shape, slice));
+		} catch (Exception e) {
+			logger.error("Problem slicing lazy dataset", e);
+		}
+		return null;
+	}
+
+	@Override
+	public Dataset getSlice(SliceND slice) {
+		try {
 			return getSlice(null, slice);
 		} catch (Exception e) {
 			logger.error("Problem slicing lazy dataset", e);
@@ -234,27 +244,17 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 	@Override
 	public Dataset getSlice(IMonitor monitor, Slice... slice) throws Exception {
 		if (slice == null || slice.length == 0) {
-			return getSlice((IMonitor) null, (int[]) null, null, null);
+			return getSlice(null, new SliceND(shape));
 		}
-		final int rank = shape.length;
-		final int[] start = new int[rank];
-		final int[] stop = new int[rank];
-		final int[] step = new int[rank];
-		Slice.convertFromSlice(slice, shape, start, stop, step);
-		return getSlice(monitor, start, stop, step);
+		return getSlice(null, new SliceND(shape, slice));
 	}
 
 	@Override
 	public LazyDataset getSliceView(Slice... slice) {
 		if (slice == null || slice.length == 0) {
-			return getSliceView((int[]) null, null, null);
+			return getSliceView(new SliceND(shape));
 		}
-		final int rank = shape.length;
-		final int[] start = new int[rank];
-		final int[] stop = new int[rank];
-		final int[] step = new int[rank];
-		Slice.convertFromSlice(slice, shape, start, stop, step);
-		return getSliceView(start, stop, step);
+		return getSliceView(new SliceND(shape, slice));
 	}
 
 	private void setShapeInternal(int... nShape) {
@@ -330,11 +330,15 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 
 	@Override
 	public LazyDataset getSliceView(int[] start, int[] stop, int[] step) {
+		return getSliceView(new SliceND(shape, start, stop, step));
+	}
+
+	@Override
+	public LazyDataset getSliceView(SliceND slice) {
 		LazyDataset view = clone();
-		if (start == null && stop == null && step == null)
+		if (slice.isAll())
 			return view;
 
-		SliceND slice = new SliceND(shape, start, stop, step);
 		int[] lstart = slice.getStart();
 		int[] lstep  = slice.getStep();
 		final int rank = shape.length;
@@ -403,11 +407,15 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 
 	@Override
 	public Dataset getSlice(IMonitor monitor, int[] start, int[] stop, int[] step) throws Exception {
+		return getSlice(monitor, new SliceND(shape, start, stop, step));
+	}
+
+	@Override
+	public Dataset getSlice(IMonitor monitor, SliceND slice) throws Exception {
 
 		if (loader != null && !loader.isFileReadable())
 			return null; // TODO add interaction to use plot (or remote) server to load dataset
 
-		SliceND slice = new SliceND(shape, start, stop, step);
 		int[] lstart = slice.getStart();
 		int[] lstop  = slice.getStop();
 		int[] lstep  = slice.getStep();
@@ -453,7 +461,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		SliceND nslice = new SliceND(base == null ? oShape : base.shape, nstart, nstop, nstep);
 		Dataset a;
 		if (base != null) {
-			a = base.getSlice(monitor, nstart, nstop, nstep);
+			a = base.getSlice(monitor, nslice);
 		} else {
 			try {
 				a = DatasetUtils.convertToDataset(loader.getDataset(monitor, oShape, nstart, nstop, nstep));

@@ -14,7 +14,6 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
@@ -224,7 +223,7 @@ public class AggregateDataset extends LazyDatasetBase implements ILazyDataset {
 	@Override
 	public IDataset getSlice(int[] start, int[] stop, int[] step) {
 		try {
-			return getSlice(null, start, stop, step);
+			return getSlice(null, new SliceND(shape, start, stop, step));
 		} catch (Exception e) {
 			logger.error("Problem slicing aggregate dataset", e);
 		}
@@ -233,16 +232,14 @@ public class AggregateDataset extends LazyDatasetBase implements ILazyDataset {
 
 	@Override
 	public IDataset getSlice(IMonitor monitor, int[] start, int[] stop, int[] step) throws Exception {
-		if (start == null) {
-			start = new int[shape.length];
-		}
-		if (stop == null) {
-			stop = shape.clone();
-		}
-		if (step == null) {
-			step = new int[shape.length];
-			Arrays.fill(step, 1);
-		}
+		return getSlice(monitor, new SliceND(shape, start, stop, step));
+	}
+
+	@Override
+	public IDataset getSlice(IMonitor monitor, SliceND slice) throws Exception {
+		int[] start = slice.getStart();
+		int[] stop  = slice.getStop();
+		int[] step  = slice.getStep();
 
 		if (base != null) {
 			for (int i = 0; i < shape.length; i++) {
@@ -297,31 +294,35 @@ public class AggregateDataset extends LazyDatasetBase implements ILazyDataset {
 	}
 
 	@Override
+	public IDataset getSlice(SliceND slice) {
+		try {
+			return getSlice(null, slice);
+		} catch (Exception e) {
+			logger.error("Problem slicing aggregate dataset", e);
+		}
+		return null;
+	}
+
+	@Override
 	public IDataset getSlice(IMonitor monitor, Slice... slice) throws Exception {
-		final int rank = shape.length;
-		final int[] start = new int[rank];
-		final int[] stop = new int[rank];
-		final int[] step = new int[rank];
-		Slice.convertFromSlice(slice, shape, start, stop, step);
-		return getSlice(monitor, start, stop, step);
+		return getSlice(monitor, new SliceND(shape, slice));
 	}
 
 	@Override
 	public ILazyDataset getSliceView(Slice... slice) {
-		final int rank = shape.length;
 		if (slice == null || slice.length == 0) {
-			return getSlice((int[]) null, null, null);
+			return getSlice(new SliceND(shape));
 		}
-		final int[] start = new int[rank];
-		final int[] stop = new int[rank];
-		final int[] step = new int[rank];
-		Slice.convertFromSlice(slice, shape, start, stop, step);
-		return getSliceView(start, stop, step);
+		return getSlice(new SliceND(shape, slice));
 	}
 
 	@Override
 	public AggregateDataset getSliceView(int[] start, int[] stop, int[] step) {
-		SliceND slice = new SliceND(shape, start, stop, step);
+		return getSliceView(new SliceND(shape, start, stop, step));
+	}
+
+	@Override
+	public AggregateDataset getSliceView(SliceND slice) {
 		AggregateDataset lazy = new AggregateDataset(isize, slice.getShape(), dtype);
 		lazy.sliceStart = slice.getStart();
 		lazy.sliceStep  = slice.getStep();

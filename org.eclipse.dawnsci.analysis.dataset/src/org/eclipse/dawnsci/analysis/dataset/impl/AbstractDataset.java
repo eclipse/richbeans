@@ -1507,6 +1507,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	 * @param slice
 	 * @return slice view
 	 */
+	@Override
 	public Dataset getSliceView(SliceND slice) {
 		final int rank = shape.length;
 		int[] sStride = new int[rank];
@@ -2427,6 +2428,11 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	}
 
 	@Override
+	public Dataset getSlice(IMonitor monitor, SliceND slice) {
+		return getSlice(slice);
+	}
+
+	@Override
 	public Dataset getSlice(IMonitor monitor, int[] start, int[] stop, int[] step) {
 		return getSlice(start, stop, step);
 	}
@@ -2436,6 +2442,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	 * @param slice
 	 * @return The dataset of the sliced data
 	 */
+	@Override
 	public Dataset getSlice(final SliceND slice) {
 		SliceIterator it = (SliceIterator) getSliceIterator(slice);
 		AbstractDataset s = getSlice(it);
@@ -2453,7 +2460,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	abstract public AbstractDataset getSlice(final SliceIterator iterator);
 
 	@Override
-	public Dataset setSlice(final Object obj, final int[] start, final int[] stop, final int[] step) {
+	public Dataset setSlice(final Object obj, final SliceND slice) {
 		Dataset ds;
 		if (obj instanceof Dataset) {
 			ds = (Dataset) obj;
@@ -2463,7 +2470,13 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 			ds = DatasetUtils.convertToDataset((ILazyDataset) obj);
 		}
 
-		return setSlicedView(getSliceView(start, stop, step), ds);
+		return setSlicedView(getSliceView(slice), ds);
+	}
+
+
+	@Override
+	public Dataset setSlice(final Object obj, final int[] start, final int[] stop, final int[] step) {
+		return setSlice(obj, new SliceND(shape, start, stop, step));
 	}
 
 	/**
@@ -2477,28 +2490,9 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	@Override
 	public Dataset setSlice(Object obj, Slice... slice) {
 		if (slice == null || slice.length == 0) {
-			Dataset ds;
-			if (obj instanceof Dataset) {
-				ds = (Dataset) obj;
-			} else if (!(obj instanceof IDataset)) {
-				ds = DatasetFactory.createFromObject(obj, isComplex() || getElementsPerItem() == 1 ? FLOAT64 : ARRAYFLOAT64);
-			} else {
-				ds = DatasetUtils.convertToDataset((ILazyDataset) obj);
-			}
-
-			setSlicedView(getSliceView(), ds);
-			return this;
+			return setSlice(obj, new SliceND(shape));
 		}
-
-		final int rank = shape.length;
-		final int[] start = new int[rank];
-		final int[] stop = new int[rank];
-		final int[] step = new int[rank];
-
-		Slice.convertFromSlice(slice, shape, start, stop, step);
-
-		setSlice(obj, start, stop, step);
-		return this;
+		return setSlice(obj, new SliceND(shape, slice));
 	}
 
 	@Override

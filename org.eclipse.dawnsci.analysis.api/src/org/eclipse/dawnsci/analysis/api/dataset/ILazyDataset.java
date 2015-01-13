@@ -118,12 +118,30 @@ public interface ILazyDataset extends Serializable, IMetadataProvider, INameable
 	/**
 	 * Get a slice of the dataset. The returned dataset is a copied selection of items
 	 * 
+	 * @param slice an n-D slice
+	 * @return The dataset of the sliced data
+	 */
+	public IDataset getSlice(final SliceND slice);
+
+	/**
+	 * Get a slice of the dataset. The returned dataset is a copied selection of items
+	 * 
 	 * @param monitor
 	 * @param slice an array of slice objects (the array can be null or contain nulls)
 	 * @return The dataset of the sliced data
 	 * @throws Exception 
 	 */
 	public IDataset getSlice(final IMonitor monitor, final Slice... slice) throws Exception;
+
+	/**
+	 * Get a slice of the dataset. The returned dataset is a copied selection of items
+	 * 
+	 * @param monitor
+	 * @param slice an n-D slice
+	 * @return The dataset of the sliced data
+	 * @throws Exception 
+	 */
+	public IDataset getSlice(final IMonitor monitor, final SliceND slice) throws Exception;
 
 	/**
 	 * Get a slice of the dataset. The returned lazy dataset is a view on a selection of items
@@ -145,6 +163,14 @@ public interface ILazyDataset extends Serializable, IMetadataProvider, INameable
 	 * @return The sliced view of a lazy dataset 
 	 */
 	public ILazyDataset getSliceView(final Slice... slice);
+
+	/**
+	 * Get a slice of the dataset. The returned lazy dataset is a view on a selection of items
+	 * 
+	 * @param slice an n-D slice
+	 * @return The sliced view of a lazy dataset 
+	 */
+	public ILazyDataset getSliceView(final SliceND slice);
 
 	/**
 	 * Permute copy of dataset's axes so that given order is old order:
