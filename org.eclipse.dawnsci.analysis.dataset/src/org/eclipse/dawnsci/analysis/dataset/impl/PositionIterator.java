@@ -13,6 +13,7 @@
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
+import org.eclipse.dawnsci.analysis.api.dataset.SliceND;
 
 
 /**

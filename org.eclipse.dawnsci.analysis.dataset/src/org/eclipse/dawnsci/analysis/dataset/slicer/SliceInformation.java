@@ -18,7 +18,7 @@ package org.eclipse.dawnsci.analysis.dataset.slicer;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.dawnsci.analysis.api.dataset.Slice;
-import org.eclipse.dawnsci.analysis.dataset.impl.SliceND;
+import org.eclipse.dawnsci.analysis.api.dataset.SliceND;
 
 public class SliceInformation {
 

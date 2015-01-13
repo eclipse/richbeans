@@ -7,11 +7,9 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.eclipse.dawnsci.analysis.dataset.impl;
+package org.eclipse.dawnsci.analysis.api.dataset;
 
 import java.util.Arrays;
-
-import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 
 /**
  * Class to represent a slice through all dimensions of a multi-dimensional dataset. A slice

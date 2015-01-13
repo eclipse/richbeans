@@ -14,6 +14,8 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 
 import java.util.Arrays;
 
+import org.eclipse.dawnsci.analysis.api.dataset.SliceND;
+
 
 /**
  * Class to run over a contiguous dataset using strides
