@@ -359,7 +359,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		}
 		if (oMetadata == null)
 			view.oMetadata = metadata;
-		view.sliceMetadata(true, shape, slice);
+		view.sliceMetadata(true, slice);
 		return view;
 	}
 
@@ -476,7 +476,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 				LazyDatasetBase ba = (LazyDatasetBase) a;
 				ba.metadata = copyMetadata(oMetadata != null ? oMetadata : metadata);
 				if (!nslice.isAll())
-					ba.sliceMetadata(true, oMetadata != null ? oShape : shape, nslice);
+					ba.sliceMetadata(true, nslice);
 			}
 		}
 		if (map != null) {

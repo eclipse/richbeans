@@ -1523,7 +1523,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 		s.base = base == null ? this : base;
 
 		s.metadata = copyMetadata();
-		s.sliceMetadata(true, shape, slice);
+		s.sliceMetadata(true, slice);
 
 		if (slice.isAll()) {
 			s.setName(name);
@@ -2447,7 +2447,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 		SliceIterator it = (SliceIterator) getSliceIterator(slice);
 		AbstractDataset s = getSlice(it);
 		s.metadata = copyMetadata();
-		s.sliceMetadata(true, shape, slice);
+		s.sliceMetadata(true, slice);
 		return s;
 	}
 

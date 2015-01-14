@@ -245,6 +245,13 @@ public class SliceND {
 	}
 
 	/**
+	 * @return shape of source dataset
+	 */
+	public int[] getSourceShape() {
+		return oshape;
+	}
+
+	/**
 	 * @return resulting shape
 	 */
 	public int[] getShape() {
