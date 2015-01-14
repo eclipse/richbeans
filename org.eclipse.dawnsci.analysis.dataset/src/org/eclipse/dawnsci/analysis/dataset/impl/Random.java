@@ -189,8 +189,27 @@ public class Random {
 	 * @return a lazy dataset with uniformly distributed random numbers
 	 */
 	public static ILazyDataset lazyRand(int... shape) {
+		return lazyRand(Dataset.FLOAT64, "random", shape);
+	}
+
+	/**
+	 * @param name
+	 * @param shape
+	 * @return a lazy dataset with uniformly distributed random numbers
+	 */
+	public static ILazyDataset lazyRand(String name, int... shape) {
+		return lazyRand(Dataset.FLOAT64, name, shape);
+	}
+
+	/**
+	 * @param dtype
+	 * @param name
+	 * @param shape
+	 * @return a lazy dataset with uniformly distributed random numbers
+	 */
+	public static ILazyDataset lazyRand(int dtype, String name, int... shape) {
 		
-		return new LazyDataset("random", Dataset.FLOAT64, shape, new ILazyLoader() {
+		return new LazyDataset(name, dtype, shape, new ILazyLoader() {
 
 			@Override
 			public boolean isFileReadable() {
@@ -198,11 +217,8 @@ public class Random {
 			}
 
 			@Override
-			public IDataset getDataset(IMonitor mon, int[] oshape, int[] start, int[] stop, int[] step) throws Exception {
-				SliceND slice = new SliceND(oshape, start, stop, step);
-				int[] newShape = slice.getShape();
-
-                return rand(newShape);
+			public IDataset getDataset(IMonitor mon, SliceND slice) throws Exception {
+                return rand(slice.getShape());
 			}
 		});
 	}

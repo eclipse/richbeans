@@ -87,10 +87,11 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			public boolean isFileReadable() {
 				return true;
 			}
+
 			@Override
-			public Dataset getDataset(IMonitor mon, int[] shape, int[] start, int[] stop, int[] step)
+			public Dataset getDataset(IMonitor mon, SliceND slice)
 					throws Exception {
-				return d.getSlice(mon, start, stop, step);
+				return d.getSlice(mon, slice);
 			}
 		});
 	}
@@ -464,7 +465,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			a = base.getSlice(monitor, nslice);
 		} else {
 			try {
-				a = DatasetUtils.convertToDataset(loader.getDataset(monitor, oShape, nstart, nstop, nstep));
+				a = DatasetUtils.convertToDataset(loader.getDataset(monitor, nslice));
 			} catch (Exception e) {
 				// return a fake dataset to show that this has not worked, should not be used in general though.
 				logger.debug("Problem getting {}: {}", String.format("slice %s %s %s", Arrays.toString(slice.getStart()), Arrays.toString(slice.getStop()),

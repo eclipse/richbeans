@@ -15,6 +15,7 @@ package org.eclipse.dawnsci.analysis.api.io;
 import java.io.Serializable;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.SliceND;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 
 public interface ILazyLoader extends Serializable {
@@ -27,12 +28,9 @@ public interface ILazyLoader extends Serializable {
 
 	/**
 	 * @param mon
-	 * @param shape
-	 * @param start
-	 * @param stop
-	 * @param step
+	 * @param slice
 	 * @return a slice of a dataset
 	 * @throws Exception
 	 */
-	public IDataset getDataset(IMonitor mon, int[] shape, int[] start, int[] stop, int[] step) throws Exception;
+	public IDataset getDataset(IMonitor mon, SliceND slice) throws Exception;
 }
