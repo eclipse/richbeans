@@ -84,7 +84,7 @@ public final class LazyMaths {
 	 * @param ignoreAxes
 	 * @return mean when given axes are ignored in lazy dataset
 	 */
-	public static Dataset mean(ILazyDataset data, int... ignoreAxes) {
+	public static Dataset mean(int start, int stop, ILazyDataset data, int... ignoreAxes) {
 		int[] shape = data.getShape();
 		PositionIterator iter = new PositionIterator(shape, ignoreAxes);
 		int[] pos = iter.getPos();
@@ -95,28 +95,27 @@ public final class LazyMaths {
 		Arrays.fill(st, 1);
 		int[] end = new int[rank];
 
-		Dataset average = null;
+		RunningAverage av = null;
 		int count = 1;
-		while (iter.hasNext()) {
+		int c = 0;
+		while (iter.hasNext() && count < stop +1) {
+			if (c++ < start) continue;
 			for (int i = 0; i < rank; i++) {
 				end[i] = omit[i] ? shape[i] : pos[i] + 1;
 			}
-
 			Dataset ds = DatasetUtils.cast(data.getSlice(pos, end, st), Dataset.FLOAT64);
-
-			if (average == null) {
-				average = ds;
-				count++;
+			if (av == null) {
+				av = new RunningAverage(ds,true);
 			} else {
-				ds.isubtract(average);
-				ds.idivide(count++);
-				average.iadd(ds);
+				av.updateDirty(ds);
 			}
 		}
 
-		if (average != null)
-			average.squeeze();
-		return average;
+		return  av != null ? av.getCurrentAverage().squeeze() : null;
+	}
+	
+	public static Dataset mean(ILazyDataset data, int... ignoreAxes) {
+		return mean(0, Integer.MAX_VALUE -1 , data, ignoreAxes);
 	}
 
 	private static Dataset prepareDataset(int axis, int[] shape, int[][] sliceInfo) {
