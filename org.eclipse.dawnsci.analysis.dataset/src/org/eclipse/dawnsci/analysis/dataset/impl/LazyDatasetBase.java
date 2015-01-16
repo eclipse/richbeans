@@ -818,6 +818,12 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		return o;
 	}
 
+	protected void restoreMetadata(Map<Class<? extends MetadataType>, List<MetadataType>> oldMetadata) {
+		for (Class<? extends MetadataType> mc : oldMetadata.keySet()) {
+			metadata.put(mc, oldMetadata.get(mc));
+		}
+	}
+
 	protected ILazyDataset createFromSerializable(Serializable blob, boolean keepLazy) {
 		ILazyDataset d = null;
 		if (blob instanceof ILazyDataset) {

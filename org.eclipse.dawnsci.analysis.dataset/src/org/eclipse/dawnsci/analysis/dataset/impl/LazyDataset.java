@@ -13,7 +13,11 @@
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
 import java.io.Serializable;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,6 +26,9 @@ import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.dataset.SliceND;
 import org.eclipse.dawnsci.analysis.api.io.ILazyLoader;
 import org.eclipse.dawnsci.analysis.api.metadata.MetadataType;
+import org.eclipse.dawnsci.analysis.api.metadata.Reshapeable;
+import org.eclipse.dawnsci.analysis.api.metadata.Sliceable;
+import org.eclipse.dawnsci.analysis.api.metadata.Transposable;
 import org.eclipse.dawnsci.analysis.api.monitor.IMonitor;
 
 public class LazyDataset extends LazyDatasetBase implements Serializable, Cloneable {
@@ -322,8 +329,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		prepShape += nb - ob;
 		postShape += nr - oe;
 
-		if (oMetadata == null)
-			oMetadata = metadata;
+		storeMetadata(metadata, Reshapeable.class);
 		metadata = copyMetadata();
 		reshapeMetadata(shape, nShape);
 		shape = nShape;
@@ -358,8 +364,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 				view.delSlice[i] = delSlice[i] * lstep[i];
 			}
 		}
-		if (oMetadata == null)
-			view.oMetadata = metadata;
+		view.storeMetadata(metadata, Sliceable.class);
 		view.sliceMetadata(true, slice);
 		return view;
 	}
@@ -385,9 +390,7 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		view.delSlice = null;
 		view.map = axes;
 		view.base = this;
-		if (oMetadata == null)
-			view.oMetadata = metadata;
-
+		view.storeMetadata(metadata, Transposable.class);
 		view.transposeMetadata(axes);
 		return view;
 	}
@@ -475,7 +478,9 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 			a.setName(name + AbstractDataset.BLOCK_OPEN + nslice.toString() + AbstractDataset.BLOCK_CLOSE);
 			if (metadata != null && a instanceof LazyDatasetBase) {
 				LazyDatasetBase ba = (LazyDatasetBase) a;
-				ba.metadata = copyMetadata(oMetadata != null ? oMetadata : metadata);
+				ba.metadata = copyMetadata();
+				if (oMetadata != null)
+					ba.restoreMetadata(oMetadata);
 				if (!nslice.isAll())
 					ba.sliceMetadata(true, nslice);
 			}
@@ -485,6 +490,67 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 		}
 		a.setShape(slice.getShape());
 		return a;
+	}
+
+	/**
+	 * Store metadata items that has given annotation
+	 * @param origMetadata
+	 * @param aclazz
+	 */
+	private void storeMetadata(Map<Class<? extends MetadataType>, List<MetadataType>> origMetadata, Class<? extends Annotation> aclazz) {
+		List<Class<? extends MetadataType>> mclazzes = findAnnotatedMetadata(aclazz);
+		if (mclazzes.size() == 0)
+			return;
+
+		if (oMetadata == null) {
+			oMetadata = new HashMap<Class<? extends MetadataType>, List<MetadataType>>();
+		}
+		for (Class<? extends MetadataType> mc : mclazzes) {
+			if (oMetadata.containsKey(mc))
+				continue; // do not overwrite original
+
+			List<MetadataType> l = origMetadata.get(mc);
+			List<MetadataType> nl = new ArrayList<MetadataType>(l.size());
+			for (MetadataType m : l) {
+				nl.add(m.clone());
+			}
+			oMetadata.put(mc, nl);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private List<Class<? extends MetadataType>> findAnnotatedMetadata(Class<? extends Annotation> aclazz) {
+		List<Class<? extends MetadataType>> mclazzes = new ArrayList<Class<? extends MetadataType>>();
+		if (metadata == null)
+			return mclazzes;
+
+		for (Class<? extends MetadataType> c : metadata.keySet()) {
+			boolean hasAnn = false;
+			for (MetadataType m : metadata.get(c)) {
+				if (m == null)
+					continue;
+
+				Class<? extends MetadataType> mc = m.getClass();
+				do { // iterate over super-classes
+					for (Field f : mc.getDeclaredFields()) {
+						if (f.isAnnotationPresent(aclazz)) {
+							hasAnn = true;
+							break;
+						}
+					}
+					Class<?> sclazz = mc.getSuperclass();
+					if (!MetadataType.class.isAssignableFrom(sclazz))
+						break;
+					mc = (Class<? extends MetadataType>) sclazz;
+				} while (!hasAnn);
+				if (hasAnn)
+					break;
+			}
+			if (hasAnn) {
+				mclazzes.add(c);
+			}
+		}
+		return mclazzes;
 	}
 
 	/**
