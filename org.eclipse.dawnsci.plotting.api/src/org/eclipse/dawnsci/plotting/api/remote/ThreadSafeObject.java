@@ -54,9 +54,39 @@ class ThreadSafeObject {
 		Display.getDefault().syncExec(new Runnable() {
 			public void run() {
 				try {
-				    Method method = delegate.getClass().getMethod(methodName, classes);
-				    Object val    = method.invoke(delegate, args);
-				    ret.add(val);
+					try {
+					    Method method = delegate.getClass().getMethod(methodName, classes);
+					    Object val    = method.invoke(delegate, args);
+					    ret.add(val);
+					    
+					} catch (NoSuchMethodException nsm) {
+						
+						if (classes.length==1) { // Deal with primitive getters and setters
+							Class<?> clazz = classes[0];
+						    Method method = null;
+							if (Double.class.isAssignableFrom(clazz)) {
+								method = delegate.getClass().getMethod(methodName, new Class[]{double.class});
+							} else if (Float.class.isAssignableFrom(clazz)) {
+								method = delegate.getClass().getMethod(methodName, new Class[]{float.class});
+							} else if (Long.class.isAssignableFrom(clazz)) {
+								method = delegate.getClass().getMethod(methodName, new Class[]{long.class});
+							} else if (Integer.class.isAssignableFrom(clazz)) {
+								method = delegate.getClass().getMethod(methodName, new Class[]{int.class});
+							} else if (Boolean.class.isAssignableFrom(clazz)) {
+								method = delegate.getClass().getMethod(methodName, new Class[]{boolean.class});
+							}
+							
+							
+							if (method!=null) {
+								Object val    = method.invoke(delegate, args);
+							    ret.add(val);
+							    return;
+							}
+						}
+						
+						throw nsm;
+					}
+					
 				} catch (Exception ne) {
 					logger.error("Cannot execute "+methodName+" with "+args, ne);
 				}
