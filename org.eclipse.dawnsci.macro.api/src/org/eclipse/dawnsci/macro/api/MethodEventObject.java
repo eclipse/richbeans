@@ -35,6 +35,14 @@ public class MethodEventObject<T> extends MacroEventObject {
 	private static final long serialVersionUID = 2951162101084315254L;
 
 	/**
+	 * Does not auto-generate a method to call.
+	 * @param source
+	 */
+	public MethodEventObject(Object source) {
+		super(source);
+	}
+
+	/**
 	 * Gets the method name from the stack.
 	 * @param varName
 	 * @param source
@@ -61,17 +69,6 @@ public class MethodEventObject<T> extends MacroEventObject {
 	public MethodEventObject(String varName, String methodName, Object source, T... args) {
 		super(source);
 		setPythonCommand(createPythonCommand(varName, methodName, source, args));
-	}
-	
-	public void prepend(String command) {
-		if (!command.endsWith("\n")) command = command+"\n";
-		setPythonCommand(command+getPythonCommand());
-		setJythonCommand(command+getJythonCommand());
-	}
-
-	public void append(String command) {
-		setPythonCommand(getPythonCommand()+"\n"+command);
-		setJythonCommand(getJythonCommand()+"\n"+command);
 	}
 
 	/**
@@ -110,7 +107,7 @@ public class MethodEventObject<T> extends MacroEventObject {
 		return buf.toString();
 	}
 
-	private static String getCallingMethodName( StackTraceElement ste[] ) {  
+	protected static String getCallingMethodName( StackTraceElement ste[] ) {  
 		   
 	    String methodName = "";  
 	    boolean flag = false;  

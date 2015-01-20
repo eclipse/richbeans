@@ -38,6 +38,30 @@ public final class HistogramBound {
 	protected int[]  color;
 	
 	/**
+	 * Constructor used from py4j to create a histogram bound
+	 * @param bound
+	 * @param r
+	 * @param g
+	 * @param b
+	 */
+	public HistogramBound(String bound, int r, int g, int b) {
+		this(Double.parseDouble(bound),r,g,b);
+	}
+
+	/**
+	 * Constructor used from py4j to create a histogram bound
+	 * @param bound
+	 * @param r
+	 * @param g
+	 * @param b
+	 */
+	public HistogramBound(double bound, int r, int g, int b) {
+		this.bound = bound;
+		this.color = new int[]{r,g,b};
+	}
+
+	
+	/**
 	 * RGB may be null. If it is the last three colours in the palette
 	 * are used for the bound directly. For instance RGBs can be set to 
 	 * null to avoid special cut bounds colors at all.
@@ -80,7 +104,7 @@ public final class HistogramBound {
 		if (color == null) {
 			if (other.color != null)
 				return false;
-		} else if (!color.equals(other.color))
+		} else if (!Arrays.equals(color, other.color))
 			return false;
 		return true;
 	}
@@ -125,6 +149,17 @@ public final class HistogramBound {
 			color = new int[]{Integer.parseInt(sa[1]), Integer.parseInt(sa[2]), Integer.parseInt(sa[3])};
 		}
 		return new HistogramBound(bound, color);
+	}
+
+    /**
+     * Used for bound values in python commands.
+     * @return
+     */
+	public String getStringBound() {
+		if (bound==null) return "None";
+		double bnd = bound.doubleValue();
+		if (Double.isInfinite(bnd)) return "'"+bound.toString()+"'";
+		return bound.toString();
 	}
 }
 

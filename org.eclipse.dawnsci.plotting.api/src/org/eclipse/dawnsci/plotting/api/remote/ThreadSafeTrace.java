@@ -361,8 +361,14 @@ class ThreadSafeTrace extends ThreadSafeObject implements ITrace,
 		return (String)call(getMethodName(Thread.currentThread().getStackTrace()));
 	}
 
+
 	@Override
 	public void setPaletteName(String paletteName) {
+		call(getMethodName(Thread.currentThread().getStackTrace()), paletteName);
+	}
+	
+	@Override
+	public void setPalette(String paletteName) {
 		call(getMethodName(Thread.currentThread().getStackTrace()), paletteName);
 	}
 
@@ -591,7 +597,7 @@ class ThreadSafeTrace extends ThreadSafeObject implements ITrace,
 
 	@Override
 	public boolean setHistoType(HistoType type) {
-		return (Boolean)call(getMethodName(Thread.currentThread().getStackTrace()));
+		return (Boolean)call(getMethodName(Thread.currentThread().getStackTrace()), type);
 	}
 
 	@Override

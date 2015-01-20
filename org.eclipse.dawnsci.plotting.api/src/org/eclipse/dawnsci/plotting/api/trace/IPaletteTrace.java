@@ -43,6 +43,13 @@ public interface IPaletteTrace extends IAxesTrace {
 	public void setPaletteName(String paletteName);
 
 	/**
+	 * Setting palette name and looks up this palette in the IPaletteService and applies
+	 * the palette data for it to the trace as well.
+	 * @param paletteName
+	 */
+	public void setPalette(String paletteName);
+
+	/**
 	 * Returns the last image service bean sent to the service for getting
 	 * the image.
 	 * 

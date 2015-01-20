@@ -73,4 +73,15 @@ public class MacroEventObject extends EventObject {
 		this.isImmediate = isImmediate;
 	}
 
+	public void prepend(String command) {
+		if (!command.endsWith("\n")) command = command+"\n";
+		setPythonCommand(command+getPythonCommand());
+		setJythonCommand(command+getJythonCommand());
+	}
+
+	public void append(String command) {
+		setPythonCommand(getPythonCommand()+"\n"+command);
+		setJythonCommand(getJythonCommand()+"\n"+command);
+	}
+
 }
