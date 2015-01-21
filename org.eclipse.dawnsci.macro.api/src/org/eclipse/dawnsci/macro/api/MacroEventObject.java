@@ -1,6 +1,9 @@
 package org.eclipse.dawnsci.macro.api;
 
+import java.util.Arrays;
 import java.util.EventObject;
+import java.util.Iterator;
+import java.util.List;
 
 public class MacroEventObject extends EventObject {	
 
@@ -82,6 +85,23 @@ public class MacroEventObject extends EventObject {
 	public void append(String command) {
 		setPythonCommand(getPythonCommand()+"\n"+command);
 		setJythonCommand(getJythonCommand()+"\n"+command);
+	}
+	
+	public String getStringArguments(String... args) {
+		return getStringArguments(Arrays.asList(args));
+	}
+	
+	public String getStringArguments(List<String> args) {
+		final StringBuilder buf = new StringBuilder();
+		for (Iterator<String> iterator = args.iterator(); iterator.hasNext();) {
+			String arg = iterator.next();
+			buf.append("'");
+			buf.append(arg);
+			buf.append("'");
+			if (iterator.hasNext()) buf.append(", ")		;
+		}
+		
+		return buf.toString();
 	}
 
 }
