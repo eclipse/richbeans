@@ -31,12 +31,12 @@ public class MacroUtils {
 	}
 
 	/**
-	 * Deals with primitive arrays
+	 * Deals with primitive arrays, Strings and primitives.
 	 * @param value
 	 */
 	public static String toPythonString(Object value) {
 		
-		if (value==null) return null;
+		if (value==null) return "None";
 		
         if (value instanceof String) {
         	return "'"+(String)value+"'";

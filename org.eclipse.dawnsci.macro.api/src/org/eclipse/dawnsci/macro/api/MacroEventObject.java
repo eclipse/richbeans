@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.EventObject;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class MacroEventObject extends EventObject {	
 
@@ -87,11 +88,23 @@ public class MacroEventObject extends EventObject {
 		setJythonCommand(getJythonCommand()+"\n"+command);
 	}
 	
+	/**
+	 * Get some string arguments as compatible with macro language
+	 * @param args
+	 * @return
+	 */
 	public String getStringArguments(String... args) {
+		if (args==null) return "None";
 		return getStringArguments(Arrays.asList(args));
 	}
 	
+	/**
+	 * Get some string arguments as compatible in macro-language
+	 * @param args
+	 * @return
+	 */
 	public String getStringArguments(List<String> args) {
+		if (args==null) return "None";
 		final StringBuilder buf = new StringBuilder();
 		for (Iterator<String> iterator = args.iterator(); iterator.hasNext();) {
 			String arg = iterator.next();
@@ -101,6 +114,26 @@ public class MacroEventObject extends EventObject {
 			if (iterator.hasNext()) buf.append(", ")		;
 		}
 		
+		return buf.toString();
+	}
+	
+	/**
+	 * Get a Map compatible with macro language
+	 * @param sliceDimensions
+	 * @return
+	 */
+	public String getMap(Map<?, ?> map) {
+		
+		if (map==null) return "None";
+        final StringBuilder buf = new StringBuilder("{");
+        for (Iterator<?> iterator = map.keySet().iterator(); iterator.hasNext();) {
+			Object key = iterator.next();
+        	buf.append(MacroUtils.toPythonString(key));
+        	buf.append(" : ");
+        	buf.append(MacroUtils.toPythonString(map.get(key)));
+			if (iterator.hasNext()) buf.append(", ");
+		}
+        buf.append(" }");
 		return buf.toString();
 	}
 
