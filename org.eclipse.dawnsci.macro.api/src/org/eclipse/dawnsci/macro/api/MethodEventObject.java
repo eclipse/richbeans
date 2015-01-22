@@ -82,6 +82,7 @@ public class MethodEventObject<T> extends MacroEventObject {
 	 */
 	protected String createPythonCommand(String varName, String methodName, Object source, T... args) {
 		
+		if (varName==null || "".equals(varName)) return null;
 		StringBuilder buf = new StringBuilder();
 				
 		// Make method call

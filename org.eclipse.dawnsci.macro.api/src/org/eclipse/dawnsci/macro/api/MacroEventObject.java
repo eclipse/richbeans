@@ -78,12 +78,14 @@ public class MacroEventObject extends EventObject {
 	}
 
 	public void prepend(String command) {
+		if (command==null) return;
 		if (!command.endsWith("\n")) command = command+"\n";
 		setPythonCommand(command+getPythonCommand());
 		setJythonCommand(command+getJythonCommand());
 	}
 
 	public void append(String command) {
+		if (command==null) return;
 		setPythonCommand(getPythonCommand()+"\n"+command);
 		setJythonCommand(getJythonCommand()+"\n"+command);
 	}
@@ -135,6 +137,10 @@ public class MacroEventObject extends EventObject {
 		}
         buf.append(" }");
 		return buf.toString();
+	}
+	
+	public boolean isCommandAvailable() {
+		return getJythonCommand()!=null; // Also calls getPythonCommand if jython is null/
 	}
 
 }
