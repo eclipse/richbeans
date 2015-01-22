@@ -259,6 +259,11 @@ public abstract class AbstractCompoundDataset extends AbstractDataset implements
 	}
 
 	@Override
+	public CompoundDataset squeezeEnds() {
+		return (CompoundDataset) super.squeezeEnds();
+	}
+
+	@Override
 	public CompoundDataset squeeze() {
 		return (CompoundDataset) super.squeeze();
 	}
