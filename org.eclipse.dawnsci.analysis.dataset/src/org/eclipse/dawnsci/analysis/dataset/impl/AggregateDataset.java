@@ -211,12 +211,7 @@ public class AggregateDataset extends LazyDatasetBase implements ILazyDataset {
 	}
 
 	@Override
-	public ILazyDataset squeeze() {
-		throw new UnsupportedOperationException("Not implemented");
-	}
-
-	@Override
-	public ILazyDataset squeeze(boolean onlyFromEnd) {
+	public ILazyDataset squeezeEnds() {
 		throw new UnsupportedOperationException("Not implemented");
 	}
 

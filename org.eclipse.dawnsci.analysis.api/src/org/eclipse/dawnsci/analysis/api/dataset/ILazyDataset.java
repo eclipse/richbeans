@@ -67,16 +67,9 @@ public interface ILazyDataset extends Serializable, IMetadataProvider, INameable
 	public int getRank();
 
 	/**
-	 * Remove dimensions of 1 in shape of the dataset
+	 * Remove dimensions of 1 from ends of shape of the dataset
 	 */
-	public ILazyDataset squeeze();
-
-	/**
-	 * Remove dimensions of 1 in shape of the dataset from ends only if true
-	 * 
-	 * @param onlyFromEnds
-	 */
-	public ILazyDataset squeeze(boolean onlyFromEnds);
+	public ILazyDataset squeezeEnds();
 
 	/**
 	 * Get a slice of the dataset. The returned dataset is a copied selection of items

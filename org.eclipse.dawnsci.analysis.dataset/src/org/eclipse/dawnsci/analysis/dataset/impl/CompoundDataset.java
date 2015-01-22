@@ -151,6 +151,9 @@ public interface CompoundDataset extends Dataset {
 	public CompoundDataset sort(Integer axis);
 
 	@Override
+	public CompoundDataset squeezeEnds();
+
+	@Override
 	public CompoundDataset squeeze();
 
 	@Override

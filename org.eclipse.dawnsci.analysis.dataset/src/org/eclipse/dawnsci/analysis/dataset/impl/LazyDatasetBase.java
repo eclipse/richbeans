@@ -131,11 +131,6 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 		return shape.length;
 	}
 
-	@Override
-	public ILazyDataset squeeze() {
-		return squeeze(false);
-	}
-
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T extends MetadataType> void setMetadata(T metadata) {
@@ -563,8 +558,9 @@ public abstract class LazyDatasetBase implements ILazyDataset, Serializable {
 				}
 			}
 
-			lz.setShape(nshape);
-			return lz;
+			ILazyDataset nlz = lz; //.clone();
+			nlz.setShape(nshape);
+			return nlz;
 		}
 	}
 

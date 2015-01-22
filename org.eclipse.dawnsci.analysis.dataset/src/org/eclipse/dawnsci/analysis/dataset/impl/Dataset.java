@@ -204,6 +204,9 @@ public interface Dataset extends IErrorDataset {
 	public String toString(boolean showData);
 
 	@Override
+	public Dataset squeezeEnds();
+
+	@Override
 	public Dataset squeeze();
 
 	@Override
@@ -1154,6 +1157,32 @@ public interface Dataset extends IErrorDataset {
 	 */
 	public Dataset sum(boolean ignoreNaNs, int axis);
 
+//	/**
+//	 * See {@link #sum(boolean ignoreNaNs)} with ignoreNaNs = false
+//	 * @return sum over all items in dataset as a Double, array of doubles or a complex number
+//	 */
+//	public Object sum(Dataset o);
+//
+//	/**
+//	 * @param ignoreNaNs if true, ignore NaNs (treat as zeros)
+//	 * @return sum over all items in dataset as a Double, array of doubles or a complex number
+//	 */
+//	public Object sum(boolean ignoreNaNs, Dataset o);
+//
+//	/**
+//	 * See {@link #sum(boolean ignoreNaNs, int axis)} with ignoreNaNs = false
+//	 * @param axis
+//	 * @return sum along axis in dataset
+//	 */
+//	public Dataset sum(int axis, Dataset o);
+//
+//	/**
+//	 * @param ignoreNaNs if true, ignore NaNs (treat as zeros)
+//	 * @param axis
+//	 * @return sum along axis in dataset
+//	 */
+//	public Dataset sum(boolean ignoreNaNs, int axis, Dataset o);
+//
 	/**
 	 * @return sum over all items in dataset as appropriate to dataset type
 	 * (integers for boolean, byte, short and integer; longs for long; floats for float; doubles

@@ -100,9 +100,18 @@ public interface IDataset extends ILazyDataset {
 	public void resize(int... newShape);
 
 	@Override
+	public IDataset squeezeEnds();
+
+	/**
+	 * Remove dimensions of 1 in shape of the dataset
+	 */
 	public IDataset squeeze();
 
-	@Override
+	/**
+	 * Remove dimensions of 1 in shape of the dataset from ends only if true
+	 * 
+	 * @param onlyFromEnds
+	 */
 	public IDataset squeeze(boolean onlyFromEnds);
 
 	/**

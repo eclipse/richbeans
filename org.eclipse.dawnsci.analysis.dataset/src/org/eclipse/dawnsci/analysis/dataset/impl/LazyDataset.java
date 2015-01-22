@@ -211,8 +211,8 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 	}
 
 	@Override
-	public LazyDataset squeeze(boolean onlyFromEnds) {
-		setShapeInternal(AbstractDataset.squeezeShape(shape, onlyFromEnds));
+	public LazyDataset squeezeEnds() {
+		setShapeInternal(AbstractDataset.squeezeShape(shape, true));
 		return this;
 	}
 

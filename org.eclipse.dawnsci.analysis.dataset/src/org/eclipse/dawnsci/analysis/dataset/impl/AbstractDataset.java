@@ -2011,6 +2011,11 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	}
 
 	@Override
+	public Dataset squeezeEnds() {
+		return squeeze(true);
+	}
+
+	@Override
 	public Dataset squeeze() {
 		return squeeze(false);
 	}
