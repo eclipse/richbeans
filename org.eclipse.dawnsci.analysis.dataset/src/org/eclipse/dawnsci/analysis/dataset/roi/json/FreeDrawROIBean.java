@@ -11,12 +11,12 @@ package org.eclipse.dawnsci.analysis.dataset.roi.json;
 import java.util.Arrays;
 import java.util.List;
 
-public class FreedrawROIBean extends ROIBean{
+public class FreeDrawROIBean extends ROIBean{
 
 	public static final String TYPE = "FreedrawROI";
 	private List<double[]> points;
 
-	public FreedrawROIBean(){
+	public FreeDrawROIBean(){
 		type = TYPE;
 	}
 

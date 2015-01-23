@@ -121,7 +121,7 @@ public class ROIBeanFactory {
 
 		} else if(roiClass == FreeDrawROI.class){
 			FreeDrawROI fdroi = (FreeDrawROI) roi;
-			FreedrawROIBean fdroibean = new FreedrawROIBean();
+			FreeDrawROIBean fdroibean = new FreeDrawROIBean();
 			fdroibean.setName(name);
 			fdroibean.setStartPoint(fdroi.getPoint());
 			List<double[]> points = new ArrayList<double[]>();
@@ -287,8 +287,8 @@ public class ROIBeanFactory {
 			pgroi.setName(cbean.getName());
 			return pgroi;
 
-		} else if(beanClass == FreedrawROIBean.class){
-			FreedrawROIBean cbean = (FreedrawROIBean)bean;
+		} else if(beanClass == FreeDrawROIBean.class){
+			FreeDrawROIBean cbean = (FreeDrawROIBean)bean;
 			FreeDrawROI fdroi = new FreeDrawROI(cbean.getStartPoint());
 			Iterator<double[]> it = cbean.getPoints().iterator();
 			while (it.hasNext()){
