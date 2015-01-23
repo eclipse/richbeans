@@ -70,6 +70,9 @@ public class MacroUtils {
         	
         } else if  (value instanceof Object[]) {
         	return Arrays.toString((Object[])value);
+        	
+        } else if (value instanceof Enum) {
+        	return "'"+((Enum)value).name()+"'";
         }
         
         return value.toString();

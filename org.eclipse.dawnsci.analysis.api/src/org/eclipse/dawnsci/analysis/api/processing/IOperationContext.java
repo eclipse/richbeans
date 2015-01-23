@@ -12,6 +12,7 @@
 
 package org.eclipse.dawnsci.analysis.api.processing;
 
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
@@ -108,6 +109,12 @@ public interface IOperationContext {
 	 * @param series
 	 */
 	public void setSeries(IOperation<? extends IOperationModel, ? extends OperationData>... series);
+
+	/**
+	 * Set the pipeline, must be non-null.
+	 * @param series
+	 */
+	public void setSeries(List<IOperation<? extends IOperationModel, ? extends OperationData>> series);
 
 	/**
 	 * 

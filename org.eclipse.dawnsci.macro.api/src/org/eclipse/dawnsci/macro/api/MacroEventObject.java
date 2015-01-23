@@ -16,6 +16,7 @@ public class MacroEventObject extends EventObject {
 	private String pythonCommand;
 	private String jythonCommand;
 	private boolean isGen = true;
+	private boolean jythonAllowed = true;
 	private boolean isImmediate = false;
 
 	public MacroEventObject(Object arg0) {
@@ -49,7 +50,7 @@ public class MacroEventObject extends EventObject {
 	public String getJythonCommand() {
 		if (jythonCommand!=null) return jythonCommand;
 		if (getSource() instanceof IMacroCommandProvider) return ((IMacroCommandProvider)getSource()).getJythonCommand();
-		if (pythonCommand!=null) return pythonCommand;
+		if (pythonCommand!=null && isJythonAllowed()) return pythonCommand;
 		return null;
 	}
 
@@ -111,7 +112,7 @@ public class MacroEventObject extends EventObject {
 		for (Iterator<String> iterator = args.iterator(); iterator.hasNext();) {
 			String arg = iterator.next();
 			buf.append("'");
-			buf.append(arg);
+			buf.append(arg.replace('\\', '/'));
 			buf.append("'");
 			if (iterator.hasNext()) buf.append(", ")		;
 		}
@@ -126,7 +127,8 @@ public class MacroEventObject extends EventObject {
 	 */
 	public String getMap(Map<?, ?> map) {
 		
-		if (map==null) return "None";
+		if (map==null)     return "None";
+		if (map.isEmpty()) return "None";
         final StringBuilder buf = new StringBuilder("{");
         for (Iterator<?> iterator = map.keySet().iterator(); iterator.hasNext();) {
 			Object key = iterator.next();
@@ -141,6 +143,13 @@ public class MacroEventObject extends EventObject {
 	
 	public boolean isCommandAvailable() {
 		return getJythonCommand()!=null; // Also calls getPythonCommand if jython is null/
+	}
+
+	public boolean isJythonAllowed() {
+		return jythonAllowed;
+	}
+	public void setJythonAllowed(boolean jythonAllowed) {
+		this.jythonAllowed = jythonAllowed;
 	}
 
 }

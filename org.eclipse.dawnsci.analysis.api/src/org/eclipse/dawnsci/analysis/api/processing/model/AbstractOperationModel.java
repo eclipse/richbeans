@@ -17,6 +17,9 @@ import java.beans.PropertyChangeSupport;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Locale;
 
 /**
@@ -194,5 +197,128 @@ public abstract class AbstractOperationModel implements IOperationModel {
 				newValue);
 	}
 
+	/**
+	 * Creates the macro commands for constructing this model in python.
+	 * In order for py4j to see the model class, its plugin must have been 
+	 * registered with the extension point "org.eclipse.dawnsci.analysis.classloader"
+	 * 
+	 * @param varName
+	 * @return the commands in correct macro language
+	 * @throws Exception
+	 */
+	public String createMacroCommands(String varName) throws Exception {
+		
+		StringBuilder ret = new StringBuilder(); // Use a string builder because we are going to reflect getter and setter methods.
+		ret.append("java_import(jvm, '"+getClass().getPackage().getName()+".*')\n");
+		ret.append(varName+" = jvm."+getClass().getSimpleName()+"()\n");
+		
+		// We do list a low level way to reduce dependencies. There are apache APIs for doing this
+		// kind of thing.
+		final Method[] methods = getClass().getMethods();
+		final Collection<String> names = new HashSet<String>();
+		for (Method method : methods) names.add(method.getName());
+		
+		for (Method method : methods) {
+			String name = method.getName();
+			if (name.startsWith("is") || name.startsWith("get")) {
+				String setterName = name.startsWith("is")
+						          ? "set"+name.substring(2)
+						          : "set"+name.substring(3);
+						          
+				if (method.getParameterTypes().length==0 && names.contains(setterName)) { // No arguments and setter
+					final Object value = method.invoke(this);
+					if (value != null) { // Non-null
+
+						// What the hey lets set it!
+						Method set=null;
+						try {
+							try {
+								set = getClass().getMethod(setterName, value.getClass());
+							} catch (NoSuchMethodException nsm1) {
+								try {
+	
+									if (Double.class.isAssignableFrom(value.getClass())) {
+										set = getClass().getMethod(setterName, new Class[]{double.class});
+									} else if (Float.class.isAssignableFrom(value.getClass())) {
+										set = getClass().getMethod(setterName, new Class[]{float.class});
+									} else if (Long.class.isAssignableFrom(value.getClass())) {
+										set = getClass().getMethod(setterName, new Class[]{long.class});
+									} else if (Integer.class.isAssignableFrom(value.getClass())) {
+										set = getClass().getMethod(setterName, new Class[]{int.class});
+									} else if (Boolean.class.isAssignableFrom(value.getClass())) {
+										set = getClass().getMethod(setterName, new Class[]{boolean.class});
+									}
+									
+								} catch (NoSuchMethodException nsm2) {
+									set = getClass().getMethod(setterName, new Class[]{Number.class});
+								}
+							}
+						} catch (Exception ne) {
+							continue;
+						}
+						
+						if (set == null) continue;
+						ret.append(varName+"."+setterName+"("+toPythonString(value)+")\n");
+
+					}
+				}
+			}
+		}
+		
+		return ret.toString();
+	}
+		
+
+
+	/**
+	 * Deals with primitive arrays, Strings and primitives.
+	 * Duplicated method from MacroUtils to avoid unecessary dependency
+	 * @param value
+	 */
+	private static String toPythonString(Object value) {
+		
+		if (value==null) return "None";
+		
+        if (value instanceof String) {
+        	return "'"+(String)value+"'";
+        	
+        } else if (value instanceof Boolean) {
+        	return ((Boolean)value).booleanValue() ? "True" : "False";
+        	
+        } else if (value instanceof short[]) {
+        	return Arrays.toString((short[])value);
+        	
+        } else if  (value instanceof int[]) {
+        	return Arrays.toString((int[])value);
+        	
+        } else if  (value instanceof long[]) {
+        	return Arrays.toString((long[])value);
+        	
+        } else if  (value instanceof char[]) {
+        	return Arrays.toString((char[])value);
+        	
+        } else if  (value instanceof float[]) {
+        	return Arrays.toString((float[])value);
+        	
+        } else if  (value instanceof double[]) {
+        	return Arrays.toString((double[])value);
+        	
+        } else if  (value instanceof boolean[]) {
+        	return Arrays.toString((boolean[])value);
+        	
+        } else if  (value instanceof byte[]) {
+        	return Arrays.toString((byte[])value);
+        	
+        } else if  (value instanceof Object[]) {
+        	return Arrays.toString((Object[])value);
+        
+        } else if (value instanceof Enum) {
+        	return "'"+((Enum)value).name()+"'";
+        	
+        } 
+
+        
+        return value.toString();
+	}
 
 }
