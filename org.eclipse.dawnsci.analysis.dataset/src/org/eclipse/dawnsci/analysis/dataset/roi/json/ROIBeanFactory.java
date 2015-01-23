@@ -34,7 +34,7 @@ import org.eclipse.dawnsci.analysis.dataset.roi.SectorROI;
 /**
  * A factory for creating beans to store ROIs to JSON
  * 
- * TODO FIXME replaces Bahas giant tests with a Map containing the class types.
+ * TODO FIXME replaces giant tests with a Map containing the class types.
  */
 public class ROIBeanFactory {
 
