@@ -43,7 +43,7 @@ public class ROIBeanFactory {
 	 * @param roi
 	 * @return ROIBean
 	 */
-	public static ROIBean encapsulate(IROI roi) throws Exception {
+	public static Object encapsulate(IROI roi) throws Exception {
 		Class<? extends IROI> roiClass = roi.getClass();
 		String name = roi.getName();
 		if(roiClass == PointROI.class){
@@ -221,8 +221,9 @@ public class ROIBeanFactory {
 		}
 	}
 
-	public static IROI decapsulate(ROIBean bean) throws Exception {
+	public static IROI decapsulate(Object object) throws Exception {
 		
+		final ROIBean bean = (ROIBean)object;
 		final Class beanClass = bean.getClass();
 		
 		if (beanClass == PointROIBean.class){
