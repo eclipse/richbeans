@@ -22,6 +22,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
 
+import org.eclipse.dawnsci.analysis.api.Activator;
+import org.eclipse.dawnsci.analysis.api.fitting.functions.IFunction;
+import org.eclipse.dawnsci.analysis.api.persistence.IPersistenceService;
 import org.eclipse.dawnsci.analysis.api.roi.IROI;
 
 /**
@@ -228,6 +231,7 @@ public abstract class AbstractOperationModel implements IOperationModel {
 						          : "set"+name.substring(3);
 						          
 				if (method.getParameterTypes().length==0 && names.contains(setterName)) { // No arguments and setter
+					
 					final Object value = method.invoke(this);
 					if (value != null) { // Non-null
 
@@ -238,23 +242,36 @@ public abstract class AbstractOperationModel implements IOperationModel {
 								set = getClass().getMethod(setterName, value.getClass());
 								
 							} catch (NoSuchMethodException nsm1) {
-								try {
-	
-									if (Double.class.isAssignableFrom(value.getClass())) {
-										set = getClass().getMethod(setterName, new Class[]{double.class});
-									} else if (Float.class.isAssignableFrom(value.getClass())) {
-										set = getClass().getMethod(setterName, new Class[]{float.class});
-									} else if (Long.class.isAssignableFrom(value.getClass())) {
-										set = getClass().getMethod(setterName, new Class[]{long.class});
-									} else if (Integer.class.isAssignableFrom(value.getClass())) {
-										set = getClass().getMethod(setterName, new Class[]{int.class});
-									} else if (Boolean.class.isAssignableFrom(value.getClass())) {
-										set = getClass().getMethod(setterName, new Class[]{boolean.class});
+								// See if there will different signature
+								for (Method m : methods) {
+									if (m.getName().equals(setterName) && m.getParameterTypes().length==1) {
+										Class clazz = m.getParameterTypes()[0];
+										if (clazz.isAssignableFrom(value.getClass())) {
+											set = m;
+											break;
+										}
 									}
-									
-								} catch (NoSuchMethodException nsm2) {
-									set = getClass().getMethod(setterName, new Class[]{Number.class});
 								}
+
+								if (set==null) {
+									try {
+										if (Double.class.isAssignableFrom(value.getClass())) {
+											set = getClass().getMethod(setterName, new Class[]{double.class});
+										} else if (Float.class.isAssignableFrom(value.getClass())) {
+											set = getClass().getMethod(setterName, new Class[]{float.class});
+										} else if (Long.class.isAssignableFrom(value.getClass())) {
+											set = getClass().getMethod(setterName, new Class[]{long.class});
+										} else if (Integer.class.isAssignableFrom(value.getClass())) {
+											set = getClass().getMethod(setterName, new Class[]{int.class});
+										} else if (Boolean.class.isAssignableFrom(value.getClass())) {
+											set = getClass().getMethod(setterName, new Class[]{boolean.class});
+										}
+
+									} catch (NoSuchMethodException nsm2) {
+										set = getClass().getMethod(setterName, new Class[]{Number.class});
+									}
+								}
+
 							}
 						} catch (Exception ne) {
 							continue;
@@ -262,8 +279,14 @@ public abstract class AbstractOperationModel implements IOperationModel {
 						
 						if (set == null) continue;
 						
-						if (value instanceof IROI) {
-							
+						if (value instanceof IROI || value instanceof IFunction) {
+							IPersistenceService pservice = (IPersistenceService)Activator.getService(IPersistenceService.class);
+					        if (pservice!=null) {
+					        	String json = pservice.marshal(value);
+								ret.append("pservice = dnp.plot.getService('"+IPersistenceService.class.getName()+"')\n");
+								ret.append("roi = pservice.unmarshal('"+json+"')\n");
+								ret.append(varName+"."+setterName+"(roi)\n");
+					        }
 						} else {
 							ret.append(varName+"."+setterName+"("+toPythonString(value)+")\n");
 						}

@@ -65,23 +65,38 @@ class ThreadSafeObject {
 							Class<?> clazz = classes[0];
 						    Method method = null;
 						    
-							try {
-
-								if (Double.class.isAssignableFrom(clazz)) {
-									method = delegate.getClass().getMethod(methodName, new Class[]{double.class});
-								} else if (Float.class.isAssignableFrom(clazz)) {
-									method = delegate.getClass().getMethod(methodName, new Class[]{float.class});
-								} else if (Long.class.isAssignableFrom(clazz)) {
-									method = delegate.getClass().getMethod(methodName, new Class[]{long.class});
-								} else if (Integer.class.isAssignableFrom(clazz)) {
-									method = delegate.getClass().getMethod(methodName, new Class[]{int.class});
-								} else if (Boolean.class.isAssignableFrom(clazz)) {
-									method = delegate.getClass().getMethod(methodName, new Class[]{boolean.class});
+							// See if there will different signature
+							METHOD_LOOP: for (Method m : delegate.getClass().getMethods()) {
+								if (m.getName().equals(methodName) && m.getParameterTypes().length==classes.length) {
+									for (int i = 0; i < m.getParameterTypes().length; i++) {
+										Class type = m.getParameterTypes()[i];
+										if (!type.isAssignableFrom(classes[i])) {
+											break METHOD_LOOP;
+										}
+									}
+									method = m;
 								}
-								
-							} catch (NoSuchMethodException nsm2) {
-								method = delegate.getClass().getMethod(methodName, new Class[]{Number.class});
 							}
+
+							if (method==null) {
+								try {
+
+									if (Double.class.isAssignableFrom(clazz)) {
+										method = delegate.getClass().getMethod(methodName, new Class[]{double.class});
+									} else if (Float.class.isAssignableFrom(clazz)) {
+										method = delegate.getClass().getMethod(methodName, new Class[]{float.class});
+									} else if (Long.class.isAssignableFrom(clazz)) {
+										method = delegate.getClass().getMethod(methodName, new Class[]{long.class});
+									} else if (Integer.class.isAssignableFrom(clazz)) {
+										method = delegate.getClass().getMethod(methodName, new Class[]{int.class});
+									} else if (Boolean.class.isAssignableFrom(clazz)) {
+										method = delegate.getClass().getMethod(methodName, new Class[]{boolean.class});
+									}
+								} catch (NoSuchMethodException nsm2) {
+									method = delegate.getClass().getMethod(methodName, new Class[]{Number.class});
+								}
+							}
+	
 							
 							if (method!=null) {
 								Object val    = method.invoke(delegate, args);
