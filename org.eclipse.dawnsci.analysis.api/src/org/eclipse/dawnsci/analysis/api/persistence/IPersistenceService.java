@@ -53,6 +53,6 @@ public interface IPersistenceService {
 	 * @param obj
 	 * @return string
 	 */
-	public String marshal(Object obj);
+	public String marshal(Object obj) throws Exception;
 
 }

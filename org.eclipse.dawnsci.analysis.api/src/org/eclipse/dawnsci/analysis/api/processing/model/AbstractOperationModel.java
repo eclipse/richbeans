@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
 
+import org.eclipse.dawnsci.analysis.api.roi.IROI;
+
 /**
  * Extend this class for your model to avoid having to implement the get and set manually.
  * Do not put non-POJO methods in your models, keep them vanilla.
@@ -234,6 +236,7 @@ public abstract class AbstractOperationModel implements IOperationModel {
 						try {
 							try {
 								set = getClass().getMethod(setterName, value.getClass());
+								
 							} catch (NoSuchMethodException nsm1) {
 								try {
 	
@@ -258,7 +261,13 @@ public abstract class AbstractOperationModel implements IOperationModel {
 						}
 						
 						if (set == null) continue;
-						ret.append(varName+"."+setterName+"("+toPythonString(value)+")\n");
+						
+						if (value instanceof IROI) {
+							
+						} else {
+							ret.append(varName+"."+setterName+"("+toPythonString(value)+")\n");
+						}
+
 
 					}
 				}

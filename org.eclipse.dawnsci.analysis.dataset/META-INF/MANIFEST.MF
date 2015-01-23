@@ -18,6 +18,7 @@ Export-Package: org.eclipse.dawnsci.analysis.dataset.coords,
  org.eclipse.dawnsci.analysis.dataset.roi,
  org.eclipse.dawnsci.analysis.dataset.roi.fitting,
  org.eclipse.dawnsci.analysis.dataset.roi.handler,
+ org.eclipse.dawnsci.analysis.dataset.roi.json,
  org.eclipse.dawnsci.analysis.dataset.slicer
 Import-Package: Jama;version="1.0.3",
  org.osgi.framework;version="1.7.0",
