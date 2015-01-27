@@ -50,6 +50,8 @@ public class DetectorProperties implements Serializable, Cloneable {
 	private Vector3d origin;         // top left corner of detector's (0,0) pixel
 	private Vector3d beamVector;     // unit vector in beam direction
 	private Vector3d normal;         // unit vector perpendicular to detector surface
+	private int sx;                  // start x in pixels
+	private int sy;                  // start y in pixels
 	private int px;                  // width in pixels
 	private int py;                  // height in pixels
 	private double hPxSize;          // horizontal pixel size (in mm)
@@ -311,6 +313,10 @@ public class DetectorProperties implements Serializable, Cloneable {
 			return false;
 		if (py != other.py)
 			return false;
+		if (sx != other.sx)
+			return false;
+		if (sy != other.sy)
+			return false;
 		if (Double.doubleToLongBits(vPxSize) != Double.doubleToLongBits(other.vPxSize))
 			return false;
 		return true;
@@ -482,6 +488,36 @@ public class DetectorProperties implements Serializable, Cloneable {
 	 */
 	public void setPy(final int py) {
 		this.py = py;
+	}
+
+	/**
+	 * @return start pixel value in the x direction
+	 */
+	public int getStartX() {
+		return sx;
+	}
+
+	/**
+	 * @param sx
+	 *            start pixel value in the x direction
+	 */
+	public void setStartX(final int sx) {
+		this.sx = sx;
+	}
+
+	/**
+	 * @return start pixel value in the y direction
+	 */
+	public int getStartY() {
+		return sy;
+	}
+
+	/**
+	 * @param sy
+	 *            start pixel value in the y direction
+	 */
+	public void setStartY(final int sy) {
+		this.sy = sy;
 	}
 
 	/**
@@ -784,7 +820,7 @@ public class DetectorProperties implements Serializable, Cloneable {
 	 * from image coordinates, work out position of pixel's top-left corner
 	 */
 	public void pixelPosition(final double x, final double y, Vector3d p) {
-		p.set(-hPxSize * x, -vPxSize * y, 0);
+		p.set(-hPxSize * (x - sx), -vPxSize * (y - sy), 0);
 		if (invOrientation != null)
 			invOrientation.transform(p);
 		p.add(origin);
@@ -812,7 +848,9 @@ public class DetectorProperties implements Serializable, Cloneable {
 		if (orientation != null)
 			orientation.transform(t);
 		t.x /= -hPxSize;
+		t.x += sx;
 		t.y /= -vPxSize;
+		t.y += sy;
 	}
 
 	/**
@@ -924,9 +962,9 @@ public class DetectorProperties implements Serializable, Cloneable {
 	private Vector3d[] cornerPositions() {
 		Vector3d[] corners = new Vector3d[4];
 		corners[0] = new Vector3d(origin);
-		corners[1] = pixelPosition(px, 0);
-		corners[2] = pixelPosition(0, py);
-		corners[3] = pixelPosition(px, py);
+		corners[1] = pixelPosition(px + sx, sy);
+		corners[2] = pixelPosition(sx, py + sy);
+		corners[3] = pixelPosition(px + sx, py + sy);
 		return corners;
 	}
 
@@ -1081,11 +1119,11 @@ public class DetectorProperties implements Serializable, Cloneable {
 		if (coords == null || coords.length == 0)
 			throw new IllegalArgumentException("Need at least one coordinate");
 
-		final double x = coords[0];
+		final double x = coords[0] - sx;
 		if (coords.length == 1) {
 			return x >= 0 && x < px;
 		}
-		final double y = coords[1];
+		final double y = coords[1] - sy;
 		return x >= 0 && x < px && y >= 0 && y < py;
 	}
 
@@ -1107,6 +1145,8 @@ public class DetectorProperties implements Serializable, Cloneable {
 		setBeamVector(new Vector3d(original.getBeamVector()));
 		setPx(original.getPx());
 		setPy(original.getPy());
+		setStartX(original.getStartX());
+		setStartY(original.getStartY());
 		setVPxSize(original.getVPxSize());
 		setHPxSize(original.getHPxSize());
 		fire = true;
