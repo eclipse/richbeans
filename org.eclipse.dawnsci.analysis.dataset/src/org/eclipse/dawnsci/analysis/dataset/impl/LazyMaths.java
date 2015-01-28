@@ -14,6 +14,7 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 
 import java.util.Arrays;
 
+import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.dataset.ILazyDataset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,7 +80,8 @@ public final class LazyMaths {
 	}
 
 	/**
-	 * 
+	 * @param start
+	 * @param stop inclusive
 	 * @param data
 	 * @param ignoreAxes
 	 * @return mean when given axes are ignored in lazy dataset
@@ -97,16 +99,16 @@ public final class LazyMaths {
 
 		RunningAverage av = null;
 		int c = 0;
-		while (iter.hasNext() && c < stop +1) {
+		while (iter.hasNext() && c <= stop) {
 			if (c++ < start) continue;
 			for (int i = 0; i < rank; i++) {
 				end[i] = omit[i] ? shape[i] : pos[i] + 1;
 			}
-			Dataset ds = DatasetUtils.cast(data.getSlice(pos, end, st), Dataset.FLOAT64);
+			IDataset ds = data.getSlice(pos, end, st);
 			if (av == null) {
-				av = new RunningAverage(ds,true);
+				av = new RunningAverage(ds);
 			} else {
-				av.updateDirty(ds);
+				av.update(ds);
 			}
 		}
 
