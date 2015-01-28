@@ -53,6 +53,11 @@ import org.eclipse.dawnsci.analysis.api.roi.IROI;
  * The region is an JSON serialized dataset. It can therefore contain more than one region.<br>
  * The entry/instrument/detector is an NX_detector group containing many datasets
  * required to build a IDiffractionMetadata object. <br>
+ * 
+ * Calling a setXXX(...) will write the data into the persistence file and will overwrite it
+ * providing the data is repeated. It might add if the data is different, for instance adding
+ * more regions with different names.
+ * 
  * <br>
  * After using an IPersistentFile, the method close() needs to be called.
  * <code>
@@ -65,7 +70,7 @@ import org.eclipse.dawnsci.analysis.api.roi.IROI;
  * </code>
  * <br>
  * 
- * @author wqk87977
+ * @author Matthew Gerring
  *
  */
 public interface IPersistentFile {
@@ -411,6 +416,9 @@ public interface IPersistentFile {
 	
 	/**
 	 * Method to store a series of operations in a NeXus file
+	 * 
+	 * Writes the operations when called.
+	 * 
 	 * @param operations - An array of operations
 	 * @throws Exception
 	 */

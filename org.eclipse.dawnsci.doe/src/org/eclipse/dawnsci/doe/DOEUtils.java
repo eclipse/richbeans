@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamClass;
+import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -150,7 +151,7 @@ public class DOEUtils {
 	 * @throws IllegalAccessException 
 	 * @throws IllegalArgumentException 
 	 */
-	public static List<? extends Object> expand(final Object bean) throws Exception {
+	public static List<? extends Object> expand(final Serializable bean) throws Exception {
 		
 		
 		final List<Collection<FieldContainer>> weightedFields = new ArrayList<Collection<FieldContainer>>(11);
@@ -161,7 +162,7 @@ public class DOEUtils {
 		List<FieldContainer> expandedFields = expandFields(weightedFields);
 		final List<Object> ret = new ArrayList<Object>(31);
 		
-		Object clone = deepClone(bean);
+		Serializable clone = deepClone(bean);
         expand(clone, expandedFields, 0, ret);
         
 		return ret;
@@ -299,7 +300,7 @@ public class DOEUtils {
 	 * @param ret
 	 * @throws Exception
 	 */
-	protected static void expand(      Object            clone, 
+	protected static void expand(      Serializable      clone, 
 			                     final List<FieldContainer> orderedFields, 
 			                     final int               index, 
 			                     final List<Object>      ret) throws Exception {
@@ -636,7 +637,7 @@ public class DOEUtils {
 	 * @param fromBean
 	 * @return deeply cloned bean
 	 */
-	public static <T> T deepClone(final T fromBean) throws Exception {
+	public static <T extends Serializable> T deepClone(final T fromBean) throws Exception {
 		return deepClone(fromBean, fromBean.getClass().getClassLoader());
 	}
 
@@ -644,7 +645,7 @@ public class DOEUtils {
 	 * Creates a clone of any serializable object. Collections and arrays may be cloned if the entries are serializable.
 	 * Caution super class members are not cloned if a super class is not serializable.
 	 */
-	public static <T> T deepClone(T toClone, final ClassLoader classLoader) throws Exception {
+	public static <T extends Serializable> T deepClone(T toClone, final ClassLoader classLoader) throws Exception {
 		if (null == toClone)
 			return null;
 
