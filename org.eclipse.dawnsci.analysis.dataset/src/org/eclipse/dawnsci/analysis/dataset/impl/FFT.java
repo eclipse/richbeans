@@ -14,15 +14,14 @@ package org.eclipse.dawnsci.analysis.dataset.impl;
 
 import java.util.Arrays;
 
+import org.jtransforms.fft.DoubleFFT_1D;
+import org.jtransforms.fft.DoubleFFT_2D;
+import org.jtransforms.fft.DoubleFFT_3D;
+import org.jtransforms.fft.FloatFFT_1D;
+import org.jtransforms.fft.FloatFFT_2D;
+import org.jtransforms.fft.FloatFFT_3D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import edu.emory.mathcs.jtransforms.fft.DoubleFFT_1D;
-import edu.emory.mathcs.jtransforms.fft.DoubleFFT_2D;
-import edu.emory.mathcs.jtransforms.fft.DoubleFFT_3D;
-import edu.emory.mathcs.jtransforms.fft.FloatFFT_1D;
-import edu.emory.mathcs.jtransforms.fft.FloatFFT_2D;
-import edu.emory.mathcs.jtransforms.fft.FloatFFT_3D;
 
 
 // TODO fast path for defaults?

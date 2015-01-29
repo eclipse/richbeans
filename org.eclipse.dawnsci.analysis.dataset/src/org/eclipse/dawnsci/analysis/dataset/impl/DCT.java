@@ -12,15 +12,14 @@
 
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
-import edu.emory.mathcs.jtransforms.dct.DoubleDCT_1D;
-import edu.emory.mathcs.jtransforms.dct.DoubleDCT_2D;
-import edu.emory.mathcs.jtransforms.dct.DoubleDCT_3D;
-import edu.emory.mathcs.jtransforms.dct.FloatDCT_1D;
-import edu.emory.mathcs.jtransforms.dct.FloatDCT_2D;
-import edu.emory.mathcs.jtransforms.dct.FloatDCT_3D;
-
 import java.util.Arrays;
 
+import org.jtransforms.dct.DoubleDCT_1D;
+import org.jtransforms.dct.DoubleDCT_2D;
+import org.jtransforms.dct.DoubleDCT_3D;
+import org.jtransforms.dct.FloatDCT_1D;
+import org.jtransforms.dct.FloatDCT_2D;
+import org.jtransforms.dct.FloatDCT_3D;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
