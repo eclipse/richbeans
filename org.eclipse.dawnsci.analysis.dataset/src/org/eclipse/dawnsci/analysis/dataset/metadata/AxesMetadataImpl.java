@@ -61,7 +61,7 @@ public class AxesMetadataImpl implements AxesMetadata {
 		ILazyDataset[] result = new ILazyDataset[allAxes.length];
 		for (int i = 0; i < result.length; i++) {
 			ILazyDataset[] ax = getAxis(i);
-			if (ax != null) result[i] = ax[0];
+			if (ax != null && ax.length > 0) result[i] = ax[0];
 		}
 		return result;
 	}
