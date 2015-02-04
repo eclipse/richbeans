@@ -72,8 +72,12 @@ public class IntegersIterator extends IndexIterator {
 			} else if (i == null || i instanceof Slice) {
 				indexes.add(i);
 			} else if (i instanceof IntegerDataset) {
-				if (restrict1D && ((Dataset) i).getRank() > 1) {
+				Dataset id = (Dataset) i;
+				if (restrict1D && id.getRank() > 1) {
 					throw new IllegalArgumentException("Integer datasets were restricted to zero or one dimensions");
+				}
+				if (id.getRank() == 0) { // avoid zero-rank datasets
+					i = id.reshape(1);
 				}
 				indexes.add(i);
 			} else {
