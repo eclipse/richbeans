@@ -12,9 +12,11 @@
 
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.image.IImageFilterService;
 import org.eclipse.dawnsci.analysis.api.image.IImageTransform;
 import org.eclipse.dawnsci.analysis.api.roi.IRectangularROI;
@@ -407,9 +409,38 @@ public class Image {
 	 */
 	public static Dataset rotate(Dataset input, double angle, boolean keepShape) throws Exception {
 		if (input.getRank() != 2)
-			throw new Exception("Error: input dataset does not have the correct rank.");
+			throw new Exception("Error: input dataset rank expected is 2");
 		IDataset ret = transformService.rotate(input.cast(input.getDtype()), angle, keepShape);
 		Dataset result = DatasetUtils.cast(ret, input.getDtype());
+		return result;
+	}
+
+	/**
+	 * Aligns an image stack with shifted features using Hessian transformation
+	 * 
+	 * @param input
+	 *            input image stack
+	 * @return aligned images
+	 * @throws Exception
+	 */
+	public static Dataset align(Dataset input) throws Exception {
+		if (input.getRank() != 3)
+			throw new Exception("Error: input dataset rank expected is 3");
+		int[] size = input.getShape();
+		List<IDataset> images = new ArrayList<IDataset>(size[0]);
+
+		for (int i = 0; i < size[0]; i ++) {
+			IDataset data = input.getSlice(new Slice(i, size[0], size[1]));
+			images.add(data.squeeze());
+		}
+		List<IDataset> aligned = transformService.align(images);
+		Dataset[] alignedData = new Dataset[aligned.size()];
+		for (int i = 0; i < aligned.size(); i ++) {
+			IDataset dat = aligned.get(i);
+			dat.resize(new int[]{1, size[1], size[2]});
+			alignedData[i] = DatasetUtils.cast(dat, input.getDtype());
+		}
+		Dataset result = DatasetUtils.concatenate(alignedData, 0);
 		return result;
 	}
 }
