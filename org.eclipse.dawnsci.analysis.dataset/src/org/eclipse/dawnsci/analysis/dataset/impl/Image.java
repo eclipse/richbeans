@@ -12,10 +12,13 @@
 
 package org.eclipse.dawnsci.analysis.dataset.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
+import org.eclipse.dawnsci.analysis.api.dataset.Slice;
 import org.eclipse.dawnsci.analysis.api.image.IImageFilterService;
+import org.eclipse.dawnsci.analysis.api.image.IImageTransform;
 import org.eclipse.dawnsci.analysis.api.roi.IRectangularROI;
 import org.eclipse.dawnsci.analysis.dataset.impl.function.MapToRotatedCartesian;
 import org.slf4j.Logger;
@@ -31,10 +34,15 @@ public class Image {
 	 */
 	protected static final Logger logger = LoggerFactory.getLogger(Image.class);
 
-	private static IImageFilterService service;
+	private static IImageFilterService filterService;
+	private static IImageTransform transformService;
 
 	public static void setImageFilterService(IImageFilterService ifs) {
-		service = ifs;
+		filterService = ifs;
+	}
+
+	public static void setImageTransformService(IImageTransform its) {
+		transformService = its;
 	}
 
 	/**
@@ -171,8 +179,8 @@ public class Image {
 	}
 	
 	public static Dataset regrid(Dataset data, Dataset x, Dataset y, Dataset gridX, Dataset gridY) {
-		//return regrid_kabsch(data, x, y, gridX, gridY);
-		
+		// return regrid_kabsch(data, x, y, gridX, gridY);
+
 		try {
 			return InterpolatorUtils.regrid(data, x, y, gridX, gridY);
 		} catch (Exception e) {
@@ -188,6 +196,7 @@ public class Image {
 
 	/**
 	 * Applies a minimum filter (slower)
+	 * 
 	 * @param input
 	 * @param kernel
 	 * @return filtered data
@@ -198,6 +207,7 @@ public class Image {
 
 	/**
 	 * Applies a maximum filter (slower)
+	 * 
 	 * @param input
 	 * @param kernel
 	 * @return filtered data
@@ -208,6 +218,7 @@ public class Image {
 
 	/**
 	 * Applies a median filter (slower)
+	 * 
 	 * @param input
 	 * @param kernel
 	 * @return filtered data
@@ -218,6 +229,7 @@ public class Image {
 
 	/**
 	 * Applies a mean Filter (slower)
+	 * 
 	 * @param input
 	 * @param kernel
 	 * @return filtered data
@@ -228,35 +240,35 @@ public class Image {
 
 	/**
 	 * Applies a median filter (faster)
+	 * 
 	 * @param input
 	 * @param radius
 	 * @return filtered data
-	 * @throws Exception
 	 */
-	public static Dataset medianFilter(Dataset input, int radius) throws Exception {
+	public static Dataset medianFilter(Dataset input, int radius) {
 		return filter(input, radius, FilterType.MEDIAN);
 	}
 
 	/**
 	 * Applies a mean filter (faster)
+	 * 
 	 * @param input
 	 * @param radius
 	 * @return filtered data
-	 * @throws Exception
 	 */
-	public static Dataset meanFilter(Dataset input, int radius) throws Exception {
+	public static Dataset meanFilter(Dataset input, int radius) {
 		return filter(input, radius, FilterType.MEAN);
 	}
 
-	private static Dataset filter(Dataset input, int radius, FilterType type) throws Exception {
+	private static Dataset filter(Dataset input, int radius, FilterType type) {
 		if (type == FilterType.MEDIAN) {
-			return DatasetUtils.convertToDataset(service.filterMedian(input, radius));
+			return DatasetUtils.convertToDataset(filterService.filterMedian(input, radius));
 		} else if (type == FilterType.MIN) {
-			return DatasetUtils.convertToDataset(service.filterMin(input, radius));
+			return DatasetUtils.convertToDataset(filterService.filterMin(input, radius));
 		} else if (type == FilterType.MAX) {
-			return DatasetUtils.convertToDataset(service.filterMax(input, radius));
+			return DatasetUtils.convertToDataset(filterService.filterMax(input, radius));
 		} else if (type == FilterType.MEAN) {
-			return DatasetUtils.convertToDataset(service.filterMean(input, radius));
+			return DatasetUtils.convertToDataset(filterService.filterMean(input, radius));
 		}
 		return null;
 	}
@@ -300,14 +312,14 @@ public class Image {
 	}
 
 	/**
-	 * Applies a background filter by first applying a median filter of radius 1, 
-	 * then a minimum and maximum filter and finally another median filter with the given radius
+	 * Applies a background filter by first applying a median filter of radius 1, then a minimum and maximum filter and
+	 * finally another median filter with the given radius
+	 * 
 	 * @param input
 	 * @param radius
 	 * @return filtered data
-	 * @throws Exception 
 	 */
-	public static Dataset backgroundFilter(Dataset input, int radius) throws Exception {
+	public static Dataset backgroundFilter(Dataset input, int radius) {
 		Dataset median1 = filter(input, 1, FilterType.MEDIAN);
 		Dataset min = filter(median1, new int[] {radius*2 + 1, radius * 2 + 1}, FilterType.MIN);
 		Dataset max = filter(min, new int[] {radius*2 + 1, radius*2 + 1}, FilterType.MAX);
@@ -371,14 +383,64 @@ public class Image {
 		result.iadd(convolutionFilter(input, kernel));
 		return result;
 	}
-	
+
 	public static Dataset flip(Dataset input, boolean vertical) {
 		Dataset ret;
 		if (vertical) {
-			ret = input.getSlice(null, null, new int[]{-1,1});
+			ret = input.getSlice(null, null, new int[] { -1, 1 });
 		} else {
-			ret = input.getSlice(null, null, new int[]{1,-1});
+			ret = input.getSlice(null, null, new int[] { 1, -1 });
 		}
 		return ret;
+	}
+
+	/**
+	 * Rotates @input by @angle degrees around its centre
+	 * 
+	 * @param input
+	 *            input image
+	 * @param angle
+	 *            rotation angle in degrees
+	 * @param keepShape
+	 *            if true the resulting image shape will be the same as the original, if false the bounding box is
+	 *            resized to display the image in its entirety
+	 * @return rotated image
+	 * @throws Exception
+	 */
+	public static Dataset rotate(Dataset input, double angle, boolean keepShape) throws Exception {
+		if (input.getRank() != 2)
+			throw new Exception("Error: input dataset rank expected is 2");
+		IDataset ret = transformService.rotate(input.cast(input.getDtype()), angle, keepShape);
+		Dataset result = DatasetUtils.cast(ret, input.getDtype());
+		return result;
+	}
+
+	/**
+	 * Aligns an image stack with shifted features using Hessian transformation
+	 * 
+	 * @param input
+	 *            input image stack
+	 * @return aligned images
+	 * @throws Exception
+	 */
+	public static Dataset align(Dataset input) throws Exception {
+		if (input.getRank() != 3)
+			throw new Exception("Error: input dataset rank expected is 3");
+		int[] size = input.getShape();
+		List<IDataset> images = new ArrayList<IDataset>(size[0]);
+
+		for (int i = 0; i < size[0]; i ++) {
+			IDataset data = input.getSlice(new Slice(i, size[0], size[1]));
+			images.add(data.squeeze());
+		}
+		List<IDataset> aligned = transformService.align(images);
+		Dataset[] alignedData = new Dataset[aligned.size()];
+		for (int i = 0; i < aligned.size(); i ++) {
+			IDataset dat = aligned.get(i);
+			dat.resize(new int[]{1, size[1], size[2]});
+			alignedData[i] = DatasetUtils.cast(dat, input.getDtype());
+		}
+		Dataset result = DatasetUtils.concatenate(alignedData, 0);
+		return result;
 	}
 }

@@ -29,7 +29,7 @@ public class SliceND {
 	 * @param shape
 	 */
 	public SliceND(final int[] shape) {
-		int rank = shape.length;
+		final int rank = shape.length;
 		lstart = new int[rank];
 		lstop  = shape.clone();
 		lstep  = new int[rank];
@@ -45,81 +45,26 @@ public class SliceND {
 	 * @param slice
 	 */
 	public SliceND(final int[] shape, Slice... slice) {
-		final int rank = shape.length;
-		lstart = new int[rank];
-		lstop  = new int[rank];
-		lstep  = new int[rank];
-		lshape  = new int[rank];
-		oshape = shape.clone();
-		final int length = slice == null ? 0 : slice.length;
-		int i = 0;
-		if (slice != null && length <= rank) {
-			for (; i < length; i++) {
+		this(shape);
 
+		if (slice != null) {
+			final int length = slice.length;
+			final int rank = shape.length;
+			if (length > rank) {
+				throw new IllegalArgumentException("More slices have been specified than rank of shape");
+			}
+			for (int i = 0; i < length; i++) {
 				Slice s = slice[i];
-				if (s == null) {
-					lstart[i] = 0;
-					lstep[i] = 1;
-					lshape[i] = lstop[i] = shape[i];
-					continue;
-				}
-				int n;
-				if (s.getStart() == null) {
-					lstart[i] = s.getStep() > 0 ? 0 : shape[i] - 1;
-				} else {
-					n = s.getStart();
-					if (n < 0)
-						n += shape[i];
-					if (n < 0 || n >= shape[i]) {
-						throw new IllegalArgumentException(String.format(
-								"Start is out of bounds: %d is not in [%d,%d)", n, s.getStart(), shape[i]));
-					}
-					lstart[i] = n;
-				}
-
-				if (s.getStop() == null) {
-					lstop[i] = s.getStep() > 0 ? shape[i] : -1;
-				} else {
-					n = s.getStop();
-					if (n < 0)
-						n += shape[i];
-					if (n < 0 || n > shape[i]) {
-						throw new IllegalArgumentException(String.format("Stop is out of bounds: %d is not in [%d,%d)",
-								n, s.getStop(), shape[i]));
-					}
-					lstop[i] = n;
-				}
-
-				n = s.getStep();
-				if (n == 0) {
-					throw new IllegalArgumentException("Step cannot be zero");
-				}
-				if (n > 0) {
-					if (lstart[i] > lstop[i])
-						throw new IllegalArgumentException("Start must be less than stop for positive steps");
-					lshape[i] = (lstop[i] - lstart[i] - 1) / n + 1;
-				} else {
-					if (lstart[i] < lstop[i])
-						throw new IllegalArgumentException("Start must be greater than stop for negative steps");
-					lshape[i] = (lstop[i] - lstart[i] + 1) / n + 1;
-				}
-				lstep[i] = n;
-			}
-		}
-		for (; i < rank; i++) {
-			lstart[i] = 0;
-			lstep[i] = 1;
-			lshape[i] = lstop[i] = shape[i];
-		}
-		allData = Arrays.equals(shape, lshape);
-		if (allData) {
-			for (i = 0; i < rank; i++) {
-				if (lstep[i] < 0) {
-					allData = false;
-					break;
+				if (s != null) {
+					int d = s.getStep();
+					int b = s.getStart() == null ? (d > 0 ? 0 : oshape[i] - 1) : s.getStart();
+					int e = s.getStop() == null ? (d > 0 ? oshape[i] : -oshape[i] - 1) : s.getStop();
+					internalSetSlice(i, b, e, d);
 				}
 			}
 		}
+
+		checkAllData();
 	}
 
 	/**
@@ -168,80 +113,114 @@ public class SliceND {
 		lshape = new int[rank];
 		oshape = shape.clone();
 
-		// sanitise input
 		for (int i = 0; i < rank; i++) {
 			final int d = lstep[i];
 			final int s = shape[i];
-			int b;
-			int e;
-			if (d == 0) {
-				throw new IllegalArgumentException("The step array is not allowed any zero entries: " + i
-						+ "-th entry is zero");
-			} else if (d > 0) {
-				b = lstart[i];
-				if (b < 0) {
-					lstart[i] = b += s;
-				}
-				if (b < 0 || b >= s) {
-					throw new IllegalArgumentException("Start entry is outside bounds");
-				}
-
-				e = lstop[i];
-				if (e < 0) {
-					lstop[i] = e += s;
-				}
-				if (e < -1 || e >= (s + d)) {
-					throw new IllegalArgumentException("Stop entry is outside bounds");
-				}
-				if (b == e) {
-					throw new IllegalArgumentException("Same indices in start and stop");
-				} else if (b > e) {
-					throw new IllegalArgumentException("Start=" + b + " and stop=" + e
-							+ " indices are incompatible with step=" + d);
-				}
-				lshape[i] = (e - b - 1) / d + 1;
-			} else {
-				if (start != null) {
-					b = lstart[i];
-					if (b < 0) {
-						lstart[i] = b += s;
-					}
-					if (b < 0 || b >= s) {
-						throw new IllegalArgumentException("Start entry is outside bounds");
-					}
-				} else {
-					lstart[i] = b = s - 1;
-				}
-
-				if (stop != null) {
-					e = lstop[i];
-					if (e < d) {
-						lstop[i] = e += s;
-					}
-					if (e < d || e > s) {
-						throw new IllegalArgumentException("Stop entry is outside bounds");
-					}
-				} else {
-					lstop[i] = e = -1;
-				}
-				if (b == e) {
-					throw new IllegalArgumentException("Same indices in start and stop");
-				} else if (b < e) {
-					throw new IllegalArgumentException("Start=" + lstart[i] + " and stop=" + lstop[i]
-							+ " indices are incompatible with step=" + d);
-				}
-				lshape[i] = (e - b + 1) / d + 1;
-			}
+			internalSetSlice(i, d > 0 || start != null ? lstart[i] : s - 1, d > 0 || stop != null ? lstop[i] : -s - 1, d);
 		}
-		allData = Arrays.equals(shape, lshape);
+
+		checkAllData();
+	}
+
+	private void checkAllData() {
+		allData = Arrays.equals(oshape, lshape);
 		if (allData) {
-			for (int i = 0; i < rank; i++) {
+			for (int i = 0; i < oshape.length; i++) {
 				if (lstep[i] < 0) {
 					allData = false;
 					break;
 				}
 			}
 		}
+	}
+
+	/**
+	 * Set slice for given dimension
+	 * @param i dimension
+	 * @param start can be null to imply start of dimension
+	 * @param stop can be null to imply end of dimension
+	 * @param step
+	 */
+	public void setSlice(int i, Integer start, Integer stop, int step) {
+		int b = start == null ? (step > 0 ? 0 : oshape[i] - 1) : start;
+		int e = stop == null ? (step > 0 ? oshape[i] : -oshape[i] - 1) : stop;
+		setSlice(i, b, e, step);
+	}
+
+	/**
+	 * Set slice for given dimension
+	 * @param i dimension
+	 * @param start
+	 * @param stop
+	 * @param step
+	 */
+	public void setSlice(int i, int start, int stop, int step) {
+		internalSetSlice(i, start, stop, step);
+		checkAllData();
+	}
+
+	
+	/**
+	 * Set slice for given dimension
+	 * @param i dimension
+	 * @param start
+	 * @param stop
+	 * @param step
+	 */
+	private void internalSetSlice(int i, int start, int stop, int step) {
+		if (step == 0) {
+			throw new IllegalArgumentException("Step size must not be zero");
+		}
+		final int s = oshape[i];
+		if (start < 0) {
+			start += s;
+		}
+		if (step > 0) {
+			if (start < 0) {
+				start = 0;
+			} else if (start > s) {
+				start = s;
+			}
+			if (stop < 0) {
+				stop += s;
+			}
+			if (stop < 0) {
+				stop = 0;
+			} else if (stop > s) {
+				stop = s;
+			}
+			if (start >= stop) {
+				lstop[i] = start;
+				lshape[i] = 0;
+			} else {
+				lstop[i] = stop;
+				lshape[i] = (stop - start - 1) / step + 1;
+			}
+		} else {
+			if (start < 0) {
+				start = -1;
+			} else if (start >= s) {
+				start = s - 1;
+			}
+			if (stop < 0) {
+				stop += s;
+			}
+			if (stop < -1) {
+				stop = -1;
+			} else if (stop >= s) {
+				stop = s - 1;
+			}
+			if (stop >= start) {
+				lstop[i] = start;
+				lshape[i] = 0;
+			} else {
+				lstop[i] = stop;
+				lshape[i] = (stop - start + 1) / step + 1;
+			}
+		}
+
+		lstart[i] = start;
+		lstep[i] = step;
 	}
 
 	/**

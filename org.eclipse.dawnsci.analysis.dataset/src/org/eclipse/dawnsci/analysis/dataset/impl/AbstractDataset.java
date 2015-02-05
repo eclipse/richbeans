@@ -919,6 +919,9 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 	 * @return an slice iterator that operates like an IndexIterator
 	 */
 	public IndexIterator getSliceIterator(SliceND slice) {
+		if (calcLongSize(slice.getShape()) == 0) {
+			return new NullIterator(shape, slice.getShape());
+		}
 		if (stride != null)
 			return new StrideIterator(getElementsPerItem(), shape, stride, offset, slice);
 
@@ -1816,7 +1819,7 @@ public abstract class AbstractDataset extends LazyDatasetBase implements Dataset
 			}
 
 			out.append(BLOCK_OPEN);
-			if (rank > 0 && shape[0] > 0) {
+			if (rank > 0) {
 				out.append(shape[0]);
 			}
 			for (int i = 1; i < rank; i++) {
