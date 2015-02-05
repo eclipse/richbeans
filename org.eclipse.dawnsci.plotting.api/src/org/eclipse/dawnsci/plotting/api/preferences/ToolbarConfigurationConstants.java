@@ -34,14 +34,21 @@ public enum ToolbarConfigurationConstants {
 	EXPORT    ("org.dawnsci.plotting.system.preference.export",           "Export"),
 	HISTO     ("org.dawnsci.plotting.system.preference.histo",            "Histogram"),
 	XYPLOT    ("org.dawnsci.plotting.system.preference.xyPlot",           "XY Plot"),
-	FULLSCREEN("org.dawnsci.plotting.system.preference.fullScreen",       "Full screen");
+	FULLSCREEN("org.dawnsci.plotting.system.preference.fullScreen",       "Full screen"),
+	SPECIALS("org.dawnsci.plotting.system.preference.special",            "Special Features", false);
 	
 	private String id;
 	private String label;
-	
+	private boolean isVis;
+
 	ToolbarConfigurationConstants(String id, String label) {
+		this(id, label, true);
+	}
+
+	ToolbarConfigurationConstants(String id, String label, boolean isVis) {
 		this.id    = id;
 		this.label = label;
+		this.isVis = isVis;
 	}
 
 	public String getId() {
@@ -51,4 +58,9 @@ public enum ToolbarConfigurationConstants {
 	public String getLabel() {
 		return label;
 	}
+	
+	public boolean isVis() {
+		return isVis;
+	}
+
 }
