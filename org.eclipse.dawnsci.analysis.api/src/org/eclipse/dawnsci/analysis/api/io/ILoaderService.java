@@ -121,4 +121,12 @@ public interface ILoaderService {
      */
 	public void clearSoftReferenceCache();
 	
+	/**
+	 * The regular expression string for parsing directories of 
+	 * similarly names files into ILazyDatasets.
+	 * 
+	 * @return regular expression
+	 */
+	public String getStackExpression();
+	
 }

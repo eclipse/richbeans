@@ -31,4 +31,11 @@ public interface ILoaderFactoryExtensionService {
 	 * @return list of extension strings that contributed loaders
 	 */
 	public List<String> getExtensions();
+
+	/**
+	 * The expression for parsing stacks.
+	 * This expression is set by eclipse preference and a preference page exists to edit it.
+	 * @return expression - for instance:  "(.+)_(\d+)."
+	 */
+	public String getStackExpression();
 }
