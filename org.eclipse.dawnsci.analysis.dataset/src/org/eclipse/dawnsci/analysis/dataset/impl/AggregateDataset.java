@@ -256,6 +256,8 @@ public class AggregateDataset extends LazyDatasetBase implements ILazyDataset {
 		ILazyDataset od = data[map[op]];
 		ILazyDataset nd; 
 		while (p < fe) {
+			
+			if (monitor!=null && monitor.isCancelled()) throw new Exception("Slice cancelled");
 			nd = data[map[p]];
 			if (nd != od) {
 				start[0] = op - offset[map[op]];

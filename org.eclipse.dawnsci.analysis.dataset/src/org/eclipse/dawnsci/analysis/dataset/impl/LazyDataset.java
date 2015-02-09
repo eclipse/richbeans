@@ -252,9 +252,9 @@ public class LazyDataset extends LazyDatasetBase implements Serializable, Clonea
 	@Override
 	public Dataset getSlice(IMonitor monitor, Slice... slice) throws Exception {
 		if (slice == null || slice.length == 0) {
-			return getSlice(null, new SliceND(shape));
+			return getSlice(monitor, new SliceND(shape));
 		}
-		return getSlice(null, new SliceND(shape, slice));
+		return getSlice(monitor, new SliceND(shape, slice));
 	}
 
 	@Override
