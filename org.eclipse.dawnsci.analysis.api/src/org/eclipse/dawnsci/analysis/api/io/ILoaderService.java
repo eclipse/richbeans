@@ -12,6 +12,7 @@
 package org.eclipse.dawnsci.analysis.api.io;
 
 import java.util.Collection;
+import java.util.regex.Matcher;
 
 import org.eclipse.dawnsci.analysis.api.dataset.IDataset;
 import org.eclipse.dawnsci.analysis.api.metadata.IDiffractionMetadata;
@@ -122,11 +123,19 @@ public interface ILoaderService {
 	public void clearSoftReferenceCache();
 	
 	/**
-	 * The regular expression string for parsing directories of 
+	 * The matcher for the expression string for parsing directories of 
 	 * similarly names files into ILazyDatasets.
+	 * 
+	 * Returns null if no matcher can be assigned for this file name.
+	 * 
+	 * Returns a matcher where groups
+	 * 0 = whole string
+	 * 1 = repeated stub
+	 * 2 = index in dataset (not necessarily a contiguous series of integers)
+	 * 3 = the file extension.
 	 * 
 	 * @return regular expression
 	 */
-	public String getStackExpression();
+	public Matcher getStackMatcher(String fileName);
 	
 }
