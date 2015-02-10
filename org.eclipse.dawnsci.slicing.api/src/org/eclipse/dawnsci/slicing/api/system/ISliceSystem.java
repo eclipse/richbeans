@@ -26,7 +26,7 @@ import org.eclipse.swt.widgets.Control;
 
 /**
  * 
- * A generic interface for slicing data. The inspector must be able 
+ * A generic interface for slicing data. The system must be able 
  * to create a UI for slicing which is added to the SWT part. It is
  * provided from the loader with an ILazyDataset of the whole data
  * and provides a mechanism for slicing the lazy dataset.
