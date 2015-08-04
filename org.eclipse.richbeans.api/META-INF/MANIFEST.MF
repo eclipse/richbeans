@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Api
+Bundle-SymbolicName: org.eclipse.richbeans.api
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Diamond Light Source
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.eclipse.richbeans.api,
+ org.eclipse.richbeans.api.beans,
+ org.eclipse.richbeans.api.event,
+ org.eclipse.richbeans.api.reflection,
+ org.eclipse.richbeans.api.widget
+Require-Bundle: org.eclipse.swt;bundle-version="3.8.1"
+Import-Package: org.slf4j;version="1.7.6"

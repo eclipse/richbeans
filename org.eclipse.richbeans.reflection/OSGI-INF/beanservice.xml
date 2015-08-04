@@ -1,0 +1,7 @@
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="Bean Service">
+   <implementation class="org.eclipse.richbeans.reflection.BeanService"/>
+   <service>
+      <provide interface="org.eclipse.richbeans.api.reflection.IBeanService"/>
+   </service>
+   
+</scr:component>

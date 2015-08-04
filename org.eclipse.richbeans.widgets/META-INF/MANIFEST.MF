@@ -1,0 +1,26 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Widgets
+Bundle-SymbolicName: org.eclipse.richbeans.widgets
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Diamond Light Source
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Export-Package: org.eclipse.richbeans.widgets,
+ org.eclipse.richbeans.widgets.cell,
+ org.eclipse.richbeans.widgets.content,
+ org.eclipse.richbeans.widgets.data,
+ org.eclipse.richbeans.widgets.decorator,
+ org.eclipse.richbeans.widgets.dialog,
+ org.eclipse.richbeans.widgets.scalebox,
+ org.eclipse.richbeans.widgets.selector,
+ org.eclipse.richbeans.widgets.util,
+ org.eclipse.richbeans.widgets.wrappers
+Require-Bundle: org.eclipse.richbeans.api;bundle-version="1.0.0";visibility:=reexport,
+ org.eclipse.swt;bundle-version="3.8.1",
+ org.eclipse.jface;bundle-version="3.8.0",
+ org.eclipse.dawnsci.analysis.api;bundle-version="1.0.0",
+ org.eclipse.dawnsci.doe;bundle-version="1.2.0",
+ org.apache.commons.beanutils;bundle-version="1.9.1"
+Bundle-Activator: org.eclipse.richbeans.widgets.Activator
+Import-Package: org.osgi.framework;version="1.7.0",
+ org.slf4j;version="1.7.6"
