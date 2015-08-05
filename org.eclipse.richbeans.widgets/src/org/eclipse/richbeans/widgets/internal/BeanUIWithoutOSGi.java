@@ -109,30 +109,6 @@ public class BeanUIWithoutOSGi {
 	}
 
 	/**
-	 * NOTE: The order of the arguments. The first object is the uiobject, the second object is the bean which we are
-	 * going to set properties from the UI with.
-	 * 
-	 * @param bean
-	 * @param uiObject
-	 * @throws Exception
-	 * @throws InvocationTargetException
-	 * @throws IllegalAccessException
-	 * @throws IllegalArgumentException
-	 */
-	public static void uiToBean(final Object uiObject, final Object bean) throws Exception {
-
-		BeanUIWithoutOSGi.notify(bean, uiObject, new BeanProcessor() {
-			@Override
-			public void process(String name, Object unused,  IFieldWidget box) throws Exception {
-				final Object ob = box.getValue();
-				if (ob != null && !isNaN(ob) && !isInfinity(ob)) {
-					setValue(bean, name, ob);
-				}
-			}
-		});
-	}
-
-	/**
 	 * Set the value of a single field specified by field name in the bean from the ui.
 	 * 
 	 * @param uiObject
@@ -176,8 +152,7 @@ public class BeanUIWithoutOSGi {
 		return Double.isNaN(((Double) ob).doubleValue());
 	}
 
-	public static void addValueListener(final Object bean, final Object uiObject, final ValueListener listener)
-			throws Exception {
+	public static void addValueListener(final Object bean, final Object uiObject, final ValueListener listener) throws Exception {
 
 		addValueListener(bean, uiObject, listener, true);
 	}
@@ -322,54 +297,6 @@ public class BeanUIWithoutOSGi {
 		}
 	}
 	
-	protected static void setValue(Object bean, String fieldName, Object ob) throws Exception {
-		
-		final String setter = BeansFactory.getSetterName(fieldName);
-		
-		Method method = null;
-		try {
-			method = bean.getClass().getMethod(setter, ob.getClass());
-			
-		} catch (java.lang.NoSuchMethodException ne) {
-			
-			final Class<?> clazz   = ob.getClass();
-			try {
-
-				if (Double.class.isAssignableFrom(clazz)) {
-					method = bean.getClass().getMethod(setter, new Class[]{double.class});
-				} else if (Float.class.isAssignableFrom(clazz)) {
-					method = bean.getClass().getMethod(setter, new Class[]{float.class});
-				} else if (Long.class.isAssignableFrom(clazz)) {
-					method = bean.getClass().getMethod(setter, new Class[]{long.class});
-				} else if (Integer.class.isAssignableFrom(clazz)) {
-					method = bean.getClass().getMethod(setter, new Class[]{int.class});
-				} else if (Boolean.class.isAssignableFrom(clazz)) {
-					method = bean.getClass().getMethod(setter, new Class[]{boolean.class});
-				}
-			} catch (NoSuchMethodException nsm2) {
-				method = bean.getClass().getMethod(setter, new Class[]{Number.class});
-			}
-
-
-			if (method==null) {
-				final Method[] methods = bean.getClass().getMethods();
-				for (Method m : methods) {
-					if (m.getName().equals(setter) && m.getParameterTypes().length==1) {
-						Class<?> type = m.getParameterTypes()[0];
-						if (!type.isAssignableFrom(clazz)) {
-							continue;
-						}
-						method = m;
-						break;
-					}
-				}
-			}
-
-		}
-		
-		method.invoke(bean, ob);
-	}
-
 	/**
 	 * Get the ui field out of the object container.
 	 * 
@@ -403,19 +330,6 @@ public class BeanUIWithoutOSGi {
 		return getFieldWidget(fieldName, uiObject);
 	}
 
-	/**
-	 * Creates a new list of cloned beans (deep).
-	 * 
-	 * @param beans
-	 * @return list of cloned beans.
-	 * @throws Exception
-	 */
-	public static List<?> cloneBeans(final List<?> beans) throws Exception {
-		final List<Object> ret = new ArrayList<Object>(beans.size());
-		for (Object bean : beans)
-			ret.add(BeansFactory.deepClone(bean));
-		return ret;
-	}
 
 	/**
 	 * Retrieves a list of fields which are both in the bean and being edited by the user.
@@ -443,51 +357,5 @@ public class BeanUIWithoutOSGi {
 		}
 
 		return expressionFields;
-	}
-
-	/**
-	 * Bean from string using standard java serialization, useful for tables of beans with serialized strings. Used
-	 * externally to the GDA.
-	 * 
-	 * @param xml
-	 * @return the bean
-	 */
-	public static Object getBean(final String xml, final ClassLoader loader) throws Exception {
-
-		final ClassLoader original = Thread.currentThread().getContextClassLoader();
-		final ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-		try {
-			Thread.currentThread().setContextClassLoader(loader);
-			XMLDecoder d = new XMLDecoder(new BufferedInputStream(stream));
-			final Object bean = d.readObject();
-			d.close();
-			return bean;
-		} finally {
-			Thread.currentThread().setContextClassLoader(original);
-			stream.close();
-		}
-	}
-
-	/**
-	 * Used externally to the GDA.
-	 * 
-	 * @param bean
-	 * @return the string
-	 */
-	public static String getString(Object bean) throws Exception {
-
-		final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-		final ClassLoader original = Thread.currentThread().getContextClassLoader();
-		try {
-			Thread.currentThread().setContextClassLoader(bean.getClass().getClassLoader());
-			XMLEncoder e = new XMLEncoder(new BufferedOutputStream(stream));
-			e.writeObject(bean);
-			e.close();
-			return stream.toString("UTF-8");
-		} finally {
-			Thread.currentThread().setContextClassLoader(original);
-			stream.close();
-		}
 	}
 }

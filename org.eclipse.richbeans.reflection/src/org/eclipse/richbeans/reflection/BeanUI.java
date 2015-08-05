@@ -418,49 +418,4 @@ class BeanUI {
 		return expressionFields;
 	}
 
-	/**
-	 * Bean from string using standard java serialization, useful for tables of beans with serialized strings. Used
-	 * externally to the GDA.
-	 * 
-	 * @param xml
-	 * @return the bean
-	 */
-	public static Object getBean(final String xml, final ClassLoader loader) throws Exception {
-
-		final ClassLoader original = Thread.currentThread().getContextClassLoader();
-		final ByteArrayInputStream stream = new ByteArrayInputStream(xml.getBytes("UTF-8"));
-		try {
-			Thread.currentThread().setContextClassLoader(loader);
-			XMLDecoder d = new XMLDecoder(new BufferedInputStream(stream));
-			final Object bean = d.readObject();
-			d.close();
-			return bean;
-		} finally {
-			Thread.currentThread().setContextClassLoader(original);
-			stream.close();
-		}
-	}
-
-	/**
-	 * Used externally to the GDA.
-	 * 
-	 * @param bean
-	 * @return the string
-	 */
-	public static String getString(Object bean) throws Exception {
-
-		final ByteArrayOutputStream stream = new ByteArrayOutputStream();
-
-		final ClassLoader original = Thread.currentThread().getContextClassLoader();
-		try {
-			Thread.currentThread().setContextClassLoader(bean.getClass().getClassLoader());
-			XMLEncoder e = new XMLEncoder(new BufferedOutputStream(stream));
-			e.writeObject(bean);
-			e.close();
-			return stream.toString("UTF-8");
-		} finally {
-			Thread.currentThread().setContextClassLoader(original);
-			stream.close();
-		}
-	}
 }
