@@ -21,6 +21,12 @@ public interface IBeanController {
 	 */
 	void addValueListener(ValueListener valueListener) throws Exception;
 
+	/**
+	 * Remove a value listener from the controller.
+	 * @param listener
+	 */
+	void removeValueListener(ValueListener listener) throws Exception;
+
     /**
      * Takes the bean values and inserts them into the UI.
      */
@@ -114,4 +120,5 @@ public interface IBeanController {
 	 * @param listener
 	 */
 	void addBeanFieldValueListener(String fieldName, ValueListener listener);
+
 }
