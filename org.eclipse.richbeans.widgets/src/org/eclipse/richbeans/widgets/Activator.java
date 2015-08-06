@@ -12,7 +12,8 @@ import org.osgi.framework.ServiceReference;
 
 public class Activator implements BundleActivator {
 
-	private static String PLUGIN_ID = "org.dawnsci.common.richbeans";
+	private static String PLUGIN_ID = "org.eclipse.richbeans.widgets";
+	
 	private static BundleContext context;
 
 	@Override
@@ -21,7 +22,7 @@ public class Activator implements BundleActivator {
 	}
 
 	@Override
-	public void stop(BundleContext context) throws Exception {
+	public void stop(BundleContext c) throws Exception {
 		context = null;
 	}
 
