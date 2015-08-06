@@ -1,28 +1,17 @@
 /*-
- * Copyright © 2010 Diamond Light Source Ltd.
+ *******************************************************************************
+ * Copyright (c) 2011, 2014 Diamond Light Source Ltd.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * This file is part of GDA.
- *
- * GDA is free software: you can redistribute it and/or modify it under the
- * terms of the GNU General Public License version 3 as published by the Free
- * Software Foundation.
- *
- * GDA is distributed in the hope that it will be useful, but WITHOUT ANY
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
- * FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
- * details.
- *
- * You should have received a copy of the GNU General Public License along
- * with GDA. If not, see <http://www.gnu.org/licenses/>.
- */
-
+ * Contributors:
+ *    Matthew Gerring - initial API and implementation and/or initial documentation
+ *******************************************************************************/
 /**
 
 The beans plugin contains only POJO bean files. 
-
-TODO Currently there are some beans in the beans plugin that reference XMLHelper from the common plugin - these are wrong and should
-not import XMLHelper. Once this change is made, this plugin will depend on nothing but <code>org.apache.commons.beanutils.BeanUtils</code>
-and the JDK.
 
 No further dependencies should be made between this plugin and other projects. All classes should be POJOs - plain old
 java classes - and fit the bean pattern (no argument constructors and private/protected fields with getters and setters).
