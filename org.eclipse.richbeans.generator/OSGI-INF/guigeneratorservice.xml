@@ -1,0 +1,7 @@
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="GUI Generator Service">
+   <implementation class="org.eclipse.richbeans.generator.GuiGeneratorService"/>
+   <service>
+      <provide interface="org.eclipse.richbeans.api.generator.IGuiGeneratorService"/>
+   </service>
+   
+</scr:component>

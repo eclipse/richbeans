@@ -5,7 +5,9 @@ Bundle-SymbolicName: org.eclipse.richbeans.generator
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Diamond Light Source
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: org.eclipse.swt;bundle-version="3.8.1"
+Require-Bundle: org.eclipse.swt;bundle-version="3.8.1",
+ org.eclipse.richbeans.api;bundle-version="1.0.0"
 Import-Package: org.slf4j;version="1.7.6"
 Export-Package: org.metawidget.inspector,
  org.metawidget.inspector.annotation
+Service-Component: OSGI-INF/*.xml
