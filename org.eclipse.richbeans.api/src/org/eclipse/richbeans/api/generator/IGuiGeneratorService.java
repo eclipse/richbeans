@@ -10,5 +10,5 @@ public interface IGuiGeneratorService {
 	 * @return
 	 */
 	// TODO decide if we also want to pass a style parameter
-	public GeneratedComposite generateGui(Object bean, Composite parent);
+	public Composite generateGui(Object bean, Composite parent);
 }
