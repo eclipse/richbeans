@@ -43,6 +43,12 @@ class BeanController implements IBeanController {
 	 * correct order of the arguments!
 	 */
 	public BeanController(Object ui, Object bean) {
+		if (ui == null) {
+			throw new NullPointerException("UI object must not be null");
+		}
+		if (bean == null) {
+			throw new NullPointerException("Bean must not be null");
+		}
 		this.ui = ui;
 		this.bean = bean;
 	}
