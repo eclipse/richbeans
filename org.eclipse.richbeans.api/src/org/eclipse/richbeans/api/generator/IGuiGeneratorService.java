@@ -5,6 +5,8 @@ import org.eclipse.swt.widgets.Composite;
 public interface IGuiGeneratorService {
 
 	/**
+	 * TODO
+	 * 
 	 * @param bean
 	 * @param parent
 	 * @return

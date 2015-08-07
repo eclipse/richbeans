@@ -15,7 +15,8 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 
 		SwtMetawidget metawidget = new SwtMetawidget(parent, SWT.NONE);
 
-		// TODO data binding!
+		DataBindingProcessor bindingProcessor = new DataBindingProcessor();
+		metawidget.addWidgetProcessor(bindingProcessor);
 
 		InspectionResultProcessor<SwtMetawidget> jexlProcessor = new JexlInspectionResultProcessor<SwtMetawidget>();
 		metawidget.addInspectionResultProcessor(jexlProcessor);
@@ -24,5 +25,4 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 
 		return metawidget;
 	}
-
 }
