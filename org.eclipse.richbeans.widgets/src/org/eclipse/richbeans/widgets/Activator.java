@@ -23,8 +23,6 @@ import org.osgi.framework.ServiceReference;
 
 public class Activator implements BundleActivator {
 
-	private static String PLUGIN_ID = "org.eclipse.richbeans.widgets";
-	
 	private static BundleContext context;
 
 	@Override
@@ -43,27 +41,25 @@ public class Activator implements BundleActivator {
 	}
 
 	public static ImageDescriptor getImageDesciptor(String iconPath) {
-		
-	
-	    Bundle bundle = context.getBundle(PLUGIN_ID);
-	
-	    // look for the image (this will check both the plugin and fragment folders
-	    URL fullPathString = bundle.getEntry(iconPath);
-	    if (fullPathString == null) {
-	        try {
-	            fullPathString = new URL(iconPath);
-	        } catch (MalformedURLException e) {
-	            return null;
-	        }
-	    }
-	
-	    return ImageDescriptor.createFromURL(fullPathString);
-	}
 
+		Bundle bundle = context.getBundle();
+
+		// look for the image (this will check both the plugin and fragment
+		// folders
+		URL fullPathString = bundle.getEntry(iconPath);
+		if (fullPathString == null) {
+			try {
+				fullPathString = new URL(iconPath);
+			} catch (MalformedURLException e) {
+				return null;
+			}
+		}
+
+		return ImageDescriptor.createFromURL(fullPathString);
+	}
 
 	public static Object getService(Class<?> serviceClass) {
 		ServiceReference<?> ref = context.getServiceReference(serviceClass);
 		return context.getService(ref);
 	}
-
 }
