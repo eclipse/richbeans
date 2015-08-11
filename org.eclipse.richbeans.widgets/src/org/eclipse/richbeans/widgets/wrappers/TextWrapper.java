@@ -18,6 +18,8 @@ import java.util.Map;
 
 import org.eclipse.dawnsci.analysis.api.expressions.IExpressionEngine;
 import org.eclipse.dawnsci.analysis.api.expressions.IExpressionService;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.richbeans.api.event.ValueEvent;
 import org.eclipse.richbeans.widgets.Activator;
 import org.eclipse.richbeans.widgets.ButtonComposite;
@@ -26,8 +28,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 
@@ -37,12 +37,12 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class TextWrapper extends ButtonComposite {
-	
+
 	protected static final Color BLUE      = Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
 	protected static final Color RED       = Display.getDefault().getSystemColor(SWT.COLOR_RED);
 	protected static final Color BLACK     = Display.getDefault().getSystemColor(SWT.COLOR_BLACK);
 	protected static final Color DARK_RED  = Display.getDefault().getSystemColor(SWT.COLOR_DARK_RED);
-	
+
 	/**
 	 * The text type, effects how the text is checked.
 	 */
@@ -60,7 +60,7 @@ public class TextWrapper extends ButtonComposite {
 		 */
 		FILENAME
 	}
-	
+
 	private TEXT_TYPE textType = TEXT_TYPE.FREE_TXT;
 	
 	/**
@@ -84,7 +84,7 @@ public class TextWrapper extends ButtonComposite {
 	 * The variables to use in expression validation.
 	 */
 	private Map<String, Object> expressionVariables;
-	
+
 	private IExpressionEngine createEngine(final String expression) throws Exception {
 		IExpressionService service = (IExpressionService)Activator.getService(IExpressionService.class);
 		IExpressionEngine  engine  = service.getExpressionEngine();
@@ -98,26 +98,27 @@ public class TextWrapper extends ButtonComposite {
 	 * @param style
 	 */
 	public TextWrapper(Composite parent, int style) {
-		
+
 		super(parent, SWT.NONE);
-//		GridLayoutFactory.fillDefaults().applyTo(this);
-		setLayout(new GridLayout(1, false));
-		
+		GridLayoutFactory.fillDefaults().applyTo(this);
+
 		this.text = new StyledText(this, style);
-//		GridDataFactory.fillDefaults().applyTo(text);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+		// Fill available space so the layout can be properly controlled by the parent
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(text);
+
 		mainControl = text;
-		
+
 		this.modifyListener = new ModifyListener() {
 			private IExpressionEngine jexl;
 
 			@Override
 			public void modifyText(ModifyEvent e) {
-				
+
 				final Object newValue = getValue();
-				
+
 				if (textType==TEXT_TYPE.EXPRESSION) {
-				
+
 					try {
 						String expression = newValue.toString().trim();
 						jexl = createEngine(expression);
@@ -151,14 +152,13 @@ public class TextWrapper extends ButtonComposite {
 			}
 		};
 		text.addModifyListener(modifyListener);
-
 	}
-	
+
 	@Override
 	public void setToolTipText(String text) {
 		this.text.setToolTipText(text);
 	}
-	
+
 	@Override
 	public void dispose() {
 		if (text!=null&&!text.isDisposed()) text.removeModifyListener(modifyListener);
@@ -166,17 +166,17 @@ public class TextWrapper extends ButtonComposite {
 	}
 
 	private boolean multiLineMode = false;
-	
+
 	@Override
 	public Object getValue() {
 		if (multiLineMode) {
 			final String [] sa = getText().split(text.getLineDelimiter());
 			return Arrays.asList(sa);
 		}
-		
-	    return getText();
+
+		return getText();
 	}
-	
+
 	/**
 	 * @return text
 	 */
@@ -239,9 +239,6 @@ public class TextWrapper extends ButtonComposite {
 	public void setExpressionVariables(final Map<String, Object> vars) {
 		this.expressionVariables = vars;
 	}
-	
+
 	/*******************************************************************/
-
 }
-
-	
