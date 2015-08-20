@@ -58,8 +58,8 @@ public class Activator implements BundleActivator {
 		return ImageDescriptor.createFromURL(fullPathString);
 	}
 
-	public static Object getService(Class<?> serviceClass) {
-		ServiceReference<?> ref = context.getServiceReference(serviceClass);
+	public static <T> T getService(Class<T> serviceClass) {
+		ServiceReference<T> ref = context.getServiceReference(serviceClass);
 		return context.getService(ref);
 	}
 }
