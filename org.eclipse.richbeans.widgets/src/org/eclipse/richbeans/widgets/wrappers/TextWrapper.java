@@ -56,7 +56,7 @@ public class TextWrapper extends ButtonComposite {
 		 */
 		EXPRESSION,
 		/**
-		 * Legal Linux filenames
+		 * Legal filenames
 		 */
 		FILENAME
 	}
@@ -128,11 +128,13 @@ public class TextWrapper extends ButtonComposite {
 						text.setForeground(RED);
 					}
 				} else if (textType == TEXT_TYPE.FILENAME) {
+
+					// TODO the set of characters currently excluded doesn't really match the actual forbidden characters on Windows or Linux systems
 					String testString = newValue.toString().trim();
 					if (testString.contains(" ") || testString.startsWith("-")
 							|| testString.contains(";") || testString.contains("<") || testString.contains("\t")
 							|| testString.contains("'") || testString.contains("\"") || testString.contains("\\")
-							|| testString.contains("\n")|| testString.contains("..")) {
+							|| testString.contains("\n")|| testString.contains("..") || testString.contains("/")) {
 						if (!RED.isDisposed()) {
 							text.setForeground(RED);
 						}
