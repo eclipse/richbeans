@@ -16,5 +16,8 @@ Export-Package: org.metawidget.inspector,
  org.metawidget.inspector.annotation
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: lib/metawidget-all.jar,
- .
+Bundle-ClassPath: .,
+ lib/metawidget-annotation-4.1.jar,
+ lib/metawidget-core-4.1.jar,
+ lib/metawidget-jexl-4.1.jar,
+ lib/metawidget-swt-4.1.jar
