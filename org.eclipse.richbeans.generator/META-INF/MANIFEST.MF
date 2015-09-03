@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.swt;bundle-version="3.8.1",
  org.eclipse.core.databinding.beans;bundle-version="1.2.200",
  org.eclipse.core.databinding.property;bundle-version="1.4.100"
 Import-Package: org.slf4j;version="1.7.6"
-Export-Package: org.metawidget.inspector,
+Export-Package: org.eclipse.richbeans.generator,
+ org.metawidget.inspector,
  org.metawidget.inspector.annotation
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
