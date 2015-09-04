@@ -6,6 +6,6 @@
 	<classpathentry kind="lib" path="lib/metawidget-swt-4.1.jar" sourcepath="lib/metawidget-swt-4.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/metawidget-jexl-4.1.jar" sourcepath="lib/metawidget-jexl-4.1-sources.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/metawidget-annotation-4.1.jar" sourcepath="lib/metawidget-annotation-4.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/metawidget-core-4.1.jar" sourcepath="lib/metawidget-core-4.1-sources.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/metawidget-core-4.1.jar" sourcepath="lib/metawidget-core-4.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
