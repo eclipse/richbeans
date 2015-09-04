@@ -27,11 +27,8 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.internal.databinding.BindingStatus;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Spinner;
 import org.metawidget.swt.SwtMetawidget;
 import org.metawidget.util.CollectionUtils;
 import org.metawidget.util.simple.ObjectUtils;
@@ -110,18 +107,27 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 		// Observe the control
 		State state = getState(metawidget);
 		Realm realm = state.bindingContext.getValidationRealm();
+
 		IObservableValue observeTarget = null;
-		if (control instanceof Button || // Boolean checkboxes
-				control instanceof Combo || // Using @UILookup
-				control instanceof Spinner // Integers
-		) {
+		if (controlProperty.equalsIgnoreCase("selection")) {
 			observeTarget = WidgetProperties.selection().observe(realm, control);
+		} else if (controlProperty.equalsIgnoreCase("text")) {
+			try {
+				// Use SWT.Modify if possible to catch all changes on Text or StyledText widgets
+				observeTarget = WidgetProperties.text(SWT.Modify).observe(realm, control);
+			} catch (Exception e) {
+				// Fall back to trying normal text observation for other widgets (e.g. Label, Button etc)
+				observeTarget = WidgetProperties.text().observe(realm, control);
+			}
 		} else {
-			observeTarget = WidgetProperties.text(SWT.Modify).observe(realm, control);
+			// Not sure how to do the binding, so act as if controlProperty is null
+			return control;
 		}
 
 		UpdateValueStrategy targetToModel;
+
 		// (NO_SETTER model values are one-way only)
+
 		if (TRUE.equals(attributes.get(NO_SETTER))) {
 			targetToModel = new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER);
 		} else {
@@ -180,6 +186,7 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 		State state = getState(metawidget);
 		state.bindingContext.updateModels();
 
+		// TODO Consider removing this block completely to avoid needing to refer to BindingStatus?
 		for (Object validationStatusProvider : state.bindingContext.getValidationStatusProviders()) {
 			Binding binding = (Binding) validationStatusProvider;
 			BindingStatus bindingStatus = (BindingStatus) binding.getValidationStatus().getValue();
