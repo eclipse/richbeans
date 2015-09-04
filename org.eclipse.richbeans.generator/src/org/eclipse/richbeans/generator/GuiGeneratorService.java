@@ -6,7 +6,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.metawidget.inspectionresultprocessor.commons.jexl.JexlInspectionResultProcessor;
 import org.metawidget.inspectionresultprocessor.iface.InspectionResultProcessor;
 import org.metawidget.swt.SwtMetawidget;
-import org.metawidget.swt.widgetprocessor.binding.databinding.DataBindingProcessor;
 
 public class GuiGeneratorService implements IGuiGeneratorService {
 
@@ -15,7 +14,7 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 
 		SwtMetawidget metawidget = new SwtMetawidget(parent, SWT.NONE);
 
-		DataBindingProcessor bindingProcessor = new DataBindingProcessor();
+		TwoWayDataBindingProcessor bindingProcessor = new TwoWayDataBindingProcessor();
 		metawidget.addWidgetProcessor(bindingProcessor);
 
 		InspectionResultProcessor<SwtMetawidget> jexlProcessor = new JexlInspectionResultProcessor<SwtMetawidget>();
