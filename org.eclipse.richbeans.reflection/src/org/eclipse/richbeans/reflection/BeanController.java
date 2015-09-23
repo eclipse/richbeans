@@ -168,9 +168,8 @@ class BeanController implements IBeanController {
 		}
 		return null;
 	}
-
 	
-
+	
 	/**
 	 * You can record widgets associated with editing a particular bean field here. They are then available to be
 	 * listened to by other parts of the user interface. However all the field editors are recorded in a map so care
@@ -182,6 +181,7 @@ class BeanController implements IBeanController {
 	 * @param uiObject
 	 * @throws Exception
 	 */
+	
 	@Override
 	public void recordBeanFields() throws Exception {
 
@@ -205,6 +205,7 @@ class BeanController implements IBeanController {
 	 * @param fieldName
 	 * @param box
 	 */
+	
 	@Override
 	public void addBeanField(String fieldName, final IFieldWidget box) {
 		fieldName = fieldName.substring(0, 1).toLowerCase(Locale.US) + fieldName.substring(1);

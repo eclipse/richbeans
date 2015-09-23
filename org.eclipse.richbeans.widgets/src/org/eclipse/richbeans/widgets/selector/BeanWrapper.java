@@ -19,7 +19,7 @@ package org.eclipse.richbeans.widgets.selector;
  * The bean wrapper has a unique name and avoids these problems.
  */
 class BeanWrapper {
-
+	
 	public BeanWrapper(final Object bean) {
 		setBean(bean);
 	}

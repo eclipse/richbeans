@@ -100,6 +100,7 @@ public class VerticalListEditor extends ListEditor {
 		buttonsPanel.setLayout(gridLayout_1);
 		buttonsPanel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
 
+		// Add new bean
 		add = new Button(buttonsPanel, SWT.NONE);
 		add.setImage(getImageDescriptor("add.png").createImage());
 		add.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -115,6 +116,7 @@ public class VerticalListEditor extends ListEditor {
 		};
 		add.addSelectionListener(addListener);
 
+		// delete bean
 		delete = new Button(buttonsPanel, SWT.NONE);
 		delete.setImage(getImageDescriptor("delete.png").createImage());
 		delete.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -130,6 +132,7 @@ public class VerticalListEditor extends ListEditor {
 		};
 		delete.addSelectionListener(deleteListener);
 
+		// move bean up in the list
 		up = new Button(buttonsPanel, SWT.ARROW);
 		this.upListener = new SelectionAdapter() {
 			@Override
@@ -142,6 +145,7 @@ public class VerticalListEditor extends ListEditor {
 		};
 		up.addSelectionListener(upListener);
 
+		// move bean down in the list
 		down = new Button(buttonsPanel, SWT.ARROW | SWT.DOWN);
 		this.downListener = new SelectionAdapter() {
 			@Override
@@ -263,7 +267,9 @@ public class VerticalListEditor extends ListEditor {
 
 		// use a default name if supplied
 		updateName(wrapper);
-
+		
+		beanAdd(wrapper.getBean());
+		
 		if (index < 0)
 			beans.add(wrapper);
 		else
@@ -282,8 +288,9 @@ public class VerticalListEditor extends ListEditor {
 	 * Can be called to delete the selected bean, normally just for testing.
 	 */
 	public void deleteBean() {
-		final Object bean = getSelectedBeanWrapper();
+		final BeanWrapper bean = getSelectedBeanWrapper();
 		int index = beans.indexOf(bean);
+		beanRemove(bean.getBean());
 		beans.remove(bean);
 
 		lastSelectionBean = null;// Stops save
@@ -300,6 +307,22 @@ public class VerticalListEditor extends ListEditor {
 
 		// Do last
 		listViewer.refresh();
+	}
+
+	/**
+	 * Override behaviour for bean removed
+	 * @param bean
+	 */
+	protected void beanRemove(Object bean) {
+		
+	}
+	
+	/**
+	 * Override behaviour for bean added
+	 * @param bean
+	 */
+	protected void beanAdd(Object bean) { 
+		
 	}
 
 	@Override
