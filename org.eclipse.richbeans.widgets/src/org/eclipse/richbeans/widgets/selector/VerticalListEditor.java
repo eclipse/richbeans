@@ -274,6 +274,7 @@ public class VerticalListEditor extends ListEditor {
 		setSelectedBean(wrapper, true);
 		listViewer.getControl().setFocus();
 		updateEditingUIVisibility();
+		updateButtons();
 		notifyValueListeners();
 
 	}
@@ -296,6 +297,7 @@ public class VerticalListEditor extends ListEditor {
 			listViewer.getControl().setFocus();
 		}
 		updateEditingUIVisibility();
+		updateButtons();
 		notifyValueListeners();
 
 		// Do last
@@ -401,6 +403,7 @@ public class VerticalListEditor extends ListEditor {
 				listViewer.refresh();
 		} finally {
 			updateEditingUIVisibility();
+			updateButtons();
 			notifyValueListeners();
 		}
 	}
