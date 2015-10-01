@@ -245,6 +245,7 @@ public abstract class ListEditor extends FieldBeanComposite {
 			if (wasOn)
 				on();
 			try {
+				// TODO this currently only works for simple widgets in the editorUI, not for the editor UIs of nested list editors
 				BeanUIWithoutOSGi.fireBoundsUpdaters(wrapper.getBean(), editorUI);
 			} catch (Exception e) {
 				logger.error("Cannot notify value listeners", e);
