@@ -13,6 +13,8 @@ package org.eclipse.richbeans.generator;
 
 import static org.metawidget.inspector.InspectionResultConstants.*;
 
+import java.beans.PropertyChangeListener;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,6 +22,7 @@ import java.util.Set;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
+import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.beans.PojoObservables;
 import org.eclipse.core.databinding.conversion.IConverter;
 import org.eclipse.core.databinding.observable.Realm;
@@ -147,11 +150,23 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 			propertyName += attributes.get(NAME);
 		}
 
-		// (use PojoObservables so that the model needn't implement
-		// PropertyChangeListener)
-		IObservableValue observeModel = PojoObservables.observeValue(realm, toInspect, propertyName);
-		UpdateValueStrategy modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_ON_REQUEST);
+		// Setup the bean to UI binding. If the bean had property change support use it else to on request binding
+		IObservableValue observeModel = null;
+		UpdateValueStrategy modelToTarget = null;
+		// Check if the bean has a addPropertyChangeListener method
+		try {
+			// calling getMethod will throw the NoSuchMethodException if its not available i.e. bean has no
+			// property change support
+			toInspect.getClass().getMethod("addPropertyChangeListener", PropertyChangeListener.class);
+			// If the addPropertyChangeListener method exists add dynamic 2 way binding
+			observeModel = BeansObservables.observeValue(realm, toInspect, propertyName);
+			modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
+		} catch (NoSuchMethodException | SecurityException e) { // No PropertyChangeListener or can't access
+			observeModel = PojoObservables.observeValue(realm, toInspect, propertyName);
+			modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_ON_REQUEST);
+		}
 
+		
 		// Add converters
 		targetToModel.setConverter(getConverter((Class<?>) observeTarget.getValueType(), (Class<?>) observeModel.getValueType()));
 		modelToTarget.setConverter(getConverter((Class<?>) observeModel.getValueType(), (Class<?>) observeTarget.getValueType()));
