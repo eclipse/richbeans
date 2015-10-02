@@ -96,9 +96,13 @@ public class ScaleWrapper extends ScaleComposite implements IFieldWidget
 	public Object getValue()
 	{
 		double current = scale.getSelection();
+		double min = scale.getMinimum();
+		double max = scale.getMaximum();
+		 		
+		double percentageSelection = (current - min) / (max-min);
 		
 		// % across the scale
-		double percentageSelection = (current - this.minimumValue) / (this.minimumValue - this.minimumValue);
+//		double percentageSelection = (current - this.minimumValue) / (this.minimumValue - this.minimumValue);
 		
 		double value = (percentageSelection * (this.maximumValue - this.minimumValue) ) + this.minimumValue;
 		
@@ -146,7 +150,7 @@ public class ScaleWrapper extends ScaleComposite implements IFieldWidget
 	 */
 	private void setCurrentValue(double value)
 	{
-		double scalePercentValue = (value - this.minimumValue) / (this.maximumValue - this.minimumValue);
+		double scalePercentValue = (value - this.scale.getMinimum()) / (this.scale.getMaximum() - this.scale.getMinimum());
 		int valueOnScale = (int) (scalePercentValue * scale.getMaximum());
 		scale.setSelection(valueOnScale);
 	}

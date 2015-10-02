@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.Scale;
 
 /**
  * 
- * @author uij85458 - Joel Ogden
+ * @author Joel Ogden
  *  
  */
 

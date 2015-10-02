@@ -11,18 +11,29 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
+
+
+/**
+ * Used to wrap the Color Selector object to allow then to work with BeanUI.
+ * 
+ * @author Joel Ogden
+ */
 public class ColorSelectorWrapper extends ColorSelectorComposite implements IFieldWidget
 {
-	protected ColorSelector colourSelector;
+
 	protected IPropertyChangeListener changeListener;
 	
 	public ColorSelectorWrapper(Composite parent, int style)
 	{
 		super(parent, style);
 		
-		this.setLayout(new GridLayout(1,false));		
-		colourSelector = new ColorSelector(this);
+		// set the layout of the composite
+		this.setLayout(new GridLayout(1,false));
 		
+		// create the colourSelection
+		this.colourSelector = new ColorSelector(this);
+		
+		// create the event listener - detects when a new colour is choosen
 		this.pack();
 		this.changeListener = new IPropertyChangeListener()
 		{
@@ -35,6 +46,7 @@ public class ColorSelectorWrapper extends ColorSelectorComposite implements IFie
 			}
 		};
 		
+		// add the listener
 		colourSelector.addListener(changeListener);
 	}
 
@@ -43,12 +55,20 @@ public class ColorSelectorWrapper extends ColorSelectorComposite implements IFie
 		super.setActive(active);
 	}
 	
+	/**
+	 * @return RGB - The current Color in RGB object format.
+	 */
 	@Override
 	public Object getValue()
 	{
 		return colourSelector.getColorValue();
 	}
 
+	
+	/**
+	 * Set the color value of the object
+	 * @param value - RGB object preferred.
+	 */
 	@Override
 	public void setValue(Object value)
 	{

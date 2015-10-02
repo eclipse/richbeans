@@ -264,7 +264,7 @@ public class VerticalListEditor extends ListEditor {
 		final BeanWrapper wrapper = new BeanWrapper(bean);
 		String wrapperName = getFreeName(wrapper, getTemplateName(), index);
 		wrapper.setName(wrapperName);
-
+		
 		// use a default name if supplied
 		updateName(wrapper);
 		
@@ -405,7 +405,7 @@ public class VerticalListEditor extends ListEditor {
 
 	@Override
 	public void setValue(Object value) {
-
+		
 		if (value==null) value = Collections.emptyList();
 		super.setValue(value);
 		createProviders();
