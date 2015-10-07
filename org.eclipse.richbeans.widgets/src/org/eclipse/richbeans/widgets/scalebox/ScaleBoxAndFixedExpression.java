@@ -14,8 +14,6 @@ package org.eclipse.richbeans.widgets.scalebox;
 
 import java.text.NumberFormat;
 import java.util.Collection;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.eclipse.dawnsci.analysis.api.expressions.IExpressionEngine;
 import org.eclipse.dawnsci.analysis.api.expressions.IExpressionService;

@@ -80,11 +80,6 @@ public class TextWrapper extends ButtonComposite {
 	protected StyledText text;
 	private ModifyListener modifyListener;
 
-	/**
-	 * The variables to use in expression validation.
-	 */
-	private Map<String, Object> expressionVariables;
-
 	private IExpressionEngine createEngine(final String expression) throws Exception {
 		IExpressionService service = (IExpressionService)Activator.getService(IExpressionService.class);
 		IExpressionEngine  engine  = service.getExpressionEngine();
@@ -236,10 +231,11 @@ public class TextWrapper extends ButtonComposite {
 	 * 
 	 * Variables are Jep ones therefore Strings or Numbers
 	 * 
+	 * TODO: Not implemented yet.
+	 *
 	 * @param vars
 	 */
 	public void setExpressionVariables(final Map<String, Object> vars) {
-		this.expressionVariables = vars;
 	}
 
 	/*******************************************************************/

@@ -12,9 +12,6 @@
 
 package org.eclipse.richbeans.widgets.scalebox;
 
-import org.eclipse.richbeans.api.event.ValueAdapter;
-import org.eclipse.richbeans.api.event.ValueEvent;
-import org.eclipse.richbeans.api.event.ValueListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.custom.VerifyKeyListener;
@@ -23,12 +20,7 @@ import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.VerifyEvent;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
 
 /**
  * Standard box has the following event properties:

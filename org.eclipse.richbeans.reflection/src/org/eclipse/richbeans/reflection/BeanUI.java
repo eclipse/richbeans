@@ -12,12 +12,6 @@
 
 package org.eclipse.richbeans.reflection;
 
-import java.beans.XMLDecoder;
-import java.beans.XMLEncoder;
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -35,8 +29,8 @@ import org.eclipse.richbeans.api.widget.IFieldWidget;
 
 
 /**
- * Class concerned with sending state between beans and ui. It does this through the IFieldWidget interface. Initially
- * the design was to have no IFieldWidget and for BeanUI to synchonize and object but this lead to a complex and
+ * Class concerned with sending state between beans and UI. It does this through the IFieldWidget interface. Initially
+ * the design was to have no IFieldWidget and for BeanUI to synchronize and object but this lead to a complex and
  * confused design of BeanUI but more importantly of RichBeanEditorPart implementations. Now a IFieldWidget must
  * existing for each field in the bean mapping to each widget.
  * 

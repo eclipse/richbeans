@@ -202,6 +202,7 @@ public class DemandBox extends NumberBox {
 	 * 
 	 * Behaves a little like a motor and uses a timer to notify.
 	 */
+	@SuppressWarnings("unused")
 	private static class TestMover extends Observable {
 				
 		private boolean busy = false;

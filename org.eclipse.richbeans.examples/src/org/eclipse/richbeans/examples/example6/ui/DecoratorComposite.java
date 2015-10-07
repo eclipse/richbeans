@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.richbeans.examples.example6.ui;
 
-import java.text.DecimalFormat;
-
 import org.eclipse.richbeans.api.widget.IFieldWidget;
 import org.eclipse.richbeans.widgets.decorator.BoundsDecorator;
 import org.eclipse.richbeans.widgets.decorator.FieldDecorator;
