@@ -6,7 +6,6 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.richbeans.api.event.ValueEvent;
 import org.eclipse.richbeans.api.widget.IFieldWidget;
 import org.eclipse.richbeans.widgets.ColorSelectorComposite;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;

@@ -67,7 +67,6 @@ public final class RangeDialog extends Dialog {
 		DialogUtils.centerDialog(getParentShell(), newShell);
 	}
 	
-	@SuppressWarnings("unused")
 	@Override
 	protected Control createDialogArea(Composite parent) {
         

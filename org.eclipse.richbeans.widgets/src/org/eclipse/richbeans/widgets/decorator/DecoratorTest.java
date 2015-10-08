@@ -106,6 +106,7 @@ public class DecoratorTest {
 		fd.setMaximum(100);
 		fd.setMinimum(0);
 
+		@SuppressWarnings("unused")
 		Text none = new Text(composite, SWT.NORMAL);
 		
 		composite.pack();

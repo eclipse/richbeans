@@ -3,7 +3,6 @@ package org.eclipse.richbeans.generator;
 import java.util.Map;
 
 import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations;
-import org.eclipse.richbeans.widgets.decorator.BoundsDecorator;
 import org.eclipse.richbeans.widgets.decorator.FloatDecorator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Spinner;
