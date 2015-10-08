@@ -19,7 +19,6 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		SwtMetawidget metawidget = new SwtMetawidget(parent, SWT.NONE);
 
 		// Add the UiAnnotationsInspector
-		System.out.println(metawidget.getInspectionPath());
 		metawidget.setInspector(new CompositeInspector( new CompositeInspectorConfig().setInspectors(
 				new PropertyTypeInspector(),
 				new MetawidgetAnnotationInspector(),
@@ -36,6 +35,7 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		metawidget.addInspectionResultProcessor(jexlProcessor);
 
 		metawidget.setToInspect(bean);
+		metawidget.pack();
 
 		return metawidget;
 	}
