@@ -75,6 +75,14 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 
 	public TwoWayDataBindingProcessor(TwoWayDataBindingProcessorConfig config) {
 
+		// Add a general Enum to String converter (first, to allow this to be overridden by clients if necessary)
+		mConverters.put(new ConvertFromTo(Enum.class, String.class), new Converter(Enum.class, String.class) {
+			@Override
+			public Object convert(Object fromObject) {
+				return ((Enum<?>) fromObject).name();
+			}
+		});
+
 		// Register converters
 		IConverter[] converters = config.getConverters();
 
@@ -162,7 +170,7 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 		// Setup the bean to UI binding. If the bean had property change support use it else to on request binding
 		IObservableValue observeModel = null;
 		UpdateValueStrategy modelToTarget = null;
-		// Check if the bean has a addPropertyChangeListener method
+		// Check if the bean has an addPropertyChangeListener method
 		try {
 			// calling getMethod will throw the NoSuchMethodException if its not available i.e. bean has no
 			// property change support
@@ -175,49 +183,22 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 			modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_ON_REQUEST);
 		}
 
-		// Check for enums and if they exist make a converter on the fly
-		try {
-			for (PropertyDescriptor pd : Introspector.getBeanInfo(toInspect.getClass()).getPropertyDescriptors()) {
-				if (pd.getName().equals(propertyName)) {
-					
-					if (pd.getReadMethod().getReturnType().isEnum()){
-						final Class<?> enumClass = pd.getReadMethod().getReturnType();
-						Converter converter = new Converter(String.class, enumClass) {
-							@Override
-							public Object convert(Object fromObject) {
-								try {
-//									Enum.valueOf(enumClass, fromObject.toString());
-									Method enumValueOfMethod = enumClass.getMethod("valueOf", String.class);
-									return enumValueOfMethod.invoke(enumClass, fromObject.toString());
-								} catch (NoSuchMethodException
-										| SecurityException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								} catch (IllegalAccessException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								} catch (IllegalArgumentException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								} catch (InvocationTargetException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-								}
-								return null;
-							}
-						};
-						mConverters.put(new ConvertFromTo(String.class, enumClass), converter);
-					}		
+		// Check for enums and if they exist make converters on the fly
+		final Class<?> returnType = (Class<?>) observeModel.getValueType();
+		if (returnType != null && returnType.isEnum()) {
+			Converter converter = new Converter(String.class, returnType) {
+				// It would be ideal to do this without suppressing warnings, but because Converter is not a generic
+				// type, some kind of cast or raw types would always be necessary. This implementation seems to be the
+				// most concise, and should still be equally as type-safe as any other Converter.
+				@SuppressWarnings({ "unchecked", "rawtypes" })
+				@Override
+				public Object convert(Object fromObject) {
+					return Enum.valueOf((Class<? extends Enum>) returnType, fromObject.toString());
 				}
-			}
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IntrospectionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			};
+			mConverters.put(new ConvertFromTo(String.class, returnType), converter);
 		}
-		
+
 		// Add converters
 		targetToModel.setConverter(getConverter((Class<?>) observeTarget.getValueType(), (Class<?>) observeModel.getValueType()));
 		modelToTarget.setConverter(getConverter((Class<?>) observeModel.getValueType(), (Class<?>) observeTarget.getValueType()));
