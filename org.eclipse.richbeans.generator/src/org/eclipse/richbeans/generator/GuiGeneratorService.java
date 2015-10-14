@@ -16,24 +16,44 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 	@Override
 	public Composite generateGui(Object bean, Composite parent) {
 
+		// Create a Metawidget
 		SwtMetawidget metawidget = new SwtMetawidget(parent, SWT.NONE);
 
+		// Metawidget builds GUIs in five stages
+		// 1. Inspector
 		// Add the UiAnnotationsInspector
 		metawidget.setInspector(new CompositeInspector( new CompositeInspectorConfig().setInspectors(
 				new PropertyTypeInspector(),
 				new MetawidgetAnnotationInspector(),
 				new RichbeansUiAnnotationsInspector())));
 
-		// The Richbeans decorator processor will add limits to int float and double UI fields
-		RichbeansDecoratorWidgetProcessor decoratorWidgetProcessor = new RichbeansDecoratorWidgetProcessor();
-		metawidget.addWidgetProcessor(decoratorWidgetProcessor);
-		
-		TwoWayDataBindingProcessor bindingProcessor = new TwoWayDataBindingProcessor();
-		metawidget.addWidgetProcessor(bindingProcessor);
-
+		// 2. InspectionResultProcessors
 		InspectionResultProcessor<SwtMetawidget> jexlProcessor = new JexlInspectionResultProcessor<SwtMetawidget>();
 		metawidget.addInspectionResultProcessor(jexlProcessor);
 
+		// 3. WidgetBuilder
+		// (default)
+
+		// 4. WidgetProcessors
+
+		// JFace decorator to add nice combo labels
+		// TODO this doesn't work with data binding yet!
+		metawidget.addWidgetProcessor(new ComboLabelWidgetProcessor());
+
+		// The Richbeans decorator processor will add limits to int float and double UI fields
+		RichbeansDecoratorWidgetProcessor decoratorWidgetProcessor = new RichbeansDecoratorWidgetProcessor();
+		metawidget.addWidgetProcessor(decoratorWidgetProcessor);
+
+		// Add Eclipse data binding
+		TwoWayDataBindingProcessor bindingProcessor = new TwoWayDataBindingProcessor();
+		metawidget.addWidgetProcessor(bindingProcessor);
+
+		// TODO add reflection binding processor for actions?
+
+		// 5. Layout
+		// (default)
+
+		// Finish
 		metawidget.setToInspect(bean);
 		metawidget.pack();
 

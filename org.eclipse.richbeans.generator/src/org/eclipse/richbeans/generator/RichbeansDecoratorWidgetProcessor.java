@@ -9,7 +9,7 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.metawidget.swt.SwtMetawidget;
 import org.metawidget.util.WidgetBuilderUtils;
-import org.metawidget.widgetprocessor.iface.AdvancedWidgetProcessor;
+import org.metawidget.widgetprocessor.iface.WidgetProcessor;
 
 /**
  * This processor takes the plain SWT widgets and if required (for
@@ -22,11 +22,10 @@ import org.metawidget.widgetprocessor.iface.AdvancedWidgetProcessor;
  * 
  * @author James Mudd
  */
-public class RichbeansDecoratorWidgetProcessor implements AdvancedWidgetProcessor<Control, SwtMetawidget> {
+public class RichbeansDecoratorWidgetProcessor implements WidgetProcessor<Control, SwtMetawidget> {
 
 	@Override
-	public Control processWidget(Control widget, String elementName,
-			Map<String, String> attributes, SwtMetawidget metawidget) {
+	public Control processWidget(Control widget, String elementName, Map<String, String> attributes, SwtMetawidget metawidget) {
 
 		// Check if the widget is a SWT Spinner (for int) and try to set limits
 		if (widget instanceof Spinner) {
@@ -66,15 +65,4 @@ public class RichbeansDecoratorWidgetProcessor implements AdvancedWidgetProcesso
 
 		return widget;
 	}
-
-	@Override
-	public void onStartBuild(SwtMetawidget metawidget) {
-		// Do nothing
-	}
-
-	@Override
-	public void onEndBuild(SwtMetawidget metawidget) {
-		// Do nothing
-	}
-
 }
