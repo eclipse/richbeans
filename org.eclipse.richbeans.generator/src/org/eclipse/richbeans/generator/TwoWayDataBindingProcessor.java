@@ -11,9 +11,18 @@
 
 package org.eclipse.richbeans.generator;
 
-import static org.metawidget.inspector.InspectionResultConstants.*;
+import static org.metawidget.inspector.InspectionResultConstants.ACTION;
+import static org.metawidget.inspector.InspectionResultConstants.NAME;
+import static org.metawidget.inspector.InspectionResultConstants.NO_SETTER;
+import static org.metawidget.inspector.InspectionResultConstants.PROPERTY;
+import static org.metawidget.inspector.InspectionResultConstants.TRUE;
 
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
 import java.beans.PropertyChangeListener;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +32,7 @@ import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeansObservables;
 import org.eclipse.core.databinding.beans.PojoObservables;
+import org.eclipse.core.databinding.conversion.Converter;
 import org.eclipse.core.databinding.conversion.IConverter;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
@@ -165,6 +175,48 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 			modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_ON_REQUEST);
 		}
 
+		// Check for enums and if they exist make a converter on the fly
+		try {
+			for (PropertyDescriptor pd : Introspector.getBeanInfo(toInspect.getClass()).getPropertyDescriptors()) {
+				if (pd.getName().equals(propertyName)) {
+					
+					if (pd.getReadMethod().getReturnType().isEnum()){
+						final Class<?> enumClass = pd.getReadMethod().getReturnType();
+						Converter converter = new Converter(String.class, enumClass) {
+							@Override
+							public Object convert(Object fromObject) {
+								try {
+//									Enum.valueOf(enumClass, fromObject.toString());
+									Method enumValueOfMethod = enumClass.getMethod("valueOf", String.class);
+									return enumValueOfMethod.invoke(enumClass, fromObject.toString());
+								} catch (NoSuchMethodException
+										| SecurityException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (IllegalAccessException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (IllegalArgumentException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								} catch (InvocationTargetException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								return null;
+							}
+						};
+						mConverters.put(new ConvertFromTo(String.class, enumClass), converter);
+					}		
+				}
+			}
+		} catch (SecurityException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IntrospectionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		// Add converters
 		targetToModel.setConverter(getConverter((Class<?>) observeTarget.getValueType(), (Class<?>) observeModel.getValueType()));
