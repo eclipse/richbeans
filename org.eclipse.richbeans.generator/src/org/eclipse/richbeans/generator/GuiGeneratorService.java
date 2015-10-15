@@ -36,8 +36,8 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 
 		// 4. WidgetProcessors
 
-		// JFace decorator to add nice combo labels
-		// TODO this doesn't work with data binding yet!
+		// Combo label decorator to switch combo labels for more readable values
+		// (For enums, this will replace the declared enum name with the result of toString())
 		metawidget.addWidgetProcessor(new ComboLabelWidgetProcessor());
 
 		// The Richbeans decorator processor will add limits to int float and double UI fields
