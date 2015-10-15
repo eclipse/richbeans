@@ -17,12 +17,7 @@ import static org.metawidget.inspector.InspectionResultConstants.NO_SETTER;
 import static org.metawidget.inspector.InspectionResultConstants.PROPERTY;
 import static org.metawidget.inspector.InspectionResultConstants.TRUE;
 
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
 import java.beans.PropertyChangeListener;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +38,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.metawidget.swt.SwtMetawidget;
 import org.metawidget.util.CollectionUtils;
+import org.metawidget.util.WidgetBuilderUtils;
 import org.metawidget.util.simple.ObjectUtils;
 import org.metawidget.util.simple.PathUtils;
 import org.metawidget.util.simple.StringUtils;
@@ -74,14 +70,6 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 	}
 
 	public TwoWayDataBindingProcessor(TwoWayDataBindingProcessorConfig config) {
-
-		// Add a general Enum to String converter (first, to allow this to be overridden by clients if necessary)
-		mConverters.put(new ConvertFromTo(Enum.class, String.class), new Converter(Enum.class, String.class) {
-			@Override
-			public Object convert(Object fromObject) {
-				return ((Enum<?>) fromObject).name();
-			}
-		});
 
 		// Register converters
 		IConverter[] converters = config.getConverters();
@@ -183,20 +171,29 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 			modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_ON_REQUEST);
 		}
 
-		// Check for enums and if they exist make converters on the fly
-		final Class<?> returnType = (Class<?>) observeModel.getValueType();
-		if (returnType != null && returnType.isEnum()) {
-			Converter converter = new Converter(String.class, returnType) {
-				// It would be ideal to do this without suppressing warnings, but because Converter is not a generic
-				// type, some kind of cast or raw types would always be necessary. This implementation seems to be the
-				// most concise, and should still be equally as type-safe as any other Converter.
-				@SuppressWarnings({ "unchecked", "rawtypes" })
+		// Check for enums and if they exist make a converter on the fly
+		// (Note: this logic seems to work but is potentially incomplete - see comments inside Metawidget's PropertyTypeInspector)
+		final Class<?> elementType = (Class<?>) observeModel.getValueType();
+		if (elementType != null && elementType.isEnum()) {
+			Converter converter = new Converter(String.class, elementType) {
 				@Override
 				public Object convert(Object fromObject) {
-					return Enum.valueOf((Class<? extends Enum>) returnType, fromObject.toString());
+					// Try to compare results of toString() first
+					for (Object value : elementType.getEnumConstants()) {
+						if (value.toString().equals(fromObject.toString())) {
+							return value;
+						}
+					}
+					// Otherwise compare declared enum names
+					for (Object value : elementType.getEnumConstants()) {
+						if (((Enum<?>) value).name().equalsIgnoreCase(fromObject.toString())) {
+							return value;
+						}
+					}
+					return null;
 				}
 			};
-			mConverters.put(new ConvertFromTo(String.class, returnType), converter);
+			mConverters.put(new ConvertFromTo(String.class, elementType), converter);
 		}
 
 		// Add converters
