@@ -1,5 +1,6 @@
 package org.eclipse.richbeans.generator;
 
+import static org.metawidget.inspector.InspectionResultConstants.LOOKUP;
 import static org.metawidget.inspector.InspectionResultConstants.LOOKUP_LABELS;
 
 import java.util.Map;
@@ -26,16 +27,21 @@ public class ComboLabelWidgetProcessor implements WidgetProcessor<Control, SwtMe
 		// Check if the widget is an SWT Combo
 		if (widget instanceof Combo) {
 			Combo combo = (Combo) widget;
-			String lookupLabels = attributes.get( LOOKUP_LABELS );
+			String lookup = attributes.get(LOOKUP);
+			String lookupLabels = attributes.get(LOOKUP_LABELS);
 
 			// If lookup labels are defined, use them instead of the existing values
-			if ( lookupLabels != null && !"".equals(lookupLabels) ) {
+			if (lookup != null && !"".equals(lookup) && lookupLabels != null && !"".equals(lookupLabels)) {
 
+				final String[] items = ArrayUtils.fromString(lookup);
 				final String[] labels = ArrayUtils.fromString(lookupLabels);
 
-				for (int i = 0; i < combo.getItemCount(); i++) {
-					if (i < labels.length) {
-						combo.setItem(i, labels[i]);
+				for (int comboIndex = 0; comboIndex < combo.getItemCount(); comboIndex++) {
+					for (int labelIndex = 0; labelIndex < items.length && labelIndex < labels.length; labelIndex++) {
+						if (combo.getItem(comboIndex).equals(items[labelIndex])) {
+							combo.setItem(comboIndex, labels[labelIndex]);
+							break;
+						}
 					}
 				}
 			}
