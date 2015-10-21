@@ -31,14 +31,13 @@ import org.eclipse.core.databinding.conversion.Converter;
 import org.eclipse.core.databinding.conversion.IConverter;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
-import org.eclipse.core.internal.databinding.BindingStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.metawidget.swt.SwtMetawidget;
 import org.metawidget.util.CollectionUtils;
-import org.metawidget.util.WidgetBuilderUtils;
 import org.metawidget.util.simple.ObjectUtils;
 import org.metawidget.util.simple.PathUtils;
 import org.metawidget.util.simple.StringUtils;
@@ -230,10 +229,9 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 		State state = getState(metawidget);
 		state.bindingContext.updateModels();
 
-		// TODO Consider removing this block completely to avoid needing to refer to BindingStatus?
 		for (Object validationStatusProvider : state.bindingContext.getValidationStatusProviders()) {
 			Binding binding = (Binding) validationStatusProvider;
-			BindingStatus bindingStatus = (BindingStatus) binding.getValidationStatus().getValue();
+			Status bindingStatus = (Status) binding.getValidationStatus().getValue();
 
 			if (bindingStatus.isOK()) {
 				continue;
