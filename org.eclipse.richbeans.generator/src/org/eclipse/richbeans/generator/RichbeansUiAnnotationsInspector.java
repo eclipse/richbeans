@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations;
 import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.UiMaximumValue;
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.UiMinmiumValue;
+import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.UiMinimumValue;
 import org.metawidget.inspector.impl.BaseObjectInspector;
 import org.metawidget.inspector.impl.propertystyle.Property;
 
@@ -21,7 +21,7 @@ public class RichbeansUiAnnotationsInspector extends BaseObjectInspector {
 		Map<String, String> attributes = new HashMap<String, String>();
 
 		// Check the minimum value annotation
-		UiMinmiumValue minmiumValue = property.getAnnotation(UiMinmiumValue.class);
+		UiMinimumValue minmiumValue = property.getAnnotation(UiMinimumValue.class);
 		if (minmiumValue != null) {
 			attributes.put("minimumValue", minmiumValue.value());
 		}
