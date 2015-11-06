@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Holds a list of the IRichBeans used on the beamline. Has a series of utilities for interacting with the beans and the
+ * Has a series of utilities for interacting with the beans and the
  * xml files in which they are persisted.
  * <p>
  * The list of classes is either populated through a Spring instantiated instance of this class (server-side) or via the
