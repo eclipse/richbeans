@@ -14,10 +14,10 @@ import org.metawidget.swt.SwtMetawidget;
 public class GuiGeneratorService implements IGuiGeneratorService {
 
 	@Override
-	public Object generateGui(Object bean, Object objectParent) throws Exception {
+	public Object generateGui(Object bean, Object objectParent) {
 
 		if (!(objectParent instanceof Composite)) {
-			throw new Exception("Cannot deal with swing, javascript etc from generator service yet!");
+			throw new IllegalArgumentException("Cannot deal with swing, javascript etc from generator service yet!");
 		}
 		Composite parent = (Composite)objectParent;
 		

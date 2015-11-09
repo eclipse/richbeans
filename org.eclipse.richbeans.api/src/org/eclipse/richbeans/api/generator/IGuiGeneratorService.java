@@ -26,5 +26,5 @@ public interface IGuiGeneratorService {
 	 * @return
 	 */
 	// TODO decide if we also want to pass a style parameter
-	public Object generateGui(Object bean, Object parent) throws Exception;
+	public Object generateGui(Object bean, Object parent);
 }
