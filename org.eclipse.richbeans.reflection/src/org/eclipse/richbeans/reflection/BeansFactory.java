@@ -10,7 +10,7 @@
  *    Matthew Gerring - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.richbeans.api.beans;
+package org.eclipse.richbeans.reflection;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
