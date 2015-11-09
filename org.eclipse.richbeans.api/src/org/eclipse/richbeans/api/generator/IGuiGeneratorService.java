@@ -6,6 +6,18 @@ package org.eclipse.richbeans.api.generator;
  */
 public interface IGuiGeneratorService {
 
+	//TODO FIXME I should have added generics when I changed this code Colin, apologies
+	// This would mirror the other services, malcolm, remote dataset, scanning etc.
+	// Suggested design:
+    /**
+     * IGuiGeneratorService  service = ... // OSGi
+     * IGenerator<Composite> gen     = service.createGenerator(...); // An SWT generator but a swing or javascript one might be added later.
+     * 
+     * Composite comp = gen.generateGui(bean, parent);
+     * 
+     *  Then createGenerator(...) would generate any toolkit and generics would take care of the declaration.
+     */
+	
 	/**
 	 * TODO
 	 * 
