@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.richbeans.api.event.ValueEvent;
 import org.eclipse.richbeans.api.event.ValueListener;
 import org.eclipse.richbeans.api.widget.IFieldWidget;
-import org.eclipse.richbeans.reflection.BeansFactory;
+import org.eclipse.richbeans.reflection.RichBeanUtils;
 import org.eclipse.richbeans.widgets.FieldBeanComposite;
 import org.eclipse.richbeans.widgets.internal.BeanUIWithoutOSGi;
 import org.eclipse.richbeans.widgets.internal.GridUtils;
@@ -114,7 +114,7 @@ public abstract class ListEditor extends FieldBeanComposite {
 	public void setValue(final int index, final String fieldName, final Object value) throws Exception {
 
 		final BeanWrapper wrapper = beans.get(index);
-		BeansFactory.setBeanValue(wrapper.getBean(), fieldName, value);
+		RichBeanUtils.setBeanValue(wrapper.getBean(), fieldName, value);
 
 		if (index == getSelectedIndex()) {
 			BeanUIWithoutOSGi.beanToUI(wrapper.getBean(), editorUI);
@@ -360,7 +360,7 @@ public abstract class ListEditor extends FieldBeanComposite {
 	}
 
 	protected void updateName(BeanWrapper wrapper) {
-    	final String methodName = BeansFactory.getGetterName(getNameField());
+    	final String methodName = RichBeanUtils.getGetterName(getNameField());
     	try {
     		if (wrapper==null) return;
 			final Method method = wrapper.getBean().getClass().getMethod(methodName);

@@ -35,7 +35,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.richbeans.api.event.ValueEvent;
-import org.eclipse.richbeans.reflection.BeansFactory;
+import org.eclipse.richbeans.reflection.RichBeanUtils;
 import org.eclipse.richbeans.widgets.EventManagerDelegate;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -480,7 +480,7 @@ public class VerticalListEditor extends ListEditor {
 
 		final TableViewerColumn name = new TableViewerColumn(listViewer, SWT.NONE, 0);
 		if (getNameField() != null) {
-			name.getColumn().setText(BeansFactory.getFieldWithUpperCaseFirstLetter(getNameField()));
+			name.getColumn().setText(RichBeanUtils.getFieldWithUpperCaseFirstLetter(getNameField()));
 		} else {
 			name.getColumn().setText("Name");
 		}
@@ -507,7 +507,7 @@ public class VerticalListEditor extends ListEditor {
 		if (additionalFields != null) {
 			extraColumns = new ArrayList<TableViewerColumn>(additionalFields.length);
 			for (int i = 0; i < additionalFields.length; i++) {
-				final String additionalField = BeansFactory.getFieldWithUpperCaseFirstLetter(additionalFields[i]);
+				final String additionalField = RichBeanUtils.getFieldWithUpperCaseFirstLetter(additionalFields[i]);
 
 				final TableViewerColumn col = new TableViewerColumn(listViewer, SWT.NONE, i + 1);
 				extraColumns.add(col);

@@ -20,7 +20,7 @@ import org.eclipse.dawnsci.analysis.api.expressions.IExpressionService;
 import org.eclipse.richbeans.api.event.ValueAdapter;
 import org.eclipse.richbeans.api.event.ValueEvent;
 import org.eclipse.richbeans.api.widget.IFieldWidget;
-import org.eclipse.richbeans.reflection.BeansFactory;
+import org.eclipse.richbeans.reflection.RichBeanUtils;
 import org.eclipse.richbeans.widgets.Activator;
 import org.eclipse.richbeans.widgets.internal.GridUtils;
 import org.eclipse.swt.SWT;
@@ -189,7 +189,7 @@ public class ScaleBoxAndFixedExpression extends ScaleBox{
 			} else {
 				Collection<String> vars = engine.getLazyVariableNamesFromExpression();
 				for (String name : vars) {
-		    		final Double val = (Double) BeansFactory.getBeanValue(dataProvider, name);
+		    		final Double val = (Double) RichBeanUtils.getBeanValue(dataProvider, name);
 		    		engine.addLoadedVariable(name, val);
 				}
 			    

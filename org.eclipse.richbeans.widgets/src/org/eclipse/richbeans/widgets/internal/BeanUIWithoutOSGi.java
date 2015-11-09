@@ -25,7 +25,7 @@ import org.eclipse.richbeans.api.beans.BeanProcessor;
 import org.eclipse.richbeans.api.event.ValueListener;
 import org.eclipse.richbeans.api.widget.IFieldCollection;
 import org.eclipse.richbeans.api.widget.IFieldWidget;
-import org.eclipse.richbeans.reflection.BeansFactory;
+import org.eclipse.richbeans.reflection.RichBeanUtils;
 
 
 /**
@@ -126,11 +126,11 @@ public class BeanUIWithoutOSGi {
 			return;
 		final Object ob = box.getValue();
 		if (ob != null && !isNaN(ob) && !isInfinity(ob)) {
-			BeansFactory.setBeanValue(bean, fieldName, ob);
+			RichBeanUtils.setBeanValue(bean, fieldName, ob);
 		} else {
 			// Required to fix fields inside a list editor being edited to no value.
 			if (ob != null) {
-				final Method setter = bean.getClass().getMethod(BeansFactory.getSetterName(fieldName), ob.getClass());
+				final Method setter = bean.getClass().getMethod(RichBeanUtils.getSetterName(fieldName), ob.getClass());
 				setter.invoke(bean, ob.getClass().cast(null));
 			}
 		}
@@ -285,11 +285,11 @@ public class BeanUIWithoutOSGi {
 	}
 
 	private static Object getValue(Object bean, String fieldName) throws Exception {
-		final String getter = BeansFactory.getGetterName(fieldName);
+		final String getter = RichBeanUtils.getGetterName(fieldName);
 		try {
 		    return bean.getClass().getMethod(getter).invoke(bean);
 		} catch (java.lang.NoSuchMethodException ne) {
-			final String isser = BeansFactory.getIsserName(fieldName);
+			final String isser = RichBeanUtils.getIsserName(fieldName);
 		    return bean.getClass().getMethod(isser).invoke(bean);
 		}
 	}
@@ -308,7 +308,7 @@ public class BeanUIWithoutOSGi {
 	 * @throws IllegalArgumentException
 	 */
 	public static IFieldWidget getFieldWidget(final String fieldName, final Object uiObject) throws Exception {
-		final String methodName = BeansFactory.getGetterName(fieldName);
+		final String methodName = RichBeanUtils.getGetterName(fieldName);
 		final Method getter = uiObject.getClass().getMethod(methodName);
 		final Object box = getter.invoke(uiObject);
 		if (box instanceof IFieldWidget) {
