@@ -1,28 +1,21 @@
 package org.eclipse.richbeans.api.generator;
 
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 
+/**
+ * Interface for runtime generation of SWT GUIs from Java objects (usually beans)
+ *
+ * @author Colin Palmer
+ */
 public interface IGuiGeneratorService {
 
-	//TODO FIXME I should have added generics when I changed this code Colin, apologies
-	// This would mirror the other services, malcolm, remote dataset, scanning etc.
-	// Suggested design:
-    /**
-     * IGuiGeneratorService  service = ... // OSGi
-     * IGenerator<Composite> gen     = service.createGenerator(...); // An SWT generator but a swing or javascript one might be added later.
-     * 
-     * Composite comp = gen.generateGui(bean, parent);
-     * 
-     *  Then createGenerator(...) would generate any toolkit and generics would take care of the declaration.
-     */
-	
 	/**
-	 * TODO
+	 * Generate a GUI for the given bean
 	 * 
-	 * @param bean
-	 * @param parent
-	 * @return
+	 * @param bean An object to generate a GUI for
+	 * @param parent A composite which will be the parent of the new control
+	 * @return The new GUI
 	 */
-	// TODO decide if we also want to pass a style parameter
-	public Composite generateGui(Object bean, Composite parent);
+	public Control generateGui(Object bean, Composite parent);
 }

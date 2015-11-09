@@ -3,6 +3,7 @@ package org.eclipse.richbeans.generator;
 import org.eclipse.richbeans.api.generator.IGuiGeneratorService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.metawidget.inspectionresultprocessor.commons.jexl.JexlInspectionResultProcessor;
 import org.metawidget.inspectionresultprocessor.iface.InspectionResultProcessor;
 import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
@@ -14,7 +15,7 @@ import org.metawidget.swt.SwtMetawidget;
 public class GuiGeneratorService implements IGuiGeneratorService {
 
 	@Override
-	public Composite generateGui(Object bean, Composite parent) {
+	public Control generateGui(Object bean, Composite parent) {
 
 		// Create a Metawidget
 		SwtMetawidget metawidget = new SwtMetawidget(parent, SWT.NONE);
