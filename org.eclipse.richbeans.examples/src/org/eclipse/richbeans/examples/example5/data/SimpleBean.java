@@ -74,4 +74,9 @@ public class SimpleBean implements Serializable { // In order to use beans with 
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "SimpleBean [x=" + x + ", y=" + y + "]";
+	}
 }

@@ -59,4 +59,8 @@ public class SimpleBean {
 	public void setY(int y) {
 		this.y = y;
 	}
+	@Override
+	public String toString() {
+		return "SimpleBean [x=" + x + ", y=" + y + "]";
+	}
 }

@@ -59,4 +59,8 @@ public class DecoratorBean {
 	public void setY(int y) {
 		this.y = y;
 	}
+	@Override
+	public String toString() {
+		return "DecoratorBean [x=" + x + ", y=" + y + "]";
+	}
 }

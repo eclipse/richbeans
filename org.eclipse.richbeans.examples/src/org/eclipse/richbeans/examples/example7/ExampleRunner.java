@@ -14,7 +14,7 @@ package org.eclipse.richbeans.examples.example7;
 import java.lang.reflect.Method;
 
 import org.eclipse.richbeans.api.reflection.IBeanController;
-import org.eclipse.richbeans.examples.ExampleJSONWritingValueListener;
+import org.eclipse.richbeans.examples.ExamplePrintBeanValueListener;
 import org.eclipse.richbeans.examples.example7.data.ExampleBean;
 import org.eclipse.richbeans.examples.example7.data.ExampleItem;
 import org.eclipse.richbeans.examples.example7.data.ExampleItem.ItemChoice;
@@ -64,7 +64,7 @@ public class ExampleRunner {
 
 		// Connect the UI and bean
 		final IBeanController controller = BeanService.getInstance().createController(ui, bean);
-		ExampleJSONWritingValueListener listener = new ExampleJSONWritingValueListener(controller, value);
+		ExamplePrintBeanValueListener listener = new ExamplePrintBeanValueListener(controller, value);
 		listener.setTextLimit(300);
 		controller.addValueListener(listener);
 		controller.beanToUI();

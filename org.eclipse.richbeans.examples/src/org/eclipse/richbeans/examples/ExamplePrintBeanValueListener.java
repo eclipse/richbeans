@@ -18,7 +18,7 @@ import org.eclipse.richbeans.api.event.ValueEvent;
 import org.eclipse.richbeans.api.reflection.IBeanController;
 import org.eclipse.swt.widgets.Control;
 
-public class ExampleJSONWritingValueListener extends ValueAdapter {
+public class ExamplePrintBeanValueListener extends ValueAdapter {
 
 	private IBeanController controller;
 	private Control value;
@@ -28,7 +28,7 @@ public class ExampleJSONWritingValueListener extends ValueAdapter {
 	 * @param controller
 	 * @param value A control with a setText(...) method.
 	 */
-	public ExampleJSONWritingValueListener(IBeanController controller, Control value) {
+	public ExamplePrintBeanValueListener(IBeanController controller, Control value) {
 
 		// The name should be unique and is only hard-coded here for simplicity - see the javadoc for ValueAdapter.
 		this.name = "Example listener";
@@ -46,8 +46,7 @@ public class ExampleJSONWritingValueListener extends ValueAdapter {
 			// We spit out the bean in JSON since
 			// rich bean does not care if bean in XML or
 			// whatever at this stage.
-			com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
-			String json = mapper.writeValueAsString(controller.getBean());
+			String json = controller.getBean().toString();
 			
 			if (textLimit>0) {
 				json = json.substring(0, textLimit)+"...";

@@ -74,11 +74,10 @@ public class ExampleRunner {
 					// rich bean does not care if bean in XML or
 					// whatever at this stage.
 					List<?> beans = DOEUtils.expand(bean); // expand the beans
-					com.fasterxml.jackson.databind.ObjectMapper mapper = new com.fasterxml.jackson.databind.ObjectMapper();
 					StringBuilder buf = new StringBuilder("Expanded beans:\n");
 					for (int i = 0; i < beans.size(); i++) {
 						Object b = beans.get(i);
-						String json = mapper.writeValueAsString(b);
+						String json = b.toString();
 						buf.append(json);
 						buf.append("       ");
 						if (i % 3 == 0)

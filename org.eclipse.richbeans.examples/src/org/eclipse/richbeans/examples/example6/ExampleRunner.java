@@ -12,7 +12,7 @@
 package org.eclipse.richbeans.examples.example6;
 
 import org.eclipse.richbeans.api.reflection.IBeanController;
-import org.eclipse.richbeans.examples.ExampleJSONWritingValueListener;
+import org.eclipse.richbeans.examples.ExamplePrintBeanValueListener;
 import org.eclipse.richbeans.examples.example6.data.DecoratorBean;
 import org.eclipse.richbeans.examples.example6.ui.DecoratorComposite;
 import org.eclipse.richbeans.reflection.BeanService;
@@ -62,7 +62,7 @@ public class ExampleRunner {
 
 		// Connect the UI and bean
 		final IBeanController controller = BeanService.getInstance().createController(ui, bean);
-		controller.addValueListener(new ExampleJSONWritingValueListener(controller, value));
+		controller.addValueListener(new ExamplePrintBeanValueListener(controller, value));
 		controller.beanToUI();
 		controller.switchState(true);
 
