@@ -21,7 +21,7 @@ import org.eclipse.richbeans.api.beans.BeanProvider;
 import org.eclipse.richbeans.api.event.ValueAdapter;
 import org.eclipse.richbeans.api.event.ValueEvent;
 import org.eclipse.richbeans.api.event.ValueListener;
-import org.eclipse.richbeans.api.widget.ACTIVE_MODE;
+import org.eclipse.richbeans.api.widget.ActiveMode;
 import org.eclipse.richbeans.api.widget.IExpressionManager;
 import org.eclipse.richbeans.api.widget.IExpressionWidget;
 import org.eclipse.richbeans.api.widget.IFieldCollection;
@@ -298,16 +298,16 @@ public class FieldBeanComposite extends FieldComposite implements IFieldCollecti
 		return active;
 	}
 
-	private ACTIVE_MODE activeMode = ACTIVE_MODE.SET_VISIBLE_AND_ACTIVE;
+	private ActiveMode activeMode = ActiveMode.SET_VISIBLE_AND_ACTIVE;
 	/**
 	 * @param active the active to set
 	 */
 	@Override
 	public void setActive(boolean active) {
 		this.active = active;
-		if (activeMode==ACTIVE_MODE.SET_VISIBLE_AND_ACTIVE) {
+		if (activeMode==ActiveMode.SET_VISIBLE_AND_ACTIVE) {
 		    setVisible(active);
-		} else if (activeMode==ACTIVE_MODE.SET_ENABLED_AND_ACTIVE){
+		} else if (activeMode==ActiveMode.SET_ENABLED_AND_ACTIVE){
 			setVisible(active);
 		} // Nothing is nothing
 	}
@@ -315,14 +315,14 @@ public class FieldBeanComposite extends FieldComposite implements IFieldCollecti
 	/**
 	 * @return the activeMode
 	 */
-	public ACTIVE_MODE getActiveMode() {
+	public ActiveMode getActiveMode() {
 		return activeMode;
 	}
 
 	/**
 	 * @param activeMode the activeMode to set
 	 */
-	public void setActiveMode(ACTIVE_MODE activeMode) {
+	public void setActiveMode(ActiveMode activeMode) {
 		this.activeMode = activeMode;
 	}
 

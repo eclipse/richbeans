@@ -17,17 +17,8 @@ package org.eclipse.richbeans.api.widget;
  * widgets default to SET_VISIBLE_AND_ACTIVE type and are not changeable. Those that are will have an activeMode
  * property in RCP developer.
  */
-public enum ACTIVE_MODE {
-	/**
-	 * 
-	 */
-	SET_VISIBLE_AND_ACTIVE, 
-	/**
-	 * 
-	 */
-	SET_ENABLED_AND_ACTIVE, 
-	/**
-	 * 
-	 */
+public enum ActiveMode {
+	SET_VISIBLE_AND_ACTIVE,
+	SET_ENABLED_AND_ACTIVE,
 	ACTIVE_ONLY
 }
