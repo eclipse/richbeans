@@ -22,10 +22,10 @@ import java.util.Map;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.eclipse.richbeans.api.beans.BeanProcessor;
-import org.eclipse.richbeans.api.beans.BeansFactory;
 import org.eclipse.richbeans.api.event.ValueListener;
 import org.eclipse.richbeans.api.widget.IFieldCollection;
 import org.eclipse.richbeans.api.widget.IFieldWidget;
+import org.eclipse.richbeans.reflection.BeansFactory;
 
 
 /**

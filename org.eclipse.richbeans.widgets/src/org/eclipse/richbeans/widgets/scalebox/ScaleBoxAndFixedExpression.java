@@ -17,10 +17,10 @@ import java.util.Collection;
 
 import org.eclipse.dawnsci.analysis.api.expressions.IExpressionEngine;
 import org.eclipse.dawnsci.analysis.api.expressions.IExpressionService;
-import org.eclipse.richbeans.api.beans.BeansFactory;
 import org.eclipse.richbeans.api.event.ValueAdapter;
 import org.eclipse.richbeans.api.event.ValueEvent;
 import org.eclipse.richbeans.api.widget.IFieldWidget;
+import org.eclipse.richbeans.reflection.BeansFactory;
 import org.eclipse.richbeans.widgets.Activator;
 import org.eclipse.richbeans.widgets.internal.GridUtils;
 import org.eclipse.swt.SWT;
