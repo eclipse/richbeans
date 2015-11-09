@@ -1,9 +1,7 @@
 package org.eclipse.richbeans.api.generator;
 
-/**
- * 
- * We would like to make the API bundle have no SWT dependency.
- */
+import org.eclipse.swt.widgets.Composite;
+
 public interface IGuiGeneratorService {
 
 	//TODO FIXME I should have added generics when I changed this code Colin, apologies
@@ -26,5 +24,5 @@ public interface IGuiGeneratorService {
 	 * @return
 	 */
 	// TODO decide if we also want to pass a style parameter
-	public Object generateGui(Object bean, Object parent) throws Exception;
+	public Composite generateGui(Object bean, Composite parent);
 }
