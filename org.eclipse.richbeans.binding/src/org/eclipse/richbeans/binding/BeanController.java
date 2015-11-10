@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.eclipse.richbeans.api.beans.BeanProcessor;
+import org.eclipse.richbeans.api.binding.IBeanController;
 import org.eclipse.richbeans.api.event.ValueListener;
-import org.eclipse.richbeans.api.reflection.IBeanController;
 import org.eclipse.richbeans.api.widget.IFieldWidget;
 
 /**

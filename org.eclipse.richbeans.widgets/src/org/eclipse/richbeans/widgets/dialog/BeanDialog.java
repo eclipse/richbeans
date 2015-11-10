@@ -13,8 +13,8 @@
 package org.eclipse.richbeans.widgets.dialog;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.richbeans.api.reflection.IBeanController;
-import org.eclipse.richbeans.api.reflection.IBeanService;
+import org.eclipse.richbeans.api.binding.IBeanController;
+import org.eclipse.richbeans.api.binding.IBeanService;
 import org.eclipse.richbeans.widgets.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Shell;

@@ -13,9 +13,9 @@ package org.eclipse.richbeans.examples;
 
 import java.lang.reflect.Method;
 
+import org.eclipse.richbeans.api.binding.IBeanController;
 import org.eclipse.richbeans.api.event.ValueAdapter;
 import org.eclipse.richbeans.api.event.ValueEvent;
-import org.eclipse.richbeans.api.reflection.IBeanController;
 import org.eclipse.swt.widgets.Control;
 
 public class ExamplePrintBeanValueListener extends ValueAdapter {

@@ -11,8 +11,8 @@
  *******************************************************************************/
 package org.eclipse.richbeans.binding;
 
-import org.eclipse.richbeans.api.reflection.IBeanController;
-import org.eclipse.richbeans.api.reflection.IBeanService;
+import org.eclipse.richbeans.api.binding.IBeanController;
+import org.eclipse.richbeans.api.binding.IBeanService;
 
 /**
  * Implementation of IBeanService which can be retrieved either by

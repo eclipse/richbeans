@@ -9,7 +9,7 @@
  * Contributors:
  *    Matthew Gerring - initial API and implementation and/or initial documentation
  *******************************************************************************/
-package org.eclipse.richbeans.api.reflection;
+package org.eclipse.richbeans.api.binding;
 
 
 public interface IBeanService {

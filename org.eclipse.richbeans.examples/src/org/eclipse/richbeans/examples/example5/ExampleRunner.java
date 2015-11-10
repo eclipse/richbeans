@@ -14,9 +14,9 @@ package org.eclipse.richbeans.examples.example5;
 import java.util.List;
 
 import org.eclipse.dawnsci.doe.DOEUtils;
+import org.eclipse.richbeans.api.binding.IBeanController;
 import org.eclipse.richbeans.api.event.ValueAdapter;
 import org.eclipse.richbeans.api.event.ValueEvent;
-import org.eclipse.richbeans.api.reflection.IBeanController;
 import org.eclipse.richbeans.binding.BeanService;
 import org.eclipse.richbeans.examples.example5.data.SimpleBean;
 import org.eclipse.richbeans.examples.example5.ui.SimpleComposite;

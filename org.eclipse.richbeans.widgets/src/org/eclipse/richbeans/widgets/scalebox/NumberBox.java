@@ -19,10 +19,10 @@ import java.util.Calendar;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.eclipse.richbeans.api.binding.IBeanController;
 import org.eclipse.richbeans.api.event.BoundsEvent;
 import org.eclipse.richbeans.api.event.BoundsEvent.Mode;
 import org.eclipse.richbeans.api.event.ValueEvent;
-import org.eclipse.richbeans.api.reflection.IBeanController;
 import org.eclipse.richbeans.api.widget.ActiveMode;
 import org.eclipse.richbeans.api.widget.IExpressionManager;
 import org.eclipse.richbeans.api.widget.IExpressionWidget;

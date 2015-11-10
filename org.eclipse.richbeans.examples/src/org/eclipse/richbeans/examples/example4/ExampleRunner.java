@@ -11,7 +11,7 @@
  *******************************************************************************/
 package org.eclipse.richbeans.examples.example4;
 
-import org.eclipse.richbeans.api.reflection.IBeanController;
+import org.eclipse.richbeans.api.binding.IBeanController;
 import org.eclipse.richbeans.binding.BeanService;
 import org.eclipse.richbeans.examples.ExamplePrintBeanValueListener;
 import org.eclipse.richbeans.examples.example4.data.ExampleBean;
