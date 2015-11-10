@@ -87,7 +87,7 @@ public interface IBeanController {
 	 * @param beanClasses
 	 * @return
 	 */
-	IFieldWidget getBeanField(String fieldName, Class<? extends Object>... beanClasses);
+	IFieldWidget getBeanField(String fieldName, Class<?>... beanClasses);
 
 	/**
 	 * Used to record bean fields for fast lookups, expert use only.

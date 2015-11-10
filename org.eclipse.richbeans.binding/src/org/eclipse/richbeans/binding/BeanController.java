@@ -157,7 +157,7 @@ class BeanController implements IBeanController {
 	 * @return IFieldWidget
 	 */
 	@Override
-	public IFieldWidget getBeanField(String fieldName, final Class<? extends Object>... beanClasses) {
+	public IFieldWidget getBeanField(String fieldName, final Class<?>... beanClasses) {
 
 		fieldName = fieldName.substring(0, 1).toLowerCase(Locale.US) + fieldName.substring(1);
 
