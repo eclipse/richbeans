@@ -5,10 +5,6 @@ import java.util.Locale;
 
 public class RichBeanUtils {
 
-	private static String getName(final String prefix, final String fieldName) {
-		return prefix + getFieldWithUpperCaseFirstLetter(fieldName);
-	}
-
 	/**
 	 * There must be a smarter way of doing this i.e. a JDK method I cannot find. However it is one line of Java so
 	 * after spending some time looking have coded self.
@@ -40,6 +36,29 @@ public class RichBeanUtils {
 		return getName("is", fieldName);
 	}
 
+	private static String getName(final String prefix, final String fieldName) {
+		return prefix + getFieldWithUpperCaseFirstLetter(fieldName);
+	}
+
+	public static String getFieldWithUpperCaseFirstLetter(final String fieldName) {
+		return fieldName.substring(0, 1).toUpperCase(Locale.US) + fieldName.substring(1);
+	}
+
+	/**
+	 * Method gets value out of bean using reflection.
+	 * 
+	 * @param bean
+	 * @param fieldName
+	 * @return value
+	 * @throws Exception
+	 */
+	// TODO could probably be replaced by org.apache.commons.beanutils.BeanUtils.getProperty()
+	public static Object getBeanValue(final Object bean, final String fieldName) throws Exception {
+		final String getterName = getGetterName(fieldName);
+		final Method method = bean.getClass().getMethod(getterName);
+		return method.invoke(bean);
+	}
+
 	/**
 	 * Changes a value on the given bean using reflection
 	 * 
@@ -48,6 +67,7 @@ public class RichBeanUtils {
 	 * @param value
 	 * @throws Exception
 	 */
+	// TODO could probably be replaced by org.apache.commons.beanutils.BeanUtils.setProperty()
 	public static void setBeanValue(final Object bean, final String fieldName, final Object value) throws Exception {
 		final String setterName = getSetterName(fieldName);
 		
@@ -139,23 +159,4 @@ public class RichBeanUtils {
 		
 		return null;
 	}
-
-	/**
-	 * Method gets value out of bean using reflection.
-	 * 
-	 * @param bean
-	 * @param fieldName
-	 * @return value
-	 * @throws Exception
-	 */
-	public static Object getBeanValue(final Object bean, final String fieldName) throws Exception {
-		final String getterName = getGetterName(fieldName);
-		final Method method = bean.getClass().getMethod(getterName);
-		return method.invoke(bean);
-	}
-
-	public static String getFieldWithUpperCaseFirstLetter(final String fieldName) {
-		return fieldName.substring(0, 1).toUpperCase(Locale.US) + fieldName.substring(1);
-	}
-
 }
