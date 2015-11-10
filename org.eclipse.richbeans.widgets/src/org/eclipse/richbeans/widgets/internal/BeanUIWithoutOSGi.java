@@ -317,16 +317,6 @@ public class BeanUIWithoutOSGi {
 		return null;
 	}
 
-	/**
-	 * Method name spelling was corrected to getFieldWidget(). This method with
-	 * the old name exists only to avoid breaking existing code and should be
-	 * removed once all references to the mis-spelled name have been corrected
-	 */
-	@Deprecated
-	public static IFieldWidget getFieldWiget(final String fieldName, final Object uiObject) throws Exception {
-		return getFieldWidget(fieldName, uiObject);
-	}
-
 
 	/**
 	 * Retrieves a list of fields which are both in the bean and being edited by the user.

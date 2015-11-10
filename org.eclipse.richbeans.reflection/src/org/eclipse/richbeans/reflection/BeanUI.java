@@ -295,6 +295,7 @@ class BeanUI {
 		}
 	}
 
+	// TODO remove duplication of getValue() and setValue() which are both here and in RichBeanUtils
 	private static Object getValue(Object bean, String fieldName) throws Exception {
 		final String getter = RichBeanUtils.getGetterName(fieldName);
 		try {
@@ -305,7 +306,7 @@ class BeanUI {
 		}
 	}
 	
-	protected static void setValue(Object bean, String fieldName, Object ob) throws Exception {
+	private static void setValue(Object bean, String fieldName, Object ob) throws Exception {
 		
 		final String setter = RichBeanUtils.getSetterName(fieldName);
 		
@@ -374,16 +375,6 @@ class BeanUI {
 			return (IFieldWidget) box;
 		}
 		return null;
-	}
-
-	/**
-	 * Method name spelling was corrected to getFieldWidget(). This method with
-	 * the old name exists only to avoid breaking existing code and should be
-	 * removed once all references to the mis-spelled name have been corrected
-	 */
-	@Deprecated
-	public static IFieldWidget getFieldWiget(final String fieldName, final Object uiObject) throws Exception {
-		return getFieldWidget(fieldName, uiObject);
 	}
 
 	/**
