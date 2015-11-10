@@ -3,6 +3,13 @@ package org.eclipse.richbeans.reflection;
 import java.lang.reflect.Method;
 import java.util.Locale;
 
+/**
+ * Static utility methods for working with beans.
+ *
+ * @deprecated New code should use the more standard tools available in {@link org.apache.commons.beanutils.BeanUtils}
+ *             or the <code>java.beans</code> package (such as {@link java.beans.Introspector})
+ */
+@Deprecated
 public class RichBeanUtils {
 
 	/**
