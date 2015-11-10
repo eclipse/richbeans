@@ -10,7 +10,7 @@
  *    Matthew Gerring - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.richbeans.reflection;
+package org.eclipse.richbeans.binding;
 
 import java.util.Collection;
 import java.util.HashSet;

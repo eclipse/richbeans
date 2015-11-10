@@ -12,10 +12,10 @@
 package org.eclipse.richbeans.examples.example1;
 
 import org.eclipse.richbeans.api.reflection.IBeanController;
+import org.eclipse.richbeans.binding.BeanService;
 import org.eclipse.richbeans.examples.ExamplePrintBeanValueListener;
 import org.eclipse.richbeans.examples.example1.data.SimpleBean;
 import org.eclipse.richbeans.examples.example1.ui.SimpleComposite;
-import org.eclipse.richbeans.reflection.BeanService;
 import org.eclipse.richbeans.widgets.util.SWTUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

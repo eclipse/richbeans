@@ -14,12 +14,12 @@ package org.eclipse.richbeans.examples.example7;
 import java.lang.reflect.Method;
 
 import org.eclipse.richbeans.api.reflection.IBeanController;
+import org.eclipse.richbeans.binding.BeanService;
 import org.eclipse.richbeans.examples.ExamplePrintBeanValueListener;
 import org.eclipse.richbeans.examples.example7.data.ExampleBean;
 import org.eclipse.richbeans.examples.example7.data.ExampleItem;
 import org.eclipse.richbeans.examples.example7.data.ExampleItem.ItemChoice;
 import org.eclipse.richbeans.examples.example7.ui.ExampleComposite;
-import org.eclipse.richbeans.reflection.BeanService;
 import org.eclipse.richbeans.widgets.util.SWTUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

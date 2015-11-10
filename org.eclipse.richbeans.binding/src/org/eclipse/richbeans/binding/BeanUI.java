@@ -10,7 +10,7 @@
  *    Matthew Gerring - initial API and implementation and/or initial documentation
  *******************************************************************************/
 
-package org.eclipse.richbeans.reflection;
+package org.eclipse.richbeans.binding;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -25,6 +25,7 @@ import org.eclipse.richbeans.api.beans.BeanProcessor;
 import org.eclipse.richbeans.api.event.ValueListener;
 import org.eclipse.richbeans.api.widget.IFieldCollection;
 import org.eclipse.richbeans.api.widget.IFieldWidget;
+import org.eclipse.richbeans.reflection.RichBeanUtils;
 
 
 /**
