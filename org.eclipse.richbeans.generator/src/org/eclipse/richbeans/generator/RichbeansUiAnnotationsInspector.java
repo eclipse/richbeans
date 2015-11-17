@@ -3,9 +3,9 @@ package org.eclipse.richbeans.generator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations;
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.UiMaximumValue;
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.UiMinimumValue;
+import org.eclipse.richbeans.annotations.RichbeansUiAnnotations;
+import org.eclipse.richbeans.annotations.RichbeansUiAnnotations.UiMaximumValue;
+import org.eclipse.richbeans.annotations.RichbeansUiAnnotations.UiMinimumValue;
 import org.metawidget.inspector.impl.BaseObjectInspector;
 import org.metawidget.inspector.impl.propertystyle.Property;
 
