@@ -17,18 +17,17 @@ import org.junit.Test;
 
 public class GuiGeneratorTest extends SWTTestBase {
 
-	private static final String STRING_FIELD_VALUE = "String field";
-
 	private IGuiGeneratorService guiGenerator;
 	private TestBean testBean;
 	private Composite metawidget;
 
 	@Before
 	public void setUp() throws Exception {
-		guiGenerator = new GuiGeneratorService();
 		testBean = new TestBean();
-		testBean.setStringField(STRING_FIELD_VALUE);
-		testBean.setUiReadOnlyStringField(STRING_FIELD_VALUE);
+		testBean.setStringField("String field value");
+		testBean.setUiReadOnlyStringField("UiReadOnly string field value");
+
+		guiGenerator = new GuiGeneratorService();
 		metawidget = (Composite) guiGenerator.generateGui(testBean, shell);
 	}
 
@@ -41,7 +40,7 @@ public class GuiGeneratorTest extends SWTTestBase {
 	public void testStringField() throws Exception {
 		Control control = getControl("stringField");
 		assertThat(control, is(instanceOf(Text.class)));
-		assertThat(((Text) control).getText(), is(equalTo(STRING_FIELD_VALUE)));
+		assertThat(((Text) control).getText(), is(equalTo(testBean.getStringField())));
 	}
 
 	@Test
@@ -72,6 +71,7 @@ public class GuiGeneratorTest extends SWTTestBase {
 
 	private static Control getControl(Composite container, String name) {
 		for (Control child : container.getChildren()) {
+			// TODO investigate this - is it necessary to check for name == null, and does this code work for nested Metawidgets?
 			if (child.getData(NAME) == null && child instanceof Composite) {
 				Control control = getControl((Composite) child, name);
 				if (control != null) {
