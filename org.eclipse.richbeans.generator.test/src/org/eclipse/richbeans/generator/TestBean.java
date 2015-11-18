@@ -7,8 +7,6 @@ import org.metawidget.inspector.annotation.UiReadOnly;
 
 class TestBean {
 
-	private static final String STRING_FIELD_WITH_GETTER_ONLY = "String field with getter only";
-
 	private String stringField;
 	private String uiReadOnlyStringField;
 
@@ -23,7 +21,7 @@ class TestBean {
 	}
 
 	public String getStringFieldWithGetterOnly() {
-		return STRING_FIELD_WITH_GETTER_ONLY;
+		return "String field with getter only";
 	}
 
 	public String getStringField() {
@@ -42,7 +40,6 @@ class TestBean {
 	public void setUiReadOnlyStringField(String uiReadOnlyStringField) {
 		Object oldValue = this.uiReadOnlyStringField;
 		this.uiReadOnlyStringField = uiReadOnlyStringField;
-		pcs.firePropertyChange("uiReadOnlyStringField", oldValue,
-				this.uiReadOnlyStringField);
+		pcs.firePropertyChange("uiReadOnlyStringField", oldValue, this.uiReadOnlyStringField);
 	}
 }
