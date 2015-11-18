@@ -17,6 +17,8 @@ import org.junit.Test;
 
 public class GuiGeneratorTest extends SWTTestBase {
 
+	private static final String STRING_FIELD_VALUE = "String field";
+
 	private IGuiGeneratorService guiGenerator;
 	private TestBean testBean;
 	private Composite metawidget;
@@ -25,6 +27,8 @@ public class GuiGeneratorTest extends SWTTestBase {
 	public void setUp() throws Exception {
 		guiGenerator = new GuiGeneratorService();
 		testBean = new TestBean();
+		testBean.setStringField(STRING_FIELD_VALUE);
+		testBean.setUiReadOnlyStringField(STRING_FIELD_VALUE);
 		metawidget = (Composite) guiGenerator.generateGui(testBean, shell);
 	}
 
@@ -35,16 +39,35 @@ public class GuiGeneratorTest extends SWTTestBase {
 
 	@Test
 	public void testStringField() throws Exception {
-		Control stringField = getControl(metawidget, "stringField");
-		assertThat(stringField, is(instanceOf(Text.class)));
-		assertThat(((Text) stringField).getText(), is(equalTo("String field")));
+		Control control = getControl("stringField");
+		assertThat(control, is(instanceOf(Text.class)));
+		assertThat(((Text) control).getText(), is(equalTo(STRING_FIELD_VALUE)));
 	}
 
 	@Test
 	public void testStringFieldWithGetterOnly() throws Exception {
-		Control stringField = getControl(metawidget, "stringFieldWithGetterOnly");
-		assertThat(stringField, is(instanceOf(Label.class)));
-		assertThat(((Label) stringField).getText(), is(equalTo("String field with getter only")));
+		Control control = getControl("stringFieldWithGetterOnly");
+		assertThat(control, is(instanceOf(Label.class)));
+		assertThat(((Label) control).getText(), is(equalTo(testBean.getStringFieldWithGetterOnly())));
+	}
+
+	@Test
+	public void testUiReadOnlyStringField() throws Exception {
+		Control control = getControl("uiReadOnlyStringField");
+		assertThat(control, is(instanceOf(Label.class)));
+		assertThat(((Label) control).getText(), is(equalTo(testBean.getUiReadOnlyStringField())));
+	}
+
+	@Test
+	public void testStringFieldDataBinding() throws Exception {
+		String newValue = "New value";
+		testBean.setStringField(newValue);
+		Control control = getControl("stringField");
+		assertThat(((Text) control).getText(), is(equalTo(newValue)));
+	}
+
+	private Control getControl(String name) {
+		return getControl(metawidget, name);
 	}
 
 	private static Control getControl(Composite container, String name) {
@@ -60,21 +83,5 @@ public class GuiGeneratorTest extends SWTTestBase {
 			}
 		}
 		return null; // not found
-	}
-}
-
-class TestBean {
-
-	private String stringField = "String field";
-	private String stringFieldWithGetterOnly = "String field with getter only";
-
-	public String getStringField() {
-		return stringField;
-	}
-	public void setStringField(String stringField) {
-		this.stringField = stringField;
-	}
-	public String getStringFieldWithGetterOnly() {
-		return stringFieldWithGetterOnly;
 	}
 }
