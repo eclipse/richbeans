@@ -10,6 +10,7 @@ import org.eclipse.richbeans.api.generator.IGuiGeneratorService;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.junit.After;
 import org.junit.Before;
@@ -26,6 +27,7 @@ public class GuiGeneratorTest extends SWTTestBase {
 		testBean = new TestBean();
 		testBean.setStringField("String field value");
 		testBean.setUiReadOnlyStringField("UiReadOnly string field value");
+		testBean.setIntField(5);
 
 		guiGenerator = new GuiGeneratorService();
 		metawidget = (Composite) guiGenerator.generateGui(testBean, shell);
@@ -37,23 +39,38 @@ public class GuiGeneratorTest extends SWTTestBase {
 	}
 
 	@Test
-	public void testStringField() throws Exception {
+	public void testStringFieldIsText() throws Exception {
 		Control control = getControl("stringField");
 		assertThat(control, is(instanceOf(Text.class)));
+	}
+
+	@Test
+	public void testStringFieldInitialValue() throws Exception {
+		Control control = getControl("stringField");
 		assertThat(((Text) control).getText(), is(equalTo(testBean.getStringField())));
 	}
 
 	@Test
-	public void testStringFieldWithGetterOnly() throws Exception {
+	public void testStringFieldWithGetterOnlyIsLabel() throws Exception {
 		Control control = getControl("stringFieldWithGetterOnly");
 		assertThat(control, is(instanceOf(Label.class)));
+	}
+
+	@Test
+	public void testStringFieldWithGetterOnlyValue() throws Exception {
+		Control control = getControl("stringFieldWithGetterOnly");
 		assertThat(((Label) control).getText(), is(equalTo(testBean.getStringFieldWithGetterOnly())));
 	}
 
 	@Test
-	public void testUiReadOnlyStringField() throws Exception {
+	public void testUiReadOnlyStringFieldIsLabel() throws Exception {
 		Control control = getControl("uiReadOnlyStringField");
-		assertThat(control, is(instanceOf(Label.class)));
+		assertThat(((Label) control).getText(), is(equalTo(testBean.getUiReadOnlyStringField())));
+	}
+
+	@Test
+	public void testUiReadOnlyStringFieldValue() throws Exception {
+		Control control = getControl("uiReadOnlyStringField");
 		assertThat(((Label) control).getText(), is(equalTo(testBean.getUiReadOnlyStringField())));
 	}
 
@@ -63,6 +80,30 @@ public class GuiGeneratorTest extends SWTTestBase {
 		testBean.setStringField(newValue);
 		Control control = getControl("stringField");
 		assertThat(((Text) control).getText(), is(equalTo(newValue)));
+	}
+
+	@Test
+	public void testIntFieldIsSpinner() throws Exception {
+		Control control = getControl("intField");
+		assertThat(control, is(instanceOf(Spinner.class)));
+	}
+
+	@Test
+	public void testIntFieldInitialValue() throws Exception {
+		Control control = getControl("intField");
+		assertThat(((Spinner) control).getSelection(), is(equalTo(testBean.getIntField())));
+	}
+
+	@Test
+	public void testIntFieldMinimumValue() throws Exception {
+		Control control = getControl("intField");
+		assertThat(((Spinner) control).getMinimum(), is(equalTo(Integer.valueOf(TestBean.INT_FIELD_MIN_VALUE_STRING))));
+	}
+
+	@Test
+	public void testIntFieldMaximumValue() throws Exception {
+		Control control = getControl("intField");
+		assertThat(((Spinner) control).getMaximum(), is(equalTo(Integer.valueOf(TestBean.INT_FIELD_MAX_VALUE_STRING))));
 	}
 
 	private Control getControl(String name) {

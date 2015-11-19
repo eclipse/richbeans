@@ -3,12 +3,18 @@ package org.eclipse.richbeans.generator;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import org.eclipse.richbeans.annotations.RichbeansUiAnnotations.UiMaximumValue;
+import org.eclipse.richbeans.annotations.RichbeansUiAnnotations.UiMinimumValue;
 import org.metawidget.inspector.annotation.UiReadOnly;
 
 class TestBean {
 
+	public static final String INT_FIELD_MAX_VALUE_STRING = "25";
+	public static final String INT_FIELD_MIN_VALUE_STRING = "-10";
+
 	private String stringField;
 	private String uiReadOnlyStringField;
+	private int intField;
 
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -41,5 +47,16 @@ class TestBean {
 		Object oldValue = this.uiReadOnlyStringField;
 		this.uiReadOnlyStringField = uiReadOnlyStringField;
 		pcs.firePropertyChange("uiReadOnlyStringField", oldValue, this.uiReadOnlyStringField);
+	}
+
+	@UiMinimumValue(INT_FIELD_MIN_VALUE_STRING)
+	@UiMaximumValue(INT_FIELD_MAX_VALUE_STRING)
+	public int getIntField() {
+		return intField;
+	}
+	public void setIntField(int intField) {
+		Object oldValue = this.intField;
+		this.intField = intField;
+		pcs.firePropertyChange("intField", oldValue, this.intField);
 	}
 }
