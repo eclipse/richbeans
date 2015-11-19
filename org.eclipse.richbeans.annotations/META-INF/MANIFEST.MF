@@ -7,3 +7,5 @@ Bundle-Vendor: Diamond Light Source
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: org.eclipse.richbeans.annotations,
  org.metawidget.inspector.annotation
+Bundle-ClassPath: .,
+ lib/metawidget-annotation-4.1.jar
