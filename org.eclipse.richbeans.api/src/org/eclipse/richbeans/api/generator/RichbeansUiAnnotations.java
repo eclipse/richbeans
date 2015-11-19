@@ -1,4 +1,4 @@
-package org.eclipse.richbeans.annotations;
+package org.eclipse.richbeans.api.generator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
