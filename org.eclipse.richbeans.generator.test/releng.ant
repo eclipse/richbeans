@@ -24,10 +24,6 @@
 			<include name="*.jar" />
 			<exclude name="*-sources*" />
 		</fileset>
-		<fileset dir="${workspace.git.loc}/dawn-eclipse.git/org.eclipse.richbeans.annotations/lib">
-			<include name="*.jar" />
-			<exclude name="*-sources*" />
-		</fileset>
 	</path>
 
 	<target name="_junit-tests">
