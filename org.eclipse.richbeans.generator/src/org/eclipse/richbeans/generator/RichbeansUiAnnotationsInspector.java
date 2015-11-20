@@ -12,11 +12,12 @@ import org.metawidget.inspector.impl.propertystyle.Property;
 /**
  * This inspector checks for the annotations in {@link RichbeansUiAnnotations} and adds them to the Metawidget
  * pipeline so they can be applied by the {@link RichbeansDecoratorWidgetProcessor}.
- * 
+ *
  * @author James Mudd
  */
 public class RichbeansUiAnnotationsInspector extends BaseObjectInspector {
 
+	@Override
 	protected Map<String, String> inspectProperty(Property property) throws Exception {
 		Map<String, String> attributes = new HashMap<String, String>();
 

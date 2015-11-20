@@ -9,6 +9,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
+@SuppressWarnings("unused") // exceptions
 public class SWTTestBase {
 
 	protected static Display display;
@@ -30,6 +31,7 @@ public class SWTTestBase {
 	@After
 	public void destroyShell() throws Exception {
 		display.syncExec(new Runnable() {
+			@Override
 			public void run() {
 				disposeShell();
 			}

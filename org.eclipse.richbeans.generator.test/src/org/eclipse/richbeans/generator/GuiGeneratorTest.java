@@ -16,6 +16,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+@SuppressWarnings("unused") // exceptions
 public class GuiGeneratorTest extends SWTTestBase {
 
 	private IGuiGeneratorService guiGenerator;
