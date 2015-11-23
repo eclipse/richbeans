@@ -9,7 +9,10 @@ import org.metawidget.inspectionresultprocessor.iface.InspectionResultProcessor;
 import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
 import org.metawidget.inspector.composite.CompositeInspector;
 import org.metawidget.inspector.composite.CompositeInspectorConfig;
+import org.metawidget.inspector.impl.propertystyle.javabean.JavaBeanPropertyStyle;
 import org.metawidget.inspector.propertytype.PropertyTypeInspector;
+import org.metawidget.inspector.xml.XmlInspector;
+import org.metawidget.inspector.xml.XmlInspectorConfig;
 import org.metawidget.swt.SwtMetawidget;
 
 public class GuiGeneratorService implements IGuiGeneratorService {
@@ -17,13 +20,21 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 	@Override
 	public Control generateGui(Object bean, Composite parent) {
 
+		// TODO create only one instance of all immutable metawidget objects
 		// Create a Metawidget
 		SwtMetawidget metawidget = new SwtMetawidget(parent, SWT.NONE);
 
 		// Metawidget builds GUIs in five stages
 		// 1. Inspector
+
+		XmlInspectorConfig xmlInspectorConfig = new XmlInspectorConfig();
+		xmlInspectorConfig.setInputStream(GuiGeneratorService.class.getResourceAsStream("metawidget-metadata.xml"));
+		xmlInspectorConfig.setRestrictAgainstObject(new JavaBeanPropertyStyle());
+		xmlInspectorConfig.setValidateAgainstClasses(new JavaBeanPropertyStyle());
+
 		// Add the UiAnnotationsInspector
 		metawidget.setInspector(new CompositeInspector( new CompositeInspectorConfig().setInspectors(
+				new XmlInspector(xmlInspectorConfig),
 				new PropertyTypeInspector(),
 				new MetawidgetAnnotationInspector(),
 				new RichbeansAnnotationsInspector())));
@@ -49,7 +60,7 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		TwoWayDataBindingProcessor bindingProcessor = new TwoWayDataBindingProcessor();
 		metawidget.addWidgetProcessor(bindingProcessor);
 
-		// TODO add reflection binding processor for actions?
+		// Reflection binding processor (for actions) is present by default
 
 		// 5. Layout
 		// (default)
