@@ -9,7 +9,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 
-@SuppressWarnings("unused") // exceptions
 public class SWTTestBase {
 
 	protected static Display display;
