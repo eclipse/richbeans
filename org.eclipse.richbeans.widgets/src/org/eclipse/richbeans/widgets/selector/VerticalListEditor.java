@@ -40,6 +40,7 @@ import org.eclipse.richbeans.widgets.EventManagerDelegate;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -115,7 +116,7 @@ public class VerticalListEditor extends ListEditor {
 			}
 		};
 		add.addSelectionListener(addListener);
-
+		
 		// delete bean
 		delete = new Button(buttonsPanel, SWT.NONE);
 		delete.setImage(getImageDescriptor("delete.png").createImage());
@@ -184,6 +185,13 @@ public class VerticalListEditor extends ListEditor {
 		delete.setText(label);
 	}
 
+	public void setAddButtonImage(Image image){
+		this.add.setImage(image);
+	}
+	public void setDeleteButtonImage(Image image){
+		this.delete.setImage(image);
+	}
+	
 	@Override
 	public void dispose() {
 
