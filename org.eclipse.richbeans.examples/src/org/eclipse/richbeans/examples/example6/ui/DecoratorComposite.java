@@ -28,7 +28,7 @@ import org.eclipse.swt.widgets.Text;
  * This composite uses decorators over a Text widget to 
  * achieve the same result as using ScaleBox.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class DecoratorComposite extends Composite {

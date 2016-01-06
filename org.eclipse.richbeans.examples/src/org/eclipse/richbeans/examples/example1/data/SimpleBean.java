@@ -14,7 +14,7 @@ package org.eclipse.richbeans.examples.example1.data;
 /**
  * A simple bean defining an x and y value. 
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class SimpleBean {

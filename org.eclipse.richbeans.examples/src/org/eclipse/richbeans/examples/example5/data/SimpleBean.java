@@ -18,7 +18,7 @@ import org.eclipse.dawnsci.doe.DOEField;
 /**
  * A simple bean defining an x and y value. 
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class SimpleBean implements Serializable { // In order to use beans with DOE

@@ -16,7 +16,7 @@ import org.eclipse.swt.widgets.Text;
 /**
  * An object to make any Text field into a field widget.
  * 
- * @author fcp94556
+ * @author Matthew Gerring
  *
  */
 public class TextFieldDecorator extends FieldDecorator<Text> {
