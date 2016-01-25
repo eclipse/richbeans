@@ -6,6 +6,7 @@ import java.util.Map;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
 import org.metawidget.inspector.impl.BaseObjectInspector;
 import org.metawidget.inspector.impl.propertystyle.Property;
 
@@ -31,6 +32,12 @@ public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 		MaximumValue maximumValue = property.getAnnotation(MaximumValue.class);
 		if (maximumValue != null) {
 			attributes.put("maximumValue", maximumValue.value());
+		}
+
+		// Check the maximum value annotation
+		Units units = property.getAnnotation(Units.class);
+		if (units != null) {
+			attributes.put("units", units.value());
 		}
 
 		return attributes;

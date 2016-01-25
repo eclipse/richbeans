@@ -33,5 +33,16 @@ public class RichbeansAnnotations {
 	public static @interface MaximumValue {
 		String value();
 	}
+	
+	/**
+	 * Specify the units of a numeric field (e.g mm or eV).
+	 * 
+	 * @author James Mudd
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public static @interface Units {
+		String value();
+	}
 
 }
