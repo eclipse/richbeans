@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  * 
  * @author James Mudd
  */
-public class RichbeansUiAnnotations {
+public class RichbeansAnnotations {
 
 	/**
 	 * Specify the minimum value a numeric field should contain.

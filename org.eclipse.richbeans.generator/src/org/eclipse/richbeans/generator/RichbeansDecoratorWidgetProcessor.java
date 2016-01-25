@@ -2,7 +2,7 @@ package org.eclipse.richbeans.generator;
 
 import java.util.Map;
 
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations;
 import org.eclipse.richbeans.widgets.decorator.FloatDecorator;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Spinner;
@@ -15,10 +15,10 @@ import org.metawidget.widgetprocessor.iface.WidgetProcessor;
  * This processor takes the plain SWT widgets and if required (for
  * <code>float</code> or <code>double</code>) decorates them using the
  * appropriate Richbeans decorator. If limits have been defined for the field
- * using the annotations in {@link RichbeansUiAnnotations} the minimum and
+ * using the annotations in {@link RichbeansAnnotations} the minimum and
  * maximum bounds are set.
  * 
- * @see RichbeansUiAnnotations
+ * @see RichbeansAnnotations
  * 
  * @author James Mudd
  */

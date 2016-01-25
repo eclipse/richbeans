@@ -3,8 +3,8 @@ package org.eclipse.richbeans.generator;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.MaximumValue;
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.MinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
 import org.metawidget.inspector.annotation.UiReadOnly;
 
 class TestBean {

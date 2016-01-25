@@ -3,19 +3,19 @@ package org.eclipse.richbeans.generator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations;
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.MaximumValue;
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.MinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
 import org.metawidget.inspector.impl.BaseObjectInspector;
 import org.metawidget.inspector.impl.propertystyle.Property;
 
 /**
- * This inspector checks for the annotations in {@link RichbeansUiAnnotations} and adds them to the Metawidget
+ * This inspector checks for the annotations in {@link RichbeansAnnotations} and adds them to the Metawidget
  * pipeline so they can be applied by the {@link RichbeansDecoratorWidgetProcessor}.
  *
  * @author James Mudd
  */
-public class RichbeansUiAnnotationsInspector extends BaseObjectInspector {
+public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 
 	@Override
 	protected Map<String, String> inspectProperty(Property property) throws Exception {

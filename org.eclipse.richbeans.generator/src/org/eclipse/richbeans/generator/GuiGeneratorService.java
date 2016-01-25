@@ -26,7 +26,7 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		metawidget.setInspector(new CompositeInspector( new CompositeInspectorConfig().setInspectors(
 				new PropertyTypeInspector(),
 				new MetawidgetAnnotationInspector(),
-				new RichbeansUiAnnotationsInspector())));
+				new RichbeansAnnotationsInspector())));
 
 		// 2. InspectionResultProcessors
 		InspectionResultProcessor<SwtMetawidget> jexlProcessor = new JexlInspectionResultProcessor<SwtMetawidget>();
