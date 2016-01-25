@@ -3,8 +3,8 @@ package org.eclipse.richbeans.generator;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.UiMaximumValue;
-import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.UiMinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.MaximumValue;
+import org.eclipse.richbeans.api.generator.RichbeansUiAnnotations.MinimumValue;
 import org.metawidget.inspector.annotation.UiReadOnly;
 
 class TestBean {
@@ -49,8 +49,8 @@ class TestBean {
 		pcs.firePropertyChange("uiReadOnlyStringField", oldValue, this.uiReadOnlyStringField);
 	}
 
-	@UiMinimumValue(INT_FIELD_MIN_VALUE_STRING)
-	@UiMaximumValue(INT_FIELD_MAX_VALUE_STRING)
+	@MinimumValue(INT_FIELD_MIN_VALUE_STRING)
+	@MaximumValue(INT_FIELD_MAX_VALUE_STRING)
 	public int getIntField() {
 		return intField;
 	}

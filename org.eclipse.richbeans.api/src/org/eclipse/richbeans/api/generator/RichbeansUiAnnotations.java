@@ -19,7 +19,7 @@ public class RichbeansUiAnnotations {
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
-	public static @interface UiMinimumValue {
+	public static @interface MinimumValue {
 		String value();
 	}
 
@@ -30,7 +30,7 @@ public class RichbeansUiAnnotations {
 	 */
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
-	public static @interface UiMaximumValue {
+	public static @interface MaximumValue {
 		String value();
 	}
 
