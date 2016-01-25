@@ -18,6 +18,13 @@ import org.metawidget.inspector.impl.propertystyle.Property;
  */
 public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 
+	// We'd like to be able to use "maximum-value" and "minimum-value" here, since they're already defined as standard
+	// attribute names in Metawidget. Unfortunately, though, if both of them are applied to a numeric field,
+	// SwtMetawidget uses a Scale slider widget which is inappropriate since it doesn't actually show the number!
+	public static final String MINIMUM_VALUE = "minimumValue";
+	public static final String MAXIMUM_VALUE = "maximumValue";
+	public static final String UNITS = "units";
+
 	@Override
 	protected Map<String, String> inspectProperty(Property property) throws Exception {
 		Map<String, String> attributes = new HashMap<String, String>();
@@ -25,22 +32,21 @@ public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 		// Check the minimum value annotation
 		MinimumValue minmiumValue = property.getAnnotation(MinimumValue.class);
 		if (minmiumValue != null) {
-			attributes.put("minimumValue", minmiumValue.value());
+			attributes.put(MINIMUM_VALUE, minmiumValue.value());
 		}
 
 		// Check the maximum value annotation
 		MaximumValue maximumValue = property.getAnnotation(MaximumValue.class);
 		if (maximumValue != null) {
-			attributes.put("maximumValue", maximumValue.value());
+			attributes.put(MAXIMUM_VALUE, maximumValue.value());
 		}
 
 		// Check the maximum value annotation
 		Units units = property.getAnnotation(Units.class);
 		if (units != null) {
-			attributes.put("units", units.value());
+			attributes.put(UNITS, units.value());
 		}
 
 		return attributes;
 	}
-
 }
