@@ -1,0 +1,118 @@
+<?xml version="1.0"?>
+<inspection-result xmlns="http://metawidget.org/inspection-result"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://metawidget.org/inspection-result http://metawidget.org/xsd/inspection-result-1.0.xsd"
+	version="1.0">
+
+	<entity type="org.eclipse.richbeans.generator.TestBean">
+		<property name="stringField" required="true" />
+		<property name="stringFieldWithGetterOnly" no-setter="true" />
+		<property name="uiReadOnlyStringField" read-only="true" />
+		<property name="intField" maximumValue="25" minimumValue="-10" />
+	</entity>
+
+	<entity type="org.eclipse.scanning.api.points.models.GridModel">
+		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="xName" hidden="true" type="java.lang.String" />
+		<property name="yName" hidden="true" type="java.lang.String" />
+		<property name="columns" minimumValue="1" type="int" />
+		<property name="rows" minimumValue="1" type="int" />
+		<property name="snake" type="boolean" />
+		<property name="xStep" read-only="true" type="double" />
+		<property name="yStep" read-only="true" type="double" />
+	</entity>
+
+	<entity type="org.eclipse.scanning.api.points.models.RasterModel">
+		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="xName" hidden="true" type="java.lang.String" />
+		<property name="yName" hidden="true" type="java.lang.String" />
+		<property name="xStep" type="double" />
+		<property name="yStep" type="double" />
+		<property name="snake" type="boolean" />
+	</entity>
+
+	<entity type="org.eclipse.scanning.api.points.models.LissajousModel">
+		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="xName" hidden="true" type="java.lang.String" />
+		<property name="yName" hidden="true" type="java.lang.String" />
+		<property name="a" type="double" />
+		<property name="b" type="double" />
+		<property name="delta" type="double" />
+		<property name="thetaStep" type="double" />
+	</entity>
+
+	<entity type="org.eclipse.scanning.api.points.models.SpiralModel">
+		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="xName" hidden="true" type="java.lang.String" />
+		<property name="yName" hidden="true" type="java.lang.String" />
+		<property name="scale" type="double" />
+	</entity>
+
+	<entity type="org.eclipse.scanning.api.points.models.OneDEqualSpacingModel">
+		<property name="boundingLine" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingLine" />
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="points" minimumValue="1" type="int" />
+	</entity>
+
+	<entity type="org.eclipse.scanning.api.points.models.OneDStepModel">
+		<property name="boundingLine" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingLine" />
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="step" minimumValue="0" type="double" />
+	</entity>
+
+	<entity type="org.eclipse.scanning.api.points.models.SinglePointModel">
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="x" read-only="true" type="double" /> <!-- Maybe this should be hidden instead of read-only -->
+		<property name="y" read-only="true" type="double" /> <!-- Maybe this should be hidden instead of read-only -->
+	</entity>
+
+	<!-- Old types for reference, should be deleted once the classes are removed -->
+	<!-- (This metadata duplicates what is obtained from the annotations) -->
+	<entity type="uk.ac.diamond.daq.mapping.path.GridScanPath">
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="columns" comes-after="name" minimumValue="1" type="int" />
+		<property name="rows" comes-after="columns" minimumValue="1" type="int" />
+		<property name="biDirectional" comes-after="rows" type="boolean" />
+		<property name="xStep" comes-after="biDirectional" no-setter="true" type="double" />
+		<property name="yStep" comes-after="xStep" no-setter="true" type="double" />
+	</entity>
+
+	<entity type="uk.ac.diamond.daq.mapping.path.RasterScanPath">
+		<property name="xStep" type="double" />
+		<property name="yStep" comes-after="xStep" type="double" />
+		<property name="biDirectional" comes-after="yStep" type="boolean" />
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+	</entity>
+
+	<entity type="uk.ac.diamond.daq.mapping.path.LissajousScanPath">
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="a" comes-after="name" type="double" />
+		<property name="b" comes-after="a" type="double" />
+		<property name="delta" comes-after="b" type="double" />
+		<property name="thetaStep" comes-after="delta" type="double" />
+	</entity>
+
+	<entity type="uk.ac.diamond.daq.mapping.path.SpiralScanPath">
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="scale" comes-after="name" type="double" />
+	</entity>
+
+	<entity type="uk.ac.diamond.daq.mapping.path.OneDEqualSpacingScanPath">
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="points" comes-after="name" minimumValue="1" type="int" />
+	</entity>
+
+	<entity type="uk.ac.diamond.daq.mapping.path.OneDStepScanPath">
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+		<property name="step" minimumValue="0.0" type="double" />
+	</entity>
+
+	<entity type="uk.ac.diamond.daq.mapping.path.SinglePointScanPath">
+		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
+	</entity>
+
+</inspection-result>
