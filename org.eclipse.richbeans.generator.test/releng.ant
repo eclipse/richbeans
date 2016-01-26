@@ -20,7 +20,7 @@
 	<target name="junit-tests" depends="Xvfb_start, _junit-tests, Xvfb_stop" />
 
 	<path id="metawidget.jars.path">
-		<fileset dir="${workspace.git.loc}/dawn-eclipse.git/org.eclipse.richbeans.generator/lib">
+		<fileset dir="${workspace.git.loc}/richbeans.git/org.eclipse.richbeans.generator/lib">
 			<include name="*.jar" />
 			<exclude name="*-sources*" />
 		</fileset>
@@ -34,8 +34,8 @@
 				<pathelement location="${junitjar.loc}" />
 				<pathelement location="${plugin.basedir}/bin" />
 				<pathelement location="${plugin.host.basedir}/bin" />
-				<pathelement location="${workspace.git.loc}/dawn-eclipse.git/org.eclipse.richbeans.api/bin" />
-				<pathelement location="${workspace.git.loc}/dawn-eclipse.git/org.eclipse.richbeans.annotations/bin" />
+				<pathelement location="${workspace.git.loc}/richbeans.git/org.eclipse.richbeans.api/bin" />
+				<pathelement location="${workspace.git.loc}/richbeans.git/org.eclipse.richbeans.annotations/bin" />
 				<path refid="metawidget.jars.path" />
 				<path refid="tp.slf4j.path" />
 				<!-- ensure that required org.slf4j.LoggerFactory appears first in classpath -->
