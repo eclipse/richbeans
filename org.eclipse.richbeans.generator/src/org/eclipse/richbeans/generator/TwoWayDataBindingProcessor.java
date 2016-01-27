@@ -25,8 +25,8 @@ import java.util.Set;
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
-import org.eclipse.core.databinding.beans.BeansObservables;
-import org.eclipse.core.databinding.beans.PojoObservables;
+import org.eclipse.core.databinding.beans.BeanProperties;
+import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.core.databinding.conversion.Converter;
 import org.eclipse.core.databinding.conversion.IConverter;
 import org.eclipse.core.databinding.observable.Realm;
@@ -163,10 +163,10 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 			// property change support
 			toInspect.getClass().getMethod("addPropertyChangeListener", PropertyChangeListener.class);
 			// If the addPropertyChangeListener method exists add dynamic 2 way binding
-			observeModel = BeansObservables.observeValue(realm, toInspect, propertyName);
+			observeModel = BeanProperties.value(toInspect.getClass(), propertyName).observe(realm, toInspect);
 			modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
 		} catch (NoSuchMethodException | SecurityException e) { // No PropertyChangeListener or can't access
-			observeModel = PojoObservables.observeValue(realm, toInspect, propertyName);
+			observeModel = PojoProperties.value(toInspect.getClass(), propertyName).observe(realm, toInspect);
 			modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_ON_REQUEST);
 		}
 
