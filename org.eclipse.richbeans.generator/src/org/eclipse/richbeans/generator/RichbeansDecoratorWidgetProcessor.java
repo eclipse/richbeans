@@ -2,6 +2,7 @@ package org.eclipse.richbeans.generator;
 
 import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.MAXIMUM_VALUE;
 import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.MINIMUM_VALUE;
+import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.UNITS;
 
 import java.util.Map;
 
@@ -29,6 +30,16 @@ public class RichbeansDecoratorWidgetProcessor implements WidgetProcessor<Contro
 
 	@Override
 	public Control processWidget(Control widget, String elementName, Map<String, String> attributes, SwtMetawidget metawidget) {
+
+		// If the @Units annotation is present append it to the label suffix
+		if (attributes.get(UNITS) != null) {
+			// Get what the label would be
+			String label = metawidget.getLabelString(attributes);
+			// Append the units string
+			label += " [" + attributes.get(UNITS) + "]";
+			// Set the label attribute
+			attributes.put("label", label);
+		}
 
 		// Check if the widget is a SWT Spinner (for int) and try to set limits
 		if (widget instanceof Spinner) {
