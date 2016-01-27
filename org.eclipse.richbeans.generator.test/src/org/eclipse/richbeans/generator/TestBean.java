@@ -5,6 +5,7 @@ import java.beans.PropertyChangeSupport;
 
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
 import org.metawidget.inspector.annotation.UiReadOnly;
 
 class TestBean {
@@ -51,6 +52,7 @@ class TestBean {
 
 	@MinimumValue(INT_FIELD_MIN_VALUE_STRING)
 	@MaximumValue(INT_FIELD_MAX_VALUE_STRING)
+	@Units("eV")
 	public int getIntField() {
 		return intField;
 	}

@@ -105,6 +105,12 @@ public class GuiGeneratorTest extends SWTTestBase {
 		Control control = getControl("intField");
 		assertThat(((Spinner) control).getMaximum(), is(equalTo(Integer.valueOf(TestBean.INT_FIELD_MAX_VALUE_STRING))));
 	}
+	
+	@Test
+	public void testIntFileUnits() throws Exception {
+		Control control = getControl("intField_label");
+		assertThat(((Label) control).getText(), is(equalTo("Int Field [eV]:")));
+	}
 
 	private Control getControl(String name) {
 		return getControl(metawidget, name);
