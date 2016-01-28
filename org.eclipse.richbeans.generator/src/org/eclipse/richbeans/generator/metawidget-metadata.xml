@@ -19,8 +19,6 @@
 		<property name="columns" minimumValue="1" type="int" />
 		<property name="rows" minimumValue="1" type="int" />
 		<property name="snake" type="boolean" />
-		<property name="xStep" read-only="true" type="double" />
-		<property name="yStep" read-only="true" type="double" />
 	</entity>
 
 	<entity type="org.eclipse.scanning.api.points.models.RasterModel">
