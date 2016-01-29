@@ -7,8 +7,10 @@ import static org.junit.Assert.*;
 import static org.metawidget.inspector.InspectionResultConstants.NAME;
 
 import org.eclipse.richbeans.api.generator.IGuiGeneratorService;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
@@ -107,9 +109,57 @@ public class GuiGeneratorTest extends SWTTestBase {
 	}
 	
 	@Test
-	public void testIntFileUnits() throws Exception {
+	public void testIntFieldUnits() throws Exception {
 		Control control = getControl("intField_label");
 		assertThat(((Label) control).getText(), is(equalTo("Int Field [eV]:")));
+	}
+	
+	@Test
+	public void testDoubleFieldInitalValue() throws Exception {
+		Control control = getControl("doubleField");
+		assertThat(((Text) control).getText(), is(equalTo(String.valueOf(testBean.getDoubleField()))));
+	}
+	
+	@Test
+	public void testDoubleFieldDataBinding() throws Exception {
+		Text control = (Text) getControl("doubleField");
+		// Change the value in the GUI box
+		control.setText("655.4");
+		//Check the bean is updated
+		assertEquals("doubleField not updated", 655.4, testBean.getDoubleField(), Double.MIN_VALUE);
+	}
+	
+	@Test
+	public void testDoubleFieldUnits() throws Exception {
+		Control control = getControl("doubleField_label");
+		assertThat(((Label) control).getText(), is(equalTo("Double Field [Hz]:")));
+	}
+	
+	@Test
+	public void testDoubleFieldTextIsBlackInsideLimit() throws Exception {
+		Text control = (Text) getControl("doubleField");
+		// Change the value in the GUI box outside the upper limit
+		control.setText("642.3");
+		//Check the text is red
+		assertThat(control.getForeground(), is(equalTo(Display.getDefault().getSystemColor(SWT.COLOR_BLACK))));
+	}
+	
+	@Test
+	public void testDoubleFieldTextGoesRedOutsideUpperLimit() throws Exception {
+		Text control = (Text) getControl("doubleField");
+		// Change the value in the GUI box outside the upper limit
+		control.setText("745");
+		//Check the text is red
+		assertThat(control.getForeground(), is(equalTo(Display.getDefault().getSystemColor(SWT.COLOR_RED))));
+	}
+	
+	@Test
+	public void testDoubleFieldTextGoesRedOutsideLowerLimit() throws Exception {
+		Text control = (Text) getControl("doubleField");
+		// Change the value in the GUI box outside the upper limit
+		control.setText("222.22");
+		//Check the text is red
+		assertThat(control.getForeground(), is(equalTo(Display.getDefault().getSystemColor(SWT.COLOR_RED))));
 	}
 
 	private Control getControl(String name) {

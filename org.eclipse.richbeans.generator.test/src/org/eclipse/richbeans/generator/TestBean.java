@@ -12,10 +12,13 @@ class TestBean {
 
 	public static final String INT_FIELD_MAX_VALUE_STRING = "25";
 	public static final String INT_FIELD_MIN_VALUE_STRING = "-10";
+	private static final String DOUBLE_FIELD_MIN_VALUE_STRING = "345.5";
+	private static final String DOUBLE_FIELD_MAX_VALUE_STRING = "711.3";
 
 	private String stringField;
 	private String uiReadOnlyStringField;
 	private int intField;
+	private double doubleField = 450.3;
 
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -60,5 +63,18 @@ class TestBean {
 		Object oldValue = this.intField;
 		this.intField = intField;
 		pcs.firePropertyChange("intField", oldValue, this.intField);
+	}
+	
+	@MinimumValue(DOUBLE_FIELD_MIN_VALUE_STRING)
+	@MaximumValue(DOUBLE_FIELD_MAX_VALUE_STRING)
+	@Units("Hz")
+	public double getDoubleField() {
+		return doubleField;
+	}
+
+	public void setDoubleField(double doubleField) {
+		Object oldValue = this.doubleField;
+		this.doubleField = doubleField;
+		pcs.firePropertyChange("doubleField", oldValue, this.doubleField);
 	}
 }
