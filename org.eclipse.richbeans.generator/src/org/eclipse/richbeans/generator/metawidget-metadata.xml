@@ -31,7 +31,7 @@
 		<property name="snake" type="boolean" />
 	</entity>
 
-	<entity type="org.eclipse.scanning.api.points.models.LissajousModel">
+	<entity type="uk.ac.diamond.daq.mapping.path.LissajousModel">
 		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
 		<property name="xName" hidden="true" type="java.lang.String" />
@@ -40,9 +40,10 @@
 		<property name="b" type="double" />
 		<property name="delta" type="double" />
 		<property name="thetaStep" type="double" />
+		<property name="points" type="int" />
 	</entity>
 
-	<entity type="org.eclipse.scanning.api.points.models.SpiralModel">
+	<entity type="uk.ac.diamond.daq.mapping.path.SpiralScanPathModel">
 		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
 		<property name="xName" hidden="true" type="java.lang.String" />
