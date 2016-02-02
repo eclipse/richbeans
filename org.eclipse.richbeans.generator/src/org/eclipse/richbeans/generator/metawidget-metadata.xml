@@ -65,8 +65,8 @@
 
 	<entity type="org.eclipse.scanning.api.points.models.SinglePointModel">
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
-		<property name="x" read-only="true" type="double" /> <!-- Maybe this should be hidden instead of read-only -->
-		<property name="y" read-only="true" type="double" /> <!-- Maybe this should be hidden instead of read-only -->
+		<property name="x" hidden="true" read-only="true" type="double" /> <!-- Maybe this should be hidden instead of read-only -->
+		<property name="y" hidden="true" read-only="true" type="double" /> <!-- Maybe this should be hidden instead of read-only -->
 	</entity>
 
 	<!-- Old types for reference, should be deleted once the classes are removed -->
