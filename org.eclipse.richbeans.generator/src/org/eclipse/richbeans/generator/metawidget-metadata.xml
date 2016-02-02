@@ -43,7 +43,7 @@
 		<property name="points" type="int" />
 	</entity>
 
-	<entity type="uk.ac.diamond.daq.mapping.path.SpiralScanPathModel">
+	<entity type="uk.ac.diamond.daq.mapping.path.SpiralModel">
 		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
 		<property name="xName" hidden="true" type="java.lang.String" />
