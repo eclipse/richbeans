@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- *
+ * A general composite used for backing widgets that contain fields.
  */
 public abstract class FieldComposite extends Composite implements IFieldWidget {
 
