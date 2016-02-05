@@ -12,4 +12,4 @@ before_install:
  - chmod +x ./org.eclipse.richbeans.releng/build/commit-msg.sh
  - bash ./org.eclipse.richbeans.releng/build/commit-msg.sh
  
-script: ant -buildfile ./org.eclipse.richbeans.releng/build/build.xml
+mvn compile
