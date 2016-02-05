@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+last_msg="$(git log -1 --pretty=%B)"
+echo "The last commit was: $last_msg"
 
 
 # We check the last commit message has a ticket
