@@ -13,4 +13,4 @@ before_install:
  - bash ./org.eclipse.richbeans.releng/build/commit-msg.sh
 
 # Maven compile
-mvn compile
+script: mvn compile
