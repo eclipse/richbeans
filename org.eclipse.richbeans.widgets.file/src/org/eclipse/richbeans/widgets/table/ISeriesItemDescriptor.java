@@ -26,7 +26,7 @@ public interface ISeriesItemDescriptor extends IAdaptable {
 	 * @return the function
 	 * @throws InstantiationException
 	 */
-	Object getSeriesObject() throws InstantiationException;
+	Object getSeriesObject() throws Exception;
 
 	/**
 	 * Provides the function name

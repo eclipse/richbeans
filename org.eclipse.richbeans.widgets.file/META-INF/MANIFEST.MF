@@ -11,4 +11,7 @@ Require-Bundle: org.eclipse.richbeans.widgets;bundle-version="1.0.0",
  org.eclipse.ui;bundle-version="3.8.2",
  org.eclipse.ui.ide;bundle-version="3.8.2",
  org.eclipse.core.resources;bundle-version="3.8.1",
- org.eclipse.core.runtime;bundle-version="3.8.0"
+ org.eclipse.core.runtime;bundle-version="3.8.0",
+ org.eclipse.emf.common.ui;bundle-version="2.10.0"
+Bundle-ActivationPolicy: lazy
+Bundle-Activator: org.eclipse.richbeans.widgets.file.Activator
