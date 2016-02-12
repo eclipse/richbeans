@@ -17,47 +17,52 @@ import org.metawidget.swt.SwtMetawidget;
 
 public class GuiGeneratorService implements IGuiGeneratorService {
 
+	private static XmlInspectorConfig xmlInspectorConfig;
+	private static CompositeInspector inspector;
+	private static InspectionResultProcessor<SwtMetawidget> jexlProcessor;
+	private static ComboLabelWidgetProcessor comboLabelProcessor;
+	private static RichbeansDecoratorWidgetProcessor decoratorWidgetProcessor;
+	private static TwoWayDataBindingProcessor bindingProcessor;
+
+	// Initialise metawidget objects. All of these should be immutable so only one (static) instance is required
+	static {
+		xmlInspectorConfig = new XmlInspectorConfig();
+		xmlInspectorConfig.setInputStream(GuiGeneratorService.class.getResourceAsStream("metawidget-metadata.xml"));
+		xmlInspectorConfig.setRestrictAgainstObject(new JavaBeanPropertyStyle());
+		xmlInspectorConfig.setValidateAgainstClasses(new JavaBeanPropertyStyle());
+
+		inspector = new CompositeInspector( new CompositeInspectorConfig().setInspectors(
+				new XmlInspector(xmlInspectorConfig),
+				new PropertyTypeInspector(),
+				new MetawidgetAnnotationInspector(),
+				new RichbeansAnnotationsInspector()));
+
+		jexlProcessor = new JexlInspectionResultProcessor<SwtMetawidget>();
+
+		comboLabelProcessor = new ComboLabelWidgetProcessor();
+		decoratorWidgetProcessor = new RichbeansDecoratorWidgetProcessor();
+		bindingProcessor = new TwoWayDataBindingProcessor();
+	}
+
 	@Override
 	public Control generateGui(Object bean, Composite parent) {
 
-		// TODO create only one instance of all immutable metawidget objects
 		// Create a Metawidget
 		SwtMetawidget metawidget = new SwtMetawidget(parent, SWT.NONE);
 
 		// Metawidget builds GUIs in five stages
 		// 1. Inspector
-
-		XmlInspectorConfig xmlInspectorConfig = new XmlInspectorConfig();
-		xmlInspectorConfig.setInputStream(GuiGeneratorService.class.getResourceAsStream("metawidget-metadata.xml"));
-		xmlInspectorConfig.setRestrictAgainstObject(new JavaBeanPropertyStyle());
-		xmlInspectorConfig.setValidateAgainstClasses(new JavaBeanPropertyStyle());
-
-		// Add the UiAnnotationsInspector
-		metawidget.setInspector(new CompositeInspector( new CompositeInspectorConfig().setInspectors(
-				new XmlInspector(xmlInspectorConfig),
-				new PropertyTypeInspector(),
-				new MetawidgetAnnotationInspector(),
-				new RichbeansAnnotationsInspector())));
+		metawidget.setInspector(inspector);
 
 		// 2. InspectionResultProcessors
-		InspectionResultProcessor<SwtMetawidget> jexlProcessor = new JexlInspectionResultProcessor<SwtMetawidget>();
 		metawidget.addInspectionResultProcessor(jexlProcessor);
 
 		// 3. WidgetBuilder
 		// (default)
 
 		// 4. WidgetProcessors
-
-		// Combo label decorator to switch combo labels for more readable values
-		// (For enums, this will replace the declared enum name with the result of toString())
-		metawidget.addWidgetProcessor(new ComboLabelWidgetProcessor());
-
-		// The Richbeans decorator processor will add limits to int float and double UI fields
-		RichbeansDecoratorWidgetProcessor decoratorWidgetProcessor = new RichbeansDecoratorWidgetProcessor();
+		metawidget.addWidgetProcessor(comboLabelProcessor);
 		metawidget.addWidgetProcessor(decoratorWidgetProcessor);
-
-		// Add Eclipse data binding
-		TwoWayDataBindingProcessor bindingProcessor = new TwoWayDataBindingProcessor();
 		metawidget.addWidgetProcessor(bindingProcessor);
 
 		// Reflection binding processor (for actions) is present by default
