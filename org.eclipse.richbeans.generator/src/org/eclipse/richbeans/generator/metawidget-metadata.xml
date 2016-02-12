@@ -12,6 +12,7 @@
 	</entity>
 
 	<entity type="org.eclipse.scanning.api.points.models.GridModel">
+		<property name="uniqueKey" hidden="true" type="java.lang.String" />
 		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
 		<property name="xName" hidden="true" type="java.lang.String" />
@@ -22,6 +23,7 @@
 	</entity>
 
 	<entity type="org.eclipse.scanning.api.points.models.RasterModel">
+		<property name="uniqueKey" hidden="true" type="java.lang.String" />
 		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
 		<property name="xName" hidden="true" type="java.lang.String" />
@@ -32,6 +34,7 @@
 	</entity>
 
 	<entity type="uk.ac.diamond.daq.mapping.path.LissajousModel">
+		<property name="uniqueKey" hidden="true" type="java.lang.String" />
 		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
 		<property name="xName" hidden="true" type="java.lang.String" />
@@ -44,6 +47,7 @@
 	</entity>
 
 	<entity type="uk.ac.diamond.daq.mapping.path.SpiralModel">
+		<property name="uniqueKey" hidden="true" type="java.lang.String" />
 		<property name="boundingBox" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingBox" />
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
 		<property name="xName" hidden="true" type="java.lang.String" />
@@ -52,18 +56,21 @@
 	</entity>
 
 	<entity type="org.eclipse.scanning.api.points.models.OneDEqualSpacingModel">
+		<property name="uniqueKey" hidden="true" type="java.lang.String" />
 		<property name="boundingLine" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingLine" />
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
 		<property name="points" minimumValue="1" type="int" />
 	</entity>
 
 	<entity type="org.eclipse.scanning.api.points.models.OneDStepModel">
+		<property name="uniqueKey" hidden="true" type="java.lang.String" />
 		<property name="boundingLine" hidden="true" type="org.eclipse.scanning.api.points.models.BoundingLine" />
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
 		<property name="step" minimumValue="0" type="double" />
 	</entity>
 
 	<entity type="org.eclipse.scanning.api.points.models.SinglePointModel">
+		<property name="uniqueKey" hidden="true" type="java.lang.String" />
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
 		<property name="x" hidden="true" read-only="true" type="double" /> <!-- Maybe this should be hidden instead of read-only -->
 		<property name="y" hidden="true" read-only="true" type="double" /> <!-- Maybe this should be hidden instead of read-only -->
