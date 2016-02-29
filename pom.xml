@@ -12,6 +12,8 @@
 
 	<modules>
         <module>org.eclipse.richbeans.target.platform</module>
+		<module>org.eclipse.richbeans.feature</module>
+		<module>org.eclipse.richbeans.repository</module>
 		<module>org.eclipse.richbeans.api</module>
 		<module>org.eclipse.richbeans.annot</module>
 		<module>org.eclipse.richbeans.binding</module>

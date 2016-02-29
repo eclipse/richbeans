@@ -12,5 +12,7 @@ before_install:
  - chmod +x ./org.eclipse.richbeans.releng/build/commit-msg.sh
  - bash ./org.eclipse.richbeans.releng/build/commit-msg.sh
 
-# Maven compile
-script: mvn compile
+# Maven install, builds a p2 site which is available elsewhere
+script: mvn clean install
+
+# TODO Check in 
