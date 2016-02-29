@@ -12,8 +12,8 @@ before_install:
 - chmod +x ./org.eclipse.richbeans.releng/build/commit-msg.sh
 - bash ./org.eclipse.richbeans.releng/build/commit-msg.sh
 
-# Run maven
-script: mvn clean install
+# Run maven. This happens automatically and adding it again make the build longer.
+# script: mvn clean install
 
 # Added deploy back to github
 # This should publish to the tag on master called 'snapshot'
