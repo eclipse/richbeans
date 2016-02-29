@@ -20,6 +20,6 @@ deploy:
   provider: releases
   api_key:
     secure: I5xPlT1AnFLRm89JeBKVAZdq52RFtxwu21BVgsKuGZ6TU50avgq5A5mx+0RSlj4qO3IsmqcG6Sf5psPvR7DOfFiGIViqANaaYp6N6yGFq1hMSgAOsm4M9CfTA94tpn/eb8EIPymvB/MCeyQjV+AF62BC1KAXLbTgIWr/neux0d4zeM16aimfGtjKvX9qcbFGnepgrU+WhBr2M1YEQvVa7Nzo2ulOkt2lcZKslNu+mjWGyIpTLepveQKD7gx425jALmo60Qpr8NkNkH6WxiNdKBhCKHBp5mBlPWLfZTY9F40ubSpLPvbMFnXsfryOxbeue1UoOKvnoKI3u+B57kTJrBcC0tjXdPaTD9SXaEYHK00VnkW1y+1IXAg/wBBbBMZNnMsTiElqT9rAwq3gz1YZYKMuzBLTLlrg134eXghFvaoKemZZGQbhkziZJ7aHhZmkNMptlu1GVO8/rOhXXcCFBwVaz0TAgmHRCvNrw+6uqwHRRpq85D64vfBjhicpVasQg5bLU+pOtxmrgvU+KI2dlVf0VLWp8yfmtNJDDNtm6gJ4xM/ESRKb+JUb1+YqXnYuGSFc7/6cmHOsDzwaOYmYScXNX1e7U61Ad4Y6Dup21b3Vkmb5xs7/MGQpCMYS4X+Jj/ulS2S0S6Gv58wA241f12NOuQxaNJAr2yJpQ/2pKAI=
-  file: org.eclipse.richbeans.repository/target/org.eclipse.richbeans.repository-1.0.0-SNAPSHOT.zip
+  file: /home/travis/build/eclipse/richbeans/org.eclipse.richbeans.repository/target/org.eclipse.richbeans.repository-1.0.0-SNAPSHOT.zip
   on:
     repo: eclipse/richbeans
