@@ -13,7 +13,7 @@ package org.eclipse.richbeans.examples.example5.data;
 
 import java.io.Serializable;
 
-import org.eclipse.dawnsci.doe.DOEField;
+import org.eclipse.richbeans.annot.DOEField;
 
 /**
  * A simple bean defining an x and y value. 

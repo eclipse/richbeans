@@ -16,9 +16,9 @@ import java.net.URL;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.eclipse.dawnsci.doe.DOEUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.window.Window;
+import org.eclipse.richbeans.annot.DOEUtils;
 import org.eclipse.richbeans.api.widget.IExpressionManager;
 import org.eclipse.richbeans.api.widget.IRangeWidget;
 import org.eclipse.richbeans.widgets.scalebox.internal.RangeDialog;

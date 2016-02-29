@@ -7,7 +7,6 @@ Bundle-Vendor: Diamond Light Source
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.swt;bundle-version="3.8.1",
  org.eclipse.richbeans.api;bundle-version="1.0.0",
- org.apache.commons.jexl;bundle-version="2.1.1",
  org.eclipse.core.databinding;bundle-version="1.4.1",
  org.eclipse.core.databinding.beans;bundle-version="1.2.200",
  org.eclipse.core.databinding.property;bundle-version="1.4.100",
@@ -16,7 +15,7 @@ Require-Bundle: org.eclipse.swt;bundle-version="3.8.1",
  org.eclipse.richbeans.widgets
 Import-Package: com.ibm.icu.math,
  com.ibm.icu.text,
- org.slf4j;version="1.7.6"
+ org.slf4j;version="1.7.2"
 Export-Package: org.metawidget.inspector,
  org.metawidget.inspector.annotation
 Service-Component: OSGI-INF/*.xml

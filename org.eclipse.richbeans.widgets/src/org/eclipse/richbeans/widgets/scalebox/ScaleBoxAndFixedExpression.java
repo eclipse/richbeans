@@ -13,12 +13,13 @@
 package org.eclipse.richbeans.widgets.scalebox;
 
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.Collection;
 
-import org.eclipse.dawnsci.analysis.api.expressions.IExpressionEngine;
-import org.eclipse.dawnsci.analysis.api.expressions.IExpressionService;
 import org.eclipse.richbeans.api.event.ValueAdapter;
 import org.eclipse.richbeans.api.event.ValueEvent;
+import org.eclipse.richbeans.api.expression.IRulesEngine;
+import org.eclipse.richbeans.api.expression.IRulesService;
 import org.eclipse.richbeans.api.widget.IFieldWidget;
 import org.eclipse.richbeans.reflection.RichBeanUtils;
 import org.eclipse.richbeans.widgets.Activator;
@@ -61,7 +62,7 @@ public class ScaleBoxAndFixedExpression extends ScaleBox{
 
 	private NumberFormat labelNumberFormat;
 
-	private IExpressionEngine engine;
+	private IRulesEngine engine;
 
     
 	/**
@@ -235,9 +236,9 @@ public class ScaleBoxAndFixedExpression extends ScaleBox{
 		labelNumberFormat.setMaximumFractionDigits(decimalPlaces);
 	}
 	
-	private IExpressionEngine createEngine(final String expression) throws Exception {
-		IExpressionService service = (IExpressionService)Activator.getService(IExpressionService.class);
-		IExpressionEngine  engine  = service.getExpressionEngine();
+	private IRulesEngine createEngine(final String expression) throws Exception {
+		IRulesService service = (IRulesService)Activator.getService(IRulesService.class);
+		IRulesEngine  engine  = service.createRulesEngine();
 		engine.createExpression(expression);
 		return engine;
 	}

@@ -15,7 +15,7 @@ package org.eclipse.richbeans.widgets.scalebox.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.dawnsci.doe.DOEUtils;
+import org.eclipse.richbeans.annot.DOEUtils;
 
 /**
  * Vanilla class to act as a bean for a single value.

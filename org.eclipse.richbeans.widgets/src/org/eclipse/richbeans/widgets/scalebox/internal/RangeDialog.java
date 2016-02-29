@@ -16,9 +16,9 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import org.eclipse.dawnsci.doe.DOEFieldType;
-import org.eclipse.dawnsci.doe.DOEUtils;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.richbeans.annot.DOEFieldType;
+import org.eclipse.richbeans.annot.DOEUtils;
 import org.eclipse.richbeans.widgets.internal.DialogUtils;
 import org.eclipse.richbeans.widgets.internal.GridUtils;
 import org.eclipse.richbeans.widgets.scalebox.NumberBox;

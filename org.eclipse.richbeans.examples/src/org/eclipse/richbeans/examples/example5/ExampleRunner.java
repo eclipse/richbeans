@@ -13,7 +13,7 @@ package org.eclipse.richbeans.examples.example5;
 
 import java.util.List;
 
-import org.eclipse.dawnsci.doe.DOEUtils;
+import org.eclipse.richbeans.annot.DOEUtils;
 import org.eclipse.richbeans.api.binding.IBeanController;
 import org.eclipse.richbeans.api.event.ValueAdapter;
 import org.eclipse.richbeans.api.event.ValueEvent;

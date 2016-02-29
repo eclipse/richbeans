@@ -16,11 +16,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.eclipse.dawnsci.analysis.api.expressions.IExpressionEngine;
-import org.eclipse.dawnsci.analysis.api.expressions.IExpressionService;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.richbeans.api.event.ValueEvent;
+import org.eclipse.richbeans.api.expression.IRulesEngine;
+import org.eclipse.richbeans.api.expression.IRulesService;
 import org.eclipse.richbeans.widgets.Activator;
 import org.eclipse.richbeans.widgets.ButtonComposite;
 import org.eclipse.swt.SWT;
@@ -80,9 +80,9 @@ public class TextWrapper extends ButtonComposite {
 	protected StyledText text;
 	private ModifyListener modifyListener;
 
-	private IExpressionEngine createEngine(final String expression) throws Exception {
-		IExpressionService service = (IExpressionService)Activator.getService(IExpressionService.class);
-		IExpressionEngine  engine  = service.getExpressionEngine();
+	private IRulesEngine createEngine(final String expression) throws Exception {
+		IRulesService service = (IRulesService)Activator.getService(IRulesService.class);
+		IRulesEngine  engine  = service.createRulesEngine();
 		engine.createExpression(expression);
 		return engine;
 	}
@@ -105,7 +105,7 @@ public class TextWrapper extends ButtonComposite {
 		mainControl = text;
 
 		this.modifyListener = new ModifyListener() {
-			private IExpressionEngine jexl;
+			private IRulesEngine jexl;
 
 			@Override
 			public void modifyText(ModifyEvent e) {

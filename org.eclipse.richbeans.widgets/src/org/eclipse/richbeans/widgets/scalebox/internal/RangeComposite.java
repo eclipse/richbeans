@@ -14,7 +14,7 @@ package org.eclipse.richbeans.widgets.scalebox.internal;
 
 import java.util.List;
 
-import org.eclipse.dawnsci.doe.DOEUtils;
+import org.eclipse.richbeans.annot.DOEUtils;
 import org.eclipse.richbeans.api.event.ValueAdapter;
 import org.eclipse.richbeans.api.event.ValueEvent;
 import org.eclipse.richbeans.api.event.ValueListener;
