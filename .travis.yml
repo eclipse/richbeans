@@ -16,6 +16,7 @@ before_install:
 script: mvn clean install
 
 # Added deploy back to github
+# This should publish to the tag on master called 'snapshot'
 deploy:
   provider: releases
   api_key:
