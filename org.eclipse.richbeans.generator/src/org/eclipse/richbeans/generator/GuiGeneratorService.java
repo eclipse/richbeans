@@ -20,30 +20,27 @@ import org.metawidget.swt.SwtMetawidget;
 
 public class GuiGeneratorService implements IGuiGeneratorService {
 
-	private static final DomInspector<?>[] EMPTY_INSPECTOR_ARRAY = new DomInspector<?>[0];
-	private static Set<DomInspector<?>> domInspectors;
-	private static CompositeInspector inspector;
-	private static InspectionResultProcessor<SwtMetawidget> jexlProcessor;
-	private static ComboLabelWidgetProcessor comboLabelProcessor;
-	private static RichbeansDecoratorWidgetProcessor decoratorWidgetProcessor;
-	private static TwoWayDataBindingProcessor bindingProcessor;
-
 	// Initialise metawidget objects. All of these should be immutable so only one (static) instance is required
+	private static final InspectionResultProcessor<SwtMetawidget> JEXL_PROCESSOR = new JexlInspectionResultProcessor<SwtMetawidget>();
+	private static final ComboLabelWidgetProcessor COMBO_LABEL_PROCESSOR = new ComboLabelWidgetProcessor();
+	private static final RichbeansDecoratorWidgetProcessor DECORATOR_PROCESSOR = new RichbeansDecoratorWidgetProcessor();
+	private static final TwoWayDataBindingProcessor BINDING_PROCESSOR = new TwoWayDataBindingProcessor();
+
+	// Initialise a set for the inspectors. The reference to the set is final but the contents will change.
+	private static final Set<DomInspector<?>> DOM_INSPECTORS = new LinkedHashSet<>();
+	private static final DomInspector<?>[] EMPTY_INSPECTOR_ARRAY = new DomInspector<?>[0];
+
+	private static CompositeInspector inspector;
+
 	static {
 		XmlInspectorConfig xmlInspectorConfig = new XmlInspectorConfig();
 		xmlInspectorConfig.setInputStream(GuiGeneratorService.class.getResourceAsStream("metawidget-metadata.xml"));
 		xmlInspectorConfig.setRestrictAgainstObject(new JavaBeanPropertyStyle());
 		xmlInspectorConfig.setValidateAgainstClasses(new JavaBeanPropertyStyle());
 
-		domInspectors = new LinkedHashSet<>();
-		domInspectors.add(new XmlInspector(xmlInspectorConfig));
-		domInspectors.add(new PropertyTypeInspector());
+		DOM_INSPECTORS.add(new XmlInspector(xmlInspectorConfig));
+		DOM_INSPECTORS.add(new PropertyTypeInspector());
 		updateCompositeInspector();
-
-		jexlProcessor = new JexlInspectionResultProcessor<SwtMetawidget>();
-		comboLabelProcessor = new ComboLabelWidgetProcessor();
-		decoratorWidgetProcessor = new RichbeansDecoratorWidgetProcessor();
-		bindingProcessor = new TwoWayDataBindingProcessor();
 	}
 
 	// Use OGSi to register inspectors to provide GUI metadata
@@ -51,16 +48,16 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 	// allowed a dependency in either direction between the richbeans and scanning projects. Somewhere else in the GDA
 	// codebase we will need a metawidget inspector to register as an OSGi service and inspect the scanning beans.
 	public static synchronized void addDomInspector(DomInspector<?> inspector) {
-		domInspectors.add(inspector);
+		DOM_INSPECTORS.add(inspector);
 		updateCompositeInspector();
 	}
 	public static synchronized void removeDomInspector(DomInspector<?> inspector) {
-		domInspectors.remove(inspector);
+		DOM_INSPECTORS.remove(inspector);
 		updateCompositeInspector();
 	}
 	private static void updateCompositeInspector() {
 		inspector = new CompositeInspector(new CompositeInspectorConfig().setInspectors(
-				domInspectors.toArray(EMPTY_INSPECTOR_ARRAY)));
+				DOM_INSPECTORS.toArray(EMPTY_INSPECTOR_ARRAY)));
 	}
 
 	@Override
@@ -74,15 +71,15 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		metawidget.setInspector(inspector);
 
 		// 2. InspectionResultProcessors
-		metawidget.addInspectionResultProcessor(jexlProcessor);
+		metawidget.addInspectionResultProcessor(JEXL_PROCESSOR);
 
 		// 3. WidgetBuilder
 		// (default)
 
 		// 4. WidgetProcessors
-		metawidget.addWidgetProcessor(comboLabelProcessor);
-		metawidget.addWidgetProcessor(decoratorWidgetProcessor);
-		metawidget.addWidgetProcessor(bindingProcessor);
+		metawidget.addWidgetProcessor(COMBO_LABEL_PROCESSOR);
+		metawidget.addWidgetProcessor(DECORATOR_PROCESSOR);
+		metawidget.addWidgetProcessor(BINDING_PROCESSOR);
 
 		// Reflection binding processor (for actions) is present by default
 
