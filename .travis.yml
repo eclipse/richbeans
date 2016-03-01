@@ -8,6 +8,7 @@ jdk:
 - oraclejdk8
 
 # Check they had a ticket with this change
+# This currently simply does a regexp for a 
 before_install:
 - chmod +x ./org.eclipse.richbeans.releng/build/commit-msg.sh
 - bash ./org.eclipse.richbeans.releng/build/commit-msg.sh
@@ -25,4 +26,3 @@ deploy:
   on:
     repo: eclipse/richbeans
     branch: master
-    
