@@ -13,6 +13,7 @@ public class GuiGeneratorRunner extends SWTTestBase {
 
 	public static void main(String[] args) throws Exception {
 		initializeDisplay();
+		GuiGeneratorService.addDomInspector(new RichbeansAnnotationsInspector());
 		GuiGeneratorRunner runner = new GuiGeneratorRunner();
 		runner.initializeShell();
 		runner.setUp();
