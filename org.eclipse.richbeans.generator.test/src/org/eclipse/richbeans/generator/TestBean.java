@@ -6,7 +6,7 @@ import java.beans.PropertyChangeSupport;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
-import org.metawidget.inspector.annotation.UiReadOnly;
+import org.eclipse.scanning.api.annotation.UiReadOnly;
 
 class TestBean {
 
@@ -64,7 +64,7 @@ class TestBean {
 		this.intField = intField;
 		pcs.firePropertyChange("intField", oldValue, this.intField);
 	}
-	
+
 	@MinimumValue(DOUBLE_FIELD_MIN_VALUE_STRING)
 	@MaximumValue(DOUBLE_FIELD_MAX_VALUE_STRING)
 	@Units("Hz")
