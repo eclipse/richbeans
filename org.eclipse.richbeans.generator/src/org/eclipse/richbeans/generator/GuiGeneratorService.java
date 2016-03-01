@@ -6,7 +6,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.metawidget.inspectionresultprocessor.commons.jexl.JexlInspectionResultProcessor;
 import org.metawidget.inspectionresultprocessor.iface.InspectionResultProcessor;
-import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
 import org.metawidget.inspector.composite.CompositeInspector;
 import org.metawidget.inspector.composite.CompositeInspectorConfig;
 import org.metawidget.inspector.impl.propertystyle.javabean.JavaBeanPropertyStyle;

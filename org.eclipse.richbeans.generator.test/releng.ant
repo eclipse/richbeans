@@ -34,8 +34,8 @@
 				<pathelement location="${junitjar.loc}" />
 				<pathelement location="${plugin.basedir}/bin" />
 				<pathelement location="${plugin.host.basedir}/bin" />
+				<pathelement location="${workspace.git.loc}/daq-eclipse.git/org.eclipse.scanning.api/bin" />
 				<pathelement location="${workspace.git.loc}/richbeans.git/org.eclipse.richbeans.api/bin" />
-				<pathelement location="${workspace.git.loc}/richbeans.git/org.eclipse.richbeans.annotations/bin" />
 				<pathelement location="${workspace.git.loc}/richbeans.git/org.eclipse.richbeans.widgets/bin" />
 				<path refid="metawidget.jars.path" />
 				<path refid="tp.slf4j.path" />
