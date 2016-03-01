@@ -5,7 +5,7 @@ echo "The last commit was: $last_msg"
 
 
 # We check the last commit message has a ticket
-if [[ $last_msg =~ .*(richbeans/issues/[0-9]+).* ]]; then
+if [[ $last_msg =~ ^Merge.*|^merge.*|.*(richbeans/issues/[0-9]+).* ]]; then
     echo "Github issue found, build may proceed"
     exit 0
 fi
