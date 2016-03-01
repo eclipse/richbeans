@@ -16,20 +16,18 @@ import org.metawidget.util.WidgetBuilderUtils;
 import org.metawidget.widgetprocessor.iface.WidgetProcessor;
 
 /**
- * This processor takes the plain SWT widgets and if required (for
- * <code>float</code> or <code>double</code>) decorates them using the
- * appropriate Richbeans decorator. If limits have been defined for the field
- * using the annotations in {@link RichbeansAnnotations} the minimum and
- * maximum bounds are set.
+ * This processor takes the plain SWT widgets and if required (for <code>float</code> or <code>double</code>) decorates
+ * them using the appropriate Richbeans decorator. If limits have been defined for the field using the annotations in
+ * {@link RichbeansAnnotations} the minimum and maximum bounds are set.
  *
  * @see RichbeansAnnotations
- *
  * @author James Mudd
  */
 public class RichbeansDecoratorWidgetProcessor implements WidgetProcessor<Control, SwtMetawidget> {
 
 	@Override
-	public Control processWidget(Control widget, String elementName, Map<String, String> attributes, SwtMetawidget metawidget) {
+	public Control processWidget(Control widget, String elementName, Map<String, String> attributes,
+			SwtMetawidget metawidget) {
 
 		// If the @Units annotation is present append it to the label suffix
 		if (attributes.get(UNITS) != null) {
@@ -58,7 +56,7 @@ public class RichbeansDecoratorWidgetProcessor implements WidgetProcessor<Contro
 			return widget;
 		}
 
-		Class<?> clazz = WidgetBuilderUtils.getActualClassOrType( attributes, String.class );
+		Class<?> clazz = WidgetBuilderUtils.getActualClassOrType(attributes, String.class);
 
 		// Create a decorated widget and apply limits
 		if (clazz != null) {

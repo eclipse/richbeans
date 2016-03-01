@@ -15,8 +15,8 @@ import org.eclipse.core.databinding.conversion.IConverter;
 import org.metawidget.util.simple.ObjectUtils;
 
 /**
- * This class is the same as the one provided with metawidget, its only required as the getConvertors method is protected. Configures a
- * DataBindingBindingProcessor prior to use. Once instantiated, WidgetProcessors are immutable.
+ * This class is the same as the one provided with metawidget, its only required as the getConvertors method is
+ * protected. Configures a DataBindingBindingProcessor prior to use. Once instantiated, WidgetProcessors are immutable.
  *
  * @author <a href="http://kennardconsulting.com">Richard Kennard</a>
  */

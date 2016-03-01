@@ -13,7 +13,6 @@ import org.metawidget.widgetprocessor.iface.WidgetProcessor;
 
 /**
  * This processor switches the items in any SWT Combo boxes to the contents of the LOOKUP_LABELS attribute, if defined.
- *
  * TODO With the current databinding implementation, this works well for enums but will break the databinding for String
  * fields which have had lookup labels added in their metadata.
  *
@@ -22,7 +21,8 @@ import org.metawidget.widgetprocessor.iface.WidgetProcessor;
 public class ComboLabelWidgetProcessor implements WidgetProcessor<Control, SwtMetawidget> {
 
 	@Override
-	public Control processWidget(Control widget, String elementName, Map<String, String> attributes, SwtMetawidget metawidget) {
+	public Control processWidget(Control widget, String elementName, Map<String, String> attributes,
+			SwtMetawidget metawidget) {
 
 		// Check if the widget is an SWT Combo
 		if (widget instanceof Combo) {

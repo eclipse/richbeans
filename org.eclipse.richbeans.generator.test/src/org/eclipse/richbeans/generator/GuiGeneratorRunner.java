@@ -34,7 +34,8 @@ public class GuiGeneratorRunner extends SWTTestBase {
 
 	public void runEventLoop() throws Exception {
 		while (!shell.isDisposed()) {
-			if (!display.readAndDispatch()) display.sleep();
+			if (!display.readAndDispatch())
+				display.sleep();
 		}
 	}
 

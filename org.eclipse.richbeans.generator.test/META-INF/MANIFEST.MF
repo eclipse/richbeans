@@ -4,5 +4,5 @@ Bundle-Name: GUI Generator Test
 Bundle-SymbolicName: org.eclipse.richbeans.generator.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.eclipse.richbeans.generator;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Require-Bundle: org.junit;bundle-version="4.0.0"
