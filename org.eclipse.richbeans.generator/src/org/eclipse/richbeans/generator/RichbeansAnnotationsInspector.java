@@ -11,8 +11,8 @@ import org.metawidget.inspector.impl.BaseObjectInspector;
 import org.metawidget.inspector.impl.propertystyle.Property;
 
 /**
- * This inspector checks for the annotations in {@link RichbeansAnnotations} and adds them to the Metawidget
- * pipeline so they can be applied by the {@link RichbeansDecoratorWidgetProcessor}.
+ * This inspector checks for the annotations in {@link RichbeansAnnotations} and adds them to the Metawidget pipeline so
+ * they can be applied by the {@link RichbeansDecoratorWidgetProcessor}.
  *
  * @author James Mudd
  */

@@ -45,19 +45,21 @@ import org.metawidget.widgetprocessor.iface.AdvancedWidgetProcessor;
 import org.metawidget.widgetprocessor.iface.WidgetProcessorException;
 
 /**
- * This is a improved implementation of the eclipse core databinding provided by metawidget. It implements two way binding with dynamic updating of UI to model
- * and on request binding of model to UI (as the model may not implement property change listeners).
+ * This is a improved implementation of the eclipse core databinding provided by metawidget. It implements two way
+ * binding with dynamic updating of UI to model and on request binding of model to UI (as the model may not implement
+ * property change listeners).
  * <p>
  * Original metawidget java doc:
  * <p>
  * Property binding implementation based on <code>eclipse.core.databinding</code>.
  * <p>
- * This implementation does <em>not</em> require JFace. JFace is separate from <code>eclipse.core.databinding</code>, as discussed here
- * https://bugs.eclipse.org/bugs/show_bug.cgi?id=153630.
+ * This implementation does <em>not</em> require JFace. JFace is separate from <code>eclipse.core.databinding</code>, as
+ * discussed here https://bugs.eclipse.org/bugs/show_bug.cgi?id=153630.
  * <p>
  * <p>
- * Note: <code>eclipse.core.databinding</code> does not bind <em>actions</em>, such as invoking a method when a <code>Button</code> is pressed. For that, see
- * <code>ReflectionBindingProcessor</code> and <code>MetawidgetActionStyle</code>.
+ * Note: <code>eclipse.core.databinding</code> does not bind <em>actions</em>, such as invoking a method when a
+ * <code>Button</code> is pressed. For that, see <code>ReflectionBindingProcessor</code> and
+ * <code>MetawidgetActionStyle</code>.
  */
 public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Control, SwtMetawidget> {
 
@@ -75,7 +77,9 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 
 		if (converters != null) {
 			for (IConverter converter : converters) {
-				mConverters.put(new ConvertFromTo((Class<?>) converter.getFromType(), (Class<?>) converter.getToType()), converter);
+				mConverters.put(
+						new ConvertFromTo((Class<?>) converter.getFromType(), (Class<?>) converter.getToType()),
+						converter);
 			}
 		}
 	}
@@ -86,7 +90,8 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 	}
 
 	@Override
-	public Control processWidget(Control control, String elementName, Map<String, String> attributes, SwtMetawidget metawidget) {
+	public Control processWidget(Control control, String elementName, Map<String, String> attributes,
+			SwtMetawidget metawidget) {
 
 		if (ACTION.equals(elementName)) {
 			return control;
@@ -171,7 +176,8 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 		}
 
 		// Check for enums and if they exist make a converter on the fly
-		// (Note: this logic seems to work but is potentially incomplete - see comments inside Metawidget's PropertyTypeInspector)
+		// (Note: this logic seems to work but is potentially incomplete - see comments inside Metawidget's
+		// PropertyTypeInspector)
 		final Class<?> elementType = (Class<?>) observeModel.getValueType();
 		if (elementType != null && elementType.isEnum()) {
 			Converter converter = new Converter(String.class, elementType) {
@@ -196,8 +202,10 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 		}
 
 		// Add converters
-		targetToModel.setConverter(getConverter((Class<?>) observeTarget.getValueType(), (Class<?>) observeModel.getValueType()));
-		modelToTarget.setConverter(getConverter((Class<?>) observeModel.getValueType(), (Class<?>) observeTarget.getValueType()));
+		targetToModel.setConverter(getConverter((Class<?>) observeTarget.getValueType(),
+				(Class<?>) observeModel.getValueType()));
+		modelToTarget.setConverter(getConverter((Class<?>) observeModel.getValueType(),
+				(Class<?>) observeTarget.getValueType()));
 
 		// Bind it
 		state.bindingContext.bindValue(observeTarget, observeModel, targetToModel, modelToTarget);
@@ -283,9 +291,9 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 	/**
 	 * Gets the IConverter for the given Class (if any).
 	 * <p>
-	 * Includes traversing superclasses of the given <code>sourceClass</code> for a suitable IConverter, so for example registering a IConverter for
-	 * <code>Number.class</code> will match <code>Integer.class</code>, <code>Double.class</code> etc., unless a more subclass-specific IConverter is also
-	 * registered.
+	 * Includes traversing superclasses of the given <code>sourceClass</code> for a suitable IConverter, so for example
+	 * registering a IConverter for <code>Number.class</code> will match <code>Integer.class</code>,
+	 * <code>Double.class</code> etc., unless a more subclass-specific IConverter is also registered.
 	 */
 	private IConverter getConverter(Class<?> sourceClass, final Class<?> targetClass) {
 

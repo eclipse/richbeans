@@ -31,7 +31,7 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		xmlInspectorConfig.setRestrictAgainstObject(new JavaBeanPropertyStyle());
 		xmlInspectorConfig.setValidateAgainstClasses(new JavaBeanPropertyStyle());
 
-		inspector = new CompositeInspector( new CompositeInspectorConfig().setInspectors(
+		inspector = new CompositeInspector(new CompositeInspectorConfig().setInspectors(
 				new XmlInspector(xmlInspectorConfig),
 				new PropertyTypeInspector(),
 				new MetawidgetAnnotationInspector(),
