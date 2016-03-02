@@ -19,6 +19,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
 
 public class GuiGeneratorTest extends SWTTestBase {
 
@@ -29,6 +30,7 @@ public class GuiGeneratorTest extends SWTTestBase {
 	@BeforeClass
 	public static void setUpBeforeClass() {
 		GuiGeneratorService.addDomInspector(new RichbeansAnnotationsInspector());
+		GuiGeneratorService.addDomInspector(new MetawidgetAnnotationInspector());
 	}
 
 	@Before

@@ -75,7 +75,7 @@ public class GuiGeneratorPluginTest extends SWTTestBase {
 	@Test
 	public void testUiReadOnlyStringFieldIsLabel() throws Exception {
 		Control control = getControl("uiReadOnlyStringField");
-		assertThat(((Label) control).getText(), is(equalTo(testBean.getUiReadOnlyStringField())));
+		assertThat(control, is(instanceOf(Label.class)));
 	}
 
 	@Test
