@@ -34,6 +34,7 @@ class TestBean {
 		return "String field with getter only";
 	}
 
+	// Should appear as a required field thanks to XML metadata - do not annotate this with @UiRequired!
 	public String getStringField() {
 		return stringField;
 	}
@@ -64,7 +65,7 @@ class TestBean {
 		this.intField = intField;
 		pcs.firePropertyChange("intField", oldValue, this.intField);
 	}
-	
+
 	@MinimumValue(DOUBLE_FIELD_MIN_VALUE_STRING)
 	@MaximumValue(DOUBLE_FIELD_MAX_VALUE_STRING)
 	@Units("Hz")
