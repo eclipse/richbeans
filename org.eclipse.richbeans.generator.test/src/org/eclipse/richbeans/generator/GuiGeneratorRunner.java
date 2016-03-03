@@ -2,6 +2,7 @@ package org.eclipse.richbeans.generator;
 
 import org.eclipse.richbeans.api.generator.IGuiGeneratorService;
 import org.eclipse.swt.widgets.Composite;
+import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
 
 public class GuiGeneratorRunner extends SWTTestBase {
 
@@ -13,6 +14,8 @@ public class GuiGeneratorRunner extends SWTTestBase {
 
 	public static void main(String[] args) throws Exception {
 		initializeDisplay();
+		GuiGeneratorService.addDomInspector(new RichbeansAnnotationsInspector());
+		GuiGeneratorService.addDomInspector(new MetawidgetAnnotationInspector());
 		GuiGeneratorRunner runner = new GuiGeneratorRunner();
 		runner.initializeShell();
 		runner.setUp();

@@ -6,9 +6,9 @@
 
 	<entity type="org.eclipse.richbeans.generator.TestBean">
 		<property name="stringField" required="true" />
-		<property name="stringFieldWithGetterOnly" no-setter="true" />
-		<property name="uiReadOnlyStringField" read-only="true" />
-		<property name="intField" maximumValue="25" minimumValue="-10" />
+		<property name="stringFieldWithGetterOnly" />
+		<property name="uiReadOnlyStringField" />
+		<property name="intField" />
 	</entity>
 
 	<entity type="org.eclipse.scanning.api.points.models.GridModel">
