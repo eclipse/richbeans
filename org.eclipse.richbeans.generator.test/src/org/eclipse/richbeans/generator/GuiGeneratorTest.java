@@ -52,6 +52,13 @@ public class GuiGeneratorTest extends SWTTestBase {
 	}
 
 	@Test
+	public void testHiddenStringFieldIsStub() throws Exception {
+		// This field should be hidden by XML metadata
+		Control control = getControl("hiddenStringField");
+		assertThat(control.getClass().getName(), is(equalTo("org.metawidget.swt.Stub")));
+	}
+
+	@Test
 	public void testStringFieldIsText() throws Exception {
 		Control control = getControl("stringField");
 		assertThat(control, is(instanceOf(Text.class)));
