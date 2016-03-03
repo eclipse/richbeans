@@ -7,8 +7,6 @@ import org.eclipse.richbeans.api.generator.IGuiGeneratorService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.metawidget.inspectionresultprocessor.commons.jexl.JexlInspectionResultProcessor;
-import org.metawidget.inspectionresultprocessor.iface.InspectionResultProcessor;
 import org.metawidget.inspector.composite.CompositeInspector;
 import org.metawidget.inspector.composite.CompositeInspectorConfig;
 import org.metawidget.inspector.iface.DomInspector;
@@ -21,7 +19,6 @@ import org.metawidget.swt.SwtMetawidget;
 public class GuiGeneratorService implements IGuiGeneratorService {
 
 	// Initialise metawidget objects. All of these should be immutable so only one (static) instance is required
-	private static final InspectionResultProcessor<SwtMetawidget> JEXL_PROCESSOR = new JexlInspectionResultProcessor<SwtMetawidget>();
 	private static final ComboLabelWidgetProcessor COMBO_LABEL_PROCESSOR = new ComboLabelWidgetProcessor();
 	private static final RichbeansDecoratorWidgetProcessor DECORATOR_PROCESSOR = new RichbeansDecoratorWidgetProcessor();
 	private static final TwoWayDataBindingProcessor BINDING_PROCESSOR = new TwoWayDataBindingProcessor();
@@ -71,7 +68,7 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		metawidget.setInspector(inspector);
 
 		// 2. InspectionResultProcessors
-		metawidget.addInspectionResultProcessor(JEXL_PROCESSOR);
+		// none (would probably like the JEXL processor here in the long run but can't build with it included at the moment)
 
 		// 3. WidgetBuilder
 		// (default)

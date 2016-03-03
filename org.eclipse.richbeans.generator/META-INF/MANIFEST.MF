@@ -15,7 +15,6 @@ Require-Bundle: org.eclipse.swt;bundle-version="3.8.1",
  org.eclipse.richbeans.widgets
 Import-Package: com.ibm.icu.math,
  com.ibm.icu.text,
- org.apache.commons.jexl2;version="2.1.1",
  org.slf4j;version="1.7.2"
 Export-Package: org.metawidget.inspector,
  org.metawidget.inspector.annotation
