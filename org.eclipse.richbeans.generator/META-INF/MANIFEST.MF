@@ -17,7 +17,11 @@ Import-Package: com.ibm.icu.math,
  com.ibm.icu.text,
  org.slf4j;version="1.7.2"
 Export-Package: org.metawidget.inspector,
- org.metawidget.inspector.annotation
+ org.metawidget.inspector.annotation,
+ org.metawidget.inspector.impl,
+ org.metawidget.inspector.impl.actionstyle,
+ org.metawidget.inspector.impl.propertystyle,
+ org.metawidget.util
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .,

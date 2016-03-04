@@ -15,6 +15,7 @@ class TestBean {
 	private static final String DOUBLE_FIELD_MIN_VALUE_STRING = "345.5";
 	private static final String DOUBLE_FIELD_MAX_VALUE_STRING = "711.3";
 
+	private String hiddenStringField;
 	private String stringField;
 	private String uiReadOnlyStringField;
 	private int intField;
@@ -30,11 +31,18 @@ class TestBean {
 		this.pcs.removePropertyChangeListener(listener);
 	}
 
+	// This field should be hidden by XML metadata - do not add @UiHidden!
+	public String getHiddenStringField() {
+		return hiddenStringField;
+	}
+	public void setHiddenStringField(String hiddenStringField) {
+		this.hiddenStringField = hiddenStringField;
+	}
+
 	public String getStringFieldWithGetterOnly() {
 		return "String field with getter only";
 	}
 
-	// Should appear as a required field thanks to XML metadata - do not annotate this with @UiRequired!
 	public String getStringField() {
 		return stringField;
 	}
