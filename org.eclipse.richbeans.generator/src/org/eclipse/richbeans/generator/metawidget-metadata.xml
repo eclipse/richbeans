@@ -4,6 +4,8 @@
 	xsi:schemaLocation="http://metawidget.org/inspection-result http://metawidget.org/xsd/inspection-result-1.0.xsd"
 	version="1.0">
 
+	<!-- These TestBean fields are used in unit tests to check that this XML metadata file is correctly interpreted.
+		Be careful changing them! -->
 	<entity type="org.eclipse.richbeans.generator.TestBean">
 		<property name="hiddenStringField" hidden="true" />
 		<property name="stringField" required="true" />
@@ -14,8 +16,8 @@
 
 	<entity type="org.eclipse.scanning.api.points.models.GridModel">
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
-		<property name="columns" minimumValue="1" type="int" />
-		<property name="rows" minimumValue="1" type="int" />
+		<property name="columns" type="int" />
+		<property name="rows" type="int" />
 		<property name="snake" type="boolean" />
 	</entity>
 
@@ -42,12 +44,12 @@
 
 	<entity type="org.eclipse.scanning.api.points.models.OneDEqualSpacingModel">
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
-		<property name="points" minimumValue="1" type="int" />
+		<property name="points" type="int" />
 	</entity>
 
 	<entity type="org.eclipse.scanning.api.points.models.OneDStepModel">
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
-		<property name="step" minimumValue="0" type="double" />
+		<property name="step" type="double" />
 	</entity>
 
 	<entity type="org.eclipse.scanning.api.points.models.SinglePointModel">
