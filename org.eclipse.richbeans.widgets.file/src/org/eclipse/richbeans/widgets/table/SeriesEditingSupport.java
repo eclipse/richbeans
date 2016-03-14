@@ -63,6 +63,7 @@ public class SeriesEditingSupport extends EditingSupport {
 	
 	public void setSeriesItemDescriptorProvider(ISeriesItemFilter content) {
 		cellEditor.setContentProposalProvider(new SeriesProposalProvider(content));
+		cellEditor.getContentProposalAdapter().setAutoActivationCharacters(null);
 	}
 
 	@Override
