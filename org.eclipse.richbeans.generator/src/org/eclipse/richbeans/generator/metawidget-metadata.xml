@@ -16,15 +16,15 @@
 
 	<entity type="org.eclipse.scanning.api.points.models.GridModel">
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
-		<property name="columns" type="int" />
-		<property name="rows" type="int" />
+		<property name="fastAxisPoints" type="int" />
+		<property name="slowAxisPoints" type="int" />
 		<property name="snake" type="boolean" />
 	</entity>
 
 	<entity type="org.eclipse.scanning.api.points.models.RasterModel">
 		<property name="name" hidden="true" no-setter="true" type="java.lang.String" />
-		<property name="xStep" type="double" />
-		<property name="yStep" type="double" />
+		<property name="fastAxisStep" type="double" />
+		<property name="slowAxisStep" type="double" />
 		<property name="snake" type="boolean" />
 	</entity>
 
