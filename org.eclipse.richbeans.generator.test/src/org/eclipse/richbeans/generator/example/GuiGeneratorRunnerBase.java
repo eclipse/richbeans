@@ -4,48 +4,62 @@ import org.eclipse.richbeans.api.generator.IGuiGeneratorService;
 import org.eclipse.richbeans.generator.GuiGeneratorService;
 import org.eclipse.richbeans.generator.RichbeansAnnotationsInspector;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
 
-public class GuiGeneratorRunner {
+public abstract class GuiGeneratorRunnerBase {
 
-	private static Display display;
-	private static Shell shell;
-	private static IGuiGeneratorService guiGenerator;
+	private Display display;
+	private Shell shell;
+	private IGuiGeneratorService guiGenerator;
 
-	public static void main(String[] args) {
+	protected final void run() {
 		initializeShell();
 		initializeGuiGenerator();
-		generateGui();
+
+		Object testObject = createTestObject();
+		guiGenerator.generateGui(testObject, shell);
+
+		resizeAndDisplayShell();
 		runEventLoop();
 		destroyShell();
 	}
 
-	private static void initializeShell() {
+	protected abstract Object createTestObject();
+
+	private void initializeShell() {
 		display = Display.getDefault();
 		shell = new Shell(display, SWT.SHELL_TRIM);
-		shell.setLayout(new FillLayout());
-		shell.open();
+		FillLayout layout = new FillLayout();
+		layout.marginHeight = 5;
+		layout.marginWidth = 5;
+		shell.setLayout(layout);
 	}
 
-	private static void initializeGuiGenerator() {
+	private void initializeGuiGenerator() {
 		GuiGeneratorService.addDomInspector(new RichbeansAnnotationsInspector());
 		GuiGeneratorService.addDomInspector(new MetawidgetAnnotationInspector());
 		guiGenerator = new GuiGeneratorService();
 	}
 
-	private static void generateGui() {
-		TestBean testBean = new TestBean();
-		testBean.setStringField("String field value");
-		testBean.setUiReadOnlyStringField("UiReadOnly string field value");
-		testBean.setIntField(5);
+	private void resizeAndDisplayShell() {
+		shell.pack();
+		int xSize = Math.max(shell.getSize().x, 300);
+		int ySize = Math.max(shell.getSize().y, 300);
+		shell.setSize(xSize, ySize);
 
-		guiGenerator.generateGui(testBean, shell);
+		Rectangle displaySize = display.getPrimaryMonitor().getBounds();
+		int xLocation = displaySize.x + (displaySize.width - xSize) / 2;
+		int yLocation = displaySize.y + (displaySize.height - ySize) / 2;
+		shell.setLocation(xLocation, yLocation);
+
+		shell.open();
 	}
 
-	private static void runEventLoop() {
+	private void runEventLoop() {
 		while (!shell.isDisposed()) {
 			if (!display.readAndDispatch()) {
 				display.sleep();
@@ -53,7 +67,7 @@ public class GuiGeneratorRunner {
 		}
 	}
 
-	private static void destroyShell() {
+	private void destroyShell() {
 		if (shell != null) {
 			shell.dispose();
 			shell = null;
