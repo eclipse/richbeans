@@ -20,6 +20,12 @@ package org.eclipse.richbeans.generator.example;
 
 import java.util.Random;
 
+/**
+ * An example demonstrating two-way data binding. The test object is a bean with property change support. When it is
+ * created, a background thread is started which checks the value of the "update" boolean. When <code>true</code>
+ * (caused by the user selecting the check box), it periodically updates the X and Y values in the bean, and the
+ * data binding automatically propagates the changes to the GUI.
+ */
 public class UpdatingExample extends GuiGeneratorRunnerBase {
 
 	public static void main(String[] args) {
@@ -29,8 +35,15 @@ public class UpdatingExample extends GuiGeneratorRunnerBase {
 	@Override
 	protected Object createTestObject() {
 		UpdatingBean updatingBean = new UpdatingBean();
+		updatingBean.setX(Double.POSITIVE_INFINITY);
+		updatingBean.setY(Double.POSITIVE_INFINITY);
 		new UpdaterThread(updatingBean).start();
 		return updatingBean;
+	}
+
+	@Override
+	protected String getWindowTitle() {
+		return "Two-way data binding example";
 	}
 
 	private class UpdaterThread extends Thread {

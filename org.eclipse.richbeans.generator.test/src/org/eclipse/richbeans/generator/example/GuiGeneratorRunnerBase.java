@@ -10,12 +10,22 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
 
+/**
+ * Base class for GUI generator examples. When run() is called, it will call the abstract createTestObject() method,
+ * auto-generate a GUI for the object and display it in a shell. The GUI will include automatic data binding from UI to
+ * object, and if the object has PropertyChangeSupport it will add automatic object to UI binding as well.
+ * <p>
+ * The GUI generator needs to be run with org.apache.commons.logging on the classpath.
+ */
 public abstract class GuiGeneratorRunnerBase {
 
 	private Display display;
 	private Shell shell;
 	private IGuiGeneratorService guiGenerator;
 
+	/**
+	 * Display a window containing an auto-generated GUI. This method will return when the user closes the window.
+	 */
 	protected final void run() {
 		setup();
 
@@ -25,7 +35,14 @@ public abstract class GuiGeneratorRunnerBase {
 		displayShell();
 	}
 
+	/**
+	 * @return an object to bind to the GUI
+	 */
 	protected abstract Object createTestObject();
+
+	protected String getWindowTitle() {
+		return "GUI generator example";
+	}
 
 	private void setup() {
 		initializeShell();
@@ -35,6 +52,7 @@ public abstract class GuiGeneratorRunnerBase {
 	private void initializeShell() {
 		display = Display.getDefault();
 		shell = new Shell(display, SWT.SHELL_TRIM);
+		shell.setText(getWindowTitle());
 		FillLayout layout = new FillLayout();
 		layout.marginHeight = 5;
 		layout.marginWidth = 5;

@@ -21,6 +21,7 @@ package org.eclipse.richbeans.generator.example;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiTooltip;
 import org.metawidget.inspector.annotation.UiReadOnly;
 
 public class UpdatingBean {
@@ -38,6 +39,7 @@ public class UpdatingBean {
 	private double x;
 	private double y;
 
+	@UiTooltip("Select to turn on automatic updating of the X and Y values by a background thread")
 	public boolean isUpdate() {
 		return update;
 	}

@@ -18,6 +18,9 @@
 
 package org.eclipse.richbeans.generator.example;
 
+/**
+ * A simple example of the GUI generator, using a bean with a few fields of different types.
+ */
 public class SimpleExample extends GuiGeneratorRunnerBase {
 
 	public static void main(String[] args) {
@@ -28,7 +31,7 @@ public class SimpleExample extends GuiGeneratorRunnerBase {
 	protected Object createTestObject() {
 		SimpleBean testBean = new SimpleBean();
 		testBean.setName("Read-only name");
-		testBean.setDescription("Editable multi-line description");
+		testBean.setDescription("This is an editable, \nmulti-line description\n");
 		testBean.setType(Type.TWO);
 		testBean.setCount(4);
 		testBean.setX(-5.3); // X is annotated to have a minimum value of zero, so the GUI will mark this as invalid
