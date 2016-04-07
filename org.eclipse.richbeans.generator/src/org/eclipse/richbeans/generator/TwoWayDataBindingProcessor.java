@@ -18,7 +18,6 @@ import static org.metawidget.inspector.InspectionResultConstants.PROPERTY;
 import static org.metawidget.inspector.InspectionResultConstants.TRUE;
 
 import java.beans.PropertyChangeListener;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,10 +31,10 @@ import org.eclipse.core.databinding.conversion.IConverter;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.databinding.swt.DisplayRealm;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.metawidget.swt.SwtMetawidget;
 import org.metawidget.util.CollectionUtils;
 import org.metawidget.util.simple.ObjectUtils;
@@ -63,7 +62,6 @@ import org.metawidget.widgetprocessor.iface.WidgetProcessorException;
  */
 public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Control, SwtMetawidget> {
 
-	private List<DisplayRealm> mRealms = CollectionUtils.newArrayList();
 	private final Map<ConvertFromTo, IConverter> mConverters = CollectionUtils.newHashMap();
 
 	public TwoWayDataBindingProcessor() {
@@ -262,30 +260,13 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 
 		if (state == null) {
 			state = new State();
-			state.bindingContext = new DataBindingContext(getRealm(metawidget.getDisplay()));
+			state.bindingContext = new DataBindingContext(DisplayRealm.getRealm(metawidget.getDisplay()));
 
 			metawidget.setData(TwoWayDataBindingProcessor.class.getName(), state);
 
 		}
 
 		return state;
-	}
-
-	/**
-	 * From org.eclipse.jface.databinding.swt.SWTObservables (EPLv1)
-	 */
-	private Realm getRealm(final Display display) {
-
-		synchronized (mRealms) {
-			for (DisplayRealm realm : mRealms) {
-				if (realm.mDisplay == display) {
-					return realm;
-				}
-			}
-			DisplayRealm realm = new DisplayRealm(display);
-			mRealms.add(realm);
-			return realm;
-		}
 	}
 
 	/**
@@ -325,41 +306,6 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 		/* package private */DataBindingContext bindingContext;
 
 		/* package private */Set<SwtMetawidget> nestedMetawidgets;
-	}
-
-	/**
-	 * From org.eclipse.jface.databinding.swt.SWTObservables (EPLv1)
-	 */
-
-	static class DisplayRealm extends Realm {
-
-		//
-		// Private members
-		//
-
-		Display mDisplay;
-
-		//
-		// Constructor
-		//
-
-		DisplayRealm(Display display) {
-
-			mDisplay = display;
-		}
-
-		//
-		// Public methods
-		//
-
-		@Override
-		public boolean isCurrent() {
-
-			return Display.getCurrent() == mDisplay;
-		}
-
-		// Do not override equals/hashCode, we are not going to be comparing
-		// this or hashing it
 	}
 
 	/* package private */static final class ConvertFromTo {
