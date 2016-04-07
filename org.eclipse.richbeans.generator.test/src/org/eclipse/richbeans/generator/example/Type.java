@@ -18,21 +18,6 @@
 
 package org.eclipse.richbeans.generator.example;
 
-public class SimpleExample extends GuiGeneratorRunnerBase {
-
-	public static void main(String[] args) {
-		new SimpleExample().run();
-	}
-
-	@Override
-	protected Object createTestObject() {
-		SimpleBean testBean = new SimpleBean();
-		testBean.setName("Read-only name");
-		testBean.setDescription("Editable multi-line description");
-		testBean.setType(Type.TWO);
-		testBean.setCount(4);
-		testBean.setX(-5.3); // X is annotated to have a minimum value of zero, so the GUI will mark this as invalid
-		testBean.setY(11.8);
-		return testBean;
-	}
+public enum Type {
+	ONE, TWO;
 }

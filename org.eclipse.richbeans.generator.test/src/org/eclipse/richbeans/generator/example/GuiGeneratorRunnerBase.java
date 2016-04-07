@@ -17,18 +17,20 @@ public abstract class GuiGeneratorRunnerBase {
 	private IGuiGeneratorService guiGenerator;
 
 	protected final void run() {
-		initializeShell();
-		initializeGuiGenerator();
+		setup();
 
 		Object testObject = createTestObject();
 		guiGenerator.generateGui(testObject, shell);
 
-		resizeAndDisplayShell();
-		runEventLoop();
-		destroyShell();
+		displayShell();
 	}
 
 	protected abstract Object createTestObject();
+
+	private void setup() {
+		initializeShell();
+		initializeGuiGenerator();
+	}
 
 	private void initializeShell() {
 		display = Display.getDefault();
@@ -45,7 +47,13 @@ public abstract class GuiGeneratorRunnerBase {
 		guiGenerator = new GuiGeneratorService();
 	}
 
-	private void resizeAndDisplayShell() {
+	private void displayShell() {
+		resizeAndOpenShell();
+		runEventLoop();
+		destroyShell();
+	}
+
+	private void resizeAndOpenShell() {
 		shell.pack();
 		int xSize = Math.max(shell.getSize().x, 300);
 		int ySize = Math.max(shell.getSize().y, 300);
