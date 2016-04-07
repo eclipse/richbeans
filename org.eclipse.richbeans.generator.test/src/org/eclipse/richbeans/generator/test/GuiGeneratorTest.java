@@ -73,6 +73,12 @@ public class GuiGeneratorTest extends SWTTestBase {
 	}
 
 	@Test
+	public void testStringFieldTooltip() throws Exception {
+		Control control = getControl("stringField");
+		assertThat(control.getToolTipText(), is(equalTo(TestBean.STRING_FIELD_TOOLTIP)));
+	}
+
+	@Test
 	public void testStringFieldWithGetterOnlyIsLabel() throws Exception {
 		Control control = getControl("stringFieldWithGetterOnly");
 		assertThat(control, is(instanceOf(Label.class)));

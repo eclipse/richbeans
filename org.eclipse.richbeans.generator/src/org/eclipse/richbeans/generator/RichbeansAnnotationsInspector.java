@@ -6,6 +6,7 @@ import java.util.Map;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiTooltip;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
 import org.metawidget.inspector.impl.BaseObjectInspector;
 import org.metawidget.inspector.impl.propertystyle.Property;
@@ -24,6 +25,7 @@ public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 	public static final String MINIMUM_VALUE = "minimumValue";
 	public static final String MAXIMUM_VALUE = "maximumValue";
 	public static final String UNITS = "units";
+	public static final String TOOLTIP = "tooltip";
 
 	@Override
 	protected Map<String, String> inspectProperty(Property property) throws Exception {
@@ -45,6 +47,12 @@ public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 		Units units = property.getAnnotation(Units.class);
 		if (units != null) {
 			attributes.put(UNITS, units.value());
+		}
+
+		// Check the tooltip annotation
+		UiTooltip uiTooltip = property.getAnnotation(UiTooltip.class);
+		if (uiTooltip != null) {
+			attributes.put(TOOLTIP, uiTooltip.value());
 		}
 
 		return attributes;

@@ -5,11 +5,13 @@ import java.beans.PropertyChangeSupport;
 
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiTooltip;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
 import org.metawidget.inspector.annotation.UiReadOnly;
 
 class TestBean {
 
+	public static final String STRING_FIELD_TOOLTIP = "String field tooltip";
 	public static final String INT_FIELD_MAX_VALUE_STRING = "25";
 	public static final String INT_FIELD_MIN_VALUE_STRING = "-10";
 	private static final String DOUBLE_FIELD_MIN_VALUE_STRING = "345.5";
@@ -43,6 +45,7 @@ class TestBean {
 		return "String field with getter only";
 	}
 
+	@UiTooltip(STRING_FIELD_TOOLTIP)
 	public String getStringField() {
 		return stringField;
 	}

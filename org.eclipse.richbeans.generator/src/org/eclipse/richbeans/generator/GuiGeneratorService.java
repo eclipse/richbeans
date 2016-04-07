@@ -20,6 +20,7 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 
 	// Initialise metawidget objects. All of these should be immutable so only one (static) instance is required
 	private static final ComboLabelWidgetProcessor COMBO_LABEL_PROCESSOR = new ComboLabelWidgetProcessor();
+	private static final TooltipWidgetProcessor TOOLTIP_PROCESSOR = new TooltipWidgetProcessor();
 	private static final RichbeansDecoratorWidgetProcessor DECORATOR_PROCESSOR = new RichbeansDecoratorWidgetProcessor();
 	private static final TwoWayDataBindingProcessor BINDING_PROCESSOR = new TwoWayDataBindingProcessor();
 
@@ -75,6 +76,7 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 
 		// 4. WidgetProcessors
 		metawidget.addWidgetProcessor(COMBO_LABEL_PROCESSOR);
+		metawidget.addWidgetProcessor(TOOLTIP_PROCESSOR);
 		metawidget.addWidgetProcessor(DECORATOR_PROCESSOR);
 		metawidget.addWidgetProcessor(BINDING_PROCESSOR);
 
