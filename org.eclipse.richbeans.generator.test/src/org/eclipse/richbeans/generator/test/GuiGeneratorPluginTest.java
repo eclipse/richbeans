@@ -1,4 +1,4 @@
-package org.eclipse.richbeans.generator;
+package org.eclipse.richbeans.generator.test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -17,21 +17,21 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
 
-public class GuiGeneratorTest extends SWTTestBase {
+/**
+ * This test uses OSGi to get all required services
+ */
+public class GuiGeneratorPluginTest extends SWTTestBase {
 
-	private IGuiGeneratorService guiGenerator;
+	private static IGuiGeneratorService guiGenerator;
+
+	public static void setGuiGenerator(IGuiGeneratorService guiGeneratorService) {
+		guiGenerator = guiGeneratorService;
+	}
+
 	private TestBean testBean;
 	private Composite metawidget;
-
-	@BeforeClass
-	public static void setUpBeforeClass() {
-		GuiGeneratorService.addDomInspector(new RichbeansAnnotationsInspector());
-		GuiGeneratorService.addDomInspector(new MetawidgetAnnotationInspector());
-	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -40,22 +40,12 @@ public class GuiGeneratorTest extends SWTTestBase {
 		testBean.setUiReadOnlyStringField("UiReadOnly string field value");
 		testBean.setIntField(5);
 
-		guiGenerator = new GuiGeneratorService();
 		metawidget = (Composite) guiGenerator.generateGui(testBean, shell);
 	}
 
 	@After
 	public void tearDown() throws Exception {
-		guiGenerator = null;
 		metawidget = null;
-		testBean = null;
-	}
-
-	@Test
-	public void testHiddenStringFieldIsStub() throws Exception {
-		// This field should be hidden by XML metadata
-		Control control = getControl("hiddenStringField");
-		assertThat(control.getClass().getName(), is(equalTo("org.metawidget.swt.Stub")));
 	}
 
 	@Test
@@ -85,7 +75,7 @@ public class GuiGeneratorTest extends SWTTestBase {
 	@Test
 	public void testUiReadOnlyStringFieldIsLabel() throws Exception {
 		Control control = getControl("uiReadOnlyStringField");
-		assertThat(((Label) control).getText(), is(equalTo(testBean.getUiReadOnlyStringField())));
+		assertThat(control, is(instanceOf(Label.class)));
 	}
 
 	@Test

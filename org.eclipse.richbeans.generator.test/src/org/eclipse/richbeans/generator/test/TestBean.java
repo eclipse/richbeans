@@ -1,4 +1,4 @@
-package org.eclipse.richbeans.generator;
+package org.eclipse.richbeans.generator.test;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
