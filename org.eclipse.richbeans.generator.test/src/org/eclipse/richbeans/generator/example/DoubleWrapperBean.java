@@ -18,24 +18,15 @@
 
 package org.eclipse.richbeans.generator.example;
 
-import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
 import org.metawidget.inspector.annotation.UiComesAfter;
 import org.metawidget.inspector.annotation.UiLarge;
 import org.metawidget.inspector.annotation.UiReadOnly;
-import org.metawidget.inspector.annotation.UiRequired;
 
-public class SimpleBean {
-
-	public enum Type {
-		ONE, TWO;
-	}
+public class DoubleWrapperBean {
 
 	private String name;
 	private String description;
-	private Type type;
-	private int count;
-	private double x;
-	private double y;
+	private WrapperBean wrapperBean;
 
 	@UiReadOnly
 	public String getName() {
@@ -52,34 +43,10 @@ public class SimpleBean {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	@UiRequired
-	@UiComesAfter("description")
-	public Type getType() {
-		return type;
+	public WrapperBean getWrapperBean() {
+		return wrapperBean;
 	}
-	public void setType(Type type) {
-		this.type = type;
-	}
-	@MinimumValue("0")
-	@UiComesAfter("type")
-	public int getCount() {
-		return count;
-	}
-	public void setCount(int count) {
-		this.count = count;
-	}
-	@MinimumValue("0")
-	public double getX() {
-		return x;
-	}
-	public void setX(double x) {
-		this.x = x;
-	}
-	@MinimumValue("0")
-	public double getY() {
-		return y;
-	}
-	public void setY(double y) {
-		this.y = y;
+	public void setWrapperBean(WrapperBean childObject) {
+		this.wrapperBean = childObject;
 	}
 }

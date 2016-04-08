@@ -18,26 +18,28 @@
 
 package org.eclipse.richbeans.generator.example;
 
-import org.eclipse.richbeans.generator.example.SimpleBean.Type;
-
-/**
- * A simple example of the GUI generator, using a bean with a few fields of different types.
- */
-public class SimpleExample extends GuiGeneratorRunnerBase {
+public class DoublyNestedExample extends GuiGeneratorRunnerBase {
 
 	public static void main(String[] args) {
-		new SimpleExample().run();
+		new DoublyNestedExample().run();
 	}
 
 	@Override
 	protected Object createTestObject() {
-		SimpleBean testBean = new SimpleBean();
-		testBean.setName("Read-only name");
-		testBean.setDescription("This is an editable, \nmulti-line description\n");
-		testBean.setType(Type.TWO);
-		testBean.setCount(4);
-		testBean.setX(-5.3); // X is annotated to have a minimum value of zero, so the GUI will mark this as invalid
-		testBean.setY(11.8);
-		return testBean;
+
+		WrapperBean wrapperBean = (WrapperBean) new NestedExample().createTestObject();
+		wrapperBean.setDescription("This is a nested object which \ncontains more nested objects\n");
+
+		DoubleWrapperBean outer = new DoubleWrapperBean();
+		outer.setName("Multi-level nesting example");
+		outer.setDescription("This example shows an auto-generated GUI for \n"
+				+ "multi-level nested objects.\n\n"
+				+ "The two-way data binding on the Updating Bean \n"
+				+ "should still work correctly even when it is deeply \n"
+				+ "nested. Try clicking the \"Update\" box to check.");
+		outer.setWrapperBean(wrapperBean);
+
+		return outer;
 	}
+
 }
