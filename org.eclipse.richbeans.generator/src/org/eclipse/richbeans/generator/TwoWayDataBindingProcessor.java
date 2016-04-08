@@ -17,8 +17,6 @@ import static org.metawidget.inspector.InspectionResultConstants.NO_SETTER;
 import static org.metawidget.inspector.InspectionResultConstants.PROPERTY;
 import static org.metawidget.inspector.InspectionResultConstants.TRUE;
 
-import java.beans.PropertyChangeListener;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -26,16 +24,16 @@ import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.UpdateValueStrategy;
 import org.eclipse.core.databinding.beans.BeanProperties;
-import org.eclipse.core.databinding.beans.PojoProperties;
 import org.eclipse.core.databinding.conversion.Converter;
 import org.eclipse.core.databinding.conversion.IConverter;
 import org.eclipse.core.databinding.observable.Realm;
 import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.util.Policy;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.databinding.swt.DisplayRealm;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.metawidget.swt.SwtMetawidget;
 import org.metawidget.util.CollectionUtils;
 import org.metawidget.util.simple.ObjectUtils;
@@ -43,6 +41,8 @@ import org.metawidget.util.simple.PathUtils;
 import org.metawidget.util.simple.StringUtils;
 import org.metawidget.widgetprocessor.iface.AdvancedWidgetProcessor;
 import org.metawidget.widgetprocessor.iface.WidgetProcessorException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This is a improved implementation of the eclipse core databinding provided by metawidget. It implements two way
@@ -63,11 +63,31 @@ import org.metawidget.widgetprocessor.iface.WidgetProcessorException;
  */
 public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Control, SwtMetawidget> {
 
-	private List<DisplayRealm> mRealms = CollectionUtils.newArrayList();
 	private final Map<ConvertFromTo, IConverter> mConverters = CollectionUtils.newHashMap();
+
+	// Set up an slf4j logger to be used by Eclipse core data binding
+	private final Logger dataBindingLogger = LoggerFactory.getLogger("org.eclipse.core.databinding");
 
 	public TwoWayDataBindingProcessor() {
 		this(new TwoWayDataBindingProcessorConfig());
+
+		// Create a logger which forwards data binding logging calls to slf4j
+		Policy.setLog(status -> {
+			// If the status is ok, or this is a warning about a missing method to do with property change support, we
+			// log it at debug level. Anything else will be logged at warning level.
+			// We only use two log levels for now, to avoid referring directly to the constants on the IStatus
+			// interface, which would require a new dependency for this bundle. If needed, we could check the severity
+			// of the IStatus and log at a more appropriate level.
+			// NOTE: this relies on the implementation of org.eclipse.core.internal.databinding.beans.BeanPropertyListenerSupport,
+			// which (in version 1.3.0) simply logs a warning message if a bean does not have property change support.
+			if (status.isOK()
+					|| ((status.getException() instanceof NoSuchMethodException)
+							&& status.getException().getMessage().contains("PropertyChangeListener"))) {
+				dataBindingLogger.debug(status.getMessage());
+			} else {
+				dataBindingLogger.warn(status.toString(), status.getException());
+			}
+		});
 	}
 
 	public TwoWayDataBindingProcessor(TwoWayDataBindingProcessorConfig config) {
@@ -159,21 +179,11 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 			propertyName += attributes.get(NAME);
 		}
 
-		// Setup the bean to UI binding. If the bean had property change support use it else to on request binding
-		IObservableValue observeModel = null;
-		UpdateValueStrategy modelToTarget = null;
-		// Check if the bean has an addPropertyChangeListener method
-		try {
-			// calling getMethod will throw the NoSuchMethodException if its not available i.e. bean has no
-			// property change support
-			toInspect.getClass().getMethod("addPropertyChangeListener", PropertyChangeListener.class);
-			// If the addPropertyChangeListener method exists add dynamic 2 way binding
-			observeModel = BeanProperties.value(toInspect.getClass(), propertyName).observe(realm, toInspect);
-			modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
-		} catch (NoSuchMethodException | SecurityException e) { // No PropertyChangeListener or can't access
-			observeModel = PojoProperties.value(toInspect.getClass(), propertyName).observe(realm, toInspect);
-			modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_ON_REQUEST);
-		}
+		// Try to add automatic 2 way binding. If the model has property change support, this will work nicely. If not,
+		// it will fail to add automatic model to target binding and a warning message will be logged, but the binding
+		// will otherwise work as expected.
+		IObservableValue observeModel = BeanProperties.value(toInspect.getClass(), propertyName).observe(realm, toInspect);
+		UpdateValueStrategy modelToTarget = new UpdateValueStrategy(UpdateValueStrategy.POLICY_UPDATE);
 
 		// Check for enums and if they exist make a converter on the fly
 		// (Note: this logic seems to work but is potentially incomplete - see comments inside Metawidget's
@@ -262,30 +272,13 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 
 		if (state == null) {
 			state = new State();
-			state.bindingContext = new DataBindingContext(getRealm(metawidget.getDisplay()));
+			state.bindingContext = new DataBindingContext(DisplayRealm.getRealm(metawidget.getDisplay()));
 
 			metawidget.setData(TwoWayDataBindingProcessor.class.getName(), state);
 
 		}
 
 		return state;
-	}
-
-	/**
-	 * From org.eclipse.jface.databinding.swt.SWTObservables (EPLv1)
-	 */
-	private Realm getRealm(final Display display) {
-
-		synchronized (mRealms) {
-			for (DisplayRealm realm : mRealms) {
-				if (realm.mDisplay == display) {
-					return realm;
-				}
-			}
-			DisplayRealm realm = new DisplayRealm(display);
-			mRealms.add(realm);
-			return realm;
-		}
 	}
 
 	/**
@@ -325,41 +318,6 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 		/* package private */DataBindingContext bindingContext;
 
 		/* package private */Set<SwtMetawidget> nestedMetawidgets;
-	}
-
-	/**
-	 * From org.eclipse.jface.databinding.swt.SWTObservables (EPLv1)
-	 */
-
-	static class DisplayRealm extends Realm {
-
-		//
-		// Private members
-		//
-
-		Display mDisplay;
-
-		//
-		// Constructor
-		//
-
-		DisplayRealm(Display display) {
-
-			mDisplay = display;
-		}
-
-		//
-		// Public methods
-		//
-
-		@Override
-		public boolean isCurrent() {
-
-			return Display.getCurrent() == mDisplay;
-		}
-
-		// Do not override equals/hashCode, we are not going to be comparing
-		// this or hashing it
 	}
 
 	/* package private */static final class ConvertFromTo {

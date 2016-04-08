@@ -6,7 +6,7 @@
 
 	<!-- These TestBean fields are used in unit tests to check that this XML metadata file is correctly interpreted.
 		Be careful changing them! -->
-	<entity type="org.eclipse.richbeans.generator.TestBean">
+	<entity type="org.eclipse.richbeans.generator.test.TestBean">
 		<property name="hiddenStringField" hidden="true" />
 		<property name="stringField" required="true" />
 		<property name="stringFieldWithGetterOnly" />

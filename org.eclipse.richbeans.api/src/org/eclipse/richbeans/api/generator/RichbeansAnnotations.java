@@ -45,4 +45,16 @@ public class RichbeansAnnotations {
 		String value();
 	}
 
+
+	
+	/**
+	 * Specify the tooltip to add to a GUI widget
+	 * 
+	 * @author Colin Palmer
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public static @interface UiTooltip {
+		String value();
+	}
 }

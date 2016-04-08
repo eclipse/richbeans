@@ -1,4 +1,4 @@
-package org.eclipse.richbeans.generator;
+package org.eclipse.richbeans.generator.test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -8,6 +8,8 @@ import static org.junit.Assert.assertThat;
 import static org.metawidget.inspector.InspectionResultConstants.NAME;
 
 import org.eclipse.richbeans.api.generator.IGuiGeneratorService;
+import org.eclipse.richbeans.generator.GuiGeneratorService;
+import org.eclipse.richbeans.generator.RichbeansAnnotationsInspector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -17,21 +19,21 @@ import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
 
-/**
- * This test uses OSGi to get all required services
- */
-public class GuiGeneratorPluginTest extends SWTTestBase {
+public class GuiGeneratorTest extends SWTTestBase {
 
-	private static IGuiGeneratorService guiGenerator;
-
-	public static void setGuiGenerator(IGuiGeneratorService guiGeneratorService) {
-		guiGenerator = guiGeneratorService;
-	}
-
+	private IGuiGeneratorService guiGenerator;
 	private TestBean testBean;
 	private Composite metawidget;
+
+	@BeforeClass
+	public static void setUpBeforeClass() {
+		GuiGeneratorService.addDomInspector(new RichbeansAnnotationsInspector());
+		GuiGeneratorService.addDomInspector(new MetawidgetAnnotationInspector());
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -40,12 +42,22 @@ public class GuiGeneratorPluginTest extends SWTTestBase {
 		testBean.setUiReadOnlyStringField("UiReadOnly string field value");
 		testBean.setIntField(5);
 
+		guiGenerator = new GuiGeneratorService();
 		metawidget = (Composite) guiGenerator.generateGui(testBean, shell);
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		guiGenerator = null;
 		metawidget = null;
+		testBean = null;
+	}
+
+	@Test
+	public void testHiddenStringFieldIsStub() throws Exception {
+		// This field should be hidden by XML metadata
+		Control control = getControl("hiddenStringField");
+		assertThat(control.getClass().getName(), is(equalTo("org.metawidget.swt.Stub")));
 	}
 
 	@Test
@@ -58,6 +70,12 @@ public class GuiGeneratorPluginTest extends SWTTestBase {
 	public void testStringFieldInitialValue() throws Exception {
 		Control control = getControl("stringField");
 		assertThat(((Text) control).getText(), is(equalTo(testBean.getStringField())));
+	}
+
+	@Test
+	public void testStringFieldTooltip() throws Exception {
+		Control control = getControl("stringField");
+		assertThat(control.getToolTipText(), is(equalTo(TestBean.STRING_FIELD_TOOLTIP)));
 	}
 
 	@Test
@@ -75,7 +93,7 @@ public class GuiGeneratorPluginTest extends SWTTestBase {
 	@Test
 	public void testUiReadOnlyStringFieldIsLabel() throws Exception {
 		Control control = getControl("uiReadOnlyStringField");
-		assertThat(control, is(instanceOf(Label.class)));
+		assertThat(((Label) control).getText(), is(equalTo(testBean.getUiReadOnlyStringField())));
 	}
 
 	@Test
