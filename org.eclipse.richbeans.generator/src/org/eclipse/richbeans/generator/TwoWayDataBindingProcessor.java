@@ -63,6 +63,7 @@ import org.slf4j.LoggerFactory;
  */
 public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Control, SwtMetawidget> {
 
+	// TODO find some way to change the ICU NumberFormat instance used in double <-> string conversion, and decide what precision we want in numbers
 	private final Map<ConvertFromTo, IConverter> mConverters = CollectionUtils.newHashMap();
 
 	// Set up an slf4j logger to be used by Eclipse core data binding
