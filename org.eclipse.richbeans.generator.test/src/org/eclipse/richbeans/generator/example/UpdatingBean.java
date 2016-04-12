@@ -26,6 +26,8 @@ import org.metawidget.inspector.annotation.UiReadOnly;
 
 public class UpdatingBean {
 
+	public static final String UPDATE_BUTTON_TOOLTIP = "Select to turn on automatic updating of the X and Y values by a background thread";
+
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -39,7 +41,7 @@ public class UpdatingBean {
 	private double x;
 	private double y;
 
-	@UiTooltip("Select to turn on automatic updating of the X and Y values by a background thread")
+	@UiTooltip(UPDATE_BUTTON_TOOLTIP)
 	public boolean isUpdate() {
 		return update;
 	}

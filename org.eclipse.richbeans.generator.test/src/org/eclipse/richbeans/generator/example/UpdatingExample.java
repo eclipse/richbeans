@@ -61,7 +61,7 @@ public class UpdatingExample extends GuiGeneratorRunnerBase<UpdatingBean> {
 			Random random = new Random();
 			while (true) {
 				try {
-					sleep(1500);
+					sleep(1000);
 					if (updatingBean.isUpdate()) {
 						updatingBean.setX(random.nextGaussian() * 1000.0);
 						updatingBean.setY(random.nextGaussian() * 1000.0);
