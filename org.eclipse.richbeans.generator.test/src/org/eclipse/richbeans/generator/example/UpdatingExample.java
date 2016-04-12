@@ -26,14 +26,14 @@ import java.util.Random;
  * (caused by the user selecting the check box), it periodically updates the X and Y values in the bean, and the
  * data binding automatically propagates the changes to the GUI.
  */
-public class UpdatingExample extends GuiGeneratorRunnerBase {
+public class UpdatingExample extends GuiGeneratorRunnerBase<UpdatingBean> {
 
 	public static void main(String[] args) {
 		new UpdatingExample().run();
 	}
 
 	@Override
-	protected Object createTestObject() {
+	public UpdatingBean createTestObject() {
 		UpdatingBean updatingBean = new UpdatingBean();
 		updatingBean.setX(Double.POSITIVE_INFINITY);
 		updatingBean.setY(Double.POSITIVE_INFINITY);
@@ -61,7 +61,7 @@ public class UpdatingExample extends GuiGeneratorRunnerBase {
 			Random random = new Random();
 			while (true) {
 				try {
-					sleep(1500);
+					sleep(1000);
 					if (updatingBean.isUpdate()) {
 						updatingBean.setX(random.nextGaussian() * 1000.0);
 						updatingBean.setY(random.nextGaussian() * 1000.0);

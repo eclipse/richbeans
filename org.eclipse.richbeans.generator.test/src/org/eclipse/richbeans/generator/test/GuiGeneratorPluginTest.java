@@ -5,7 +5,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.metawidget.inspector.InspectionResultConstants.NAME;
 
 import org.eclipse.richbeans.api.generator.IGuiGeneratorService;
 import org.eclipse.swt.SWT;
@@ -171,22 +170,6 @@ public class GuiGeneratorPluginTest extends SWTTestBase {
 	}
 
 	private Control getControl(String name) {
-		return getControl(metawidget, name);
-	}
-
-	private static Control getControl(Composite container, String name) {
-		for (Control child : container.getChildren()) {
-			// TODO investigate this - is it necessary to check for name == null, and does this code work for nested Metawidgets?
-			if (child.getData(NAME) == null && child instanceof Composite) {
-				Control control = getControl((Composite) child, name);
-				if (control != null) {
-					return control;
-				}
-			}
-			if (name.equals(child.getData(NAME))) {
-				return child;
-			}
-		}
-		return null; // not found
+		return GuiGeneratorTestBase.getNamedControl(metawidget, name);
 	}
 }

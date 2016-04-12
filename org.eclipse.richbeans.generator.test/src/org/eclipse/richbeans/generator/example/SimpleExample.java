@@ -23,14 +23,14 @@ import org.eclipse.richbeans.generator.example.SimpleBean.Type;
 /**
  * A simple example of the GUI generator, using a bean with a few fields of different types.
  */
-public class SimpleExample extends GuiGeneratorRunnerBase {
+public class SimpleExample extends GuiGeneratorRunnerBase<SimpleBean> {
 
 	public static void main(String[] args) {
 		new SimpleExample().run();
 	}
 
 	@Override
-	protected Object createTestObject() {
+	public SimpleBean createTestObject() {
 		SimpleBean testBean = new SimpleBean();
 		testBean.setName("Read-only name");
 		testBean.setDescription("This is an editable, \nmulti-line description\n");

@@ -14,10 +14,10 @@ import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
  * Base class for GUI generator examples. When run() is called, it will call the abstract createTestObject() method,
  * auto-generate a GUI for the object and display it in a shell. The GUI will include automatic data binding from UI to
  * object, and if the object has PropertyChangeSupport it will add automatic object to UI binding as well.
- * <p>
- * The GUI generator needs to be run with org.apache.commons.logging on the classpath.
+ *
+ * @param <T> the type returned by createTestObject(). Included only for convenience to avoid casts.
  */
-public abstract class GuiGeneratorRunnerBase {
+public abstract class GuiGeneratorRunnerBase<T> {
 
 	private Display display;
 	private Shell shell;
@@ -38,7 +38,7 @@ public abstract class GuiGeneratorRunnerBase {
 	/**
 	 * @return an object to bind to the GUI
 	 */
-	protected abstract Object createTestObject();
+	public abstract T createTestObject();
 
 	protected String getWindowTitle() {
 		return "GUI generator example";
@@ -60,6 +60,7 @@ public abstract class GuiGeneratorRunnerBase {
 	}
 
 	private void initializeGuiGenerator() {
+		// Add annotation inspectors to the GUI generator service. Normally this would be done automatically by OSGi.
 		GuiGeneratorService.addDomInspector(new RichbeansAnnotationsInspector());
 		GuiGeneratorService.addDomInspector(new MetawidgetAnnotationInspector());
 		guiGenerator = new GuiGeneratorService();

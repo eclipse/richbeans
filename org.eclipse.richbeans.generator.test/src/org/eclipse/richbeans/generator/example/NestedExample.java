@@ -18,17 +18,17 @@
 
 package org.eclipse.richbeans.generator.example;
 
-public class NestedExample extends GuiGeneratorRunnerBase {
+public class NestedExample extends GuiGeneratorRunnerBase<WrapperBean> {
 
 	public static void main(String[] args) {
 		new NestedExample().run();
 	}
 
 	@Override
-	protected Object createTestObject() {
+	public WrapperBean createTestObject() {
 
-		SimpleBean simpleBean = (SimpleBean) new SimpleExample().createTestObject();
-		UpdatingBean updatingBean = (UpdatingBean) new UpdatingExample().createTestObject();
+		SimpleBean simpleBean = new SimpleExample().createTestObject();
+		UpdatingBean updatingBean = new UpdatingExample().createTestObject();
 
 		WrapperBean wrapperBean = new WrapperBean();
 		wrapperBean.setName("Nested object example");
