@@ -7,6 +7,7 @@ import org.eclipse.richbeans.api.generator.IGuiGeneratorService;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Shell;
 import org.metawidget.inspector.composite.CompositeInspector;
 import org.metawidget.inspector.composite.CompositeInspectorConfig;
 import org.metawidget.inspector.iface.DomInspector;
@@ -90,5 +91,10 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		metawidget.pack();
 
 		return metawidget;
+	}
+
+	@Override
+	public void openDialog(Object bean, Shell parent, String title) {
+		new ObjectEditorDialog(bean, parent, title, this).open();
 	}
 }
