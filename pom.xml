@@ -28,6 +28,7 @@
 
 	<properties>
 		<tycho-version>0.24.0</tycho-version>
+		<richbean-includes>org/eclipse/richbeans/**/Suite.java</richbean-includes>
 	</properties>
 
 	<dependencies>
@@ -109,7 +110,7 @@
                 <testSourceDirectory>${basedir}/src</testSourceDirectory>
                 <testClassesDirectory>${basedir}/bin</testClassesDirectory>
 				<includes>
-					<include>**/Suite.java</include>
+					<include>${richbean-includes}</include>
 				</includes>
 			</configuration>
   		  </plugin>   
