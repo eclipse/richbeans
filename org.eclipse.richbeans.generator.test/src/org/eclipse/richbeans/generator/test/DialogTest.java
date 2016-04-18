@@ -6,7 +6,6 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
-import static org.metawidget.inspector.InspectionResultConstants.NAME;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -28,7 +27,25 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.metawidget.inspector.annotation.MetawidgetAnnotationInspector;
 
+/**
+ * Tests for the {@link IGuiGeneratorService#openDialog(Object, Shell, String)} method.
+ * <p>
+ * Testing a modal dialog is a little tricky. This class works by setting up an SWT Display in a new thread which is
+ * <em>not</em> the same as the thread used by JUnit to run the tests. This means the test thread is not the UI thread,
+ * so all interactions with the UI in the tests should be done via {@link Display#syncExec(Runnable)}.
+ * <p>
+ * If other modal dialog tests are needed in future, it could be worth trying to extract some common functionality from
+ * this into a base or utility class.
+ */
 public class DialogTest {
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	// Static setup section.
+	//
+	// This code deals with setting up and destroying the display, running the event loop, and setting up the static
+	// inspectors in the GUI generator service.
+	//
 
 	protected static Display display;
 
@@ -63,6 +80,14 @@ public class DialogTest {
 			display.syncExec(() -> display.dispose());
 		}
 	}
+
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	// Instance setup section.
+	//
+	// This code deals with creating a test bean, opening a dialog for it using the GUI generator, extracting the
+	// Metawidget from the dialog so tests can interact with it, and closing the dialog after the test has finished.
+	//
 
 	protected IGuiGeneratorService guiGenerator;
 	protected Composite metawidget;
@@ -128,8 +153,13 @@ public class DialogTest {
 		guiGenerator = null;
 	}
 
-	// Carry out a few of the tests from GuiGeneratorTest, wrapped in syncExec() calls to ensure JUnit waits for the
-	// test code to finish before calling tearDown()
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//
+	// Test section.
+	//
+	// This code copies a few of the tests from GuiGeneratorTest, wrapped in syncExec() calls to ensure JUnit waits for
+	// the test code to finish before calling tearDown().
+	//
 
 	@Test
 	public void testStringFieldIsText() throws Exception {
@@ -160,28 +190,6 @@ public class DialogTest {
 	}
 
 	protected Control getNamedControl(String name) {
-		return getNamedControl(metawidget, name);
-	}
-
-	/**
-	 * Get a named control from a composite. (A control is regarded as named if getData("name") returns a string.)
-	 * <p>
-	 * Nested Metawidgets are named like other controls, so to find a particular nested field correctly, this method
-	 * can be called repeatedly to find each Metawidget in the tree in turn until the required one is found.
-	 * <p>
-	 * <em>Unlike</em> the getControl() method in SwtMetawidget, this method will not recurse into any Composite
-	 * children of the given Composite, to avoid issues around searching for non-unique field names in nested objects.
-	 *
-	 * @param container a composite to search
-	 * @param name the name to search for
-	 * @return the named control, or <code>null</code> if not found
-	 */
-	protected static Control getNamedControl(Composite container, String name) {
-		for (Control child : container.getChildren()) {
-			if (name.equals(child.getData(NAME))) {
-				return child;
-			}
-		}
-		return null; // not found
+		return GuiGeneratorTestBase.getNamedControl(metawidget, name);
 	}
 }
