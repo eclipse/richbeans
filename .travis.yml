@@ -13,8 +13,9 @@ before_install:
 - bash ./org.eclipse.richbeans.releng/build/commit-msg.sh
 
 # Run maven. This happens automatically and adding it again makes the build longer.
-# script: mvn clean install
-
+script: 
+ - mvn clean install surefire:test
+ 
 # Added deploy back to github
 # This should publish to the tag on master called 'snapshot'
 deploy:

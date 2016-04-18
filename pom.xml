@@ -109,6 +109,10 @@
 			<configuration>
                 <testSourceDirectory>${basedir}/src</testSourceDirectory>
                 <testClassesDirectory>${basedir}/bin</testClassesDirectory>
+				<excludes>
+				    <!--  The generator tests break the build because they try to do SWT stuff -->
+					<exclude>org/eclipse/richbeans/generator/**/Suite.java</exclude>
+				</excludes>
 				<includes>
 					<include>${richbean-includes}</include>
 				</includes>
