@@ -17,6 +17,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.ibm.icu.text.NumberFormat;
+
 public class GuiGeneratorTest extends GuiGeneratorTestBase {
 
 	private TestBean testBean;
@@ -86,11 +88,21 @@ public class GuiGeneratorTest extends GuiGeneratorTestBase {
 	}
 
 	@Test
-	public void testStringFieldDataBinding() throws Exception {
+	public void testStringFieldToTextControlDataBinding() throws Exception {
 		String newValue = "New value";
 		testBean.setStringField(newValue);
 		Control control = getNamedControl("stringField");
 		assertThat(((Text) control).getText(), is(equalTo(newValue)));
+	}
+
+	@Test
+	public void testTextControlToStringFieldDataBinding() throws Exception {
+		Text control = (Text) getNamedControl("stringField");
+		// Change the value in the GUI box
+		String newValue = "New string value from text box";
+		control.setText(newValue);
+		//Check the bean is updated
+		assertEquals("stringField not updated", newValue, testBean.getStringField());
 	}
 
 	@Test
@@ -130,12 +142,26 @@ public class GuiGeneratorTest extends GuiGeneratorTestBase {
 	}
 
 	@Test
-	public void testDoubleFieldDataBinding() throws Exception {
+	public void testDoubleFieldToTextControlDataBinding() throws Exception {
+		// The default conversion from String to double is a bit complicated and uses some data binding internals, so
+		// it's easier to convert everything to strings and compare those.
+		// We use the ICU default number format, which is the same as is used by the data binding conversion.
+		double newValue = -1.452e5;
+		NumberFormat numberFormat = NumberFormat.getNumberInstance();
+		String expectedText = numberFormat.format(newValue);
+		testBean.setDoubleField(newValue);
+		Control control = getNamedControl("doubleField");
+		assertEquals(expectedText, ((Text) control).getText());
+	}
+
+	@Test
+	public void testTextControlToDoubleFieldDataBinding() throws Exception {
 		Text control = (Text) getNamedControl("doubleField");
 		// Change the value in the GUI box
-		control.setText("655.4");
+		double newValue = 655.4;
+		control.setText(Double.toString(newValue));
 		//Check the bean is updated
-		assertEquals("doubleField not updated", 655.4, testBean.getDoubleField(), Double.MIN_VALUE);
+		assertEquals("doubleField not updated", newValue, testBean.getDoubleField(), Double.MIN_VALUE);
 	}
 
 	@Test
