@@ -11,6 +11,18 @@ import org.metawidget.inspector.annotation.UiReadOnly;
 
 class TestBean {
 
+	public enum ExampleEnum {
+		FIRST_VALUE("Value 1"), SECOND_VALUE("Value 2");
+		private String label;
+		private ExampleEnum(String label) {
+			this.label = label;
+		}
+		@Override
+		public String toString() {
+			return label;
+		}
+	}
+
 	public static final String STRING_FIELD_TOOLTIP = "String field tooltip";
 	public static final String INT_FIELD_MAX_VALUE_STRING = "25";
 	public static final String INT_FIELD_MIN_VALUE_STRING = "-10";
@@ -22,6 +34,7 @@ class TestBean {
 	private String uiReadOnlyStringField;
 	private int intField;
 	private double doubleField = 450.3;
+	private ExampleEnum type;
 
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
@@ -83,10 +96,18 @@ class TestBean {
 	public double getDoubleField() {
 		return doubleField;
 	}
-
 	public void setDoubleField(double doubleField) {
 		Object oldValue = this.doubleField;
 		this.doubleField = doubleField;
 		pcs.firePropertyChange("doubleField", oldValue, this.doubleField);
+	}
+
+	public ExampleEnum getType() {
+		return type;
+	}
+	public void setType(ExampleEnum type) {
+		Object oldValue = this.type;
+		this.type = type;
+		pcs.firePropertyChange("type", oldValue, this.type);
 	}
 }

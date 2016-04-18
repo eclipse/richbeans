@@ -189,34 +189,40 @@ public class TwoWayDataBindingProcessor implements AdvancedWidgetProcessor<Contr
 		// Check for enums and if they exist make a converter on the fly
 		// (Note: this logic seems to work but is potentially incomplete - see comments inside Metawidget's
 		// PropertyTypeInspector)
-		final Class<?> elementType = (Class<?>) observeModel.getValueType();
-		if (elementType != null && elementType.isEnum()) {
-			Converter converter = new Converter(String.class, elementType) {
-				@Override
-				public Object convert(Object fromObject) {
-					// Try to compare results of toString() first
-					for (Object value : elementType.getEnumConstants()) {
-						if (value.toString().equals(fromObject.toString())) {
-							return value;
+		final Class<?> modelType = (Class<?>) observeModel.getValueType();
+		if (modelType != null && modelType.isEnum()) {
+			// This processor is supposed to be immutable so we shouldn't be changing any member variables, but this is
+			// actually just a form of lazy initialisation so should appear as if the processor is immutable to other
+			// code. To ensure that, though, we need to be thread-safe, so we synchronize on the map of converters.
+			synchronized (mConverters) {
+				ConvertFromTo typesKey = new ConvertFromTo(String.class, modelType);
+				if (!mConverters.containsKey(typesKey)) {
+					Converter converter = new Converter(String.class, modelType) {
+						@Override
+						public Object convert(Object fromObject) {
+							// Try to compare results of toString() first
+							for (Object value : modelType.getEnumConstants()) {
+								if (value.toString().equals(fromObject.toString())) {
+									return value;
+								}
+							}
+							// Otherwise compare declared enum names
+							for (Object value : modelType.getEnumConstants()) {
+								if (((Enum<?>) value).name().equalsIgnoreCase(fromObject.toString())) {
+									return value;
+								}
+							}
+							return null;
 						}
-					}
-					// Otherwise compare declared enum names
-					for (Object value : elementType.getEnumConstants()) {
-						if (((Enum<?>) value).name().equalsIgnoreCase(fromObject.toString())) {
-							return value;
-						}
-					}
-					return null;
+					};
+					mConverters.put(typesKey, converter);
 				}
-			};
-			mConverters.put(new ConvertFromTo(String.class, elementType), converter);
+			}
 		}
 
 		// Add converters
-		targetToModel.setConverter(getConverter((Class<?>) observeTarget.getValueType(),
-				(Class<?>) observeModel.getValueType()));
-		modelToTarget.setConverter(getConverter((Class<?>) observeModel.getValueType(),
-				(Class<?>) observeTarget.getValueType()));
+		targetToModel.setConverter(getConverter((Class<?>) observeTarget.getValueType(), modelType));
+		modelToTarget.setConverter(getConverter(modelType, (Class<?>) observeTarget.getValueType()));
 
 		// Bind it
 		state.bindingContext.bindValue(observeTarget, observeModel, targetToModel, modelToTarget);

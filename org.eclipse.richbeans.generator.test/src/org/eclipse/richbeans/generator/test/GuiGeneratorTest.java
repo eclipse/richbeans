@@ -4,9 +4,12 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+import org.eclipse.richbeans.generator.test.TestBean.ExampleEnum;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -16,6 +19,8 @@ import org.eclipse.swt.widgets.Text;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+
+import com.ibm.icu.text.NumberFormat;
 
 public class GuiGeneratorTest extends GuiGeneratorTestBase {
 
@@ -27,6 +32,7 @@ public class GuiGeneratorTest extends GuiGeneratorTestBase {
 		testBean.setStringField("String field value");
 		testBean.setUiReadOnlyStringField("UiReadOnly string field value");
 		testBean.setIntField(5);
+		testBean.setType(ExampleEnum.SECOND_VALUE);
 
 		metawidget = (Composite) guiGenerator.generateGui(testBean, shell);
 	}
@@ -86,11 +92,21 @@ public class GuiGeneratorTest extends GuiGeneratorTestBase {
 	}
 
 	@Test
-	public void testStringFieldDataBinding() throws Exception {
+	public void testStringFieldToTextControlDataBinding() throws Exception {
 		String newValue = "New value";
 		testBean.setStringField(newValue);
 		Control control = getNamedControl("stringField");
 		assertThat(((Text) control).getText(), is(equalTo(newValue)));
+	}
+
+	@Test
+	public void testTextControlToStringFieldDataBinding() throws Exception {
+		Text control = (Text) getNamedControl("stringField");
+		// Change the value in the GUI box
+		String newValue = "New string value from text box";
+		control.setText(newValue);
+		//Check the bean is updated
+		assertEquals("stringField not updated", newValue, testBean.getStringField());
 	}
 
 	@Test
@@ -130,12 +146,26 @@ public class GuiGeneratorTest extends GuiGeneratorTestBase {
 	}
 
 	@Test
-	public void testDoubleFieldDataBinding() throws Exception {
+	public void testDoubleFieldToTextControlDataBinding() throws Exception {
+		// The default conversion from String to double is a bit complicated and uses some data binding internals, so
+		// it's easier to convert everything to strings and compare those.
+		// We use the ICU default number format, which is the same as is used by the data binding conversion.
+		double newValue = -1.452e5;
+		NumberFormat numberFormat = NumberFormat.getNumberInstance();
+		String expectedText = numberFormat.format(newValue);
+		testBean.setDoubleField(newValue);
+		Control control = getNamedControl("doubleField");
+		assertEquals(expectedText, ((Text) control).getText());
+	}
+
+	@Test
+	public void testTextControlToDoubleFieldDataBinding() throws Exception {
 		Text control = (Text) getNamedControl("doubleField");
 		// Change the value in the GUI box
-		control.setText("655.4");
+		double newValue = 655.4;
+		control.setText(Double.toString(newValue));
 		//Check the bean is updated
-		assertEquals("doubleField not updated", 655.4, testBean.getDoubleField(), Double.MIN_VALUE);
+		assertEquals("doubleField not updated", newValue, testBean.getDoubleField(), Double.MIN_VALUE);
 	}
 
 	@Test
@@ -169,5 +199,37 @@ public class GuiGeneratorTest extends GuiGeneratorTestBase {
 		control.setText("222.22");
 		//Check the text is red
 		assertThat(control.getForeground(), is(equalTo(Display.getDefault().getSystemColor(SWT.COLOR_RED))));
+	}
+
+	@Test
+	public void testEnumFieldIsCombo() throws Exception {
+		Control control = getNamedControl("type");
+		assertThat(control, is(instanceOf(Combo.class)));
+	}
+
+	@Test
+	public void testEnumFieldInitalValue() throws Exception {
+		Control control = getNamedControl("type");
+		assertThat(((Combo) control).getText(), is(equalTo(testBean.getType().toString())));
+	}
+
+	@Test
+	public void testEnumFieldToComboDataBinding() throws Exception {
+		Control control = getNamedControl("type");
+		assertThat(((Combo) control).getText(), is(equalTo(ExampleEnum.SECOND_VALUE.toString())));
+		testBean.setType(ExampleEnum.FIRST_VALUE);
+		assertThat(((Combo) control).getText(), is(equalTo(ExampleEnum.FIRST_VALUE.toString())));
+		testBean.setType(null);
+		assertThat(((Combo) control).getText(), is(equalTo("")));
+	}
+
+	@Test
+	public void testComboToEnumFieldDataBinding() throws Exception {
+		Combo combo = (Combo) getNamedControl("type");
+		assertEquals(ExampleEnum.SECOND_VALUE, testBean.getType());
+		combo.setText(ExampleEnum.FIRST_VALUE.toString());
+		assertEquals(ExampleEnum.FIRST_VALUE, testBean.getType());
+		combo.setText("");
+		assertNull(testBean.getType());
 	}
 }
