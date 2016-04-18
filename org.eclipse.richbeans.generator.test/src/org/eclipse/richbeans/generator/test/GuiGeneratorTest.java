@@ -4,9 +4,12 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
+import org.eclipse.richbeans.generator.test.TestBean.ExampleEnum;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -29,6 +32,7 @@ public class GuiGeneratorTest extends GuiGeneratorTestBase {
 		testBean.setStringField("String field value");
 		testBean.setUiReadOnlyStringField("UiReadOnly string field value");
 		testBean.setIntField(5);
+		testBean.setType(ExampleEnum.SECOND_VALUE);
 
 		metawidget = (Composite) guiGenerator.generateGui(testBean, shell);
 	}
@@ -195,5 +199,37 @@ public class GuiGeneratorTest extends GuiGeneratorTestBase {
 		control.setText("222.22");
 		//Check the text is red
 		assertThat(control.getForeground(), is(equalTo(Display.getDefault().getSystemColor(SWT.COLOR_RED))));
+	}
+
+	@Test
+	public void testEnumFieldIsCombo() throws Exception {
+		Control control = getNamedControl("type");
+		assertThat(control, is(instanceOf(Combo.class)));
+	}
+
+	@Test
+	public void testEnumFieldInitalValue() throws Exception {
+		Control control = getNamedControl("type");
+		assertThat(((Combo) control).getText(), is(equalTo(testBean.getType().toString())));
+	}
+
+	@Test
+	public void testEnumFieldToComboDataBinding() throws Exception {
+		Control control = getNamedControl("type");
+		assertThat(((Combo) control).getText(), is(equalTo(ExampleEnum.SECOND_VALUE.toString())));
+		testBean.setType(ExampleEnum.FIRST_VALUE);
+		assertThat(((Combo) control).getText(), is(equalTo(ExampleEnum.FIRST_VALUE.toString())));
+		testBean.setType(null);
+		assertThat(((Combo) control).getText(), is(equalTo("")));
+	}
+
+	@Test
+	public void testComboToEnumFieldDataBinding() throws Exception {
+		Combo combo = (Combo) getNamedControl("type");
+		assertEquals(ExampleEnum.SECOND_VALUE, testBean.getType());
+		combo.setText(ExampleEnum.FIRST_VALUE.toString());
+		assertEquals(ExampleEnum.FIRST_VALUE, testBean.getType());
+		combo.setText("");
+		assertNull(testBean.getType());
 	}
 }
