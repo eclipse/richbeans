@@ -30,7 +30,7 @@ public class SWTTestBase {
 
 	@Before
 	public void initializeShell() throws Exception {
-		disposeShell();
+		destroyShell();
 		shell = new Shell(display, SWT.SHELL_TRIM);
 		shell.setLayout(new FillLayout());
 		shell.open();
@@ -38,33 +38,15 @@ public class SWTTestBase {
 
 	@After
 	public void destroyShell() throws Exception {
-		display.syncExec(new Runnable() {
-			@Override
-			public void run() {
-				disposeShell();
-			}
-		});
+		if (shell != null) {
+			shell.dispose();
+		}
 	}
 
 	@AfterClass
 	public static void destroyDisplay() throws Exception {
 		if (display != null) {
 			display.dispose();
-			display = null;
-		}
-	}
-
-	protected void newShell() {
-		disposeShell();
-		shell = new Shell(display, SWT.SHELL_TRIM);
-		shell.setLayout(new FillLayout());
-		shell.open();
-	}
-
-	private void disposeShell() {
-		if (shell != null) {
-			shell.dispose();
-			shell = null;
 		}
 	}
 }
