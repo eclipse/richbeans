@@ -1,11 +1,18 @@
+sudo: false # use containers
+
 language: java
 
+cache:
+  directories:
+    - $HOME/.m2 # Maven dependencies
+
+# whitelist
 branches:
-  only:
+ only:
   - master
-  
+ 
 jdk:
-- oraclejdk8
+ - oraclejdk8
 
 # Check they had a ticket with this change
 before_install:
