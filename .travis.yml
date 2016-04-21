@@ -14,7 +14,7 @@ before_install:
 
 # Run maven. This happens automatically and adding it again makes the build longer.
 script: 
- - mvn clean install surefire:test -Dtest=**/richbeans/**/Suite.java
+ - mvn -Dtest=**/richbeans/**/Suite clean install surefire:test
  
 # Added deploy back to github
 # This should publish to the tag on master called 'snapshot'
