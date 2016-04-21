@@ -28,7 +28,6 @@
 
 	<properties>
 		<tycho-version>0.24.0</tycho-version>
-		<richbean-includes>org/eclipse/richbeans/**/Suite.java</richbean-includes>
 	</properties>
 
 	<dependencies>
@@ -109,12 +108,8 @@
 			<configuration>
                 <testSourceDirectory>${basedir}/src</testSourceDirectory>
                 <testClassesDirectory>${basedir}/bin</testClassesDirectory>
-				<excludes>
-				    <!--  The generator tests break the build because they try to do SWT stuff -->
-					<exclude>org/eclipse/richbeans/generator/**/Suite.java</exclude>
-				</excludes>
 				<includes>
-					<include>${richbean-includes}</include>
+					<include>**/Suite.java</include>
 				</includes>
 			</configuration>
   		  </plugin>   
