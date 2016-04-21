@@ -1,11 +1,18 @@
+sudo: false # use containers
+
 language: java
 
+cache:
+  directories:
+    - $HOME/.m2 # Maven dependencies
+
+# whitelist
 branches:
-  only:
+ only:
   - master
-  
+ 
 jdk:
-- oraclejdk8
+ - oraclejdk8
 
 # Check they had a ticket with this change
 before_install:
@@ -14,7 +21,7 @@ before_install:
 
 # Run maven. This happens automatically and adding it again makes the build longer.
 script: 
- - mvn -Dtest=org/eclipse/richbeans/**/Suite.java clean install surefire:test
+ - mvn clean install surefire:test
  
 # Added deploy back to github
 # This should publish to the tag on master called 'snapshot'
