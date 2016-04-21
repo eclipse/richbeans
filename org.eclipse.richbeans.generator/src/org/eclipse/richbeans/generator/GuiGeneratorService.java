@@ -24,6 +24,7 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 	private static final TooltipWidgetProcessor TOOLTIP_PROCESSOR = new TooltipWidgetProcessor();
 	private static final RichbeansDecoratorWidgetProcessor DECORATOR_PROCESSOR = new RichbeansDecoratorWidgetProcessor();
 	private static final TwoWayDataBindingProcessor BINDING_PROCESSOR = new TwoWayDataBindingProcessor();
+	private static final TableWidgetProcessor TABLE_WIDGET_PROCESSOR = new TableWidgetProcessor();
 
 	// Initialise a set for the inspectors. The reference to the set is final but the contents will change.
 	private static final Set<DomInspector<?>> DOM_INSPECTORS = new LinkedHashSet<>();
@@ -80,6 +81,7 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		metawidget.addWidgetProcessor(TOOLTIP_PROCESSOR);
 		metawidget.addWidgetProcessor(DECORATOR_PROCESSOR);
 		metawidget.addWidgetProcessor(BINDING_PROCESSOR);
+		metawidget.addWidgetProcessor(TABLE_WIDGET_PROCESSOR);
 
 		// Reflection binding processor (for actions) is present by default
 
