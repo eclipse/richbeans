@@ -108,6 +108,9 @@
 			<configuration>
                 <testSourceDirectory>${basedir}/src</testSourceDirectory>
                 <testClassesDirectory>${basedir}/bin</testClassesDirectory>
+				<includes>
+					<include>**/Suite.java</include>
+				</includes>
 			</configuration>
   		  </plugin>   
   		            
