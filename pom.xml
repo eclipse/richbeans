@@ -112,7 +112,7 @@
 					<exclude>org/eclipse/richbeans/generator/**/Suite.java</exclude>
 				</excludes>
 				<includes>
-					<include>**/Suite.java</include>
+					<include>${test.includes}</include>
 				</includes>
 			</configuration>
   		  </plugin>   
