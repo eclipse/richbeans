@@ -19,11 +19,12 @@
 package org.eclipse.richbeans.generator.test;
 
 import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-@RunWith(org.junit.runners.Suite.class)
+@RunWith(Suite.class)
 @SuiteClasses({ DialogTest.class, DoublyNestedExampleTest.class, GuiGeneratorTest.class, SimpleExampleTest.class,
 		UpdatingExampleTest.class })
-public class Suite {
+public class AllGuiTests {
 
 }
