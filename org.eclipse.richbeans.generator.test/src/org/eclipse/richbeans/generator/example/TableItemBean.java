@@ -18,23 +18,39 @@
 
 package org.eclipse.richbeans.generator.example;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import org.metawidget.inspector.annotation.UiComesAfter;
 
 public class TableItemBean {
+	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.addPropertyChangeListener(listener);
+	}
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.removePropertyChangeListener(listener);
+	}
+
 	private String name;
 	private int age;
 
 	public String getName() {
 		return name;
 	}
-	public void setName(String name) {
-		this.name = name;
+	public void setName(String newValue) {
+		Object oldValue = this.name;
+		this.name = newValue;
+		pcs.firePropertyChange("name", oldValue, newValue);
 	}
 	@UiComesAfter("name")
 	public int getAge() {
 		return age;
 	}
-	public void setAge(int age) {
-		this.age = age;
+	public void setAge(int newValue) {
+		Object oldValue = this.age;
+		this.age = newValue;
+		pcs.firePropertyChange("age", oldValue, newValue);
 	}
 }

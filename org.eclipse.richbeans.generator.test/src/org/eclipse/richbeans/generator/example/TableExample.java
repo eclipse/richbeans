@@ -18,8 +18,6 @@
 
 package org.eclipse.richbeans.generator.example;
 
-import java.util.Arrays;
-
 public class TableExample extends GuiGeneratorRunnerBase<TableBean> {
 
 	public static void main(String[] args) {
@@ -32,7 +30,7 @@ public class TableExample extends GuiGeneratorRunnerBase<TableBean> {
 		TableItemBean tableItem = new TableItemBean();
 		tableItem.setName("kevin");
 		tableItem.setAge(21);
-		testBean.setList(Arrays.asList(tableItem));
+		testBean.addItem(tableItem);
 		return testBean;
 	}
 }
