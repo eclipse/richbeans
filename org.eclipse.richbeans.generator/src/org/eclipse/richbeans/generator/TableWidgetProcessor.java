@@ -23,9 +23,15 @@ import static org.metawidget.inspector.InspectionResultConstants.NAME;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.IBeanValueProperty;
+import org.eclipse.core.databinding.observable.Realm;
+import org.eclipse.core.databinding.observable.value.IObservableValue;
+import org.eclipse.core.databinding.observable.value.IValueChangeListener;
+import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
+import org.eclipse.jface.databinding.swt.DisplayRealm;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -45,8 +51,9 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 	public Control processWidget(Control originalWidget, String elementName, Map<String, String> attributes, SwtMetawidget metawidget) {
 		Class<?> container = WidgetBuilderUtils.getActualClassOrType( attributes, Object.class );
 		String contained = WidgetBuilderUtils.getComponentType(attributes);
+		Class<?> containedClazz = loadClass(contained);
 
-		if (List.class.isAssignableFrom(container) && contained != null){
+		if (List.class.isAssignableFrom(container) && contained != null && containedClazz != null){
 			TableViewer tableViewer = new TableViewer(metawidget);
 			Table table = tableViewer.getTable();
 			table.setHeaderVisible(true);
@@ -56,20 +63,55 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 			Map<String, String> columns = readPropertiesFromType(metawidget, contained);
 			createColumns(columns, tableViewer);
 
-			setupDataInput(attributes, metawidget, tableViewer);
+			setupDataInput(containedClazz, columns, attributes, metawidget, tableViewer);
 
+			originalWidget.dispose();
 			return tableViewer.getControl();
 		}
 		return originalWidget;
 	}
 
-	private void setupDataInput(Map<String, String> attributes, SwtMetawidget metawidget, TableViewer tableViewer) {
+	private Class<?> loadClass(String contained) {
+		try {
+			return getClass().getClassLoader().loadClass(contained);
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
+	private void setupDataInput(Class<?> containedClazz, Map<String, String> columns, Map<String, String> attributes, SwtMetawidget metawidget, TableViewer tableViewer) {
 		Object toInspect = metawidget.getToInspect();
 
 		String propertyName = attributes.get(NAME);
 		IBeanValueProperty value = BeanProperties.value(toInspect.getClass(), propertyName);
 
+		Realm realm = DisplayRealm.getRealm(metawidget.getDisplay());
+		IObservableValue observableValue = value.observe(realm, toInspect);
+
+		List<IBeanValueProperty> itemProperties = columns.keySet().stream()
+				.map((property) -> BeanProperties.value(containedClazz, property))
+				.collect(Collectors.toList());
+
+		observableValue.addValueChangeListener(new IValueChangeListener() {
+			@Override
+			public void handleValueChange(ValueChangeEvent event) {
+				listenToItems(tableViewer, toInspect, value, realm, itemProperties);
+				tableViewer.setInput(value.getValue(toInspect));
+				tableViewer.refresh();
+			}
+		});
+
+		listenToItems(tableViewer, toInspect, value, realm, itemProperties);
 		tableViewer.setInput(value.getValue(toInspect));
+	}
+
+	private void listenToItems(TableViewer tableViewer, Object toInspect, IBeanValueProperty value, Realm realm, List<IBeanValueProperty> itemProperties) {
+		for (Object item : (List<?>)value.getValue(toInspect)) {
+			for (IBeanValueProperty itemValue : itemProperties) {
+				IObservableValue observableItem = itemValue.observe(realm, item);
+				observableItem.addValueChangeListener((event) -> tableViewer.refresh());
+			}
+		}
 	}
 
 	private void createColumns(Map<String, String> columns, TableViewer tableViewer) {

@@ -118,8 +118,4 @@ public class UpdatingExampleTest extends GuiGeneratorTestBase {
 		assertEquals("X value has changed", updatedX, xLabel.getText());
 		assertEquals("Y value has changed", updatedY, yLabel.getText());
 	}
-
-	private void flushUIEventQueue() {
-		while (display.readAndDispatch()) {} // loop until all UI update events have been processed
-	}
 }

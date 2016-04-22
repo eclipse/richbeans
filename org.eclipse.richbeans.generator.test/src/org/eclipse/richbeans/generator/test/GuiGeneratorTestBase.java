@@ -63,4 +63,8 @@ public class GuiGeneratorTestBase extends SWTTestBase {
 		}
 		return null; // not found
 	}
+
+	protected void flushUIEventQueue() {
+		while (display.readAndDispatch()) {} // loop until all UI update events have been processed
+	}
 }
