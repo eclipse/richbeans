@@ -18,16 +18,37 @@
 
 package org.eclipse.richbeans.generator.example;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TableBean {
+	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
 	private List<TableItemBean> list = new ArrayList<>();
 
-	public void setList(List<TableItemBean> list) {
-		this.list = list;
+	public void addItem(TableItemBean newBean) {
+		List<TableItemBean> originalList = list;
+		list = new ArrayList<>();
+		list.addAll(originalList);
+		list.add(newBean);
+		pcs.firePropertyChange("list", originalList, list);
+	}
+	public void clearList() {
+		List<TableItemBean> originalList = list;
+		list = new ArrayList<>();
+		pcs.firePropertyChange("list", originalList, list);
 	}
 	public List<TableItemBean> getList() {
-		return list;
+		return Collections.unmodifiableList(list);
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.addPropertyChangeListener(listener);
+	}
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.removePropertyChangeListener(listener);
 	}
 }

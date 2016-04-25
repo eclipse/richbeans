@@ -26,7 +26,6 @@ import static org.metawidget.inspector.InspectionResultConstants.NAME;
 import static org.metawidget.inspector.InspectionResultConstants.PARAMETERIZED_TYPE;
 import static org.metawidget.inspector.InspectionResultConstants.TYPE;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,6 +41,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.metawidget.swt.Stub;
 import org.metawidget.swt.SwtMetawidget;
 
 public class TableWidgetProcessorTest {
@@ -51,7 +51,7 @@ public class TableWidgetProcessorTest {
 	public void testCreatesTablesForEmptyLists(){
 		SwtMetawidget metawidget = new SwtMetawidget(shell, SWT.NONE);
 		metawidget.setToInspect(new TableBean());
-		Control widget = new TableWidgetProcessor().processWidget(null, null, getAttributesMap(), metawidget);
+		Control widget = new TableWidgetProcessor().processWidget(new Stub(shell, SWT.NONE), null, getAttributesMap(), metawidget);
 
 		assertThat(widget, instanceOf(Table.class));
 
@@ -67,11 +67,11 @@ public class TableWidgetProcessorTest {
 		TableItemBean tableItem = new TableItemBean();
 		tableItem.setName("bob");
 		tableItem.setAge(99);
-		bean.setList(Arrays.asList(tableItem));
+		bean.addItem(tableItem);
 
 		SwtMetawidget metawidget = new SwtMetawidget(shell, SWT.NONE);
 		metawidget.setToInspect(bean);
-		Control widget = new TableWidgetProcessor().processWidget(null, null, getAttributesMap(), metawidget);
+		Control widget = new TableWidgetProcessor().processWidget(new Stub(shell, SWT.NONE), null, getAttributesMap(), metawidget);
 
 		assertThat(widget, instanceOf(Table.class));
 
