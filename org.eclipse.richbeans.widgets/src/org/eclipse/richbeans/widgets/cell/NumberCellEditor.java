@@ -9,6 +9,7 @@
 package org.eclipse.richbeans.widgets.cell;
 
 import java.lang.reflect.Array;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.richbeans.widgets.decorator.BoundsDecorator;
 import org.eclipse.richbeans.widgets.decorator.FloatArrayDecorator;
 import org.eclipse.richbeans.widgets.decorator.FloatDecorator;
+import org.eclipse.richbeans.widgets.decorator.IDecoratorValidator;
 import org.eclipse.richbeans.widgets.decorator.IntegerArrayDecorator;
 import org.eclipse.richbeans.widgets.decorator.IntegerDecorator;
 import org.eclipse.richbeans.widgets.internal.GridUtils;
@@ -26,6 +28,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -114,6 +117,18 @@ public class NumberCellEditor extends TextCellEditor {
 		return ret;
 	}
 	
+	public Text getText() {
+		return text;
+	}
+	
+	public NumberFormat getNumberFormat() {
+		return deco.getNumberFormat();
+	}
+
+	public String getRegEx() {
+		return deco.getExpression();
+	}
+	
 	public void setDecimalFormat(String format) {
 		deco.setDecimalFormat(format);
 	}
@@ -121,6 +136,11 @@ public class NumberCellEditor extends TextCellEditor {
 	public void setAllowInvalidValues(boolean allowInvalidValues) {
 		deco.setAllowInvalidValues(allowInvalidValues);
 	}
+	
+	public void setDelegateDecorator(IDecoratorValidator decorator) {
+		deco.setDelegate(decorator);
+	}
+
 	
 	protected void doSetValue(Object value) {
 		if (value instanceof Number)    value = value.toString();

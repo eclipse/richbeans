@@ -38,6 +38,7 @@ public class BoundsDecorator extends RegexDecorator {
     private Object       minimum;
     private NumberFormat numberFormat;
 	private boolean      isError=false;
+	private IDecoratorValidator delegate;
 
 	public BoundsDecorator(Text text, String stringPattern, NumberFormat numFormat) {
 		super(text, stringPattern);
@@ -46,7 +47,7 @@ public class BoundsDecorator extends RegexDecorator {
 	}
 	
 	@Override
-	protected boolean check(String totalString, String delta) {
+	public boolean check(String totalString, String delta) {
 		
 		if ("".equals(totalString)) return true;
 		Number val = null;
@@ -58,27 +59,18 @@ public class BoundsDecorator extends RegexDecorator {
 		if (val==null) return false;
 		
 		boolean ok = checkBounds(val, true); // Colors red not unacceptable value.
-		
+		if (ok && delegate!=null) {
+			ok = delegate.check(totalString, delta);
+			if (!ok) {
+				setError(true, createToolTipTextFromBounds(delegate.getExpression()));
+				fireValueChangedListeners(new ValueChangeEvent(BoundsDecorator.this, val));
+			}
+		}
 		return allowInvalidValues||ok;
 	}
 
-	protected final Number parseValue(String totalString) {
-		if ("".equals(totalString)) {
-			return Double.NaN;
-		}
-		Number val = null;
-		if ("∞".equals(totalString)) {
-			val = Double.POSITIVE_INFINITY;
-		} else if ("-∞".equals(totalString)) {
-			val = Double.NEGATIVE_INFINITY;
-		} else {
-			try {
-		        val = Double.parseDouble(totalString);
-			} catch (Exception empty) {
-				val = Double.NaN;
-			}
-		}
-		return val;
+	private String createToolTipTextFromBounds(String expression) {
+		return "Expression '"+expression+"' is false";
 	}
 
 	public Number getValue() {
@@ -97,11 +89,11 @@ public class BoundsDecorator extends RegexDecorator {
 		}
 	}
 
-	private boolean checkBounds(final Number value, boolean fireListeners) {
+	protected boolean checkBounds(final Number value, boolean fireListeners) {
 		return checkBounds(value, getMinimum(), getMaximum(), fireListeners);
 	}
 	
-	private boolean checkBounds(final Number value, Number min, Number max, boolean fireListeners) {
+	protected boolean checkBounds(final Number value, Number min, Number max, boolean fireListeners) {
 
 		boolean ok = true;
 		try {
@@ -317,5 +309,13 @@ public class BoundsDecorator extends RegexDecorator {
 
 	public boolean isError() {
 		return isError;
+	}
+
+	public IDecoratorValidator getDelegate() {
+		return delegate;
+	}
+
+	public void setDelegate(IDecoratorValidator delegate) {
+		this.delegate = delegate;
 	}
 }

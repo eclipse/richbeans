@@ -40,14 +40,6 @@ public class FileDecorator extends RegexDecorator {
 	static private boolean isWindowsOS() {
 		return (System.getProperty("os.name").indexOf("Windows") == 0);
 	}
-	
-	/**
-	 * Please override this method to provide additional checking when a character is entered.
-	 * @return true if ok, false otherwise.
-	 */
-	protected boolean check(String value, String delta) {
-		return true;
-	}
 
 	public boolean isError() {
         if (allowInvalidValues) return false;
