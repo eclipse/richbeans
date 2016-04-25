@@ -109,7 +109,7 @@
                 <testSourceDirectory>${basedir}/src</testSourceDirectory>
                 <testClassesDirectory>${basedir}/bin</testClassesDirectory>
 				<excludes>
-					<exclude>org/eclipse/richbeans/generator/**/Suite.java</exclude>
+ 					<exclude>org/eclipse/richbeans/generator/**/Suite.java</exclude>
 				</excludes>
 				<includes>
 					<include>${test.includes}</include>

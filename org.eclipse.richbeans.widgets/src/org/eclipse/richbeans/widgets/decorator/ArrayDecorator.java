@@ -29,7 +29,7 @@ class ArrayDecorator extends BoundsDecorator {
 	}
 
 	@Override
-	protected boolean check(String totalString, String delta) {
+	public boolean check(String totalString, String delta) {
 
 		final List<String> strings = getList(totalString, delimiter);
 		if (strings==null) return true;
