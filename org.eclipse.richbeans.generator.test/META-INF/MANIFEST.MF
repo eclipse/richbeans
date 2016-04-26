@@ -5,7 +5,6 @@ Bundle-SymbolicName: org.eclipse.richbeans.generator.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.eclipse.richbeans.generator;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.mockito.mockito-core;bundle-version="1.10.19",
- org.objenesis;bundle-version="2.2.0",
- org.junit
+Require-Bundle: org.junit,
+ org.mockito;bundle-version="1.9.5"
 Service-Component: OSGI-INF/*.xml
