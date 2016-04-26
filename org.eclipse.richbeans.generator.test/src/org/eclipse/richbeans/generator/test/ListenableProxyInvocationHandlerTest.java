@@ -28,6 +28,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
+import java.util.List;
 
 import org.eclipse.richbeans.generator.ListenableProxyFactory.PropertyChangeInterface;
 import org.eclipse.richbeans.generator.ListenableProxyInvocationHandler;
@@ -161,5 +162,10 @@ public class ListenableProxyInvocationHandlerTest {
 		public void setAwesome(boolean awesome) {
 			this.awesome = awesome;
 		}
+	}
+
+	public interface GenericTestExample{
+		public List<String> getList();
+		public void setList(List<String> list);
 	}
 }

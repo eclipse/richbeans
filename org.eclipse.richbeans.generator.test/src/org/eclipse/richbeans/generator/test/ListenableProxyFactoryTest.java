@@ -26,6 +26,7 @@ import static org.mockito.Mockito.mock;
 
 import java.beans.PropertyChangeListener;
 import java.lang.reflect.Proxy;
+import java.util.List;
 
 import org.eclipse.richbeans.generator.ListenableProxyFactory;
 import org.eclipse.richbeans.generator.ListenableProxyInvocationHandler;
@@ -34,28 +35,36 @@ import org.junit.Test;
 public class ListenableProxyFactoryTest {
 	@Test
 	public void testCreatesProxyOfSameType(){
-		TestExample proxy = createProxy();
+		TestExample proxy = createProxy(TestExample.class);
 		assertThat(proxy, is(instanceOf(TestExample.class)));
 	}
 
 	@Test
 	public void testCreatesThatImplementsPropertyChangeListeningAddAndRemove() throws Exception{
-		TestExample proxy = createProxy();
+		TestExample proxy = createProxy(TestExample.class);
 		assertThat(proxy.getClass().getMethod("addPropertyChangeListener", PropertyChangeListener.class), notNullValue());
 		assertThat(proxy.getClass().getMethod("removePropertyChangeListener", PropertyChangeListener.class), notNullValue());
 	}
 
 	@Test
 	public void testUsesTheListeningHandler() throws Exception{
-		TestExample proxy = createProxy();
+		TestExample proxy = createProxy(TestExample.class);
 		assertThat(Proxy.getInvocationHandler(proxy), is(instanceOf(ListenableProxyInvocationHandler.class)));
 	}
 
-	private TestExample createProxy() {
-		TestExample proxy = new ListenableProxyFactory<TestExample>(TestExample.class).createProxyFor(mock(TestExample.class));
-		return proxy;
+	@Test(expected=UnsupportedOperationException.class)
+	public void testFailsToMockMethodsWithGenericTypes(){
+		createProxy(GenericTestExample.class);
+	}
+
+	private <T> T createProxy(Class<T> clazz) {
+		return new ListenableProxyFactory<T>(clazz).createProxyFor(mock(clazz));
 	}
 
 	public interface TestExample{
+	}
+
+	public interface GenericTestExample{
+		public List<String> getList();
 	}
 }
