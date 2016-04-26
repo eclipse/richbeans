@@ -25,12 +25,21 @@ import org.eclipse.swt.widgets.Text;
  * 
  * By simply changing the pattern it can become another decorator (e.g. a DateDecorator).
  */
-public class RegexDecorator implements VerifyListener {
+public class RegexDecorator implements IDecoratorValidator, VerifyListener {
 
 	protected Text    text;
 	protected Pattern pattern;
 	protected boolean allowInvalidValues = false;
+	protected boolean isError = false;
 
+	/**
+	 * May be used to create an unattached decorator.
+	 * This can be used as a delegate decorator for instance on BoundsDecorator
+	 */
+	public RegexDecorator() {
+
+	}
+	
 	/**
 	 * 
 	 * @param text
@@ -67,16 +76,8 @@ public class RegexDecorator implements VerifyListener {
 		}
 	}
 	
-	/**
-	 * Please override this method to provide additional checking when a character is entered.
-	 * @return true if ok, false otherwise.
-	 */
-	protected boolean check(String value, String delta) {
-		return true;
-	}
-
 	public void dispose() {
-		text.removeVerifyListener(this);
+		if (text!=null) text.removeVerifyListener(this);
 	}
 
 	/**
@@ -86,6 +87,7 @@ public class RegexDecorator implements VerifyListener {
 	 * @return true if error.
 	 */
     public boolean isError() {
+    	if (text!=null) return isError;
     	Matcher matcher = pattern.matcher(text.getText());
     	if (matcher.matches()) return false;
     	return true;
@@ -102,6 +104,9 @@ public class RegexDecorator implements VerifyListener {
 	 */
 	public void setAllowInvalidValues(boolean allowInvalidValues) {
 		this.allowInvalidValues = allowInvalidValues;
+	}
+	public String getExpression() {
+		return pattern.pattern();
 	}
 
 }

@@ -4,7 +4,7 @@ Bundle-Name: Widgets
 Bundle-SymbolicName: org.eclipse.richbeans.widgets;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Diamond Light Source
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: org.eclipse.richbeans.widgets,
  org.eclipse.richbeans.widgets.cell,
  org.eclipse.richbeans.widgets.content,
