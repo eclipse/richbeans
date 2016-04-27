@@ -22,9 +22,9 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.mock;
 
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.List;
 
@@ -57,14 +57,18 @@ public class ListenableProxyFactoryTest {
 		createProxy(GenericTestExample.class);
 	}
 
+	@SuppressWarnings("unchecked")
 	private <T> T createProxy(Class<T> clazz) {
-		return new ListenableProxyFactory<T>(clazz).createProxyFor(mock(clazz));
+		InvocationHandler nullHandler = (o,m,a)->{return null;};
+		T deligate = (T) Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{clazz}, nullHandler);
+
+		return new ListenableProxyFactory<T>(clazz).createProxyFor(deligate);
 	}
 
 	public interface TestExample{
 	}
-
 	public interface GenericTestExample{
 		public List<String> getList();
+		public void setList(List<String> list);
 	}
 }
