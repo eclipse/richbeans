@@ -22,8 +22,18 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(org.junit.runners.Suite.class)
-@SuiteClasses({ DialogTest.class, DoublyNestedExampleTest.class, GuiGeneratorTest.class, SimpleExampleTest.class,
-		UpdatingExampleTest.class })
+@SuiteClasses({
+	DialogTest.class,
+	DoublyNestedExampleTest.class,
+	GuiGeneratorTest.class,
+	ListenableProxyFactoryTest.class,
+	ListenableProxyInvocationHandlerTest.class,
+	ListStructuredContentProviderTest.class,
+	SimpleExampleTest.class,
+	TableExampleTest.class,
+	TableWidgetProcessorTest.class,
+	UpdatingExampleTest.class
+})
 public class Suite {
 
 }

@@ -18,19 +18,37 @@
 
 package org.eclipse.richbeans.generator.example;
 
-import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiTooltip;
-import org.metawidget.inspector.annotation.UiReadOnly;
 
-public interface UpdatingBean {
+public class UpdatingBeanImpl implements UpdatingBean {
+
 	public static final String UPDATE_BUTTON_TOOLTIP = "Select to turn on automatic updating of the X and Y values by a background thread";
 
-	@UiTooltip(UPDATE_BUTTON_TOOLTIP)
-	public boolean isUpdate();
-	public void setUpdate(boolean newValue);
-	@UiReadOnly
-	public double getX();
-	public void setX(double newValue);
-	@UiReadOnly
-	public double getY();
-	public void setY(double newValue);
+	private boolean update;
+	private double x;
+	private double y;
+
+	@Override
+	public boolean isUpdate() {
+		return update;
+	}
+	@Override
+	public void setUpdate(boolean newValue) {
+		this.update = newValue;
+	}
+	@Override
+	public double getX() {
+		return x;
+	}
+	@Override
+	public void setX(double newValue) {
+		this.x = newValue;
+	}
+	@Override
+	public double getY() {
+		return y;
+	}
+	@Override
+	public void setY(double newValue) {
+		this.y = newValue;
+	}
 }

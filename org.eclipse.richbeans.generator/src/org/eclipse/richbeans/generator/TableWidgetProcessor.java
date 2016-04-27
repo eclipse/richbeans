@@ -116,15 +116,16 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 
 	private void createColumns(Map<String, String> columns, TableViewer tableViewer) {
 		for (String column : columns.keySet()) {
-			TableViewerColumn colFirstName = new TableViewerColumn(tableViewer, SWT.NONE);
-			colFirstName.getColumn().setWidth(200);
-			colFirstName.getColumn().setText(columns.get(column));
-			colFirstName.setLabelProvider(new ColumnLabelProvider() {
+			TableViewerColumn columnViewer = new TableViewerColumn(tableViewer, SWT.NONE);
+			columnViewer.getColumn().setWidth(200);
+			columnViewer.getColumn().setText(columns.get(column));
+			columnViewer.setLabelProvider(new ColumnLabelProvider() {
 				  @Override
 				  public String getText(Object element) {
 				    return BeanProperties.value(element.getClass(), column).getValue(element).toString();
 				  }
 			});
+			columnViewer.setEditingSupport(new TableCellEditingSupport(columnViewer.getViewer(), tableViewer.getTable(), column));
 		}
 	}
 

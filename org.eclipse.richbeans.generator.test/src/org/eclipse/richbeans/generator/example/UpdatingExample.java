@@ -20,6 +20,8 @@ package org.eclipse.richbeans.generator.example;
 
 import java.util.Random;
 
+import org.eclipse.richbeans.generator.ListenableProxyFactory;
+
 /**
  * An example demonstrating two-way data binding. The test object is a bean with property change support. When it is
  * created, a background thread is started which checks the value of the "update" boolean. When <code>true</code>
@@ -27,6 +29,7 @@ import java.util.Random;
  * data binding automatically propagates the changes to the GUI.
  */
 public class UpdatingExample extends GuiGeneratorRunnerBase<UpdatingBean> {
+	private final ListenableProxyFactory<UpdatingBean> proxyFactory = new ListenableProxyFactory<UpdatingBean>(UpdatingBean.class);
 
 	public static void main(String[] args) {
 		new UpdatingExample().run();
@@ -34,7 +37,7 @@ public class UpdatingExample extends GuiGeneratorRunnerBase<UpdatingBean> {
 
 	@Override
 	public UpdatingBean createTestObject() {
-		UpdatingBean updatingBean = new UpdatingBean();
+		UpdatingBean updatingBean = proxyFactory.createProxyFor(new UpdatingBeanImpl());
 		updatingBean.setX(Double.POSITIVE_INFINITY);
 		updatingBean.setY(Double.POSITIVE_INFINITY);
 		new UpdaterThread(updatingBean).start();
