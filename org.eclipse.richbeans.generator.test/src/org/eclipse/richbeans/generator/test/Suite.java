@@ -29,6 +29,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	ListenableProxyFactoryTest.class,
 	ListenableProxyInvocationHandlerTest.class,
 	ListStructuredContentProviderTest.class,
+	RichbeansAnnotationsInspectorTest.class,
 	SimpleExampleTest.class,
 	TableExampleTest.class,
 	TableWidgetProcessorTest.class,

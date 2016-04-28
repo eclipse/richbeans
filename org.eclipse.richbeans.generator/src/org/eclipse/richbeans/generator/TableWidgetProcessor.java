@@ -39,6 +39,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.metawidget.swt.SwtMetawidget;
+import org.metawidget.util.ClassUtils;
 import org.metawidget.util.WidgetBuilderUtils;
 import org.metawidget.util.XmlUtils;
 import org.metawidget.widgetprocessor.iface.WidgetProcessor;
@@ -51,7 +52,7 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 	public Control processWidget(Control originalWidget, String elementName, Map<String, String> attributes, SwtMetawidget metawidget) {
 		Class<?> container = WidgetBuilderUtils.getActualClassOrType( attributes, Object.class );
 		String contained = WidgetBuilderUtils.getComponentType(attributes);
-		Class<?> containedClazz = loadClass(contained);
+		Class<?> containedClazz = loadContainedClass(contained);
 
 		if (List.class.isAssignableFrom(container) && contained != null && containedClazz != null){
 			TableViewer tableViewer = new TableViewer(metawidget);
@@ -71,12 +72,11 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 		return originalWidget;
 	}
 
-	private Class<?> loadClass(String contained) {
-		try {
-			return getClass().getClassLoader().loadClass(contained);
-		} catch (Exception e) {
-			return null;
+	private Class<?> loadContainedClass(String contained) {
+		if (contained != null){
+			return ClassUtils.niceForName(contained);
 		}
+		return null;
 	}
 
 	private void setupDataInput(Class<?> containedClazz, Map<String, String> columns, Map<String, String> attributes, SwtMetawidget metawidget, TableViewer tableViewer) {
@@ -139,7 +139,9 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 		for ( int i = 0; i < elements.getLength(); i++ ) {
 		   Node node = elements.item(i);
 		   Map<String, String> attributesAsMap = XmlUtils.getAttributesAsMap( node );
-		   columns.put(attributesAsMap.get(NAME), metawidget.getLabelString( attributesAsMap ));
+		   if (!"true".equals(attributesAsMap.get(RichbeansAnnotationsInspector.HIDDEN))){
+			   columns.put(attributesAsMap.get(NAME), metawidget.getLabelString(attributesAsMap));
+		   }
 		}
 		return columns;
 	}
