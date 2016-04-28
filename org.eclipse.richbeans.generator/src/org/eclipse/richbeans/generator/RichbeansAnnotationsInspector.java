@@ -1,11 +1,15 @@
 package org.eclipse.richbeans.generator;
 
+import java.lang.annotation.Annotation;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiHidden;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiTooltip;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
 import org.metawidget.inspector.impl.BaseObjectInspector;
@@ -26,35 +30,28 @@ public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 	public static final String MAXIMUM_VALUE = "maximumValue";
 	public static final String UNITS = "units";
 	public static final String TOOLTIP = "tooltip";
+	public static final String HIDDEN = "hidden";
 
 	@Override
-	protected Map<String, String> inspectProperty(Property property) throws Exception {
+	public Map<String, String> inspectProperty(Property property) throws Exception {
 		Map<String, String> attributes = new HashMap<String, String>();
 
-		// Check the minimum value annotation
-		MinimumValue minmiumValue = property.getAnnotation(MinimumValue.class);
-		if (minmiumValue != null) {
-			attributes.put(MINIMUM_VALUE, minmiumValue.value());
-		}
-
-		// Check the maximum value annotation
-		MaximumValue maximumValue = property.getAnnotation(MaximumValue.class);
-		if (maximumValue != null) {
-			attributes.put(MAXIMUM_VALUE, maximumValue.value());
-		}
-
-		// Check the maximum value annotation
-		Units units = property.getAnnotation(Units.class);
-		if (units != null) {
-			attributes.put(UNITS, units.value());
-		}
-
-		// Check the tooltip annotation
-		UiTooltip uiTooltip = property.getAnnotation(UiTooltip.class);
-		if (uiTooltip != null) {
-			attributes.put(TOOLTIP, uiTooltip.value());
-		}
+		attributes.putAll(setValueAttribute(MinimumValue.class, MinimumValue::value, MINIMUM_VALUE, property));
+		attributes.putAll(setValueAttribute(MaximumValue.class, MaximumValue::value, MAXIMUM_VALUE, property));
+		attributes.putAll(setValueAttribute(Units.class, Units::value, UNITS, property));
+		attributes.putAll(setValueAttribute(UiTooltip.class, UiTooltip::value, TOOLTIP, property));
+		attributes.putAll(setValueAttribute(UiHidden.class, (ann)->"true", HIDDEN, property));
 
 		return attributes;
+	}
+
+	private <T extends Annotation> Map<String,String> setValueAttribute(Class<T> annotationClazz, Function<T, String> valueExtractor, String attributeName, Property property) {
+		T annotation = property.getAnnotation(annotationClazz);
+		if (annotation != null) {
+			Map<String, String> attributes = new HashMap<>();
+			attributes.put(attributeName, valueExtractor.apply(annotation));
+			return attributes;
+		}
+		return Collections.emptyMap();
 	}
 }

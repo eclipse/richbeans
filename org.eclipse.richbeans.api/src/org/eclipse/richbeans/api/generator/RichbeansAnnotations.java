@@ -57,4 +57,13 @@ public class RichbeansAnnotations {
 	public static @interface UiTooltip {
 		String value();
 	}
+	
+	/**
+	 * Don't render this field
+	 * 
+	 * @author Kevin Savage
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public static @interface UiHidden {}
 }
