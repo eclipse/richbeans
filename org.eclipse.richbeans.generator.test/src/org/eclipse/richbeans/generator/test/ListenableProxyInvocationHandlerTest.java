@@ -31,7 +31,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
-import org.eclipse.richbeans.generator.ListenableProxyFactory.PropertyChangeInterface;
+import org.eclipse.richbeans.api.generator.IListenableProxyFactory.PropertyChangeInterface;
 import org.eclipse.richbeans.generator.ListenableProxyInvocationHandler;
 import org.junit.Test;
 

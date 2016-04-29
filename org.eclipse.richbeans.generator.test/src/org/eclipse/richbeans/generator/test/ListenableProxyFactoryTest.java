@@ -62,7 +62,7 @@ public class ListenableProxyFactoryTest {
 		InvocationHandler nullHandler = (o,m,a)->{return null;};
 		T deligate = (T) Proxy.newProxyInstance(getClass().getClassLoader(), new Class<?>[]{clazz}, nullHandler);
 
-		return new ListenableProxyFactory<T>(clazz).createProxyFor(deligate);
+		return new ListenableProxyFactory().createProxyFor(deligate, clazz);
 	}
 
 	public interface TestExample{

@@ -20,6 +20,7 @@ package org.eclipse.richbeans.generator.example;
 
 import java.util.Random;
 
+import org.eclipse.richbeans.api.generator.IListenableProxyFactory;
 import org.eclipse.richbeans.generator.ListenableProxyFactory;
 
 /**
@@ -29,7 +30,7 @@ import org.eclipse.richbeans.generator.ListenableProxyFactory;
  * data binding automatically propagates the changes to the GUI.
  */
 public class UpdatingExample extends GuiGeneratorRunnerBase<UpdatingBean> {
-	private final ListenableProxyFactory<UpdatingBean> proxyFactory = new ListenableProxyFactory<UpdatingBean>(UpdatingBean.class);
+	private final IListenableProxyFactory proxyFactory = new ListenableProxyFactory();
 
 	public static void main(String[] args) {
 		new UpdatingExample().run();
@@ -37,7 +38,7 @@ public class UpdatingExample extends GuiGeneratorRunnerBase<UpdatingBean> {
 
 	@Override
 	public UpdatingBean createTestObject() {
-		UpdatingBean updatingBean = proxyFactory.createProxyFor(new UpdatingBeanImpl());
+		UpdatingBean updatingBean = proxyFactory.createProxyFor(new UpdatingBeanImpl(), UpdatingBean.class);
 		updatingBean.setX(Double.POSITIVE_INFINITY);
 		updatingBean.setY(Double.POSITIVE_INFINITY);
 		new UpdaterThread(updatingBean).start();

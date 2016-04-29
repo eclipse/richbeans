@@ -66,4 +66,14 @@ public class RichbeansAnnotations {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
 	public static @interface UiHidden {}
+	
+
+	/**
+	 * perform action
+	 * 
+	 * @author Kevin Savage
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public static @interface UiAction {}
 }
