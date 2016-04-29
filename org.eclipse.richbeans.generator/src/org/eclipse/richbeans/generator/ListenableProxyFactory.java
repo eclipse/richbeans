@@ -25,16 +25,13 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Proxy;
 import java.util.stream.Stream;
 
-public class ListenableProxyFactory<T> {
-	private final Class<T> clazz;
+import org.eclipse.richbeans.api.generator.IListenableProxyFactory;
 
-	public ListenableProxyFactory(Class<T> clazz) {
-		this.clazz = clazz;
-	}
-
+public class ListenableProxyFactory implements IListenableProxyFactory{
+	@Override
 	@SuppressWarnings("unchecked")
-	public T createProxyFor(T original) {
-		if (hasGenerics(clazz)){
+	public <S extends T, T> T createProxyFor(S original, Class<T> interfaceImplemented) {
+		if (hasGenerics(interfaceImplemented)){
 			throw new UnsupportedOperationException("because of javas implementation of proxy, we can't currently support generic property types");
 		}
 
@@ -42,12 +39,12 @@ public class ListenableProxyFactory<T> {
 		InvocationHandler handler = new ListenableProxyInvocationHandler<T>(original, propertyChangeSupport);
 		return (T) Proxy.newProxyInstance(
 				getClass().getClassLoader(),
-				new Class[]{clazz, PropertyChangeInterface.class},
+				new Class[]{interfaceImplemented, PropertyChangeInterface.class},
 				handler
 			);
 	}
 
-	private boolean hasGenerics(Class<T> clazz) {
+	private <S> boolean hasGenerics(Class<S> clazz) {
 		return Stream.of(clazz.getMethods())
 				.map(method -> method.getGenericReturnType())
 				.anyMatch(type -> type instanceof ParameterizedType);

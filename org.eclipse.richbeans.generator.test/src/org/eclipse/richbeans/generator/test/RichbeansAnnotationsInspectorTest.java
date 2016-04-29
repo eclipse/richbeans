@@ -32,6 +32,7 @@ import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiTooltip;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
 import org.eclipse.richbeans.generator.RichbeansAnnotationsInspector;
 import org.junit.Test;
+import org.metawidget.inspector.InspectionResultConstants;
 import org.metawidget.inspector.impl.Trait;
 import org.metawidget.inspector.impl.actionstyle.Action;
 import org.metawidget.inspector.impl.propertystyle.Property;
@@ -64,7 +65,7 @@ public class RichbeansAnnotationsInspectorTest {
 
 	@Test
 	public void testSetsActionBoolean() throws Exception{
-		assertThat(inspectMockAction().get(RichbeansAnnotationsInspector.ACTION), is("true"));
+		assertThat(inspectMockAction().get(InspectionResultConstants.NAME), is("trait name"));
 	}
 
 	private Map<String, String> inspectMockProperty() throws Exception {
@@ -99,11 +100,11 @@ public class RichbeansAnnotationsInspectorTest {
 
 		@Override
 		public boolean isAnnotationPresent(Class<? extends Annotation> annotation) {
-			return false;
+			return getAnnotation(annotation) != null;
 		}
 		@Override
 		public String getName() {
-			return null;
+			return "trait name";
 		}
 	}
 
