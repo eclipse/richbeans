@@ -26,11 +26,14 @@ import java.util.Map;
 
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiAction;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiHidden;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiTooltip;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
 import org.eclipse.richbeans.generator.RichbeansAnnotationsInspector;
 import org.junit.Test;
+import org.metawidget.inspector.impl.Trait;
+import org.metawidget.inspector.impl.actionstyle.Action;
 import org.metawidget.inspector.impl.propertystyle.Property;
 
 public class RichbeansAnnotationsInspectorTest {
@@ -59,18 +62,30 @@ public class RichbeansAnnotationsInspectorTest {
 		assertThat(inspectMockProperty().get(RichbeansAnnotationsInspector.HIDDEN), is("true"));
 	}
 
+	@Test
+	public void testSetsActionBoolean() throws Exception{
+		assertThat(inspectMockAction().get(RichbeansAnnotationsInspector.ACTION), is("true"));
+	}
+
 	private Map<String, String> inspectMockProperty() throws Exception {
 		Property property = new MockProperty();
 		Map<String, String> map = new RichbeansAnnotationsInspector().inspectProperty(property);
 		return map;
 	}
 
-	public class MockProperty implements Property{
+	private Map<String, String> inspectMockAction() throws Exception {
+		Action action = new MockAction();
+		Map<String, String> map = new RichbeansAnnotationsInspector().inspectAction(action);
+		return map;
+	}
+
+	private class MockTrait implements Trait{
 		@MinimumValue("5")
 		@MaximumValue("500")
 		@Units("BTUH")
 		@UiHidden()
 		@UiTooltip("a tooltip")
+		@UiAction
 		public void annotatedMethod(){}
 
 		@Override
@@ -90,8 +105,19 @@ public class RichbeansAnnotationsInspectorTest {
 		public String getName() {
 			return null;
 		}
+	}
+
+	private class MockAction extends MockTrait implements Action {}
+
+	private class MockProperty extends MockTrait implements Property{
 		@Override
-		public void write(Object obj, Object value) {}
+		public String getType() {
+			return null;
+		}
+		@Override
+		public boolean isReadable() {
+			return false;
+		}
 		@Override
 		public Object read(Object obj) {
 			return null;
@@ -101,12 +127,7 @@ public class RichbeansAnnotationsInspectorTest {
 			return false;
 		}
 		@Override
-		public boolean isReadable() {
-			return false;
-		}
-		@Override
-		public String getType() {
-			return null;
+		public void write(Object obj, Object value) {
 		}
 		@Override
 		public String getGenericType() {

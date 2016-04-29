@@ -1,5 +1,7 @@
 package org.eclipse.richbeans.generator;
 
+import static org.metawidget.inspector.InspectionResultConstants.NAME;
+
 import java.lang.annotation.Annotation;
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,10 +11,14 @@ import java.util.function.Function;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiAction;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiHidden;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiTooltip;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
 import org.metawidget.inspector.impl.BaseObjectInspector;
+import org.metawidget.inspector.impl.BaseObjectInspectorConfig;
+import org.metawidget.inspector.impl.Trait;
+import org.metawidget.inspector.impl.actionstyle.Action;
 import org.metawidget.inspector.impl.propertystyle.Property;
 
 /**
@@ -31,6 +37,17 @@ public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 	public static final String UNITS = "units";
 	public static final String TOOLTIP = "tooltip";
 	public static final String HIDDEN = "hidden";
+	public static final String ACTION = "action";
+
+	public RichbeansAnnotationsInspector() {
+		super(config());
+	}
+
+	private static BaseObjectInspectorConfig config() {
+		BaseObjectInspectorConfig baseObjectInspectorConfig = new BaseObjectInspectorConfig();
+		baseObjectInspectorConfig.setActionStyle(new RichbeansActionStyle());
+		return baseObjectInspectorConfig;
+	}
 
 	@Override
 	public Map<String, String> inspectProperty(Property property) throws Exception {
@@ -40,12 +57,25 @@ public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 		attributes.putAll(setValueAttribute(MaximumValue.class, MaximumValue::value, MAXIMUM_VALUE, property));
 		attributes.putAll(setValueAttribute(Units.class, Units::value, UNITS, property));
 		attributes.putAll(setValueAttribute(UiTooltip.class, UiTooltip::value, TOOLTIP, property));
-		attributes.putAll(setValueAttribute(UiHidden.class, (ann)->"true", HIDDEN, property));
+		attributes.putAll(setBooleanValue(UiHidden.class, HIDDEN, property));
 
 		return attributes;
 	}
 
-	private <T extends Annotation> Map<String,String> setValueAttribute(Class<T> annotationClazz, Function<T, String> valueExtractor, String attributeName, Property property) {
+	@Override
+	public Map<String, String> inspectAction(Action action) throws Exception {
+		Map<String, String> attributes = new HashMap<>();
+		if ( action.isAnnotationPresent( UiAction.class ) ) {
+			attributes.put( NAME, action.getName() );
+		}
+		return attributes;
+	}
+
+	private <T extends Annotation> Map<String, String> setBooleanValue(Class<T> annotationClazz, String attributeName, Trait property) {
+		return setValueAttribute(annotationClazz, (ann) -> "true", attributeName, property);
+	}
+
+	private <T extends Annotation> Map<String,String> setValueAttribute(Class<T> annotationClazz, Function<T, String> valueExtractor, String attributeName, Trait property) {
 		T annotation = property.getAnnotation(annotationClazz);
 		if (annotation != null) {
 			Map<String, String> attributes = new HashMap<>();
