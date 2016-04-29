@@ -18,7 +18,6 @@
 
 package org.eclipse.richbeans.generator;
 
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.ParameterizedType;
@@ -38,7 +37,7 @@ public class ListenableProxyFactory implements IListenableProxyFactory{
 		PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(original);
 		InvocationHandler handler = new ListenableProxyInvocationHandler<T>(original, propertyChangeSupport);
 		return (T) Proxy.newProxyInstance(
-				getClass().getClassLoader(),
+				original.getClass().getClassLoader(),
 				new Class[]{interfaceImplemented, PropertyChangeInterface.class},
 				handler
 			);
@@ -50,8 +49,5 @@ public class ListenableProxyFactory implements IListenableProxyFactory{
 				.anyMatch(type -> type instanceof ParameterizedType);
 	}
 
-	public interface PropertyChangeInterface{
-		public void addPropertyChangeListener(PropertyChangeListener listener);
-		public void removePropertyChangeListener(PropertyChangeListener listener);
-	}
+
 }
