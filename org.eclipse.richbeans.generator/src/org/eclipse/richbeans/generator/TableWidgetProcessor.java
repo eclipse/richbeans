@@ -18,8 +18,10 @@
 
 package org.eclipse.richbeans.generator;
 
+import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.DELETE_METHOD;
 import static org.metawidget.inspector.InspectionResultConstants.NAME;
 
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +34,6 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.core.databinding.observable.value.IValueChangeListener;
 import org.eclipse.core.databinding.observable.value.ValueChangeEvent;
 import org.eclipse.jface.databinding.swt.DisplayRealm;
-import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -43,16 +44,21 @@ import org.metawidget.util.ClassUtils;
 import org.metawidget.util.WidgetBuilderUtils;
 import org.metawidget.util.XmlUtils;
 import org.metawidget.widgetprocessor.iface.WidgetProcessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawidget> {
+	private final Logger logger = LoggerFactory.getLogger(TableWidgetProcessor.class);
+
 	@Override
 	public Control processWidget(Control originalWidget, String elementName, Map<String, String> attributes, SwtMetawidget metawidget) {
 		Class<?> container = WidgetBuilderUtils.getActualClassOrType( attributes, Object.class );
 		String contained = WidgetBuilderUtils.getComponentType(attributes);
 		Class<?> containedClazz = loadContainedClass(contained);
+		Method deleteMethod = getMethod(metawidget.getToInspect(), containedClazz, attributes);
 
 		if (List.class.isAssignableFrom(container) && contained != null && containedClazz != null){
 			TableViewer tableViewer = new TableViewer(metawidget);
@@ -63,6 +69,7 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 
 			Map<String, String> columns = readPropertiesFromType(metawidget, contained);
 			createColumns(columns, tableViewer);
+			createDeleteButtons(tableViewer, deleteMethod, metawidget.getToInspect());
 
 			setupDataInput(containedClazz, columns, attributes, metawidget, tableViewer);
 
@@ -70,6 +77,18 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 			return tableViewer.getControl();
 		}
 		return originalWidget;
+	}
+
+	private Method getMethod(Object toInspect, Class<?> contained, Map<String,String> attributes){
+		String methodName = attributes.get(DELETE_METHOD);
+		if (toInspect != null && contained != null && methodName != null){
+			try {
+				return toInspect.getClass().getMethod(methodName, contained);
+			} catch (NoSuchMethodException | SecurityException e) {
+				logger.warn("couldn't find specified delete method", e);
+			}
+		}
+		return null;
 	}
 
 	private Class<?> loadContainedClass(String contained) {
@@ -117,15 +136,18 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 	private void createColumns(Map<String, String> columns, TableViewer tableViewer) {
 		for (String column : columns.keySet()) {
 			TableViewerColumn columnViewer = new TableViewerColumn(tableViewer, SWT.NONE);
-			columnViewer.getColumn().setWidth(200);
 			columnViewer.getColumn().setText(columns.get(column));
-			columnViewer.setLabelProvider(new ColumnLabelProvider() {
-				  @Override
-				  public String getText(Object element) {
-				    return BeanProperties.value(element.getClass(), column).getValue(element).toString();
-				  }
-			});
+			columnViewer.setLabelProvider(new TableColumnLabelProvider(column));
 			columnViewer.setEditingSupport(new TableCellEditingSupport(columnViewer.getViewer(), tableViewer.getTable(), column));
+			columnViewer.getColumn().pack();
+		}
+	}
+
+	private void createDeleteButtons(TableViewer tableViewer, Method action, Object toInspect) {
+		if (action != null){
+			TableViewerColumn columnViewer = new TableViewerColumn(tableViewer, SWT.NONE);
+			columnViewer.setLabelProvider(new DeleteLableProvider(action, toInspect));
+			columnViewer.getColumn().pack();
 		}
 	}
 

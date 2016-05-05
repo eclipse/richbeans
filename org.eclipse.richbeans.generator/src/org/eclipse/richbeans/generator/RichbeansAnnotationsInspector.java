@@ -1,6 +1,7 @@
 package org.eclipse.richbeans.generator;
 
 import static org.metawidget.inspector.InspectionResultConstants.NAME;
+import static org.metawidget.inspector.InspectionResultConstants.READ_ONLY;
 
 import java.lang.annotation.Annotation;
 import java.util.Collections;
@@ -11,8 +12,10 @@ import java.util.function.Function;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.RowDeleteAction;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiAction;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiHidden;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiReadOnly;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiTooltip;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
 import org.metawidget.inspector.impl.BaseObjectInspector;
@@ -36,6 +39,7 @@ public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 	public static final String MAXIMUM_VALUE = "maximumValue";
 	public static final String UNITS = "units";
 	public static final String TOOLTIP = "tooltip";
+	public static final String DELETE_METHOD = "deleteMethod";
 	public static final String HIDDEN = "hidden";
 	public static final String ACTION = "action";
 
@@ -57,7 +61,9 @@ public class RichbeansAnnotationsInspector extends BaseObjectInspector {
 		attributes.putAll(setValueAttribute(MaximumValue.class, MaximumValue::value, MAXIMUM_VALUE, property));
 		attributes.putAll(setValueAttribute(Units.class, Units::value, UNITS, property));
 		attributes.putAll(setValueAttribute(UiTooltip.class, UiTooltip::value, TOOLTIP, property));
+		attributes.putAll(setValueAttribute(RowDeleteAction.class, RowDeleteAction::value, DELETE_METHOD, property));
 		attributes.putAll(setBooleanValue(UiHidden.class, HIDDEN, property));
+		attributes.putAll(setBooleanValue(UiReadOnly.class, READ_ONLY, property));
 
 		return attributes;
 	}

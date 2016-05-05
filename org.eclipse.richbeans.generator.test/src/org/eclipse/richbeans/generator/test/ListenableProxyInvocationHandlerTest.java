@@ -118,7 +118,7 @@ public class ListenableProxyInvocationHandlerTest {
 
 		createProxy(example, new PropertyChangeSupport(example)).doSomething();
 
-		assertTrue(((TestExampleImpl)example).somethingWasDone);(example).doSomething();
+		assertTrue(((TestExampleImpl)example).somethingWasDone);
 	}
 
 	@SuppressWarnings("unchecked")

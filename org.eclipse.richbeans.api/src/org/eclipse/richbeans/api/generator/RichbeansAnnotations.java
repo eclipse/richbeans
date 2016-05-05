@@ -76,4 +76,24 @@ public class RichbeansAnnotations {
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
 	public static @interface UiAction {}
+
+	/**
+	 * create read only field
+	 * 
+	 * @author Kevin Savage
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public static @interface UiReadOnly {}
+	
+	/**
+	 * delete item from list
+	 * 
+	 * @author Kevin Savage
+	 */
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public static @interface RowDeleteAction {
+		String value();
+	}
 }

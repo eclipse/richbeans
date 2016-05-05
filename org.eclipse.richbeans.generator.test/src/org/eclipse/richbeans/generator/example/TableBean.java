@@ -24,25 +24,35 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.RowDeleteAction;
+
 public class TableBean {
 	private final PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	private List<TableItemBean> list = new ArrayList<>();
 
 	public void addItem(TableItemBean newBean) {
-		List<TableItemBean> originalList = list;
-		list = new ArrayList<>();
-		list.addAll(originalList);
-		list.add(newBean);
-		pcs.firePropertyChange("list", originalList, list);
+		List<TableItemBean> newList = new ArrayList<>(getList());
+		newList.add(newBean);
+		setList(newList);
 	}
 	public void clearList() {
-		List<TableItemBean> originalList = list;
-		list = new ArrayList<>();
-		pcs.firePropertyChange("list", originalList, list);
+		setList(new ArrayList<>());
 	}
+	public void delete(TableItemBean toDelete){
+		List<TableItemBean> newList = new ArrayList<>(getList());
+		newList.remove(toDelete);
+		setList(newList);
+	}
+
+	@RowDeleteAction("delete")
 	public List<TableItemBean> getList() {
 		return Collections.unmodifiableList(list);
+	}
+	public void setList(List<TableItemBean> list) {
+		List<TableItemBean> originalList = this.list;
+		this.list = list;
+		pcs.firePropertyChange("list", originalList, list);
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
