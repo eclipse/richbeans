@@ -25,12 +25,14 @@ import java.util.function.Function;
 import org.eclipse.core.databinding.beans.BeanProperties;
 import org.eclipse.core.databinding.beans.IBeanValueProperty;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.ColorCellEditor;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.richbeans.widgets.cell.NumberCellEditor;
 import org.eclipse.richbeans.widgets.cell.SpinnerCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Table;
 
 public class TableCellEditingSupport extends EditingSupport {
@@ -57,10 +59,15 @@ public class TableCellEditingSupport extends EditingSupport {
 	@Override
 	public void setValue(Object element, Object value) {
 		IBeanValueProperty property = BeanProperties.value(element.getClass(), column);
-		Object convertedValue = convertors
+		Object parsedValue = parseValue(value, property);
+		property.setValue(element, parsedValue);
+	}
+
+	private Object parseValue(Object value, IBeanValueProperty property) {
+		if (value.getClass() == property.getValueType()) return value;
+		return convertors
 				.get(property.getValueType())
 				.apply(value.toString());
-		property.setValue(element, convertedValue);
 	}
 
 	@Override
@@ -74,10 +81,20 @@ public class TableCellEditingSupport extends EditingSupport {
 
 		if (isInteger(type)){
 			return new SpinnerCellEditor(table, SWT.NONE);
-		} else if (Number.class.isAssignableFrom(type) || type.isPrimitive()){
+		} else if (isNumber(type)){
 			return new NumberCellEditor(table, type, SWT.NONE);
+		} else if (isRGB(type)){
+			return new ColorCellEditor(table, SWT.NONE);
 		}
 		return new TextCellEditor(table, SWT.NONE);
+	}
+
+	private boolean isRGB(Class<?> type) {
+		return RGB.class == type;
+	}
+
+	private boolean isNumber(Class<?> type) {
+		return Number.class.isAssignableFrom(type) || type.isPrimitive();
 	}
 
 	private <T> boolean isInteger(Class<T> clazz){
@@ -89,7 +106,8 @@ public class TableCellEditingSupport extends EditingSupport {
 	}
 
 	@Override
-	protected boolean canEdit(Object element) {
-		return true;
+	public boolean canEdit(Object element) {
+		Class<?> valueType = (Class<?>)BeanProperties.value(element.getClass(), column).getValueType();
+		return isNumber(valueType) || String.class == valueType || isRGB(valueType);
 	}
 }

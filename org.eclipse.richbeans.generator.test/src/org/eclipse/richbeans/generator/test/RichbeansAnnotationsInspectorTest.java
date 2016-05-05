@@ -28,6 +28,7 @@ import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiAction;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiHidden;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiReadOnly;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.UiTooltip;
 import org.eclipse.richbeans.api.generator.RichbeansAnnotations.Units;
 import org.eclipse.richbeans.generator.RichbeansAnnotationsInspector;
@@ -64,8 +65,13 @@ public class RichbeansAnnotationsInspectorTest {
 	}
 
 	@Test
-	public void testSetsActionBoolean() throws Exception{
+	public void testSetsActionToTraitName() throws Exception{
 		assertThat(inspectMockAction().get(InspectionResultConstants.NAME), is("trait name"));
+	}
+
+	@Test
+	public void testSetsReadOnlyBoolean() throws Exception{
+		assertThat(inspectMockProperty().get(InspectionResultConstants.READ_ONLY), is("true"));
 	}
 
 	private Map<String, String> inspectMockProperty() throws Exception {
@@ -87,6 +93,7 @@ public class RichbeansAnnotationsInspectorTest {
 		@UiHidden()
 		@UiTooltip("a tooltip")
 		@UiAction
+		@UiReadOnly
 		public void annotatedMethod(){}
 
 		@Override

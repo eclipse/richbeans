@@ -19,10 +19,15 @@
 package org.eclipse.richbeans.generator.test;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
+import java.util.stream.Stream;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.richbeans.generator.TableCellEditingSupport;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
@@ -62,6 +67,26 @@ public class TableCellEditingSupportTest {
 		assertThat(bean.doubleValue, is(1234.5));
 	}
 
+	@Test
+	public void testSetsRGBTypeProperties(){
+		TestBean bean = new TestBean();
+		new TableCellEditingSupport(new TableViewer(new Shell()), null, "rgb").setValue(bean, new RGB(1,2,3));
+		assertThat(bean.rgb, is(new RGB(1,2,3)));
+	}
+
+	@Test
+	public void testSupportsStringIntegerDoubleAndRGB(){
+		Stream.of("string","integer","intValue","doubleObject","doubleValue","rgb")
+			.map(column -> new TableCellEditingSupport(new TableViewer(new Shell()), null, column))
+			.forEach(support -> assertTrue(support.canEdit(new TestBean())));
+	}
+
+	@Test
+	public void testDoesntSupportOtherThings(){
+		TableCellEditingSupport support = new TableCellEditingSupport(new TableViewer(new Shell()), null, "uneditable");
+		assertFalse(support.canEdit(new UneditableBean()));
+	}
+
 	@SuppressWarnings("unused")
 	private class TestBean {
 		String string;
@@ -69,6 +94,7 @@ public class TableCellEditingSupportTest {
 		int intValue;
 		Double doubleObject;
 		double doubleValue;
+		RGB rgb;
 
 		public void setString(String string){
 			this.string = string;
@@ -84,6 +110,17 @@ public class TableCellEditingSupportTest {
 		}
 		public void setDoubleValue(double doubleValue) {
 			this.doubleValue = doubleValue;
+		}
+		public void setRgb(RGB rgb) {
+			this.rgb = rgb;
+		}
+	}
+
+	@SuppressWarnings("unused")
+	private class UneditableBean {
+		Object uneditable;
+		public void setUneditable(Object uneditable) {
+			this.uneditable = uneditable;
 		}
 	}
 }
