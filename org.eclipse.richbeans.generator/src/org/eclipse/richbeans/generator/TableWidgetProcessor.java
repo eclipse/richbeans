@@ -19,10 +19,13 @@
 package org.eclipse.richbeans.generator;
 
 import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.DELETE_METHOD;
+import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.HIDDEN;
+import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.MAXIMUM_VALUE;
+import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.MINIMUM_VALUE;
 import static org.metawidget.inspector.InspectionResultConstants.NAME;
 
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,7 +70,7 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 			table.setLinesVisible(true);
 			tableViewer.setContentProvider(new ListStructuredContentProvider());
 
-			Map<String, String> columns = readPropertiesFromType(metawidget, contained);
+			List<TableColumnModel> columns = readPropertiesFromType(metawidget, contained);
 			createColumns(columns, tableViewer);
 			createDeleteButtons(tableViewer, deleteMethod, metawidget.getToInspect());
 
@@ -98,7 +101,7 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 		return null;
 	}
 
-	private void setupDataInput(Class<?> containedClazz, Map<String, String> columns, Map<String, String> attributes, SwtMetawidget metawidget, TableViewer tableViewer) {
+	private void setupDataInput(Class<?> containedClazz, List<TableColumnModel> columns, Map<String, String> attributes, SwtMetawidget metawidget, TableViewer tableViewer) {
 		Object toInspect = metawidget.getToInspect();
 
 		String propertyName = attributes.get(NAME);
@@ -107,8 +110,9 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 		Realm realm = DisplayRealm.getRealm(metawidget.getDisplay());
 		IObservableValue observableValue = value.observe(realm, toInspect);
 
-		List<IBeanValueProperty> itemProperties = columns.keySet().stream()
-				.map((property) -> BeanProperties.value(containedClazz, property))
+		List<IBeanValueProperty> itemProperties = columns.stream()
+				.map(column -> column.getName())
+				.map(property -> BeanProperties.value(containedClazz, property))
 				.collect(Collectors.toList());
 
 		observableValue.addValueChangeListener(new IValueChangeListener() {
@@ -133,11 +137,11 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 		}
 	}
 
-	private void createColumns(Map<String, String> columns, TableViewer tableViewer) {
-		for (String column : columns.keySet()) {
+	private void createColumns(List<TableColumnModel> columns, TableViewer tableViewer) {
+		for (TableColumnModel column : columns.stream().filter(column -> !column.isHidden()).collect(Collectors.toList())) {
 			TableViewerColumn columnViewer = new TableViewerColumn(tableViewer, SWT.NONE);
-			columnViewer.getColumn().setText(columns.get(column));
-			columnViewer.setLabelProvider(new TableColumnLabelProvider(column));
+			columnViewer.getColumn().setText(column.getLabel());
+			columnViewer.setLabelProvider(new TableColumnLabelProvider(column.getName()));
 			columnViewer.setEditingSupport(new TableCellEditingSupport(columnViewer.getViewer(), tableViewer.getTable(), column));
 			columnViewer.getColumn().pack();
 		}
@@ -151,19 +155,24 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 		}
 	}
 
-	private Map<String, String> readPropertiesFromType(SwtMetawidget metawidget, String componentType) {
+	private List<TableColumnModel> readPropertiesFromType(SwtMetawidget metawidget, String componentType) {
 		String inspectedType = metawidget.inspect( null, componentType, (String[]) null );
 
-		Map<String,String> columns = new HashMap<>();
+		List<TableColumnModel> columns = new ArrayList<>();
 		Element root = XmlUtils.documentFromString( inspectedType ).getDocumentElement();
 		NodeList elements = root.getFirstChild().getChildNodes();
 
 		for ( int i = 0; i < elements.getLength(); i++ ) {
 		   Node node = elements.item(i);
 		   Map<String, String> attributesAsMap = XmlUtils.getAttributesAsMap( node );
-		   if (!"true".equals(attributesAsMap.get(RichbeansAnnotationsInspector.HIDDEN))){
-			   columns.put(attributesAsMap.get(NAME), metawidget.getLabelString(attributesAsMap));
-		   }
+		   TableColumnModel model = new TableColumnModel(
+				   attributesAsMap.get(NAME),
+				   metawidget.getLabelString(attributesAsMap),
+				   attributesAsMap.get(HIDDEN),
+				   attributesAsMap.get(MINIMUM_VALUE),
+				   attributesAsMap.get(MAXIMUM_VALUE)
+				   );
+		   columns.add(model);
 		}
 		return columns;
 	}

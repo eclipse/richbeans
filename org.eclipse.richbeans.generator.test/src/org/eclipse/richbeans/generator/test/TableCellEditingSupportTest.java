@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.richbeans.generator.TableCellEditingSupport;
+import org.eclipse.richbeans.generator.TableColumnModel;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
@@ -35,55 +36,55 @@ public class TableCellEditingSupportTest {
 	@Test
 	public void testSetsStringProperties(){
 		TestBean bean = new TestBean();
-		new TableCellEditingSupport(new TableViewer(new Shell()), null, "string").setValue(bean, "value");
+		new TableCellEditingSupport(new TableViewer(new Shell()), null, createModel("string")).setValue(bean, "value");
 		assertThat(bean.string, is("value"));
 	}
 
 	@Test
 	public void testSetsIntegerProperties(){
 		TestBean bean = new TestBean();
-		new TableCellEditingSupport(new TableViewer(new Shell()), null, "integer").setValue(bean, "1234");
+		new TableCellEditingSupport(new TableViewer(new Shell()), null, createModel("integer")).setValue(bean, "1234");
 		assertThat(bean.integer, is(1234));
 	}
 
 	@Test
 	public void testSetsIntProperties(){
 		TestBean bean = new TestBean();
-		new TableCellEditingSupport(new TableViewer(new Shell()), null, "intValue").setValue(bean, "1234");
+		new TableCellEditingSupport(new TableViewer(new Shell()), null, createModel("intValue")).setValue(bean, "1234");
 		assertThat(bean.intValue, is(1234));
 	}
 
 	@Test
 	public void testSetsDoubleProperties(){
 		TestBean bean = new TestBean();
-		new TableCellEditingSupport(new TableViewer(new Shell()), null, "doubleObject").setValue(bean, "1234.5");
+		new TableCellEditingSupport(new TableViewer(new Shell()), null, createModel("doubleObject")).setValue(bean, "1234.5");
 		assertThat(bean.doubleObject, is(1234.5));
 	}
 
 	@Test
 	public void testSetsDoubleTypeProperties(){
 		TestBean bean = new TestBean();
-		new TableCellEditingSupport(new TableViewer(new Shell()), null, "doubleValue").setValue(bean, "1234.5");
+		new TableCellEditingSupport(new TableViewer(new Shell()), null, createModel("doubleValue")).setValue(bean, "1234.5");
 		assertThat(bean.doubleValue, is(1234.5));
 	}
 
 	@Test
 	public void testSetsRGBTypeProperties(){
 		TestBean bean = new TestBean();
-		new TableCellEditingSupport(new TableViewer(new Shell()), null, "rgb").setValue(bean, new RGB(1,2,3));
+		new TableCellEditingSupport(new TableViewer(new Shell()), null, createModel("rgb")).setValue(bean, new RGB(1,2,3));
 		assertThat(bean.rgb, is(new RGB(1,2,3)));
 	}
 
 	@Test
 	public void testSupportsStringIntegerDoubleAndRGB(){
 		Stream.of("string","integer","intValue","doubleObject","doubleValue","rgb")
-			.map(column -> new TableCellEditingSupport(new TableViewer(new Shell()), null, column))
+			.map(column -> new TableCellEditingSupport(new TableViewer(new Shell()), null, createModel(column)))
 			.forEach(support -> assertTrue(support.canEdit(new TestBean())));
 	}
 
 	@Test
 	public void testDoesntSupportOtherThings(){
-		TableCellEditingSupport support = new TableCellEditingSupport(new TableViewer(new Shell()), null, "uneditable");
+		TableCellEditingSupport support = new TableCellEditingSupport(new TableViewer(new Shell()), null, createModel("uneditable"));
 		assertFalse(support.canEdit(new UneditableBean()));
 	}
 
@@ -122,5 +123,9 @@ public class TableCellEditingSupportTest {
 		public void setUneditable(Object uneditable) {
 			this.uneditable = uneditable;
 		}
+	}
+
+	private TableColumnModel createModel(String name){
+		return new TableColumnModel(name, null, null, null, null);
 	}
 }

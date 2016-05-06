@@ -37,10 +37,10 @@ import org.eclipse.swt.widgets.Table;
 
 public class TableCellEditingSupport extends EditingSupport {
 	private final Map<Class<?>, Function<String, ?>> convertors = new HashMap<>();
-	private final String column;
+	private final TableColumnModel column;
 	private Table table;
 
-	public TableCellEditingSupport(ColumnViewer viewer, Table table, String column) {
+	public TableCellEditingSupport(ColumnViewer viewer, Table table, TableColumnModel column) {
 		super(viewer);
 		this.table = table;
 		this.column = column;
@@ -58,7 +58,7 @@ public class TableCellEditingSupport extends EditingSupport {
 
 	@Override
 	public void setValue(Object element, Object value) {
-		IBeanValueProperty property = BeanProperties.value(element.getClass(), column);
+		IBeanValueProperty property = BeanProperties.value(element.getClass(), column.getName());
 		Object parsedValue = parseValue(value, property);
 		property.setValue(element, parsedValue);
 	}
@@ -72,17 +72,20 @@ public class TableCellEditingSupport extends EditingSupport {
 
 	@Override
 	protected Object getValue(Object element) {
-		return BeanProperties.value(element.getClass(), column).getValue(element);
+		return BeanProperties.value(element.getClass(), column.getName()).getValue(element);
 	}
 
 	@Override
 	protected CellEditor getCellEditor(Object element) {
-		Class<?> type = (Class<?>)BeanProperties.value(element.getClass(), column).getValueType();
+		Class<?> type = (Class<?>)BeanProperties.value(element.getClass(), column.getName()).getValueType();
 
 		if (isInteger(type)){
-			return new SpinnerCellEditor(table, SWT.NONE);
+			SpinnerCellEditor editor = new SpinnerCellEditor(table, SWT.NONE);
+			editor.setMinimum(column.getMinInt());
+			editor.setMaximum(column.getMaxInt());
+			return editor;
 		} else if (isNumber(type)){
-			return new NumberCellEditor(table, type, SWT.NONE);
+			return new NumberCellEditor(table, type, column.getMinDouble(), column.getMaxDouble(), null, SWT.NONE);
 		} else if (isRGB(type)){
 			return new ColorCellEditor(table, SWT.NONE);
 		}
@@ -107,7 +110,7 @@ public class TableCellEditingSupport extends EditingSupport {
 
 	@Override
 	public boolean canEdit(Object element) {
-		Class<?> valueType = (Class<?>)BeanProperties.value(element.getClass(), column).getValueType();
+		Class<?> valueType = (Class<?>)BeanProperties.value(element.getClass(), column.getName()).getValueType();
 		return isNumber(valueType) || String.class == valueType || isRGB(valueType);
 	}
 }

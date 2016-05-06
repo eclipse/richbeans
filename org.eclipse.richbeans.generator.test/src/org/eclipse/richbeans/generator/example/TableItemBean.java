@@ -21,6 +21,8 @@ package org.eclipse.richbeans.generator.example;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MaximumValue;
+import org.eclipse.richbeans.api.generator.RichbeansAnnotations.MinimumValue;
 import org.metawidget.inspector.annotation.UiComesAfter;
 
 public class TableItemBean {
@@ -45,6 +47,8 @@ public class TableItemBean {
 		pcs.firePropertyChange("name", oldValue, newValue);
 	}
 	@UiComesAfter("name")
+	@MinimumValue("10")
+	@MaximumValue("100")
 	public int getAge() {
 		return age;
 	}
