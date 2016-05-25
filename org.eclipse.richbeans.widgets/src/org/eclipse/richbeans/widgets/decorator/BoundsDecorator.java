@@ -156,7 +156,7 @@ public class BoundsDecorator extends RegexDecorator {
 		listeners.remove(IValueChangeListener.class, l);
 	}
 
-	private String createToolTipTextFromBounds(Number value, Number min, Number max) {
+	protected String createToolTipTextFromBounds(Number value, Number min, Number max) {
 
 		if (min==null && max==null) return "Please enter a number.";
 		
