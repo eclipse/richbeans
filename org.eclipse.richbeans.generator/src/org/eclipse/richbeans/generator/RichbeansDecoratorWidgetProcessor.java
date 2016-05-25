@@ -2,6 +2,7 @@ package org.eclipse.richbeans.generator;
 
 import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.MAXIMUM_VALUE;
 import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.MINIMUM_VALUE;
+import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.TOOLTIP;
 import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.UNITS;
 
 import java.util.Map;
@@ -62,7 +63,16 @@ public class RichbeansDecoratorWidgetProcessor implements WidgetProcessor<Contro
 		if (clazz != null) {
 			if (clazz.isPrimitive()) {
 				if (float.class.equals(clazz) || double.class.equals(clazz)) {
-					FloatDecorator decoratedWidget = new FloatDecorator((Text) widget);
+					FloatDecorator decoratedWidget = new FloatDecorator((Text) widget) {
+						@Override
+						protected String createToolTipTextFromBounds(Number value, Number min, Number max) {
+							String tooltip = "";
+							if (attributes.get(TOOLTIP) != null) {
+								tooltip += attributes.get(TOOLTIP) + "\n";
+							}
+							return tooltip + super.createToolTipTextFromBounds(value, min, max);
+						}
+					};
 
 					// Add limits if specified by annotations
 					if (attributes.get(MINIMUM_VALUE) != null) {
