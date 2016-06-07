@@ -160,11 +160,19 @@ public class NumberCellEditor extends TextCellEditor {
 
 		if (stringValue==null || "".equals(stringValue)) return null;
 		stringValue = stringValue.trim();
-
-		if (Double.class.isAssignableFrom(clazz))  return new Double(stringValue);
-		if (Float.class.isAssignableFrom(clazz))   return new Float(stringValue);
-		if (Integer.class.isAssignableFrom(clazz)) return new Integer(stringValue);
-		if (Long.class.isAssignableFrom(clazz))    return new Long(stringValue);
+		try {
+			if (Double.class.isAssignableFrom(clazz))
+				return new Double(stringValue);
+			if (Float.class.isAssignableFrom(clazz))
+				return new Float(stringValue);
+			if (Integer.class.isAssignableFrom(clazz))
+				return new Integer(stringValue);
+			if (Long.class.isAssignableFrom(clazz))
+				return new Long(stringValue);
+		} catch (Exception e) {
+			// check that the string is a number;
+			return null;
+		}
 
 		if (clazz.isArray()) {
 			if (stringValue.startsWith("[")) stringValue = stringValue.substring(1);
