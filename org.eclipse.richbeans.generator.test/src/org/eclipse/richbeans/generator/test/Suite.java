@@ -32,7 +32,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	RichbeansAnnotationsInspectorTest.class,
 	SimpleExampleTest.class,
 	TableExampleTest.class,
-	TableWidgetProcessorTest.class,
+	TableWidgetBuilderTest.class,
 	UpdatingExampleTest.class
 })
 public class Suite {

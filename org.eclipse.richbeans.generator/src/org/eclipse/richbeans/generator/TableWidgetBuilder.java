@@ -19,10 +19,12 @@
 package org.eclipse.richbeans.generator;
 
 import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.DELETE_METHOD;
-import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.HIDDEN;
 import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.MAXIMUM_VALUE;
 import static org.eclipse.richbeans.generator.RichbeansAnnotationsInspector.MINIMUM_VALUE;
+import static org.metawidget.inspector.InspectionResultConstants.ACTION;
+import static org.metawidget.inspector.InspectionResultConstants.HIDDEN;
 import static org.metawidget.inspector.InspectionResultConstants.NAME;
+import static org.metawidget.inspector.InspectionResultConstants.TRUE;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -46,18 +48,26 @@ import org.metawidget.swt.SwtMetawidget;
 import org.metawidget.util.ClassUtils;
 import org.metawidget.util.WidgetBuilderUtils;
 import org.metawidget.util.XmlUtils;
-import org.metawidget.widgetprocessor.iface.WidgetProcessor;
+import org.metawidget.widgetbuilder.iface.WidgetBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawidget> {
-	private final Logger logger = LoggerFactory.getLogger(TableWidgetProcessor.class);
+public class TableWidgetBuilder implements WidgetBuilder<Control, SwtMetawidget> {
+
+	private final Logger logger = LoggerFactory.getLogger(TableWidgetBuilder.class);
 
 	@Override
-	public Control processWidget(Control originalWidget, String elementName, Map<String, String> attributes, SwtMetawidget metawidget) {
+	public Control buildWidget(String elementName, Map<String, String> attributes, SwtMetawidget metawidget) {
+
+		// If hidden or an action, return null
+		if (TRUE.equals(attributes.get(HIDDEN)) || ACTION.equals(elementName)) {
+			return null;
+		}
+
+		// Otherwise get the type and if a List, build a table
 		Class<?> container = WidgetBuilderUtils.getActualClassOrType( attributes, Object.class );
 		String contained = WidgetBuilderUtils.getComponentType(attributes);
 		Class<?> containedClazz = loadContainedClass(contained);
@@ -76,10 +86,9 @@ public class TableWidgetProcessor implements WidgetProcessor<Control, SwtMetawid
 
 			setupDataInput(containedClazz, columns, attributes, metawidget, tableViewer);
 
-			originalWidget.dispose();
 			return tableViewer.getControl();
 		}
-		return originalWidget;
+		return null;
 	}
 
 	private Method getMethod(Object toInspect, Class<?> contained, Map<String,String> attributes){
