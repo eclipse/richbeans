@@ -16,15 +16,28 @@ import org.metawidget.inspector.propertytype.PropertyTypeInspector;
 import org.metawidget.inspector.xml.XmlInspector;
 import org.metawidget.inspector.xml.XmlInspectorConfig;
 import org.metawidget.swt.SwtMetawidget;
+import org.metawidget.swt.widgetbuilder.OverriddenWidgetBuilder;
+import org.metawidget.swt.widgetbuilder.ReadOnlyWidgetBuilder;
+import org.metawidget.swt.widgetbuilder.SwtWidgetBuilder;
+import org.metawidget.widgetbuilder.composite.CompositeWidgetBuilder;
+import org.metawidget.widgetbuilder.composite.CompositeWidgetBuilderConfig;
 
 public class GuiGeneratorService implements IGuiGeneratorService {
 
 	// Initialise metawidget objects. All of these should be immutable so only one (static) instance is required
+	private static final OverriddenWidgetBuilder OVERRIDDEN_WIDGET_BUILDER = new OverriddenWidgetBuilder();
+	private static final ReadOnlyWidgetBuilder READ_ONLY_WIDGET_BUILDER = new ReadOnlyWidgetBuilder();
+	private static final TableWidgetBuilder TABLE_WIDGET_BUILDER = new TableWidgetBuilder();
+	private static final SwtWidgetBuilder SWT_WIDGET_BUILDER = new SwtWidgetBuilder();
+	@SuppressWarnings("unchecked") // we know the generic array created in setWidgetBuilders() is type-safe
+	private static final CompositeWidgetBuilderConfig<Control, SwtMetawidget> COMPOSITE_WIDGET_BUILDER_CONFIG = new CompositeWidgetBuilderConfig<Control, SwtMetawidget>()
+			.setWidgetBuilders(OVERRIDDEN_WIDGET_BUILDER, READ_ONLY_WIDGET_BUILDER, TABLE_WIDGET_BUILDER, SWT_WIDGET_BUILDER);
+	private static final CompositeWidgetBuilder<Control, SwtMetawidget> COMPOSITE_WIDGET_BUILDER = new CompositeWidgetBuilder<>(COMPOSITE_WIDGET_BUILDER_CONFIG);
+
 	private static final ComboLabelWidgetProcessor COMBO_LABEL_PROCESSOR = new ComboLabelWidgetProcessor();
 	private static final TooltipWidgetProcessor TOOLTIP_PROCESSOR = new TooltipWidgetProcessor();
 	private static final RichbeansDecoratorWidgetProcessor DECORATOR_PROCESSOR = new RichbeansDecoratorWidgetProcessor();
 	private static final TwoWayDataBindingProcessor BINDING_PROCESSOR = new TwoWayDataBindingProcessor();
-	private static final TableWidgetProcessor TABLE_WIDGET_PROCESSOR = new TableWidgetProcessor();
 
 	// Initialise a set for the inspectors. The reference to the set is final but the contents will change.
 	private static final Set<DomInspector<?>> DOM_INSPECTORS = new LinkedHashSet<>();
@@ -51,10 +64,12 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		DOM_INSPECTORS.add(inspector);
 		updateCompositeInspector();
 	}
+
 	public static synchronized void removeDomInspector(DomInspector<?> inspector) {
 		DOM_INSPECTORS.remove(inspector);
 		updateCompositeInspector();
 	}
+
 	private static void updateCompositeInspector() {
 		inspector = new CompositeInspector(new CompositeInspectorConfig().setInspectors(
 				DOM_INSPECTORS.toArray(EMPTY_INSPECTOR_ARRAY)));
@@ -71,17 +86,17 @@ public class GuiGeneratorService implements IGuiGeneratorService {
 		metawidget.setInspector(inspector);
 
 		// 2. InspectionResultProcessors
-		// none (would probably like the JEXL processor here in the long run but can't build with it included at the moment)
+		// none (would probably like the JEXL processor here in the long run but can't build with it included at the
+		// moment)
 
 		// 3. WidgetBuilder
-		// (default)
+		metawidget.setWidgetBuilder(COMPOSITE_WIDGET_BUILDER);
 
 		// 4. WidgetProcessors
 		metawidget.addWidgetProcessor(COMBO_LABEL_PROCESSOR);
 		metawidget.addWidgetProcessor(TOOLTIP_PROCESSOR);
 		metawidget.addWidgetProcessor(DECORATOR_PROCESSOR);
 		metawidget.addWidgetProcessor(BINDING_PROCESSOR);
-		metawidget.addWidgetProcessor(TABLE_WIDGET_PROCESSOR);
 
 		// Reflection binding processor (for actions) is present by default
 

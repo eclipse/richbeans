@@ -29,7 +29,7 @@ import static org.metawidget.inspector.InspectionResultConstants.TYPE;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.richbeans.generator.TableWidgetProcessor;
+import org.eclipse.richbeans.generator.TableWidgetBuilder;
 import org.eclipse.richbeans.generator.example.TableBean;
 import org.eclipse.richbeans.generator.example.TableItemBean;
 import org.eclipse.swt.SWT;
@@ -41,17 +41,16 @@ import org.eclipse.swt.widgets.TableItem;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.metawidget.swt.Stub;
 import org.metawidget.swt.SwtMetawidget;
 
-public class TableWidgetProcessorTest {
+public class TableWidgetBuilderTest {
 	private Shell shell;
 
 	@Test
 	public void testCreatesTablesForEmptyLists(){
 		SwtMetawidget metawidget = new SwtMetawidget(shell, SWT.NONE);
 		metawidget.setToInspect(new TableBean());
-		Control widget = new TableWidgetProcessor().processWidget(new Stub(shell, SWT.NONE), null, getAttributesMap(), metawidget);
+		Control widget = new TableWidgetBuilder().buildWidget(null, getAttributesMap(), metawidget);
 
 		assertThat(widget, instanceOf(Table.class));
 
@@ -71,7 +70,7 @@ public class TableWidgetProcessorTest {
 
 		SwtMetawidget metawidget = new SwtMetawidget(shell, SWT.NONE);
 		metawidget.setToInspect(bean);
-		Control widget = new TableWidgetProcessor().processWidget(new Stub(shell, SWT.NONE), null, getAttributesMap(), metawidget);
+		Control widget = new TableWidgetBuilder().buildWidget(null, getAttributesMap(), metawidget);
 
 		assertThat(widget, instanceOf(Table.class));
 
@@ -88,7 +87,7 @@ public class TableWidgetProcessorTest {
 		map.put(TYPE, "java.util.HashMap");
 
 		SwtMetawidget metawidget = new SwtMetawidget(shell, SWT.NONE);
-		Control widget = new TableWidgetProcessor().processWidget(null, null, map, metawidget);
+		Control widget = new TableWidgetBuilder().buildWidget(null, map, metawidget);
 		assertThat(widget, is(nullValue()));
 	}
 

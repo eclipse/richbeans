@@ -18,15 +18,21 @@
 
 package org.eclipse.richbeans.generator.test;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.richbeans.generator.example.TableBean;
 import org.eclipse.richbeans.generator.example.TableExample;
 import org.eclipse.richbeans.generator.example.TableItemBean;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Table;
 import org.junit.Test;
+import org.metawidget.inspector.annotation.UiHidden;
 
 public class TableExampleTest extends GuiGeneratorTestBase {
 	@Test
@@ -79,5 +85,20 @@ public class TableExampleTest extends GuiGeneratorTestBase {
 		newBean.setName("Not Bob");
 
 		assertThat(table.getItem(1).getText(), is("Not Bob"));
+	}
+
+	@Test
+	public void testHiddenListFieldIsStub() throws Exception {
+		TableBean tableBean = new TableBean() {
+			private List<Object> hiddenList = new ArrayList<>();
+
+			@UiHidden
+			public List<Object> getHiddenList() {
+				return hiddenList;
+			}
+		};
+		metawidget = (Composite) guiGenerator.generateGui(tableBean, shell);
+		Control control = getNamedControl("hiddenList");
+		assertThat(control.getClass().getName(), is(equalTo("org.metawidget.swt.Stub")));
 	}
 }
