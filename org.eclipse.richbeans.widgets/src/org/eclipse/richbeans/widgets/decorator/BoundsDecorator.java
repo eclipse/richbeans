@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import javax.swing.event.EventListenerList;
 
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Text;
 
@@ -189,7 +190,7 @@ public class BoundsDecorator extends RegexDecorator {
 	private void setError(boolean isError, String toolTip) {
 		if (!allowInvalidValues) {
 			this.isError = false;
-			text.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLACK)); 
+			text.setForeground(getForeground()); 
 			return;
 		}
 		this.isError = isError;
@@ -197,10 +198,17 @@ public class BoundsDecorator extends RegexDecorator {
 		if (isError) {
 			text.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED)); 
 		} else {
-			text.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLACK)); 
+			text.setForeground(getForeground()); 
 		}
 	}
-
+	
+	private Color getForeground() {
+		if (!text.getEditable() || !text.isEnabled()) {
+			return text.getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
+		} else {
+		    return text.getDisplay().getSystemColor(SWT.COLOR_BLACK);
+		}
+	}
 
 	public Number getMaximum() {
 		if (maximum == null) return null;
