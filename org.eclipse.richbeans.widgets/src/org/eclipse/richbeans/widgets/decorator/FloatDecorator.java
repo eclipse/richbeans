@@ -20,5 +20,8 @@ public class FloatDecorator extends BoundsDecorator {
 	public FloatDecorator(Text text) {
 		super(text, "[-0-9\\.∞]+", new DecimalFormat("##########0.0###"));
 	}
+	public FloatDecorator(Text text, String format) {
+		super(text, "[-0-9\\.∞]+", new DecimalFormat(format));
+	}
 
 }
