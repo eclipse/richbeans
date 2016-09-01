@@ -79,15 +79,23 @@ public class BoundsDecorator extends RegexDecorator {
 	}
 	
 	public void setValue(Number value) {
+		text.setText(format(value));
+	}
+	
+	public String format(Number value) {
 		if (value.doubleValue() == Double.POSITIVE_INFINITY) {
-		    text.setText("∞");	
+		    return "∞";	
 		} else if (value.doubleValue() == Double.NEGATIVE_INFINITY) {
-		    text.setText("-∞");	
+			return "-∞";	
 		} else if (Double.isInfinite(value.doubleValue()) || Double.isNaN(value.doubleValue())) {
-			text.setText("");
+			return "";
 		} else {
-		    text.setText(numberFormat.format(value));
+			return(numberFormat.format(value));
 		}
+	}
+
+	public boolean check(final Number value) {
+		return checkBounds(value, true);
 	}
 
 	protected boolean checkBounds(final Number value, boolean fireListeners) {
