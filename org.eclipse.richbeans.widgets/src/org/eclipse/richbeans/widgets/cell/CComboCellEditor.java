@@ -145,7 +145,6 @@ public class CComboCellEditor extends AppliableCellEditor {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				selection = comboBox.getSelectionIndex();
-				applyEditorValueAndDeactivate();
 			}
 		});
 
