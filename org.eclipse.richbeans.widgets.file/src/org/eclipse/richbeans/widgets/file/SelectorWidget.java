@@ -37,8 +37,6 @@ import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.TypedEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -57,7 +55,7 @@ import org.eclipse.ui.PlatformUI;
  * The method loadPath(String) needs to be implemented and whatever action needs to be done once a path 
  * is loaded can be put in it.
  * 
- * @author wqk87977
+ * @author Baha El-Kassaby
  *
  */
 public abstract class SelectorWidget {
@@ -74,6 +72,7 @@ public abstract class SelectorWidget {
 	private Button resourceButton;
 	private boolean newFile;
 	private Label label;
+	private IResource[] chosenResources;
 
 	/**
 	 * 
@@ -170,12 +169,11 @@ public abstract class SelectorWidget {
 			@Override
 			public void modifyText(ModifyEvent e) {
 				File tmp = new File(inputLocation.getText());
-				if ((SelectorWidget.this.isFolderSelector && tmp.isDirectory())
-						|| (!SelectorWidget.this.isFolderSelector && tmp.isFile())) {
-					inputLocation.setForeground(new Color(Display.getDefault(), new RGB(0, 0, 0)));
+				if (isFileOk(tmp)) {
+					inputLocation.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_BLACK));
 					path = tmp.getAbsolutePath();
 				} else {
-					inputLocation.setForeground(new Color(Display.getDefault(), new RGB(255, 80, 80)));
+					inputLocation.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_RED));
 				}
 				pathChanged(inputLocation.getText(), e);
 			}
@@ -190,8 +188,7 @@ public abstract class SelectorWidget {
 					String[] stringData = (String[]) data;
 					if (stringData.length > 0) {
 						File dir = new File(stringData[0]);
-						if ((SelectorWidget.this.isFolderSelector && dir.isDirectory())
-								|| (!SelectorWidget.this.isFolderSelector && dir.isFile())) {
+						if ((SelectorWidget.this.isFolderSelector && dir.isDirectory()) || (!SelectorWidget.this.isFolderSelector && dir.isFile())) {
 							setText(dir.getAbsolutePath());
 							inputLocation.notifyListeners(SWT.Modify, null);
 							pathChanged(dir.getAbsolutePath(), event);
@@ -208,6 +205,7 @@ public abstract class SelectorWidget {
 			resourceButton.addSelectionListener(new SelectionAdapter() {
 				@Override
 				public void widgetSelected(SelectionEvent e) {
+					chosenResources =  null;
 					handleResourceBrowse(e, fileExtensions);
 				}
 			});
@@ -219,9 +217,23 @@ public abstract class SelectorWidget {
 		fileButton.addSelectionListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
+				chosenResources =  null;
 				handleFileBrowse(e, fileTypes, fileExtensions);
 			}
 		});
+	}
+
+	protected boolean isFileOk(File tmp) {
+		if ((SelectorWidget.this.isFolderSelector && tmp.isDirectory())
+			|| (!SelectorWidget.this.isFolderSelector && tmp.isFile())) {
+			return true;
+		} else {
+			if (!tmp.exists() && newFile) {
+				return true;
+			} else {
+			    return false;
+			}
+		}	
 	}
 
 	/**
@@ -349,7 +361,8 @@ public abstract class SelectorWidget {
 					
 					if (extension.equals("*.*")) return true;
 					
-					if (extension.equals(((IFile)element).getFileExtension())) {
+					String ext = ((IFile)element).getFileExtension();
+					if (extension.equals(ext)) {
 						return true;
 					}
 				}
@@ -380,10 +393,12 @@ public abstract class SelectorWidget {
 			}
 		}
 
+		chosenResources = res;
 		if (res != null && res.length > 0) {
 			setText(res[0].getLocation().toOSString());
 			pathChanged(path, event);
 		}
+
 	}
 
 	protected IResource getIResource() {
@@ -400,6 +415,13 @@ public abstract class SelectorWidget {
 			}
 		}
 		return res;
+	}
+	
+	protected IResource[] getChosenResources() {
+        if (chosenResources!=null) return chosenResources; // Might be null;
+        IResource res = getIResource();
+        if (res!=null) return new IResource[]{res};
+        return null;
 	}
 
 	private void handleFileBrowse(TypedEvent event, final String[] fileTypes, final String[] fileExtensions) {
