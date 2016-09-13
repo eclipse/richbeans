@@ -145,7 +145,9 @@ public class CComboCellEditor extends AppliableCellEditor {
 			@Override
 			public void widgetSelected(SelectionEvent event) {
 				selection = comboBox.getSelectionIndex();
-				applyEditorValueAndDeactivate();
+				if (isWindowsOS()) {
+				    applyEditorValueAndDeactivate();
+				}
 			}
 		});
 
@@ -175,6 +177,13 @@ public class CComboCellEditor extends AppliableCellEditor {
 	public void setFocus() {
 		super.setFocus();
 		comboBox.setListVisible(true);
+	}
+	
+	/**
+	 * @return true if windows
+	 */
+	static private boolean isWindowsOS() {
+		return (System.getProperty("os.name").indexOf("Windows") == 0);
 	}
 
 	/**
