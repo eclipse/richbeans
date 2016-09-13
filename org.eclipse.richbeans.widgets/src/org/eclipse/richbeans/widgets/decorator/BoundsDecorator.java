@@ -224,10 +224,12 @@ public class BoundsDecorator extends RegexDecorator {
 	}
 
 	public void setMaximum(Number maximum) {
-		double dbl = ((Number)maximum).doubleValue();
-		if (Double.isNaN(dbl) || Double.isInfinite(dbl)) {
-			this.maximum = null;
-			return;
+		if (maximum != null) {
+			double dbl = ((Number)maximum).doubleValue();
+			if (Double.isNaN(dbl) || Double.isInfinite(dbl)) {
+				this.maximum = null;
+				return;
+			}
 		}
 		this.maximum = maximum;
 		if (text.getText()==null || "".equals(text.getText())) return;
@@ -276,10 +278,12 @@ public class BoundsDecorator extends RegexDecorator {
 	}
 
 	public void setMinimum(Number minimum) {
-		double dbl = ((Number)minimum).doubleValue();
-		if (Double.isNaN(dbl) || Double.isInfinite(dbl)) {
-			this.minimum = null;
-			return;
+		if (minimum != null) {
+			double dbl = ((Number)minimum).doubleValue();
+			if (Double.isNaN(dbl) || Double.isInfinite(dbl)) {
+				this.minimum = null;
+				return;
+			}
 		}
 		this.minimum = minimum;
 		if (text.getText()==null || "".equals(text.getText())) return;
