@@ -37,6 +37,7 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
@@ -63,12 +64,29 @@ public class SeriesTable {
 	 * icon for a given SeriesItem implementation. If it does not provide a label 
 	 * then the 'getName()' method of SeriesItem is used.
 	 * 
+	 * Uses default switches of SWT.BORDER | SWT.FULL_SELECTION | SWT.SINGLE
+	 * 
 	 * @param parent       - the SWT composite to add the table to.
 	 * @param iconProvider - a provider which must at least give the icon for a given SeriesItem
 	 */
 	public void createControl(Composite parent, SeriesItemLabelProvider iconProvider) {
 		
-		tableViewer = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.SINGLE) {
+		createControl(parent, iconProvider, SWT.BORDER | SWT.FULL_SELECTION | SWT.SINGLE);
+	}
+			
+	/**
+	 * Create the control for the table. The icon provider is checked for label and
+	 * icon for the first, name column in the table. It must provide at least an
+	 * icon for a given SeriesItem implementation. If it does not provide a label 
+	 * then the 'getName()' method of SeriesItem is used.
+	 * 
+	 * @param parent       - the SWT composite to add the table to.
+	 * @param iconProvider - a provider which must at least give the icon for a given SeriesItem
+	 * @param switches by defualt these are SWT.BORDER | SWT.FULL_SELECTION | SWT.SINGLE
+	 */   
+	public void createControl(Composite parent, SeriesItemLabelProvider iconProvider, int switches) {
+
+		tableViewer = new TableViewer(parent, switches) {
 		    protected void inputChanged(Object input, Object oldInput) {
 		    	super.inputChanged(input, oldInput);
 		    	checkValid((List<ISeriesItemDescriptor>)input);
@@ -313,5 +331,22 @@ public class SeriesTable {
 	
 	public void removeSelectionListener(ISelectionChangedListener listener){
 		tableViewer.removeSelectionChangedListener(listener);
+	}
+
+
+	public void setHeaderVisible(boolean b) {
+		tableViewer.getTable().setHeaderVisible(b);
+	}
+
+	public void setLayoutData(GridData gridData) {
+		tableViewer.getTable().setLayoutData(gridData);
+	}
+	
+	public void deselectAll() {
+		tableViewer.getTable().deselectAll();
+	}
+
+	public Control getControl() {
+		return tableViewer.getTable();
 	}
 }
