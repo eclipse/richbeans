@@ -18,13 +18,14 @@ import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.EditingSupport;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.richbeans.widgets.table.event.SeriesEventDelegate;
 import org.eclipse.swt.widgets.Composite;
 
 public class SeriesEditingSupport extends EditingSupport {
 	
 	private TextCellEditorWithContentProposal cellEditor;
 
-	public SeriesEditingSupport(ColumnViewer viewer, ILabelProvider renderer) {
+	public SeriesEditingSupport(ColumnViewer viewer, final SeriesEventDelegate delegate, ILabelProvider renderer) {
 		
 		super(viewer);
 		cellEditor = new TextCellEditorWithContentProposal((Composite)viewer.getControl(), null, null);
@@ -56,6 +57,7 @@ public class SeriesEditingSupport extends EditingSupport {
                 
                 getViewer().setInput(ret);
                 getViewer().setSelection(new StructuredSelection(desc));
+                delegate.fireItemAdded(desc);
 			}
 			
 		});

@@ -29,6 +29,8 @@ import org.eclipse.jface.viewers.TableViewerEditor;
 import org.eclipse.jface.viewers.TableViewerFocusCellManager;
 import org.eclipse.richbeans.widgets.Activator;
 import org.eclipse.richbeans.widgets.internal.GridUtils;
+import org.eclipse.richbeans.widgets.table.event.SeriesEventDelegate;
+import org.eclipse.richbeans.widgets.table.event.SeriesItemListener;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTarget;
@@ -53,11 +55,24 @@ import org.eclipse.swt.widgets.Label;
  */
 public class SeriesTable {
 
+	// UI
 	private TableViewer          tableViewer;
-	private SeriesEditingSupport editingSupport;
-    private ISeriesValidator     validator;
 	private Label errorLabel;
 	private Composite error;
+	
+	// Editing
+	private SeriesEditingSupport editingSupport;
+	
+	// Validation
+    private ISeriesValidator     validator;
+    
+    // Events
+    private SeriesEventDelegate delegate;
+    
+    public SeriesTable() {
+    	delegate = new SeriesEventDelegate();
+    }
+    
 	/**
 	 * Create the control for the table. The icon provider is checked for label and
 	 * icon for the first, name column in the table. It must provide at least an
@@ -208,23 +223,24 @@ public class SeriesTable {
 	 * @param name
 	 * @param prov
 	 */
-	protected void createNameColumn(final String name, final SeriesItemLabelProvider delegate) {
+	protected void createNameColumn(final String name, final SeriesItemLabelProvider orig) {
 		
 		TableViewerColumn nameColumn = new TableViewerColumn(tableViewer, SWT.NONE);
 		nameColumn.getColumn().setWidth(300);
 		nameColumn.getColumn().setMoveable(true);
 		nameColumn.getColumn().setText(name);
 		
-		SeriesLabelProvider prov = new SeriesLabelProvider(delegate);
+		SeriesLabelProvider prov = new SeriesLabelProvider(orig);
 		nameColumn.setLabelProvider(prov);
 
-		this.editingSupport = new SeriesEditingSupport(tableViewer,  prov);
+		this.editingSupport = new SeriesEditingSupport(tableViewer,  delegate,  prov);
 		nameColumn.setEditingSupport(editingSupport);
 
 	}
 
 	
 	public void dispose() {
+		delegate.clear();
 		tableViewer.getControl().dispose();
 	}
 
@@ -277,7 +293,9 @@ public class SeriesTable {
 		if (selected==ISeriesItemDescriptor.NEW) return false;
 		
 		SeriesContentProvider prov = (SeriesContentProvider)tableViewer.getContentProvider();
-        return prov.delete(selected);
+        boolean ok = prov.delete(selected);
+        if (ok) delegate.fireItemRemoved(selected);
+        return ok;
 	}
 
 
@@ -349,4 +367,13 @@ public class SeriesTable {
 	public Control getControl() {
 		return tableViewer.getTable();
 	}
+	
+	public void addSeriesEventListener(SeriesItemListener listener) {
+		delegate.addSeriesEventListener(listener);
+	}
+	
+	public void removeSeriesEventListener(SeriesItemListener listener) {
+		delegate.removeSeriesEventListener(listener);
+	}
+
 }
