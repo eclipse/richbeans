@@ -18,36 +18,36 @@ import org.eclipse.jface.fieldassist.IContentProposal;
 public class SeriesItemContentProposal implements IContentProposal, IAdaptable {
 	
 
-	private ISeriesItemDescriptor desriptor;
+	private ISeriesItemDescriptor descriptor;
 
 	public SeriesItemContentProposal(ISeriesItemDescriptor functionDescriptor) {
 		super();
-		this.desriptor = functionDescriptor;
+		this.descriptor = functionDescriptor;
 	}
 
 	@Override
 	public Object getAdapter(@SuppressWarnings("rawtypes") Class adapter) {
-		return desriptor.getAdapter(adapter);
+		return descriptor.getAdapter(adapter);
 	}
 
 	@Override
 	public String getContent() {
-		return desriptor.getName();
+		return descriptor.getName();
 	}
 
 	@Override
 	public int getCursorPosition() {
-		return desriptor.getName().length();
+		return descriptor.getName().length();
 	}
 
 	@Override
 	public String getLabel() {
-		return desriptor.getLabel();
+		return descriptor.getLabel();
 	}
 
 	@Override
 	public String getDescription() {
-		return desriptor.getDescription();
+		return descriptor.getDescription();
 	}
 
 	@Override
@@ -56,6 +56,6 @@ public class SeriesItemContentProposal implements IContentProposal, IAdaptable {
 	}
 
 	public ISeriesItemDescriptor getDescriptor() {
-		return desriptor;
+		return descriptor;
 	}
 }
