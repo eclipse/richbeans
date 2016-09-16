@@ -23,6 +23,7 @@ import org.eclipse.jface.viewers.FocusCellOwnerDrawHighlighter;
 import org.eclipse.jface.viewers.IInputSelectionProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.TableViewerEditor;
@@ -374,6 +375,10 @@ public class SeriesTable {
 	
 	public void removeSeriesEventListener(SeriesItemListener listener) {
 		delegate.removeSeriesEventListener(listener);
+	}
+
+	public void setSelection(ISeriesItemDescriptor des) {
+		tableViewer.setSelection(new StructuredSelection(des));
 	}
 
 }
