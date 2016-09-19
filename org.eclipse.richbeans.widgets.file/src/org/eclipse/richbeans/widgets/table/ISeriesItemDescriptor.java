@@ -66,7 +66,7 @@ public interface ISeriesItemDescriptor extends IAdaptable {
 	 * @return
 	 */
 	@Override
-	Object getAdapter(@SuppressWarnings("rawtypes") Class clazz);
+	<T> T getAdapter(Class<T> clazz);
 	
 	public class Stub implements ISeriesItemDescriptor {
 
