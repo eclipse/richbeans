@@ -52,13 +52,13 @@ import org.eclipse.ui.PlatformUI;
 /**
  * Selector widget made of a SWT Text with drag and drop listeners and content proposal and SWT Button
  * which opens a Directory or file dialog
- * The method loadPath(String) needs to be implemented and whatever action needs to be done once a path 
- * is loaded can be put in it.
+ * The method loadPath(String) may be be implemented to take whatever action needs to be done
+ * once a path is loaded can be put in it.
  * 
  * @author Baha El-Kassaby
  *
  */
-public abstract class SelectorWidget {
+public class SelectorWidget {
 
 	private Text inputLocation;
 	private boolean isFolderSelector;
@@ -86,14 +86,15 @@ public abstract class SelectorWidget {
 	 * 
 	 * @param parent
 	 *           parent composite
+	 * @param hasLabel if <code>true</code> a label for the widget, <code>false</code> otherwise 
 	 * @param isFolderSelector
 	 *           if True, the button will be a Folder selector, if False, a File selector
 	 * @param hasResourceButton
 	 *           if True, the widget will also have a Project type of link, if False only 
 	 *           the button opening the external file dialog will be there.
 	 */
-	public SelectorWidget(Composite parent, boolean isFolderSelector, boolean hasResourceButton) {
-		this(parent, isFolderSelector, hasResourceButton, new String[] {"All Files"}, new String[] {"*.*"});
+	public SelectorWidget(Composite parent, boolean isFolderSelector, boolean hasLabel, boolean hasResourceButton) {
+		this(parent, isFolderSelector, hasResourceButton, hasLabel, new String[] {"All Files"}, new String[] {"*.*"});
 	}
 
 	/**
@@ -131,10 +132,32 @@ public abstract class SelectorWidget {
 	 * @param hasResourceButton
 	 *           if True, the widget will also have a Project type of link, if False only 
 	 *           the button opening the external file dialog will be there.
+	 * @param types array of Strings defining types of file that can be chosen. These are the
+	 *    user friendly names to be shown for the corresponding extension in the extensions parameter
 	 * @param extensions
 	 *           Array of Strings defining possible file extensions and names if isFolderSelector is False
 	 */
 	public SelectorWidget(Composite parent, boolean isFolderSelector, boolean hasResourceButton, String[] types, String[] extensions) {
+		this(parent, isFolderSelector, hasResourceButton, true, types, extensions);
+	}
+	
+	/**
+	 * 
+	 * @param parent
+	 *           parent composite
+	 * @param isFolderSelector
+	 *           if <code>true</code>, the button will be a Folder selector, if <code>false</code>, a File selector
+	 * @param createResourceButton
+	 *           if <code>true</code>, the widget will also have a Project type of link, if <code>false</code> only 
+	 *           the button opening the external file dialog will be there.
+	 * @param createLabel if <code>true</code> a label for the widget, <code>false</code> otherwise 
+	 * @param types array of Strings defining types of file that can be chosen. These are the
+	 *    user friendly names to be shown for the corresponding extension in the extensions parameter
+	 * @param extensions
+	 *           array of Strings defining possible file extensions and names if isFolderSelector is False
+	 */
+	public SelectorWidget(Composite parent, boolean isFolderSelector, boolean createResourceButton,
+			boolean createLabel, String[] types, String[] extensions) {
 		this.isFolderSelector = isFolderSelector;
 		if (types != null && extensions!=null) {
 			this.fileTypes      = types;
@@ -143,23 +166,28 @@ public abstract class SelectorWidget {
 			this.fileTypes = new String[] {"All Files"};
 			this.fileExtensions = new String[] {"*.*"};
 		}
+		
 		container = new Composite(parent, SWT.NONE);
 		GridLayout layout = new GridLayout();
 		layout.makeColumnsEqualWidth = false;
-		if (hasResourceButton)
-			layout.numColumns = 4;
-		else
-			layout.numColumns = 3;
+		int numColumns = 2;
+		if (createLabel) numColumns++;
+		if (createResourceButton) numColumns++;
+		layout.numColumns = numColumns;
 		container.setLayout(layout);
 		GridData gridData = new GridData(SWT.FILL, SWT.CENTER, true, true);
 		container.setLayoutData(gridData);
 
-		label = new Label(container, SWT.NONE);
-		label.setText((isFolderSelector ? "Folder:" : "File:"));
+		if (createLabel) {
+			label = new Label(container, SWT.NONE);
+			label.setText((isFolderSelector ? "Folder:" : "File:"));
+		}
+		
 		inputLocation = new Text(container, SWT.BORDER);
 		inputLocation.setText(path);
 		gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
 		gridData.widthHint = 150;
+		
 		inputLocation.setLayoutData(gridData);
 		FileContentProposalProvider prov = new FileContentProposalProvider();
 		ContentProposalAdapter ad = new ContentProposalAdapter(inputLocation, new TextContentAdapter(), prov, null, null);
@@ -178,6 +206,7 @@ public abstract class SelectorWidget {
 				pathChanged(inputLocation.getText(), e);
 			}
 		});
+		
 		DropTarget dt = new DropTarget(inputLocation, DND.DROP_MOVE| DND.DROP_DEFAULT| DND.DROP_COPY);
 		dt.setTransfer(new Transfer[] { TextTransfer.getInstance (), FileTransfer.getInstance()});
 		dt.addDropListener(new DropTargetAdapter() {
@@ -198,7 +227,7 @@ public abstract class SelectorWidget {
 			}
 		});
 
-		if (hasResourceButton) {
+		if (createResourceButton) {
 			resourceButton = new Button(container, SWT.PUSH);
 			resourceButton.setImage(Activator.getImageDescriptor("icons/Project-data.png").createImage());
 			resourceButton.setToolTipText("Select a "+(isFolderSelector?"folder":"file")+" inside a project");
@@ -297,7 +326,9 @@ public abstract class SelectorWidget {
 	 * @param event
 	 *          used to check the type of event
 	 */
-	public abstract void pathChanged(String path, TypedEvent event);
+	public void pathChanged(String path, TypedEvent event) {
+		// does nothing by default, subclasses may override
+	}
 
 	public boolean isDisposed() {
 		if (inputLocation != null && !inputLocation.isDisposed())

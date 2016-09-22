@@ -119,7 +119,7 @@ public class FileDialogCellEditor extends TextCellEditor {
 		FileContentProposalProvider prov = new FileContentProposalProvider();
 		ContentProposalAdapter ad = new ContentProposalAdapter(text, new TextContentAdapter(), prov, null, null);
 		ad.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
-		text.setLayoutData(new GridData(SWT.FILL, SWT.LEFT, true, true));
+		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
 		
 		DropTarget target = new DropTarget(text, DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT);
 		final TextTransfer textTransfer = TextTransfer.getInstance();
