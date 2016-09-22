@@ -45,6 +45,14 @@ public class RichbeansAnnotations {
 		String value();
 	}
 
+	/**
+     * Marks a field as a filename. The field should be of type {@link String}.
+     * 
+     * @author Matthew Dickie
+     */
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    public static @interface UiFilename {}
 
 	
 	/**
