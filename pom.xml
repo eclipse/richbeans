@@ -18,8 +18,6 @@
 		<module>org.eclipse.richbeans.annot</module>
 		<module>org.eclipse.richbeans.binding</module>
 		<module>org.eclipse.richbeans.examples</module>
-		<module>org.eclipse.richbeans.generator</module>
-		<module>org.eclipse.richbeans.generator.test</module>
 		<module>org.eclipse.richbeans.reflection</module>
 		<module>org.eclipse.richbeans.widgets</module>
 		<module>org.eclipse.richbeans.widgets.file</module>
