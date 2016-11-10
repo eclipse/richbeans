@@ -14,8 +14,6 @@ package org.eclipse.richbeans.api.event;
 
 import java.util.EventObject;
 
-import org.eclipse.swt.widgets.Widget;
-
 /**
  * @author Matthew Gerring
  *
@@ -95,7 +93,7 @@ public class BoundsEvent extends EventObject {
 	 * Constructor
 	 * @param source
 	 */
-	public BoundsEvent(final Widget source) {
+	public BoundsEvent(final Object source) {
 		super(source);
 	}
 

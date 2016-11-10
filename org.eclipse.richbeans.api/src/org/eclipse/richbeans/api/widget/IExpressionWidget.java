@@ -12,8 +12,6 @@
 
 package org.eclipse.richbeans.api.widget;
 
-import org.eclipse.swt.widgets.Control;
-
 /**
  * An interface used to mark a widget as providing expression evaluation.
  * 
@@ -44,7 +42,7 @@ public interface IExpressionWidget extends IFieldWidget {
 	 * is a type that the IExpressionManager recognises as possible to have
 	 * content proposals.
 	 */
-	public Control getControl();
+	public <T> T getControl();
 	
 	/**
 	 * This method returns false if the string entered is definitely a number.
