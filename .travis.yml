@@ -2,9 +2,11 @@ sudo: false # use containers
 
 language: java
 
+# Makes build faster to cache maven things.
 cache:
   directories:
-    - $HOME/.m2 # Maven dependencies
+  - .autoconf
+  - $HOME/.m2
 
 # whitelist
 branches:
@@ -24,7 +26,7 @@ before_install:
 
 # Run maven. This happens automatically and adding it again makes the build longer.
 script: 
- - mvn clean install surefire:test -Dtest.includes=org/eclipse/richbeans/**/Suite.java
+ - mvn clean install surefire:test -Dtest.includes=org/eclipse/richbeans/**/Suite.java -Dlog4j.configuration=log4j.properties
  
 # Added deploy back to github
 # This should publish to the tag on master called 'snapshot'
