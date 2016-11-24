@@ -1,5 +1,6 @@
 package org.eclipse.richbeans.test.shuffle;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -60,13 +61,13 @@ public class ShuffleViewerTest extends IsolatedShellTest {
 	}
 
 	@Test
-	public void checkContent() throws Exception {
+	public void checkAddContent() throws Exception {
 		
 		SWTBotTable table = bot.table(0);
 		assertTrue(table.rowCount()==0);
 		
 		conf.setFromList(Arrays.asList("one", "two", "three"));
-		assertTrue(table.rowCount()==3);
+		assertEquals(3, table.rowCount());
 	}
 
 }

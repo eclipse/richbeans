@@ -9,7 +9,7 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<groupId>org.eclipse</groupId>
-	<artifactId>org.eclipse.richbeans.reflection</artifactId>
+	<artifactId>org.eclipse.richbeans.test</artifactId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>eclipse-plugin</packaging>
 	

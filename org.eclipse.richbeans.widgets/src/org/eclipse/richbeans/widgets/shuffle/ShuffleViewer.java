@@ -35,9 +35,9 @@ public class ShuffleViewer {
 		content.setLayout(new GridLayout(3, false));
 		GridUtils.removeMargins(content);
 		
-		createTable(content, "left", conf.getFromList());		
+		createTable(content, conf.getFromToolipText(), conf.getFromList(), "fromList");		
 		createButtons(content);
-		createTable(content, "right", conf.getToList());		
+		createTable(content, conf.getToToolipText(), conf.getToList(), "toList");		
 
 		return content;
 	}
@@ -57,13 +57,16 @@ public class ShuffleViewer {
         return ret;
 	}
 
-	private static final TableViewer createTable(Composite parent, String tooltip, List<Object> items) {
+	private final TableViewer createTable(Composite parent, String tooltip, List<Object> items, String propName) {
 		
 		TableViewer ret = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
 		ret.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
 		((Table)ret.getControl()).setToolTipText(tooltip); // NOTE This can get clobbered if we used tooltips inside the table.
 		
+		final ShuffleContentProvider prov = new ShuffleContentProvider(conf, propName);
+		ret.setContentProvider(prov);
 		
+		ret.setInput(items);
 		
 		return ret;
 	}

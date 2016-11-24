@@ -20,7 +20,7 @@ public class ShuffleConfiguration {
 		return fromToolipText;
 	}
 	public void setFromToolipText(String fromToolipText) {
-		String old = fromToolipText;
+		String old = this.fromToolipText;
 		this.fromToolipText = fromToolipText;
 		firePropertyChange("fromToolipText", old, fromToolipText);
 	}
@@ -28,7 +28,7 @@ public class ShuffleConfiguration {
 		return toToolipText;
 	}
 	public void setToToolipText(String toToolipText) {
-		String old = toToolipText;
+		String old = this.toToolipText;
 		this.toToolipText = toToolipText;
 		firePropertyChange("toToolipText", old, toToolipText);
     }
@@ -37,17 +37,17 @@ public class ShuffleConfiguration {
 		return fromList;
 	}
 	public void setFromList(List<Object> fromList) {
-		List<Object> old = fromList;
+		List<Object> old = this.fromList;
 		this.fromList = fromList;
-		firePropertyChange("fromToolipText", old, fromList);
+		firePropertyChange("fromList", old, fromList);
 	}
 	public List<Object> getToList() {
 		return toList;
 	}
 	public void setToList(List<Object> toList) {
-		List<Object> old = toList;
+		List<Object> old = this.toList;
 		this.toList = toList;
-		firePropertyChange("fromToolipText", old, toList);
+		firePropertyChange("toList", old, toList);
 	}
 
 	
