@@ -11,4 +11,5 @@ Export-Package: org.eclipse.richbeans.api,
  org.eclipse.richbeans.api.event,
  org.eclipse.richbeans.api.expression,
  org.eclipse.richbeans.api.generator,
+ org.eclipse.richbeans.api.reflection,
  org.eclipse.richbeans.api.widget
