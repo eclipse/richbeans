@@ -89,6 +89,8 @@
 			<artifactId>maven-surefire-plugin</artifactId>
 			<version>2.19.1</version>
 			<configuration>
+                <useUIHarness>true</useUIHarness>
+                <useUIThread>false</useUIThread>
                 <testSourceDirectory>${basedir}/src</testSourceDirectory>
                 <testClassesDirectory>${basedir}/bin</testClassesDirectory>
 				<includes>
