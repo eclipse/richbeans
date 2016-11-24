@@ -30,12 +30,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.eclipse.richbeans.reflection"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.eclipse.richbeans.widgets"
          download-size="0"
          install-size="0"

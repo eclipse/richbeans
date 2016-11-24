@@ -23,9 +23,9 @@ import java.util.Map;
 import org.apache.commons.beanutils.BeanUtils;
 import org.eclipse.richbeans.api.beans.BeanProcessor;
 import org.eclipse.richbeans.api.event.ValueListener;
+import org.eclipse.richbeans.api.reflection.RichBeanUtils;
 import org.eclipse.richbeans.api.widget.IFieldCollection;
 import org.eclipse.richbeans.api.widget.IFieldWidget;
-import org.eclipse.richbeans.reflection.RichBeanUtils;
 
 
 /**
@@ -38,7 +38,7 @@ import org.eclipse.richbeans.reflection.RichBeanUtils;
  * 
  * @author Matthew Gerring
  * 
- * @deprecated This class will shortly be removed when the widgets are made more widgety and less rich beany.
+ * This class will evenmtually be removed when the widgets are made more widgety and less rich beany.
  */
 public class BeanUIWithoutOSGi {
 

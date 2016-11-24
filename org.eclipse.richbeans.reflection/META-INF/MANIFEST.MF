@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Reflection
-Bundle-SymbolicName: org.eclipse.richbeans.reflection
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Diamond Light Source
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: org.eclipse.richbeans.reflection
-Bundle-ActivationPolicy: lazy

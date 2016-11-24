@@ -35,7 +35,7 @@ import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.window.ToolTip;
 import org.eclipse.richbeans.api.event.ValueEvent;
-import org.eclipse.richbeans.reflection.RichBeanUtils;
+import org.eclipse.richbeans.api.reflection.RichBeanUtils;
 import org.eclipse.richbeans.widgets.EventManagerDelegate;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
