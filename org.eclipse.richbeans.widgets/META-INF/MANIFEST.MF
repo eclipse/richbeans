@@ -15,6 +15,7 @@ Export-Package: org.eclipse.richbeans.widgets,
  org.eclipse.richbeans.widgets.menu,
  org.eclipse.richbeans.widgets.scalebox,
  org.eclipse.richbeans.widgets.selector,
+ org.eclipse.richbeans.widgets.shuffle,
  org.eclipse.richbeans.widgets.util,
  org.eclipse.richbeans.widgets.wrappers
 Require-Bundle: org.eclipse.richbeans.api;bundle-version="1.0.0";visibility:=reexport,
