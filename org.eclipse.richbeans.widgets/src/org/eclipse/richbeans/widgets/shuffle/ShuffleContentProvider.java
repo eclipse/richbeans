@@ -4,9 +4,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.List;
 
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.swt.widgets.Display;
 
 class ShuffleContentProvider implements IStructuredContentProvider, PropertyChangeListener{
 
@@ -25,7 +26,16 @@ class ShuffleContentProvider implements IStructuredContentProvider, PropertyChan
 	
 	@Override
 	public void propertyChange(PropertyChangeEvent evt) {
-		viewer.getControl().getDisplay().syncExec(() -> viewer.setInput(evt.getNewValue()));
+		viewer.getControl().getDisplay().syncExec(() -> {
+			ISelection sel = viewer.getSelection();
+			Object item = sel!=null && sel instanceof StructuredSelection ? ((StructuredSelection)sel).getFirstElement() : null;
+			viewer.setInput(evt.getNewValue());
+			if (item!=null && items.contains(item)) {
+				viewer.setSelection(new StructuredSelection(item));
+			} else if (!items.isEmpty()){
+				viewer.setSelection(new StructuredSelection(items.get(0)));
+			}
+		});
 	}
 
 	@Override

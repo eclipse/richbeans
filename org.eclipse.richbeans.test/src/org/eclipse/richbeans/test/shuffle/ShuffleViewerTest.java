@@ -12,6 +12,7 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
+import org.eclipse.swtbot.swt.finder.utils.TableCollection;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -110,6 +111,10 @@ public class ShuffleViewerTest extends ShellTest {
 		assertTrue(bot.arrowButton(0).isEnabled());
 		assertTrue(bot.arrowButton(1).isEnabled());
 
+		// We check that one is selected
+		assertEquals("one", table.getTableItem(4).getText());
+		assertEquals(1, table.selectionCount());
+		// TODO How to check items selected
 	}
 	
 	@Test
@@ -122,10 +127,10 @@ public class ShuffleViewerTest extends ShellTest {
 		
 		SWTBotTable table = bot.table(0);
 
-		bot.arrowButton(0).click(); // Does nothing
+		bot.arrowButton(0).click();
 		
 		table = bot.table(1);
-		assertEquals(4, table.rowCount());
+		assertEquals(5, table.rowCount());
 
 	}
 
@@ -140,11 +145,63 @@ public class ShuffleViewerTest extends ShellTest {
 		
 		SWTBotTable table = bot.table(1);
 
-		bot.arrowButton(1).click();// Does nothing
+		bot.arrowButton(1).click();
 		
 		table = bot.table(0);
-		assertEquals(3, table.rowCount());
+		assertEquals(4, table.rowCount());
+		assertEquals("four", table.getTableItem(3).getText());
+		assertEquals(1, table.selectionCount());
+		// TODO How to check items selected
 
+	}
+
+	@Test
+	public void checkMoveThreeRight() throws Exception {
+		
+		assertTrue(!bot.arrowButton(0).isEnabled());
+		assertTrue(!bot.arrowButton(1).isEnabled());
+		conf.setFromList(Arrays.asList("one", "two", "three"));
+		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
+		assertTrue(bot.arrowButton(0).isEnabled());
+		assertTrue(bot.arrowButton(1).isEnabled());
+		
+		SWTBotTable table = bot.table(0);
+		bot.arrowButton(0).click();
+		bot.arrowButton(0).click();
+		bot.arrowButton(0).click();
+		
+		table = bot.table(1);
+		assertEquals(7, table.rowCount());
+		assertTrue(!bot.arrowButton(0).isEnabled());
+		assertTrue(bot.arrowButton(1).isEnabled());
+		
+		table = bot.table(0);
+		assertEquals(0, table.rowCount());
+	}
+	
+	@Test
+	public void checkMoveFourLeft() throws Exception {
+		
+		assertTrue(!bot.arrowButton(0).isEnabled());
+		assertTrue(!bot.arrowButton(1).isEnabled());
+		conf.setFromList(Arrays.asList("one", "two", "three"));
+		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
+		assertTrue(bot.arrowButton(0).isEnabled());
+		assertTrue(bot.arrowButton(1).isEnabled());
+		
+		SWTBotTable table = bot.table(1);
+		bot.arrowButton(1).click();
+		bot.arrowButton(1).click();
+		bot.arrowButton(1).click();
+		bot.arrowButton(1).click();
+		
+		table = bot.table(0);
+		assertEquals(7, table.rowCount());
+		assertTrue(bot.arrowButton(0).isEnabled());
+		assertTrue(!bot.arrowButton(1).isEnabled());
+		
+		table = bot.table(1);
+		assertEquals(0, table.rowCount());
 	}
 
 }

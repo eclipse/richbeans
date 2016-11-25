@@ -10,6 +10,7 @@ import java.util.Map;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.richbeans.api.reflection.RichBeanUtils;
 import org.eclipse.richbeans.widgets.internal.GridUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -22,6 +23,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Widget;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 
@@ -32,6 +35,8 @@ import org.eclipse.swt.widgets.Widget;
  */
 public class ShuffleViewer implements PropertyChangeListener {
 
+	private static final Logger logger = LoggerFactory.getLogger(ShuffleViewer.class);
+	
 	private ShuffleConfiguration conf;
 	private TableViewer fromTable, toTable;
 	private Map<String, Widget> buttons;
@@ -95,29 +100,38 @@ public class ShuffleViewer implements PropertyChangeListener {
 	}
 
 	private void moveRight() {
-		List<Object>[] ret = move(fromTable, conf.getFromList(), conf.getToList());
-		if (ret==null) return;
-		conf.setFromList(ret[0]);
-		conf.setToList(ret[1]);
+		move(fromTable, toTable, "fromList", conf.getFromList(), "toList", conf.getToList());
 	}
 
 	private void moveLeft() {
-		List<Object>[] ret = move(toTable, conf.getToList(), conf.getFromList());
-		if (ret==null) return;
-		conf.setToList(ret[0]);
-		conf.setFromList(ret[1]);
+		move(toTable, fromTable, "toList", conf.getToList(), "fromList", conf.getFromList());
 	}
 
-	private List<Object>[] move(TableViewer table, List<Object> a, List<Object> b) {
+	private void move(TableViewer aTable, TableViewer bTable, String aName, List<Object> a, String bName, List<Object> b) {
 		
-		Object sel = getSelection(table);
-		if (sel==null) return null;
+		Object sel = getSelection(aTable);
+		if (sel==null) return;
+		
+		int index = a.indexOf(sel);
 		List<Object> rem = new ArrayList<>(a);
 		rem.remove(sel);
 		
 		List<Object> add = new ArrayList<>(b);
 		add.add(sel);
-		return new List[]{rem, add};
+		
+		try {
+			RichBeanUtils.setBeanValue(conf, aName, rem);
+			RichBeanUtils.setBeanValue(conf, bName, add);
+	
+			bTable.setSelection(new StructuredSelection(sel));
+			if (rem.size()>0) {
+				index--;
+				if (index<0) index=0;
+				aTable.setSelection(new StructuredSelection(rem.get(index)));
+			}
+		} catch (Exception ne) {
+			logger.error("Cannot set the values after move!", ne);
+		}
 	}
 	
 	
@@ -132,7 +146,7 @@ public class ShuffleViewer implements PropertyChangeListener {
 
 	private final TableViewer createTable(Composite parent, String tooltip, List<Object> items, String propName) {
 		
-		TableViewer ret = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
+		TableViewer ret = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		ret.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
 		((Table)ret.getControl()).setToolTipText(tooltip); // NOTE This can get clobbered if we used tooltips inside the table.
 		

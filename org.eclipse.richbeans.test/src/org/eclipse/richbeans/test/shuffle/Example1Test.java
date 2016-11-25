@@ -2,6 +2,7 @@ package org.eclipse.richbeans.test.shuffle;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.eclipse.richbeans.examples.ExampleFactory;
 import org.eclipse.richbeans.examples.IShellCreator;
@@ -43,7 +44,7 @@ public class Example1Test extends ShellTest {
 	public void testBoxInitialValues() throws Exception {
 		
 		SWTBotStyledText x = bot.styledText(0); // x
-		assertEquals("10.00 °", x.getText());
+		assertTrue(x.getText().startsWith("10.00 "));
 
 		SWTBotStyledText y = bot.styledText(1); // y
 		assertEquals("5 m", y.getText());
@@ -54,7 +55,7 @@ public class Example1Test extends ShellTest {
 		
 		SWTBotStyledText x = bot.styledText(0); // x
 		x.setText("11");
-		assertEquals("11 °", x.getText());
+		assertTrue(x.getText().startsWith("11 "));
 
 		SWTBotStyledText y = bot.styledText(1); // x
 		y.setText("6.5");
