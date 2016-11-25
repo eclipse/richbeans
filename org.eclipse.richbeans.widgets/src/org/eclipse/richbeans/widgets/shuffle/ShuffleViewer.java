@@ -1,14 +1,10 @@
 package org.eclipse.richbeans.widgets.shuffle;
 
-import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.richbeans.api.reflection.RichBeanUtils;
@@ -20,8 +16,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.Widget;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,11 +51,12 @@ public class ShuffleViewer  {
 		
 		final Composite content = new Composite(parent, SWT.NONE);
 		content.setLayout(new GridLayout(3, false));
+		content.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		GridUtils.removeMargins(content);
 		
-		this.fromTable = createTable(content, conf.getFromToolipText(), conf.getFromList(), "fromList", false, conf.isFromReorder());		
+		this.fromTable = createTable(content, conf.getFromToolipText(), conf.getFromList(), "fromList", conf.getFromLabel(), false, conf.isFromReorder());		
 		createButtons(content);
-		this.toTable = createTable(content, conf.getToToolipText(), conf.getToList(), "toList", true, conf.isToReorder());		
+		this.toTable = createTable(content, conf.getToToolipText(), conf.getToList(), "toList", conf.getToLabel(), true, conf.isToReorder());		
 
 		return content;
 	}
@@ -67,18 +64,23 @@ public class ShuffleViewer  {
 	private final Composite createButtons(Composite content) {
 		
         final Composite ret = new Composite(content, SWT.NONE);
-        ret.setLayout(new GridLayout(1, true));
-        ret.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+        ret.setLayout(new GridLayout(1, false));
+        ret.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, true));
+        ret.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        GridUtils.removeMargins(ret, 0, 20);
 
         final Button right = new Button(ret, SWT.ARROW |SWT.RIGHT);
-        right.setEnabled(conf.getFromList().size()>0);
         right.setToolTipText("Move item right");
+        right.setEnabled(conf.getFromList().size()>0);
         right.addSelectionListener(new SelectionAdapter() {
         	public void widgetSelected(SelectionEvent e) {
         		moveRight();
         	}
         });
-        right.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        right.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+        gd.heightHint = 50;
+        right.setLayoutData(gd);
         PropertyChangeListener pcRight = evt -> {
 			final boolean enabled = evt.getNewValue()!=null && evt.getNewValue() instanceof List && ((List)evt.getNewValue()).size()>0;
 			fromTable.getControl().getDisplay().syncExec(() -> right.setEnabled(enabled));
@@ -93,7 +95,8 @@ public class ShuffleViewer  {
         		moveLeft();
         	}
         });
-        left.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        left.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        left.setLayoutData(gd);
         PropertyChangeListener pcLeft = evt -> {
 			final boolean enabled = evt.getNewValue()!=null && evt.getNewValue() instanceof List && ((List)evt.getNewValue()).size()>0;
 			fromTable.getControl().getDisplay().syncExec(() -> left.setEnabled(enabled));
@@ -157,14 +160,26 @@ public class ShuffleViewer  {
 	}
 
 
-	private final TableViewer createTable(Composite parent, String tooltip, List<Object> items, String propName, boolean selectFromEnd, boolean allowReorder) {
+	private final TableViewer createTable(Composite parent, 
+			                              String tooltip, 
+			                              List<Object> items, 
+			                              String propName,
+			                              String slabel,
+			                              boolean selectFromEnd, 
+			                              boolean allowReorder) {
 		
 		Composite content = new Composite(parent, SWT.NONE);
 		content.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
 		content.setLayout(new GridLayout(1, false));
 		content.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		GridUtils.removeMargins(content);
 		
+		if (slabel!=null) {
+			final Label label = new Label(content, SWT.NONE);
+			label.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));	
+			label.setText(slabel);
+			label.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		}
+				
 		TableViewer ret = new TableViewer(content, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		ret.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
 		((Table)ret.getControl()).setToolTipText(tooltip); // NOTE This can get clobbered if we used tooltips inside the table.
@@ -175,12 +190,17 @@ public class ShuffleViewer  {
 		ret.setInput(items);
 		
 		Composite buttons = new Composite(content, SWT.NONE);
-		buttons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		buttons.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		buttons.setLayoutData(new GridData(SWT.CENTER, SWT.FILL, true, false));
 		buttons.setLayout(new GridLayout(2, true));
+		GridUtils.removeMargins(buttons, 20, 0);
 		
 		Button down = new Button(buttons, SWT.ARROW | SWT.DOWN);
+		down.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		down.setEnabled(false);
-		down.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gd.widthHint = 50;
+		down.setLayoutData(gd);
 		down.addSelectionListener(new SelectionAdapter() {
         	public void widgetSelected(SelectionEvent e) {
         		moveVertical(ret, propName, 1);
@@ -188,8 +208,9 @@ public class ShuffleViewer  {
         });
 		
 		Button up = new Button(buttons, SWT.ARROW | SWT.UP);
+		up.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
 		up.setEnabled(false);
-		up.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
+		up.setLayoutData(gd);	
 		up.addSelectionListener(new SelectionAdapter() {
         	public void widgetSelected(SelectionEvent e) {
         		moveVertical(ret, propName, -1);

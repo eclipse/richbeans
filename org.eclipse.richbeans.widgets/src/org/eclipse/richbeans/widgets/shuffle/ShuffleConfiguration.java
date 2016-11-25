@@ -17,6 +17,7 @@ public class ShuffleConfiguration {
     private String fromToolipText, toToolipText;    
 	private List<Object> fromList, toList;
 	private boolean fromReorder=false, toReorder=true;
+	private String fromLabel, toLabel;
 
 	public ShuffleConfiguration() {
 		fromList = Collections.emptyList();
@@ -104,6 +105,22 @@ public class ShuffleConfiguration {
 	public void clearListeners() {
 		PropertyChangeListener[] ls = propertyChangeSupport.getPropertyChangeListeners();
 		for (int i = 0; i < ls.length; i++) propertyChangeSupport.removePropertyChangeListener(ls[i]);
+	}
+
+	public String getFromLabel() {
+		return fromLabel;
+	}
+
+	public void setFromLabel(String fromLabel) {
+		this.fromLabel = fromLabel;
+	}
+
+	public String getToLabel() {
+		return toLabel;
+	}
+
+	public void setToLabel(String toLabel) {
+		this.toLabel = toLabel;
 	}
 
 }

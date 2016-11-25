@@ -33,6 +33,9 @@ public class ShuffleViewerTest extends ShellTest {
 		conf = new ShuffleConfiguration();
 		conf.setFromToolipText("left");
 		conf.setToToolipText("right");
+		conf.setFromLabel("Available Experiments");
+		conf.setToToolipText("right");
+		conf.setToLabel("Submission List");
 		conf.setFromReorder(true);
 		conf.setToReorder(true);
 		
@@ -67,6 +70,14 @@ public class ShuffleViewerTest extends ShellTest {
 		assertTrue(!bot.arrowButton(3).isEnabled());
 		assertTrue(!bot.arrowButton(4).isEnabled());
 		assertTrue(!bot.arrowButton(5).isEnabled());
+	}
+
+	@Test
+	public void checkLabels() throws Exception {
+		assertNotNull(bot.label(0)); // Left
+		assertNotNull(bot.label(1)); // Right
+		assertTrue(bot.label(0).getText().equals("Available Experiments")); // Left
+		assertTrue(bot.label(1).getText().equals("Submission List")); // Right
 	}
 
 	@Test
