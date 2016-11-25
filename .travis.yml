@@ -7,6 +7,9 @@ cache:
   directories:
   - .autoconf
   - $HOME/.m2
+  
+services:
+  - docker
 
 # whitelist
 branches:
