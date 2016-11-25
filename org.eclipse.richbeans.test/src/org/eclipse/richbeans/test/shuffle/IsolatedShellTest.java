@@ -1,6 +1,7 @@
 package org.eclipse.richbeans.test.shuffle;
 
 
+import java.io.File;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
@@ -9,6 +10,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  * <p>Base class for a JUnit test suite using a SWTBot from a single shell, which needs
@@ -58,6 +60,12 @@ public abstract class IsolatedShellTest {
 		});
 		uiThread.setDaemon(true);
 	}
+	
+	@BeforeClass
+	public static void properties()  {
+		String path = (new File("log4j.properties")).getAbsolutePath();
+		System.setProperty("log4j.configuration", path);
+	}
 
 	@Before
 	public void setup() throws InterruptedException, BrokenBarrierException {
@@ -79,5 +87,5 @@ public abstract class IsolatedShellTest {
 	 * will take care of running its event loop afterwards, until the test ends:
 	 * at this point, this class will close the {@link Shell} automatically.
 	 */
-	protected abstract Shell createShell();
+	protected abstract Shell createShell() throws Exception;
 }
