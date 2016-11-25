@@ -14,6 +14,7 @@ package org.eclipse.richbeans.examples.example1;
 import org.eclipse.richbeans.api.binding.IBeanController;
 import org.eclipse.richbeans.binding.BeanService;
 import org.eclipse.richbeans.examples.ExamplePrintBeanValueListener;
+import org.eclipse.richbeans.examples.IExampleRunner;
 import org.eclipse.richbeans.examples.example1.data.SimpleBean;
 import org.eclipse.richbeans.examples.example1.ui.SimpleComposite;
 import org.eclipse.richbeans.widgets.util.SWTUtils;
@@ -29,12 +30,17 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Matthew Gerring
  */
-public class ExampleRunner {
+public class ExampleRunner implements IExampleRunner {
 
 	public static void main(String[] args) throws Exception {
+		ExampleRunner runner = new ExampleRunner();
+        Shell shell = runner.createShell();
+		SWTUtils.showCenteredShell(shell);
+	}
 
-		Display display = new Display();
-		Shell shell = new Shell(display);
+	public Shell createShell() throws Exception {
+		
+		Shell shell = new Shell(Display.getDefault());
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Change a value to see bean as JSON");
 
@@ -58,7 +64,6 @@ public class ExampleRunner {
 		controller.addValueListener(new ExamplePrintBeanValueListener(controller, value));
 		controller.beanToUI();
 		controller.switchState(true);
-
-		SWTUtils.showCenteredShell(shell);
+		return shell;
 	}
 }
