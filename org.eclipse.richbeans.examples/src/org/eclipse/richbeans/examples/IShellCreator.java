@@ -1,5 +1,6 @@
 package org.eclipse.richbeans.examples;
 
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 
 /**
@@ -8,8 +9,8 @@ import org.eclipse.swt.widgets.Shell;
  * @author Matthew Gerring
  *
  */
-public interface IExampleRunner {
+public interface IShellCreator {
 	
-	Shell createShell() throws Exception;
+	Shell createShell(Display display) throws Exception;
 
 }

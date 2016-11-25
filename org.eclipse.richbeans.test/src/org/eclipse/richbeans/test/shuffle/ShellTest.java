@@ -2,14 +2,14 @@ package org.eclipse.richbeans.test.shuffle;
 
 
 import java.util.concurrent.BrokenBarrierException;
-import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 /**
  * 
@@ -20,67 +20,43 @@ import org.junit.Before;
  */
 public abstract class ShellTest {
 
-
-	private final static CyclicBarrier swtBarrier = new CyclicBarrier(2);
-	private static volatile Thread uiThread;
+	private static TestUI testUI;
 	
-	private static ReentrantLock     currentTestLock;
-	private static ShellTest currentTest;
-	static  {
-		currentTestLock = new ReentrantLock();
-		currentTestLock.lock();
-		uiThread = new Thread(new Runnable() {
-			public void run() {
-				try {
-					System.out.println("Starting "+Thread.currentThread().getName());
-					while (true) {
-						currentTestLock.lock();
-						currentTestLock.unlock();
-						
-						final Display display = Display.getDefault();
-						appShell = currentTest.createShell();
-						bot = new SWTBot(appShell);
-						swtBarrier.await();
-						System.out.println(Thread.currentThread().getName()+" entering readAndDespatch for test");
-						while (!appShell.isDisposed()) {
-							if (!display.readAndDispatch()) {
-								display.sleep();
-							}
-						}
-						System.out.println(Thread.currentThread().getName()+" test finished");
-					}
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		}, "SWTBot UI Thread");
-		uiThread.setDaemon(true);
-		uiThread.start();
+	@BeforeClass
+	public static void startUI() {
+		testUI = new TestUI();
+		testUI.start();
 	}
-
-	protected static SWTBot bot;
-	private static Shell appShell;
+	
+	@AfterClass
+	public static void stopUI() {
+		testUI.stop();
+	}
 
 	@Before
 	public void setup() throws InterruptedException, BrokenBarrierException {
-		currentTest = this;
-		currentTestLock.unlock();
-		swtBarrier.await();
+		testUI.createBot(this);
 	}
 
 	@After
 	public void teardown() throws InterruptedException {
-		currentTestLock.lock();
-		currentTest = null;
-		Display.getDefault().syncExec(() -> {appShell.close();});
+		testUI.disposeBot(this);
 	}
 
 	/**
-	 * This method must be overridden by users. It should return the
-	 * {@link Shell} to be tested, after being opened and laid out. This class
-	 * will take care of running its event loop afterwards, until the test ends:
-	 * at this point, this class will close the {@link Shell} automatically.
+	 * Override to create the shell. The calling thread is the thread used for the UI
+	 * in this test. Called once per test class.
 	 */
-	protected abstract Shell createShell() throws Exception;
+	protected abstract Shell createShell(Display display) throws Exception;
+
+	
+	protected SWTBot bot;
+	public SWTBot getBot() {
+		return bot;
+	}
+
+	public void setBot(SWTBot bot) {
+		this.bot = bot;
+	}
 
 }

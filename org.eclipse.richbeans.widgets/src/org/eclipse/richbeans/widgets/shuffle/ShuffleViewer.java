@@ -1,10 +1,19 @@
 package org.eclipse.richbeans.widgets.shuffle;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.richbeans.widgets.internal.GridUtils;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.layout.RowLayout;
@@ -12,6 +21,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Widget;
 
 /**
  * 
@@ -20,13 +30,24 @@ import org.eclipse.swt.widgets.Table;
  * @author Matthew Gerring
  *
  */
-public class ShuffleViewer {
+public class ShuffleViewer implements PropertyChangeListener {
 
-	
 	private ShuffleConfiguration conf;
+	private TableViewer fromTable, toTable;
+	private Map<String, Widget> buttons;
 
 	public ShuffleViewer(ShuffleConfiguration data) {
 		this.conf = data;
+		conf.addPropertyChangeListener(this);
+		this.buttons = new HashMap<>(3);
+	}
+	
+	/**
+	 * Please call dispose which will clean up the listeners
+	 * and should be treated as with an SWT Displose.
+	 */
+	public void dispose() {
+		conf.removePropertyChangeListener(this);
 	}
 	
 	public Composite createPartControl(Composite parent) {
@@ -35,27 +56,79 @@ public class ShuffleViewer {
 		content.setLayout(new GridLayout(3, false));
 		GridUtils.removeMargins(content);
 		
-		createTable(content, conf.getFromToolipText(), conf.getFromList(), "fromList");		
+		this.fromTable = createTable(content, conf.getFromToolipText(), conf.getFromList(), "fromList");		
 		createButtons(content);
-		createTable(content, conf.getToToolipText(), conf.getToList(), "toList");		
+		this.toTable = createTable(content, conf.getToToolipText(), conf.getToList(), "toList");		
 
 		return content;
 	}
 
-	private static final Composite createButtons(Composite content) {
+	private final Composite createButtons(Composite content) {
 		
         final Composite ret = new Composite(content, SWT.NONE);
         ret.setLayout(new RowLayout(SWT.VERTICAL));
         new Label(ret, SWT.NONE);
         final Button right = new Button(ret, SWT.ARROW |SWT.RIGHT);
+        right.setEnabled(conf.getFromList().size()>0);
         right.setToolTipText("Move item right");
+        right.addSelectionListener(new SelectionAdapter() {
+        	public void widgetSelected(SelectionEvent e) {
+        		moveRight();
+        	}
+        });
+        buttons.put("fromList", right);
+        
         new Label(ret, SWT.NONE);
         final Button left = new Button(ret, SWT.ARROW |SWT.LEFT);
         left.setToolTipText("Move item left");
+        left.setEnabled(conf.getToList().size()>0);
+        left.addSelectionListener(new SelectionAdapter() {
+        	public void widgetSelected(SelectionEvent e) {
+        		moveLeft();
+        	}
+        });
+        buttons.put("toList", left);
+        
         new Label(ret, SWT.NONE);
       
         return ret;
 	}
+
+	private void moveRight() {
+		List<Object>[] ret = move(fromTable, conf.getFromList(), conf.getToList());
+		if (ret==null) return;
+		conf.setFromList(ret[0]);
+		conf.setToList(ret[1]);
+	}
+
+	private void moveLeft() {
+		List<Object>[] ret = move(toTable, conf.getToList(), conf.getFromList());
+		if (ret==null) return;
+		conf.setToList(ret[0]);
+		conf.setFromList(ret[1]);
+	}
+
+	private List<Object>[] move(TableViewer table, List<Object> a, List<Object> b) {
+		
+		Object sel = getSelection(table);
+		if (sel==null) return null;
+		List<Object> rem = new ArrayList<>(a);
+		rem.remove(sel);
+		
+		List<Object> add = new ArrayList<>(b);
+		add.add(sel);
+		return new List[]{rem, add};
+	}
+	
+	
+	private Object getSelection(TableViewer viewer) {
+		ISelection sel = viewer.getSelection();
+		if (sel instanceof StructuredSelection) {
+			return ((StructuredSelection)sel).getFirstElement();
+		}
+		return null;
+	}
+
 
 	private final TableViewer createTable(Composite parent, String tooltip, List<Object> items, String propName) {
 		
@@ -69,5 +142,14 @@ public class ShuffleViewer {
 		ret.setInput(items);
 		
 		return ret;
+	}
+
+	@Override
+	public void propertyChange(PropertyChangeEvent evt) {
+		if (buttons.containsKey(evt.getPropertyName())) {
+			Button widget = (Button)buttons.get(evt.getPropertyName());
+			final boolean enabled = evt.getNewValue()!=null && evt.getNewValue() instanceof List && ((List)evt.getNewValue()).size()>0;
+			fromTable.getControl().getDisplay().syncExec(() -> widget.setEnabled(enabled));
+		}
 	}
 }

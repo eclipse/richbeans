@@ -4,7 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.eclipse.richbeans.examples.ExampleFactory;
-import org.eclipse.richbeans.examples.IExampleRunner;
+import org.eclipse.richbeans.examples.IShellCreator;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotStyledText;
@@ -20,9 +21,9 @@ import org.junit.Test;
 public class Example1Test extends ShellTest {
 
 	@Override
-	protected Shell createShell() throws Exception {
-		IExampleRunner runner = ExampleFactory.createExample1();
-		Shell shell = runner.createShell();
+	protected Shell createShell(Display display) throws Exception {
+		IShellCreator runner = ExampleFactory.createExample1();
+		Shell shell = runner.createShell(display);
 		shell.pack();
 		shell.open();
 		return shell;
@@ -60,7 +61,7 @@ public class Example1Test extends ShellTest {
 		assertEquals("6.5 m", y.getText()); // Because programatic does not round 7 TODO Fix this?
 
 		SWTBotLabel json = bot.label(2);
-		assertEquals("SimpleBean [x=11.0, y=7]", json.getText());
+		assertEquals("SimpleBean [x=11.0, y=7]", json.getText()); // Rounding should be active now
 		
 	}
 

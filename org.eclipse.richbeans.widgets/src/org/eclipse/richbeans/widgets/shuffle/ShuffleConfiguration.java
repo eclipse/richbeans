@@ -2,6 +2,8 @@ package org.eclipse.richbeans.widgets.shuffle;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -15,6 +17,11 @@ public class ShuffleConfiguration {
 
     private String fromToolipText, toToolipText;    
 	private List<Object> fromList, toList;
+	
+	public ShuffleConfiguration() {
+		fromList = Collections.emptyList();
+		toList   = Collections.emptyList();
+	}
     
 	public String getFromToolipText() {
 		return fromToolipText;
