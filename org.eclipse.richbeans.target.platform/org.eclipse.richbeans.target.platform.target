@@ -1,38 +1,26 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="richbeans" sequenceNumber="67">
+<?pde version="3.8"?><target name="richbeans" sequenceNumber="75">
 <locations>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="false" type="InstallableUnit">
-<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
-<unit id="org.mockito.source" version="1.9.5.v201605172210"/>
-<unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
-<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
-<unit id="org.junit" version="4.12.0.v201504281640"/>
-<unit id="org.apache.commons.beanutils" version="1.8.0.v201205091237"/>
-<unit id="org.apache.commons.collections.source" version="3.2.2.v201511171945"/>
-<unit id="org.mockito" version="1.9.5.v201605172210"/>
-<unit id="org.apache.commons.logging" version="1.1.1.v201101211721"/>
-<unit id="org.apache.log4j" version="1.2.15.v201012070815"/>
-<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/"/>
+<unit id="org.eclipse.swtbot.feature.group" version="2.3.0.201506081302"/>
+<unit id="org.eclipse.platform.feature.group" version="4.5.2.v20160212-1500"/>
+<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.3.0.201506081302"/>
+<unit id="org.eclipse.emf.common.ui.feature.group" version="2.10.1.v20160208-0841"/>
+<repository location="http://download.eclipse.org/releases/mars"/>
 </location>
 <location includeAllPlatforms="true" includeConfigurePhase="true" includeMode="slicer" includeSource="false" type="InstallableUnit">
-<unit id="org.eclipse.ecf.core.feature.group" version="3.13.2.v20160823-2221"/>
-<unit id="org.eclipse.swtbot.ide.feature.group" version="2.5.0.201609021837"/>
-<unit id="org.eclipse.wb.rcp.feature.feature.group" version="1.9.0"/>
-<unit id="org.eclipse.objectteams.otequinox.feature.group" version="2.5.1.201609131451"/>
-<unit id="org.eclipse.platform.sdk" version="4.6.1.M20160907-1200"/>
-<unit id="org.eclipse.wb.core.feature.feature.group" version="1.9.0"/>
-<unit id="org.eclipse.sdk.ide" version="4.6.1.M20160907-1200"/>
-<unit id="org.eclipse.swtbot.feature.group" version="2.5.0.201609021837"/>
-<unit id="org.eclipse.equinox.sdk.feature.group" version="3.12.0.v20160829-1338"/>
-<unit id="org.eclipse.ecf.remoteservice.sdk.source.feature.feature.group" version="3.13.2.v20160823-2221"/>
-<unit id="org.eclipse.rcp.sdk.id" version="4.6.1.M20160907-1200"/>
-<unit id="org.eclipse.wb.swt.feature.feature.group" version="1.9.0"/>
-<unit id="org.eclipse.ecf.remoteservice.sdk.feature.feature.group" version="3.13.2.v20160823-2221"/>
-<unit id="org.eclipse.emf.sdk.feature.group" version="2.12.0.v20160526-0356"/>
-<unit id="org.eclipse.ecf.core.source.feature.group" version="3.13.2.v20160823-2221"/>
-<unit id="org.eclipse.swtbot.eclipse.feature.group" version="2.5.0.201609021837"/>
-<unit id="org.eclipse.wb.core.ui.feature.feature.group" version="1.9.0"/>
-<repository location="http://download.eclipse.org/releases/neon"/>
+<unit id="org.slf4j.api" version="1.7.2.v20121108-1250"/>
+<unit id="org.junit" version="4.12.0.v201504281640"/>
+<unit id="org.apache.commons.logging" version="1.1.1.v201101211721"/>
+<unit id="org.mockito.source" version="1.9.5.v201605172210"/>
+<unit id="org.apache.commons.collections" version="3.2.2.v201511171945"/>
+<unit id="org.apache.commons.lang3" version="3.1.0.v201403281430"/>
+<unit id="org.apache.commons.beanutils" version="1.8.0.v201205091237"/>
+<unit id="org.hamcrest.core" version="1.3.0.v201303031735"/>
+<unit id="org.apache.commons.collections.source" version="3.2.2.v201511171945"/>
+<unit id="org.mockito" version="1.9.5.v201605172210"/>
+<unit id="org.apache.log4j" version="1.2.15.v201012070815"/>
+<repository location="http://download.eclipse.org/tools/orbit/downloads/drops/R20160520211859/repository/"/>
 </location>
 </locations>
 </target>
