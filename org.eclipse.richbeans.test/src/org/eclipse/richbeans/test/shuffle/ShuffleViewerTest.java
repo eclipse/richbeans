@@ -17,7 +17,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(SWTBotJunit4ClassRunner.class)
-public class ShuffleViewerTest extends IsolatedShellTest {
+public class ShuffleViewerTest extends ShellTest {
 
 	private static ShuffleConfiguration conf;
 

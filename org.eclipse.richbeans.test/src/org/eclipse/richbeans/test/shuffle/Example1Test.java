@@ -14,7 +14,7 @@ import org.junit.Test;
  * @author Matthew Gerring
  *
  */
-public class Example1Test extends IsolatedShellTest {
+public class Example1Test extends ShellTest {
 
 	@Test
 	public void testUI() throws Exception {

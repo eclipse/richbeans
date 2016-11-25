@@ -1,84 +1,78 @@
 package org.eclipse.richbeans.test.shuffle;
 
 
-import java.io.File;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.locks.ReentrantLock;
 
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 
 /**
- * <p>Base class for a JUnit test suite using a SWTBot from a single shell, which needs
- * to be recreated before every test. Users of this class should only define the
- * contents of the {@link #createShell()} method so it produces the shell to be
- * tested. To access the {@link SWTBot} for the current test, the protected <code>bot</code>
- * field can be used.</p>
  * 
- * <p>This class starts up the UI thread and has it loop indefinitely. Every test creates
- * the dialog, makes it available through the <code>bot</code> protected field and then operates
- * the SWT event loop until the shell is closed by this class.</p> 
+ * Test which starts a static system for creating shells from the current display
+ * 
+ * @author Matthew Gerring
+ *
  */
-public abstract class IsolatedShellTest {
+public abstract class ShellTest {
 
-	protected static SWTBot bot;
 
 	private final static CyclicBarrier swtBarrier = new CyclicBarrier(2);
-	private static Thread uiThread;
-	private static Shell appShell;
-
-	public IsolatedShellTest() {
-		if (uiThread == null) {
-			initializeUIThread();
-			uiThread.start();
-		}
-	}
-
-	private void initializeUIThread() {
+	private static volatile Thread uiThread;
+	
+	private static ReentrantLock     currentTestLock;
+	private static ShellTest currentTest;
+	static  {
+		currentTestLock = new ReentrantLock();
+		currentTestLock.lock();
 		uiThread = new Thread(new Runnable() {
 			public void run() {
 				try {
+					System.out.println("Starting "+Thread.currentThread().getName());
 					while (true) {
+						currentTestLock.lock();
+						currentTestLock.unlock();
+						
 						final Display display = Display.getDefault();
-						appShell = createShell();
+						appShell = currentTest.createShell();
 						bot = new SWTBot(appShell);
 						swtBarrier.await();
+						System.out.println(Thread.currentThread().getName()+" entering readAndDespatch for test");
 						while (!appShell.isDisposed()) {
 							if (!display.readAndDispatch()) {
 								display.sleep();
 							}
 						}
+						System.out.println(Thread.currentThread().getName()+" test finished");
 					}
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-		});
+		}, "SWTBot UI Thread");
 		uiThread.setDaemon(true);
+		uiThread.start();
 	}
-	
-	@BeforeClass
-	public static void properties()  {
-		String path = (new File("log4j.properties")).getAbsolutePath();
-		System.setProperty("log4j.configuration", path);
-	}
+
+	protected static SWTBot bot;
+	private static Shell appShell;
 
 	@Before
 	public void setup() throws InterruptedException, BrokenBarrierException {
+		currentTest = this;
+		currentTestLock.unlock();
 		swtBarrier.await();
 	}
 
 	@After
 	public void teardown() throws InterruptedException {
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				appShell.close();
-			}
-		});
+		currentTestLock.lock();
+		currentTest = null;
+		Display.getDefault().syncExec(() -> {appShell.close();});
 	}
 
 	/**
