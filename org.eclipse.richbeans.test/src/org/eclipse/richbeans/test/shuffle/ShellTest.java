@@ -82,4 +82,5 @@ public abstract class ShellTest {
 	 * at this point, this class will close the {@link Shell} automatically.
 	 */
 	protected abstract Shell createShell() throws Exception;
+
 }
