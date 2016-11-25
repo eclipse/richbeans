@@ -17,10 +17,13 @@ class ShuffleContentProvider implements IStructuredContentProvider, PropertyChan
 	private final String propName;
 	    
 	private Viewer viewer;
+
+	private boolean selectEnd;
 	
-	public ShuffleContentProvider(ShuffleConfiguration conf, String propName) {
+	public ShuffleContentProvider(ShuffleConfiguration conf, String propName, boolean selectEnd) {
 		this.conf     = conf;
 		this.propName = propName;
+		this.selectEnd =selectEnd;
 		conf.addPropertyChangeListener(propName, this);
 	}
 	
@@ -33,7 +36,11 @@ class ShuffleContentProvider implements IStructuredContentProvider, PropertyChan
 			if (item!=null && items.contains(item)) {
 				viewer.setSelection(new StructuredSelection(item));
 			} else if (!items.isEmpty()){
-				viewer.setSelection(new StructuredSelection(items.get(0)));
+				if (selectEnd) {
+				    viewer.setSelection(new StructuredSelection(items.get(items.size()-1)));
+				} else {
+					viewer.setSelection(new StructuredSelection(items.get(0)));
+				}
 			}
 		});
 	}

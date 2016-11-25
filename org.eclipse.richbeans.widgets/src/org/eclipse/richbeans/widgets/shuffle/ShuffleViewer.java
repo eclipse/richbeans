@@ -61,9 +61,9 @@ public class ShuffleViewer implements PropertyChangeListener {
 		content.setLayout(new GridLayout(3, false));
 		GridUtils.removeMargins(content);
 		
-		this.fromTable = createTable(content, conf.getFromToolipText(), conf.getFromList(), "fromList");		
+		this.fromTable = createTable(content, conf.getFromToolipText(), conf.getFromList(), "fromList", false);		
 		createButtons(content);
-		this.toTable = createTable(content, conf.getToToolipText(), conf.getToList(), "toList");		
+		this.toTable = createTable(content, conf.getToToolipText(), conf.getToList(), "toList", true);		
 
 		return content;
 	}
@@ -112,12 +112,21 @@ public class ShuffleViewer implements PropertyChangeListener {
 		Object sel = getSelection(aTable);
 		if (sel==null) return;
 		
-		int index = a.indexOf(sel);
+		int aindex = a.indexOf(sel);
 		List<Object> rem = new ArrayList<>(a);
 		rem.remove(sel);
 		
 		List<Object> add = new ArrayList<>(b);
-		add.add(sel);
+		Object existing = getSelection(bTable);
+		int bindex = add.size();
+		if (existing!=null) {
+			bindex = add.indexOf(existing);
+		}
+		try {
+		    add.add(bindex+1, sel);
+		} catch (IndexOutOfBoundsException ne) {
+			add.add(sel);
+		}
 		
 		try {
 			RichBeanUtils.setBeanValue(conf, aName, rem);
@@ -125,9 +134,9 @@ public class ShuffleViewer implements PropertyChangeListener {
 	
 			bTable.setSelection(new StructuredSelection(sel));
 			if (rem.size()>0) {
-				index--;
-				if (index<0) index=0;
-				aTable.setSelection(new StructuredSelection(rem.get(index)));
+				aindex--;
+				if (aindex<0) aindex=0;
+				aTable.setSelection(new StructuredSelection(rem.get(aindex)));
 			}
 		} catch (Exception ne) {
 			logger.error("Cannot set the values after move!", ne);
@@ -144,13 +153,13 @@ public class ShuffleViewer implements PropertyChangeListener {
 	}
 
 
-	private final TableViewer createTable(Composite parent, String tooltip, List<Object> items, String propName) {
+	private final TableViewer createTable(Composite parent, String tooltip, List<Object> items, String propName, boolean selectFromEnd) {
 		
 		TableViewer ret = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		ret.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
 		((Table)ret.getControl()).setToolTipText(tooltip); // NOTE This can get clobbered if we used tooltips inside the table.
 		
-		final ShuffleContentProvider prov = new ShuffleContentProvider(conf, propName);
+		final ShuffleContentProvider prov = new ShuffleContentProvider(conf, propName, selectFromEnd);
 		ret.setContentProvider(prov);
 		
 		ret.setInput(items);

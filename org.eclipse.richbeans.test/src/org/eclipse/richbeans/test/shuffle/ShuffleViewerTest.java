@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.eclipse.richbeans.widgets.shuffle.ShuffleConfiguration;
 import org.eclipse.richbeans.widgets.shuffle.ShuffleViewer;
@@ -12,7 +13,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
-import org.eclipse.swtbot.swt.finder.utils.TableCollection;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -143,8 +143,9 @@ public class ShuffleViewerTest extends ShellTest {
 		assertTrue(bot.arrowButton(0).isEnabled());
 		assertTrue(bot.arrowButton(1).isEnabled());
 		
+		bot.table(0).click(2, 0);
+		bot.table(1).click(0, 0);
 		SWTBotTable table = bot.table(1);
-
 		bot.arrowButton(1).click();
 		
 		table = bot.table(0);
@@ -202,6 +203,36 @@ public class ShuffleViewerTest extends ShellTest {
 		
 		table = bot.table(1);
 		assertEquals(0, table.rowCount());
+	}
+
+	@Test
+	public void checkMoveThreeRightCheckOrder() throws Exception {
+		
+		assertTrue(!bot.arrowButton(0).isEnabled());
+		assertTrue(!bot.arrowButton(1).isEnabled());
+		conf.setFromList(Arrays.asList("one", "two", "three"));
+		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
+		assertTrue(bot.arrowButton(0).isEnabled());
+		assertTrue(bot.arrowButton(1).isEnabled());
+		
+		SWTBotTable table = bot.table(1);
+		table.click(0, 0); 
+		bot.arrowButton(0).click(); // Add one after four
+		
+		table.click(2, 0); 
+		bot.arrowButton(0).click();// Add two after five
+		
+		table.click(4, 0); 
+		bot.arrowButton(0).click();// Add three after six
+		
+		assertEquals(7, table.rowCount());
+		assertTrue(!bot.arrowButton(0).isEnabled());
+		assertTrue(bot.arrowButton(1).isEnabled());
+		
+		List<String> values = Arrays.asList("four", "one", "five", "two", "six", "three", "seven");
+		for (int i = 0; i < values.size(); i++) {
+			assertEquals(values.get(i), table.getTableItem(i).getText(0));
+		}
 	}
 
 }
