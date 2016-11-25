@@ -16,12 +16,6 @@ branches:
 jdk:
  - oraclejdk8
 
-# Make a display for the tests
-before_script:
-  - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sleep 3 # give xvfb some time to start
-
 # Check they had a ticket with this change
 before_install:
 - chmod +x ./org.eclipse.richbeans.releng/build/commit-msg.sh
