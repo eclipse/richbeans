@@ -2,7 +2,6 @@ package org.eclipse.richbeans.widgets.shuffle;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -17,7 +16,8 @@ public class ShuffleConfiguration {
 
     private String fromToolipText, toToolipText;    
 	private List<Object> fromList, toList;
-	
+	private boolean fromReorder=false, toReorder=true;
+
 	public ShuffleConfiguration() {
 		fromList = Collections.emptyList();
 		toList   = Collections.emptyList();
@@ -56,6 +56,22 @@ public class ShuffleConfiguration {
 		this.toList = toList;
 		firePropertyChange("toList", old, toList);
 	}
+	
+	public boolean isFromReorder() {
+		return fromReorder;
+	}
+
+	public void setFromReorder(boolean fromReorder) {
+		this.fromReorder = fromReorder;
+	}
+
+	public boolean isToReorder() {
+		return toReorder;
+	}
+
+	public void setToReorder(boolean toReorder) {
+		this.toReorder = toReorder;
+	}
 
 	
 	private final PropertyChangeSupport propertyChangeSupport = new PropertyChangeSupport(this);
@@ -83,6 +99,11 @@ public class ShuffleConfiguration {
 			Object newValue) {
 		propertyChangeSupport.firePropertyChange(propertyName, oldValue,
 				newValue);
+	}
+
+	public void clearListeners() {
+		PropertyChangeListener[] ls = propertyChangeSupport.getPropertyChangeListeners();
+		for (int i = 0; i < ls.length; i++) propertyChangeSupport.removePropertyChangeListener(ls[i]);
 	}
 
 }

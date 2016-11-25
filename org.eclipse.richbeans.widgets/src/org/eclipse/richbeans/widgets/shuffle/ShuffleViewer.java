@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.richbeans.api.reflection.RichBeanUtils;
@@ -17,10 +18,8 @@ import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Widget;
 import org.slf4j.Logger;
@@ -33,18 +32,15 @@ import org.slf4j.LoggerFactory;
  * @author Matthew Gerring
  *
  */
-public class ShuffleViewer implements PropertyChangeListener {
+public class ShuffleViewer  {
 
 	private static final Logger logger = LoggerFactory.getLogger(ShuffleViewer.class);
 	
 	private ShuffleConfiguration conf;
 	private TableViewer fromTable, toTable;
-	private Map<String, Widget> buttons;
 
 	public ShuffleViewer(ShuffleConfiguration data) {
 		this.conf = data;
-		conf.addPropertyChangeListener(this);
-		this.buttons = new HashMap<>(3);
 	}
 	
 	/**
@@ -52,7 +48,7 @@ public class ShuffleViewer implements PropertyChangeListener {
 	 * and should be treated as with an SWT Displose.
 	 */
 	public void dispose() {
-		conf.removePropertyChangeListener(this);
+		conf.clearListeners();
 	}
 	
 	public Composite createPartControl(Composite parent) {
@@ -61,9 +57,9 @@ public class ShuffleViewer implements PropertyChangeListener {
 		content.setLayout(new GridLayout(3, false));
 		GridUtils.removeMargins(content);
 		
-		this.fromTable = createTable(content, conf.getFromToolipText(), conf.getFromList(), "fromList", false);		
+		this.fromTable = createTable(content, conf.getFromToolipText(), conf.getFromList(), "fromList", false, conf.isFromReorder());		
 		createButtons(content);
-		this.toTable = createTable(content, conf.getToToolipText(), conf.getToList(), "toList", true);		
+		this.toTable = createTable(content, conf.getToToolipText(), conf.getToList(), "toList", true, conf.isToReorder());		
 
 		return content;
 	}
@@ -71,8 +67,9 @@ public class ShuffleViewer implements PropertyChangeListener {
 	private final Composite createButtons(Composite content) {
 		
         final Composite ret = new Composite(content, SWT.NONE);
-        ret.setLayout(new RowLayout(SWT.VERTICAL));
-        new Label(ret, SWT.NONE);
+        ret.setLayout(new GridLayout(1, true));
+        ret.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+
         final Button right = new Button(ret, SWT.ARROW |SWT.RIGHT);
         right.setEnabled(conf.getFromList().size()>0);
         right.setToolTipText("Move item right");
@@ -81,9 +78,13 @@ public class ShuffleViewer implements PropertyChangeListener {
         		moveRight();
         	}
         });
-        buttons.put("fromList", right);
+        right.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        PropertyChangeListener pcRight = evt -> {
+			final boolean enabled = evt.getNewValue()!=null && evt.getNewValue() instanceof List && ((List)evt.getNewValue()).size()>0;
+			fromTable.getControl().getDisplay().syncExec(() -> right.setEnabled(enabled));
+        };
+        conf.addPropertyChangeListener("fromList", pcRight);
         
-        new Label(ret, SWT.NONE);
         final Button left = new Button(ret, SWT.ARROW |SWT.LEFT);
         left.setToolTipText("Move item left");
         left.setEnabled(conf.getToList().size()>0);
@@ -92,22 +93,25 @@ public class ShuffleViewer implements PropertyChangeListener {
         		moveLeft();
         	}
         });
-        buttons.put("toList", left);
-        
-        new Label(ret, SWT.NONE);
-      
+        left.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        PropertyChangeListener pcLeft = evt -> {
+			final boolean enabled = evt.getNewValue()!=null && evt.getNewValue() instanceof List && ((List)evt.getNewValue()).size()>0;
+			fromTable.getControl().getDisplay().syncExec(() -> left.setEnabled(enabled));
+        };
+        conf.addPropertyChangeListener("toList", pcLeft);
+   
         return ret;
 	}
 
 	private void moveRight() {
-		move(fromTable, toTable, "fromList", conf.getFromList(), "toList", conf.getToList());
+		moveHorizontal(fromTable, toTable, "fromList", conf.getFromList(), "toList", conf.getToList());
 	}
 
 	private void moveLeft() {
-		move(toTable, fromTable, "toList", conf.getToList(), "fromList", conf.getFromList());
+		moveHorizontal(toTable, fromTable, "toList", conf.getToList(), "fromList", conf.getFromList());
 	}
 
-	private void move(TableViewer aTable, TableViewer bTable, String aName, List<Object> a, String bName, List<Object> b) {
+	private void moveHorizontal(TableViewer aTable, TableViewer bTable, String aName, List<Object> a, String bName, List<Object> b) {
 		
 		Object sel = getSelection(aTable);
 		if (sel==null) return;
@@ -153,9 +157,15 @@ public class ShuffleViewer implements PropertyChangeListener {
 	}
 
 
-	private final TableViewer createTable(Composite parent, String tooltip, List<Object> items, String propName, boolean selectFromEnd) {
+	private final TableViewer createTable(Composite parent, String tooltip, List<Object> items, String propName, boolean selectFromEnd, boolean allowReorder) {
 		
-		TableViewer ret = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+		Composite content = new Composite(parent, SWT.NONE);
+		content.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
+		content.setLayout(new GridLayout(1, false));
+		content.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		GridUtils.removeMargins(content);
+		
+		TableViewer ret = new TableViewer(content, SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		ret.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
 		((Table)ret.getControl()).setToolTipText(tooltip); // NOTE This can get clobbered if we used tooltips inside the table.
 		
@@ -164,15 +174,64 @@ public class ShuffleViewer implements PropertyChangeListener {
 		
 		ret.setInput(items);
 		
+		Composite buttons = new Composite(content, SWT.NONE);
+		buttons.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		buttons.setLayout(new GridLayout(2, true));
+		
+		Button down = new Button(buttons, SWT.ARROW | SWT.DOWN);
+		down.setEnabled(false);
+		down.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		down.addSelectionListener(new SelectionAdapter() {
+        	public void widgetSelected(SelectionEvent e) {
+        		moveVertical(ret, propName, 1);
+        	}
+        });
+		
+		Button up = new Button(buttons, SWT.ARROW | SWT.UP);
+		up.setEnabled(false);
+		up.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));	
+		up.addSelectionListener(new SelectionAdapter() {
+        	public void widgetSelected(SelectionEvent e) {
+        		moveVertical(ret, propName, -1);
+        	}
+        });
+		if (!allowReorder) { // This cannot be changed later
+			down.setVisible(false);
+			up.setVisible(false);
+		}
+		
+        PropertyChangeListener pcLeft = evt -> {
+			final boolean enabled = evt.getNewValue()!=null && evt.getNewValue() instanceof List && ((List)evt.getNewValue()).size()>1;
+			fromTable.getControl().getDisplay().syncExec(() -> {
+				down.setEnabled(enabled);
+				up.setEnabled(enabled);
+			});
+        };
+        conf.addPropertyChangeListener(propName, pcLeft);
+
+
 		return ret;
 	}
 
-	@Override
-	public void propertyChange(PropertyChangeEvent evt) {
-		if (buttons.containsKey(evt.getPropertyName())) {
-			Button widget = (Button)buttons.get(evt.getPropertyName());
-			final boolean enabled = evt.getNewValue()!=null && evt.getNewValue() instanceof List && ((List)evt.getNewValue()).size()>0;
-			fromTable.getControl().getDisplay().syncExec(() -> widget.setEnabled(enabled));
+	private void moveVertical(TableViewer viewer, String propName, int moveAmount) {
+		
+		try {
+			Object item = getSelection(viewer);
+			if (item==null) return;
+	
+			List<Object> items = new ArrayList<>((List<Object>)RichBeanUtils.getBeanValue(conf, propName));
+			final int index = items.indexOf(item);
+			item = items.remove(index);
+	
+			int newIndex = index + moveAmount;
+			if (newIndex<0) newIndex = 0;
+			if (newIndex>items.size()) newIndex = items.size();
+			items.add(newIndex, item);
+	
+			RichBeanUtils.setBeanValue(conf, propName, items);
+			viewer.setSelection(new StructuredSelection(item));
+		} catch (Exception ne) {
+			logger.error("Problem moving veritcally!", ne);
 		}
 	}
 }
