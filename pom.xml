@@ -18,6 +18,7 @@
 		<module>org.eclipse.richbeans.annot</module>
 		<module>org.eclipse.richbeans.binding</module>
 		<module>org.eclipse.richbeans.examples</module>
+		<module>org.eclipse.richbeans.test</module>
 		<module>org.eclipse.richbeans.widgets</module>
 		<module>org.eclipse.richbeans.widgets.file</module>
 		<module>org.eclipse.richbeans.xml</module>
@@ -88,6 +89,8 @@
 			<artifactId>maven-surefire-plugin</artifactId>
 			<version>2.19.1</version>
 			<configuration>
+                <useUIHarness>true</useUIHarness>
+                <useUIThread>false</useUIThread>
                 <testSourceDirectory>${basedir}/src</testSourceDirectory>
                 <testClassesDirectory>${basedir}/bin</testClassesDirectory>
 				<includes>

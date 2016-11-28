@@ -51,10 +51,18 @@ public class GridUtils {
 	 * @param area
 	 */
 	public static void removeMargins(Composite area) {
+		removeMargins(area, 0, 0);
+	}
+	
+	/**
+	 * 
+	 * @param area
+	 */
+	public static void removeMargins(Composite area, int hspacing, int vspacing) {
 		final GridLayout layout = (GridLayout)area.getLayout();
 		if (layout==null) return;
-		layout.horizontalSpacing=0;
-		layout.verticalSpacing  =0;
+		layout.horizontalSpacing=hspacing;
+		layout.verticalSpacing  =vspacing;
 		layout.marginBottom     =0;
 		layout.marginTop        =0;
 		layout.marginLeft       =0;
