@@ -1,6 +1,7 @@
 package org.eclipse.richbeans.test.shuffle;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -64,12 +65,12 @@ public class ShuffleViewerTest extends ShellTest {
 	
 	@Test
 	public void checkButtonsDisabledWhenEmpty() throws Exception {
-		assertTrue(!bot.arrowButton(0).isEnabled());
-		assertTrue(!bot.arrowButton(1).isEnabled());
-		assertTrue(!bot.arrowButton(2).isEnabled());
-		assertTrue(!bot.arrowButton(3).isEnabled());
-		assertTrue(!bot.arrowButton(4).isEnabled());
-		assertTrue(!bot.arrowButton(5).isEnabled());
+		assertFalse(bot.arrowButton(0).isEnabled());
+		assertFalse(bot.arrowButton(1).isEnabled());
+		assertFalse(bot.arrowButton(2).isEnabled());
+		assertFalse(bot.arrowButton(3).isEnabled());
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(5).isEnabled());
 	}
 
 	@Test
@@ -97,7 +98,7 @@ public class ShuffleViewerTest extends ShellTest {
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		assertEquals(3, table.rowCount());
 		assertTrue(bot.arrowButton(2).isEnabled());
-		assertTrue(!bot.arrowButton(3).isEnabled());
+		assertFalse(bot.arrowButton(3).isEnabled());
 	}
 	
 	@Test
@@ -108,15 +109,15 @@ public class ShuffleViewerTest extends ShellTest {
 		
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
 		assertEquals(4, table.rowCount());
-		assertTrue(!bot.arrowButton(2).isEnabled());
+		assertFalse(bot.arrowButton(2).isEnabled());
 		assertTrue(bot.arrowButton(3).isEnabled());
 	}
 
 	@Test
 	public void checkMoveOneRight() throws Exception {
 		
-		assertTrue(!bot.arrowButton(2).isEnabled());
-		assertTrue(!bot.arrowButton(3).isEnabled());
+		assertFalse(bot.arrowButton(2).isEnabled());
+		assertFalse(bot.arrowButton(3).isEnabled());
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
 		assertTrue(bot.arrowButton(2).isEnabled());
@@ -190,7 +191,7 @@ public class ShuffleViewerTest extends ShellTest {
 		
 		table = bot.table(1);
 		assertEquals(7, table.rowCount());
-		assertTrue(!bot.arrowButton(2).isEnabled());
+		assertFalse(bot.arrowButton(2).isEnabled());
 		assertTrue(bot.arrowButton(3).isEnabled());
 		
 		table = bot.table(0);
@@ -212,7 +213,7 @@ public class ShuffleViewerTest extends ShellTest {
 		table = bot.table(0);
 		assertEquals(7, table.rowCount());
 		assertTrue(bot.arrowButton(2).isEnabled());
-		assertTrue(!bot.arrowButton(3).isEnabled());
+		assertFalse(bot.arrowButton(3).isEnabled());
 		
 		table = bot.table(1);
 		assertEquals(0, table.rowCount());
@@ -235,7 +236,7 @@ public class ShuffleViewerTest extends ShellTest {
 		bot.arrowButton(2).click();// Add three after six
 		
 		assertEquals(7, table.rowCount());
-		assertTrue(!bot.arrowButton(2).isEnabled());
+		assertFalse(bot.arrowButton(2).isEnabled());
 		assertTrue(bot.arrowButton(3).isEnabled());
 		
 		List<String> values = Arrays.asList("four", "one", "five", "two", "six", "three", "seven");
@@ -248,8 +249,8 @@ public class ShuffleViewerTest extends ShellTest {
 	@Test
 	public void checkReorderInsideRight() throws Exception {
 
-		assertTrue(!bot.arrowButton(4).isEnabled());
-		assertTrue(!bot.arrowButton(5).isEnabled());
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(5).isEnabled());
 		conf.setToList(Arrays.asList("one", "two", "three", "four", "five", "six", "seven"));		
 		assertTrue(bot.arrowButton(4).isEnabled());
 		assertTrue(bot.arrowButton(5).isEnabled());
@@ -280,8 +281,8 @@ public class ShuffleViewerTest extends ShellTest {
 	@Test
 	public void checkReorderUpDownExtents() throws Exception {
 
-		assertTrue(!bot.arrowButton(4).isEnabled());
-		assertTrue(!bot.arrowButton(5).isEnabled());
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(5).isEnabled());
 		conf.setToList(Arrays.asList("one", "two", "three", "four", "five", "six", "seven"));		
 		assertTrue(bot.arrowButton(4).isEnabled());
 		assertTrue(bot.arrowButton(5).isEnabled());

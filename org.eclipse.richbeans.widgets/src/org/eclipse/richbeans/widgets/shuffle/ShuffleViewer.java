@@ -136,8 +136,8 @@ public class ShuffleViewer  {
 		}
 		
 		try {
-			RichBeanUtils.setBeanValue(conf, aName, rem);
-			RichBeanUtils.setBeanValue(conf, bName, add);
+			RichBeanUtils.setBeanValue(conf, aName, rem); // Set the value of the rem list and property name 'aName' in object conf
+			RichBeanUtils.setBeanValue(conf, bName, add); // Set the value of the add list and property name 'bName' in object conf
 	
 			bTable.setSelection(new StructuredSelection(sel));
 			if (rem.size()>0) {
