@@ -255,7 +255,7 @@ public class ShuffleViewerTest extends ShellTest {
 		assertTrue(bot.arrowButton(5).isEnabled());
         
 		SWTBotTable table = bot.table(1);
-		table.click(3, 0); 
+		table.click(3, 0); // Select "four"
 		
 		bot.arrowButton(5).click(); // Up
 		bot.arrowButton(5).click(); // Up
@@ -267,5 +267,38 @@ public class ShuffleViewerTest extends ShellTest {
 			assertEquals(values.get(i), table.getTableItem(i).getText(0));
 		}
 
+		bot.arrowButton(4).click(); // Down
+		bot.arrowButton(4).click(); // Down
+		bot.arrowButton(4).click(); // Down
+		
+		values = Arrays.asList("one", "two", "three", "four", "five", "six", "seven");
+		for (int i = 0; i < values.size(); i++) {
+			assertEquals(values.get(i), table.getTableItem(i).getText(0));
+		}
 	}
+	
+	@Test
+	public void checkReorderUpDownExtents() throws Exception {
+
+		assertTrue(!bot.arrowButton(4).isEnabled());
+		assertTrue(!bot.arrowButton(5).isEnabled());
+		conf.setToList(Arrays.asList("one", "two", "three", "four", "five", "six", "seven"));		
+		assertTrue(bot.arrowButton(4).isEnabled());
+		assertTrue(bot.arrowButton(5).isEnabled());
+        
+		SWTBotTable table = bot.table(1);
+		table.click(6, 0); // Select "seven"
+		
+		// Go off the top
+		for (int i = 0; i < 10; i++) bot.arrowButton(5).click(); // Up
+
+		assertEquals("seven", table.getTableItem(0).getText(0));
+
+		// Go off the Bottom
+		for (int i = 0; i < 10; i++) bot.arrowButton(4).click(); // Down
+		
+		// Go off the Bottom
+		assertEquals("seven", table.getTableItem(6).getText(0));
+	}
+
 }
