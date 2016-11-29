@@ -33,9 +33,7 @@ import org.eclipse.swt.widgets.Shell;
 public class ExampleRunner implements IShellCreator {
 
 	public static void main(String[] args) throws Exception {
-		ExampleRunner runner = new ExampleRunner();
-        Shell shell = runner.createShell(Display.getDefault());
-		SWTUtils.showCenteredShell(shell);
+		(new ExampleRunner()).open();
 	}
 
 	public Shell createShell(Display display) throws Exception {

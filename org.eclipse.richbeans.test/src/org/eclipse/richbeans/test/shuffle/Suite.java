@@ -7,7 +7,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 
 	ShuffleViewerTest.class,
-	Example1Test.class
+	Example1Test.class,
+	Example2Test.class
 
 })
 public class Suite {

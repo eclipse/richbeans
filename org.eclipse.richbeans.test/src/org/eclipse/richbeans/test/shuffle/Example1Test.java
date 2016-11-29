@@ -31,7 +31,7 @@ public class Example1Test extends ShellTest {
 	}
 	
 	@Test
-	public void testUI() throws Exception {
+	public void testShell() throws Exception {
 		assertNotNull(bot.shell("Change a value to see bean as JSON"));
 	}
 	
