@@ -22,13 +22,12 @@ public class ExampleItem {
 	private Double x,y;
 	
     public ExampleItem() {
-    	this(1,1);
+    	this(null, 1,1);
     }
-    private static int INDEX = 0;
     
-	public ExampleItem(double i, double j) {
+	public ExampleItem(String itemName, double i, double j) {
+		this.itemName = itemName;
 		x = i; y = j;
-		itemName = "Fred"+(++INDEX);
 	}
 
 	public String getItemName() {

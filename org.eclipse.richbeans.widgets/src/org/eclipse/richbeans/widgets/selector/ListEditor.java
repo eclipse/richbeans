@@ -360,10 +360,10 @@ public abstract class ListEditor extends FieldBeanComposite {
 	}
 
 	protected void updateName(BeanWrapper wrapper) {
+   		if (wrapper==null) return;
     	final String methodName = RichBeanUtils.getGetterName(getNameField());
     	try {
-    		if (wrapper==null) return;
-			final Method method = wrapper.getBean().getClass().getMethod(methodName);
+ 			final Method method = wrapper.getBean().getClass().getMethod(methodName);
 			final Object ob = method.invoke(wrapper.getBean());
 			final String name = ob != null ? ob.toString() : getDefaultName();
 			if (name != null)
