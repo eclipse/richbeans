@@ -37,9 +37,8 @@ public class ExampleComposite extends Composite {
 		this.items = new VerticalListEditor(this, SWT.NONE);
 		items.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		items.setMinItems(0);
-		items.setMaxItems(25);
-		items.setDefaultName("NewItem");
 		items.setEditorClass(ExampleItem.class);
+		items.setTemplateName("Item");
 		items.setNameField("itemName"); // Where the name comes from if inside the bean
 		items.setListHeight(80);
 		items.setRequireSelectionPack(false);
