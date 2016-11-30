@@ -110,8 +110,9 @@ public class Example5Test extends ShellTest {
 		botRange.button(0).click(); // ok
 		
 		// Left invalid, check red
-		Color red = bot.styledText(1).foregroundColor();
-		assertEquals(new Color(bot.getDisplay(), 255, 0, 0, 255), red);
+		Color black = new Color(bot.getDisplay(), 0, 0, 0, 255);
+		Color red = new Color(bot.getDisplay(), 255, 0, 0, 255);
+		assertEquals(red, bot.styledText(1).foregroundColor());
 		
 		// Open range
 		bot.button(1).click();
@@ -125,8 +126,7 @@ public class Example5Test extends ShellTest {
 		botRange.button(0).click(); // ok
 
 		// Check black
-		Color black = bot.styledText(1).foregroundColor();
-		assertEquals(new Color(bot.getDisplay(), 0, 0, 0, 255), black);
+		assertEquals(black, bot.styledText(1).foregroundColor());
 
 		// Open range
 		bot.button(1).click();
@@ -140,7 +140,7 @@ public class Example5Test extends ShellTest {
 		
 		// Check black.
 		botRange.button(0).click(); // ok
-		assertEquals(new Color(bot.getDisplay(), 0, 0, 0, 255), black);
+		assertEquals(black, bot.styledText(1).foregroundColor());
 
 		// Open range
 		bot.button(1).click();
@@ -154,7 +154,7 @@ public class Example5Test extends ShellTest {
 		
 		// Check red (invalid range)
 		botRange.button(0).click(); // ok
-		assertEquals(new Color(bot.getDisplay(), 0, 0, 0, 255), red);
+		assertEquals(red, bot.styledText(1).foregroundColor());
 
 	}
 
