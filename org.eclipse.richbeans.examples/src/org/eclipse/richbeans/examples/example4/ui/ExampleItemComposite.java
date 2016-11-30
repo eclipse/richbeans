@@ -119,7 +119,7 @@ public class ExampleItemComposite extends Composite {
 		options.setListenerName("Options Listener");
 		options.setMinItems(0);
 		options.setMaxItems(5);
-		options.setDefaultName("Option");
+		options.setTemplateName("Option");
 		options.setEditorClass(OptionItem.class);
 		options.setNameField("optionName"); // Where the name comes from if inside the bean
 		options.setListHeight(80);
