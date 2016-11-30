@@ -15,8 +15,8 @@ package org.eclipse.richbeans.test.doe;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.dawnsci.doe.DOEUtils;
-import org.eclipse.dawnsci.doe.RangeInfo;
+import org.eclipse.richbeans.annot.DOEUtils;
+import org.eclipse.richbeans.annot.RangeInfo;
 import org.junit.Test;
 
 public class DOEInfoTest {

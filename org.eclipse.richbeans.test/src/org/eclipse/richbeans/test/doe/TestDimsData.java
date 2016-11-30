@@ -15,7 +15,7 @@ package org.eclipse.richbeans.test.doe;
 import java.io.Serializable;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.eclipse.dawnsci.doe.DOEField;
+import org.eclipse.richbeans.annot.DOEField;
 
 /**
  * Bean to hold slice data

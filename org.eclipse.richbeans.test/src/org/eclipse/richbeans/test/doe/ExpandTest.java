@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import org.eclipse.dawnsci.doe.DOEUtils;
+import org.eclipse.richbeans.annot.DOEUtils;
 import org.junit.Test;
 
 public class ExpandTest {
@@ -40,8 +40,13 @@ public class ExpandTest {
 	}
 	
 	@Test(expected=java.lang.IllegalArgumentException.class)
-    public void expandBadPositive() throws Exception {		
+    public void expandBadPositive1() throws Exception {		
 		DOEUtils.expand("0; -10; 1");
+	}
+	
+	@Test(expected=java.lang.IllegalArgumentException.class)
+    public void expandBadPositive2() throws Exception {		
+		DOEUtils.expand("0; -10; 600");
 	}
 
 	@Test(expected=java.lang.IllegalArgumentException.class)
