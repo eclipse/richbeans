@@ -1,6 +1,7 @@
 package org.eclipse.richbeans.test.shuffle;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -8,7 +9,6 @@ import org.eclipse.richbeans.examples.ExampleFactory;
 import org.eclipse.richbeans.examples.IShellCreator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.swtbot.swt.finder.widgets.SWTBotLabel;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotStyledText;
 import org.junit.Test;
 
@@ -60,22 +60,93 @@ public class Example2Test extends ShellTest {
 	@Test
 	public void testLabelText() throws Exception {
 		assertEquals("Element", bot.label(0).getText()); // Element
-		assertEquals("Edge", bot.label(1)); // Edge
-		assertEquals("Start", bot.label(2)); // Start
-		assertEquals("Stop", bot.label(3)); // Stop
-		assertEquals("Element", bot.label(4)); // Name
-		assertEquals("Element", bot.label(5)); // x
-		assertEquals("Element", bot.label(6)); // y
+		assertEquals("Edge", bot.label(1).getText()); // Edge
+		assertEquals("Start", bot.label(2).getText()); // Start
+		assertEquals("Stop", bot.label(3).getText()); // Stop
+		assertEquals("Name", bot.label(4).getText()); // Name
+		assertEquals("x", bot.label(5).getText()); // x
+		assertEquals("y", bot.label(6).getText()); // y
 	}
+	
+	@Test
+	public void testButtons() throws Exception {
+		assertNotNull(bot.button(0)); // Add
+		assertNotNull(bot.button(1)); // Delete
+		assertEquals("Add", bot.button(0).getText()); // Add
+		assertEquals("Delete", bot.button(1).getText()); // Delete
+		assertNotNull(bot.arrowButton(0)); // Up
+		assertNotNull(bot.arrowButton(1)); // Down
+	}
+
 
 	@Test
 	public void testBoxInitialValues() throws Exception {
 		
-//		SWTBotStyledText x = bot.styledText(0); // x
-//		assertTrue(x.getText().startsWith("10.00 "));
-//
-//		SWTBotStyledText y = bot.styledText(1); // y
-//		assertEquals("5 m", y.getText());
+		SWTBotStyledText element = bot.styledText(0);
+		assertEquals("Fe", element.getText());
+		
+		SWTBotStyledText edge = bot.styledText(1); 
+		assertEquals("K", edge.getText());
+
+		SWTBotStyledText start = bot.styledText(2); 
+		assertEquals("100.00", start.getText());
+		
+		SWTBotStyledText stop = bot.styledText(3); 
+		assertEquals("200.00", stop.getText());
+		
+		checkComposite("Fred 1", "1.00 ", "2.00 m");
+	}
+	
+	@Test
+	public void testAddRemove() throws Exception {
+		
+		checkComposite("Fred 1", "1.00 ", "2.00 m");
+
+		bot.button(0).click(); // add
+		
+		checkComposite("Fred 2", "1.00 ", "1.00 m");
+
+		bot.button(1).click(); // remove
+
+		checkComposite("Fred 1", "1.00 ", "2.00 m");
+	}
+	
+	@Test
+	public void testRemove() throws Exception {
+		
+		checkComposite("Fred 1", "1.00 ", "2.00 m");
+
+		bot.button(1).click(); // remove
+		
+		assertTrue(bot.table(0).rowCount()<1);
+
+	}
+
+	@Test
+	public void addMany() throws Exception {
+		
+		checkComposite("Fred 1", "1.00 ", "2.00 m");
+
+		for (int i = 0; i < 9; i++) bot.button(0).click(); // add
+		
+		assertFalse(bot.button(0).isEnabled());
+		assertEquals(10, bot.table(0).rowCount());
+
+		for (int i = 0; i < 9; i++) bot.button(1).click(); // delete
+
+		assertTrue(bot.button(0).isEnabled());
+		assertEquals(1, bot.table(0).rowCount());
+	}
+	
+	private void checkComposite(String tname, String tx, String ty) {
+		SWTBotStyledText name = bot.styledText(4); 
+		assertEquals(tname, name.getText());
+
+		SWTBotStyledText x = bot.styledText(5); 
+		assertTrue(x.getText().startsWith(tx));
+
+		SWTBotStyledText y = bot.styledText(6); 
+		assertEquals(ty, y.getText());
 	}
 
 }
