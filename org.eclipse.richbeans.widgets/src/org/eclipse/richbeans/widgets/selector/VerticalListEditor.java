@@ -46,6 +46,8 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A list editor that edits the beans with a user interface. Note that the beans in the bean list should have hashCode()
@@ -55,6 +57,8 @@ import org.eclipse.swt.widgets.Menu;
  * @author Matthew Gerring
  */
 public class VerticalListEditor extends ListEditor {
+
+	private static final Logger logger  = LoggerFactory.getLogger(VerticalListEditor.class);
 
 	protected TableViewer listViewer;
 	protected final Button add, delete, up, down;
@@ -275,6 +279,7 @@ public class VerticalListEditor extends ListEditor {
 		
 		// use a default name if supplied
 		updateName(wrapper);
+		updateItem(wrapper);
 		
 		beanAdd(wrapper.getBean());
 		
@@ -291,6 +296,25 @@ public class VerticalListEditor extends ListEditor {
 		updateButtons();
 		notifyValueListeners();
 
+	}
+	
+	private void updateItem(BeanWrapper wrapper) {
+		if (wrapper==null) return;
+		String methodName = RichBeanUtils.getGetterName(getNameField());
+		try {
+			Method method = wrapper.getBean().getClass().getMethod(methodName);
+			if (method.getReturnType()==String.class) {
+				final Object ob = method.invoke(wrapper.getBean());
+				if (ob == null && wrapper.getName()!=null) {
+					methodName = RichBeanUtils.getSetterName(getNameField());
+					method = wrapper.getBean().getClass().getMethod(methodName, String.class);
+					method.invoke(wrapper.getBean(), wrapper.getName());
+				}
+			}
+
+		} catch (Exception e) {
+			logger.error("Cannot set the name field", e);
+		}
 	}
 
 	/**

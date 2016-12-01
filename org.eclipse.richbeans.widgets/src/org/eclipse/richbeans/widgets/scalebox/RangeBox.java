@@ -189,21 +189,27 @@ public class RangeBox extends NumberBox implements IRangeWidget {
 	private boolean checkBounds(final String value) {
 
 		error = false;
-		final List<? extends Number> dbls = DOEUtils.expand(value);
-		for (Number val : dbls) {
-			if (!isValidBounds(val.doubleValue())) {
-				error = true;
-				if (this.red == null)
-					red = getDisplay().getSystemColor(SWT.COLOR_RED);
-				if (!red.isDisposed())
-					text.setForeground(red);
-
-				setTooltipOveride("The range '" + value + "' would give the value '" + val
-						+ "' which is out of bounds.");
-				return false;
+		TEST: try {
+			final List<? extends Number> dbls = DOEUtils.expand(value);
+			for (Number val : dbls) {
+				if (!isValidBounds(val.doubleValue())) {
+					error = true;
+	
+					setTooltipOveride("The range '" + value + "' would give the value '" + val
+							+ "' which is out of bounds.");
+					break TEST;
+				}
 			}
+			
+		} catch (Exception ne) {
+			error = true;
 		}
-		return true;
+		
+		if (error) {
+			if (this.red == null) red = getDisplay().getSystemColor(SWT.COLOR_RED);
+			if (!red.isDisposed()) text.setForeground(red);
+		}
+		return !error;
 	}
 
 	@Override

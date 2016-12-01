@@ -14,10 +14,10 @@ package org.eclipse.richbeans.examples.example2;
 import org.eclipse.richbeans.api.binding.IBeanController;
 import org.eclipse.richbeans.binding.BeanService;
 import org.eclipse.richbeans.examples.ExamplePrintBeanValueListener;
+import org.eclipse.richbeans.examples.IShellCreator;
 import org.eclipse.richbeans.examples.example2.data.ExampleItem;
 import org.eclipse.richbeans.examples.example2.data.ExampleParameters;
 import org.eclipse.richbeans.examples.example2.ui.ExampleComposite;
-import org.eclipse.richbeans.widgets.util.SWTUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -30,11 +30,14 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Matthew Gerring
  */
-public class ExampleRunner {
+public class ExampleRunner  implements IShellCreator {
 
 	public static void main(String[] args) throws Exception {
+		(new ExampleRunner()).open();
+	}
 
-		Display display = new Display();
+	@Override
+	public Shell createShell(Display display) throws Exception {
 		Shell shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Change a value to see bean as JSON");
@@ -56,14 +59,13 @@ public class ExampleRunner {
 		bean.setEdge("K");
 		bean.setStart(100d);
 		bean.setStop(200d);
-		bean.addItem(new ExampleItem(1, 2));
+		bean.addItem(new ExampleItem("Fred 1", 1, 2));
 
 		// Connect the UI and bean
 		final IBeanController controller = BeanService.getInstance().createController(ui, bean);
 		controller.addValueListener(new ExamplePrintBeanValueListener(controller, value));
 		controller.beanToUI();
 		controller.switchState(true);
-
-		SWTUtils.showCenteredShell(shell);
+		return shell;
 	}
 }

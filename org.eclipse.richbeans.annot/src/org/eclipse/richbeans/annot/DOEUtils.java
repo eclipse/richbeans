@@ -376,7 +376,7 @@ public class DOEUtils {
 	 * @param range
 	 * @return expanded values
 	 */
-	public static List<? extends Number> expand(final String range) {
+	public static <T extends Number> List<T> expand(final String range) {
 		return expand(range, (String)null);
 	}
 	
@@ -396,8 +396,8 @@ public class DOEUtils {
 	 * @param unit
 	 * @return list of double values
 	 */
-	public static List<? extends Number> expand(final String range, final String unit) {
-		return expand(range,unit,Double.class);
+	public static <T extends Number> List<T> expand(final String range, final String unit) {
+		return expand(range,unit,(Class<T>)Double.class);
 	}
 	
 	/**
@@ -419,11 +419,13 @@ public class DOEUtils {
 		} else if (DOEUtils.isRange(range, unit)) {
 			final double[] ran = DOEUtils.getRange(range, unit);
 			if (ran[0]>ran[1]) {
-			    for (double i = ran[0]; i >= ran[1]; i-=ran[2]) {
+				if (ran[2]>=0) throw new IllegalArgumentException("The step must be negative when stop is less than start");
+			    for (double i = ran[0]; i >= ran[1]; i+=ran[2]) {
 			    	if (ret.size()>MAX_RANGE_SIZE) break;
 			    	ret.add(getValue(i, clazz));
 			    }
 		    } else {
+				if (ran[2]<=0) throw new IllegalArgumentException("The step must be positive when stop is greater than start");
 			    for (double i = ran[0]; i <= ran[1]; i+=ran[2]) {
 			    	if (ret.size()>MAX_RANGE_SIZE) break;
 			    	ret.add(getValue(i, clazz));
@@ -752,6 +754,27 @@ public class DOEUtils {
 
 	private static String getName(final String prefix, final String fieldName) {
 		return prefix + getFieldWithUpperCaseFirstLetter(fieldName);
+	}
+
+	
+
+	/**
+     * A regular expression to match a range.
+     * @param decimalPlaces for numbers matched
+     * @param unit - may be null if no unit in the list.
+     * @return Pattern
+     */
+	public static Pattern getRangePattern(final int decimalPlaces, final String unit) {
+
+		final String ndec = decimalPlaces>0
+		                  ? "\\.?\\d{0,"+decimalPlaces+"})"
+		                  : ")";
+		final String digitExpr = "(\\-?\\d+"+ndec;
+		final String rangeExpr = "("+digitExpr+";\\ ?"+digitExpr+";\\ ?"+digitExpr+")";
+		if (unit==null) {
+			return Pattern.compile(rangeExpr);
+		}
+	    return Pattern.compile(rangeExpr+"\\ {1}\\Q"+unit+"\\E");
 	}
 
 }
