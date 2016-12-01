@@ -70,8 +70,8 @@ public class SlightlyLargerExampleRunner {
 		ExampleBean ret = new ExampleBean();
 		
 		for(int i=1;i<1000;i++) {
-			ret.addItem(new ExampleItem(i, i+1));
-			ret.addItem(new ExampleItem(2, 3, ItemChoice.POLAR));
+			ret.addItem(new ExampleItem("Item 1", i, i+1));
+			ret.addItem(new ExampleItem("Item 2", 2, 3, ItemChoice.POLAR));
 		}
 		return ret;
 	}

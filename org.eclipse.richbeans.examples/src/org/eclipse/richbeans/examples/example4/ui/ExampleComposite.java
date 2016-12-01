@@ -38,7 +38,7 @@ public class ExampleComposite extends Composite {
 		items.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		items.setMinItems(0);
 		items.setMaxItems(25);
-		items.setDefaultName("NewItem");
+		items.setTemplateName("Item");
 		items.setEditorClass(ExampleItem.class);
 		items.setNameField("itemName"); // Where the name comes from if inside the bean
 		items.setListHeight(80);
