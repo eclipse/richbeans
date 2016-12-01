@@ -23,6 +23,8 @@ jdk:
 before_install:
 - chmod +x ./org.eclipse.richbeans.releng/build/commit-msg.sh
 - bash ./org.eclipse.richbeans.releng/build/commit-msg.sh
+
+# Stat xvfb, this allows SWTBot to execute in tests.
 - export DISPLAY=:99.0
 - sh -e /etc/init.d/xvfb start
 - sleep 3 # give xvfb some time to start as per the travis docs

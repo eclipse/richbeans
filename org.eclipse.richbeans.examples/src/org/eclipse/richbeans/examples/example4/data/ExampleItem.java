@@ -40,23 +40,22 @@ public class ExampleItem {
 	private List<OptionItem> options;
 	
     public ExampleItem() {
-    	this(1,1);
+    	this(null,1,1);
     }
-    private static int INDEX = 0;
     
-	public ExampleItem(double i, double j) {
+	public ExampleItem(String itemName, double i, double j) {
+		this.itemName = itemName;
 		x = i; y = j;
-		itemName = "Fred"+(++INDEX);
 	}
 	
-	public ExampleItem(double i, double j, ItemChoice choice) {
+	public ExampleItem(String itemName, double i, double j, ItemChoice choice) {
+		this.itemName = itemName;
 		this.choice = choice;
 		if (choice == ItemChoice.POLAR) {
 			r = i; theta = j;
 		} else {
 			x = i; y = j;
 		}
-		itemName = "Fred"+(++INDEX);
 	}
 
 	public ItemChoice getChoice() {

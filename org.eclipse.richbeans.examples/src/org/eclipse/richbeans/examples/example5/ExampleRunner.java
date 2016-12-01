@@ -18,9 +18,9 @@ import org.eclipse.richbeans.api.binding.IBeanController;
 import org.eclipse.richbeans.api.event.ValueAdapter;
 import org.eclipse.richbeans.api.event.ValueEvent;
 import org.eclipse.richbeans.binding.BeanService;
+import org.eclipse.richbeans.examples.IShellCreator;
 import org.eclipse.richbeans.examples.example5.data.SimpleBean;
 import org.eclipse.richbeans.examples.example5.ui.SimpleComposite;
-import org.eclipse.richbeans.widgets.util.SWTUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -33,11 +33,14 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Matthew Gerring
  */
-public class ExampleRunner {
+public class ExampleRunner  implements IShellCreator {
 
 	public static void main(String[] args) throws Exception {
+		(new ExampleRunner()).open();
+	}
 
-		Display display = new Display();
+	@Override
+	public Shell createShell(Display display) throws Exception {
 		Shell shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Change a value to see bean as JSON");
@@ -93,6 +96,6 @@ public class ExampleRunner {
 			}
 		});
 
-		SWTUtils.showCenteredShell(shell);
+		return shell;
 	}
 }

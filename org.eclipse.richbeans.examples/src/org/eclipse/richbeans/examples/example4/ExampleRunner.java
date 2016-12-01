@@ -14,12 +14,12 @@ package org.eclipse.richbeans.examples.example4;
 import org.eclipse.richbeans.api.binding.IBeanController;
 import org.eclipse.richbeans.binding.BeanService;
 import org.eclipse.richbeans.examples.ExamplePrintBeanValueListener;
+import org.eclipse.richbeans.examples.IShellCreator;
 import org.eclipse.richbeans.examples.example4.data.ExampleBean;
 import org.eclipse.richbeans.examples.example4.data.ExampleItem;
 import org.eclipse.richbeans.examples.example4.data.ExampleItem.ItemChoice;
 import org.eclipse.richbeans.examples.example4.data.OptionItem;
 import org.eclipse.richbeans.examples.example4.ui.ExampleComposite;
-import org.eclipse.richbeans.widgets.util.SWTUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -32,11 +32,14 @@ import org.eclipse.swt.widgets.Shell;
  * 
  * @author Matthew Gerring
  */
-public class ExampleRunner {
+public class ExampleRunner  implements IShellCreator {
 
 	public static void main(String[] args) throws Exception {
+		(new ExampleRunner()).open();
+	}
 
-		Display display = new Display();
+	@Override
+	public Shell createShell(Display display) throws Exception {
 		Shell shell = new Shell(display);
 		shell.setLayout(new GridLayout(1, false));
 		shell.setText("Change a value to see bean as JSON");
@@ -54,16 +57,16 @@ public class ExampleRunner {
 
 		// Set some initial values
 		final ExampleBean bean = new ExampleBean();
-		ExampleItem item = new ExampleItem(1, 2);
-		item.addOption(new OptionItem(true, true, true, true));
+		ExampleItem item = new ExampleItem("Item 1", 1, 2);
+		item.addOption(new OptionItem("Option 1", true, true, true, true));
 		bean.addItem(item);
 
-		item = new ExampleItem(2, 3, ItemChoice.POLAR);
-		item.addOption(new OptionItem(true, false, true, false));
-		item.addOption(new OptionItem(false, false, false, false));
+		item = new ExampleItem("Item 2", 2, 3, ItemChoice.POLAR);
+		item.addOption(new OptionItem("a", true, false, true, false));
+		item.addOption(new OptionItem("b", false, false, false, false));
 		bean.addItem(item);
 
-		bean.addItem(new ExampleItem(3, 4, ItemChoice.XY));
+		bean.addItem(new ExampleItem("Item 3", 3, 4, ItemChoice.XY));
 
 		// Connect the UI and bean
 		final IBeanController controller = BeanService.getInstance().createController(ui, bean);
@@ -71,6 +74,6 @@ public class ExampleRunner {
 		controller.beanToUI();
 		controller.switchState(true);
 
-		SWTUtils.showCenteredShell(shell);
+		return shell;
 	}
 }

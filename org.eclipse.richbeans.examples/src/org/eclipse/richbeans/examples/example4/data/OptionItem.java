@@ -16,15 +16,14 @@ public class OptionItem {
 
     private String optionName;
 	private boolean showAxes, showTitle, showLegend, showData;
-	private static int count = 0;
 	
 	/**
 	 * Everything false
 	 */
 	public OptionItem() {
-		this(false, false,false, false);
+		this(null, false, false,false, false);
 	}
-	public OptionItem(boolean showAxes, boolean showTitle, boolean showLegend,
+	public OptionItem(String oName, boolean showAxes, boolean showTitle, boolean showLegend,
 			boolean showData) {
 		
 		super();
@@ -33,7 +32,7 @@ public class OptionItem {
 		this.showLegend = showLegend;
 		this.showData = showData;
 		
-		optionName = "Option"+(++count);
+		optionName = oName;
 	}
 	
 	public String getOptionName() {
