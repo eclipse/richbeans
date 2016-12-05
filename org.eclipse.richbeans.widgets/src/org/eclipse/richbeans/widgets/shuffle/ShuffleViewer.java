@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
@@ -16,6 +17,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.slf4j.Logger;
@@ -35,6 +37,8 @@ public class ShuffleViewer  {
 	private ShuffleConfiguration conf;
 	private TableViewer fromTable, toTable;
 
+	private Composite control;
+
 	public ShuffleViewer(ShuffleConfiguration data) {
 		this.conf = data;
 	}
@@ -45,20 +49,21 @@ public class ShuffleViewer  {
 	 */
 	public void dispose() {
 		conf.clearListeners();
+		control.dispose();
 	}
 	
 	public Composite createPartControl(Composite parent) {
 		
-		final Composite content = new Composite(parent, SWT.NONE);
-		content.setLayout(new GridLayout(3, false));
-		content.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		GridUtils.removeMargins(content);
+		this.control = new Composite(parent, SWT.NONE);
+		control.setLayout(new GridLayout(3, false));
+		control.setBackground(control.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		GridUtils.removeMargins(control);
 		
-		this.fromTable = createTable(content, conf.getFromToolipText(), conf.getFromList(), "fromList", conf.getFromLabel(), false, conf.isFromReorder());		
-		createButtons(content);
-		this.toTable = createTable(content, conf.getToToolipText(), conf.getToList(), "toList", conf.getToLabel(), true, conf.isToReorder());		
+		this.fromTable = createTable(control, conf.getFromToolipText(), conf.getFromList(), "fromList", conf.getFromLabel(), false, conf.isFromReorder());		
+		createButtons(control);
+		this.toTable = createTable(control, conf.getToToolipText(), conf.getToList(), "toList", conf.getToLabel(), true, conf.isToReorder());		
 
-		return content;
+		return control;
 	}
 
 	private final Composite createButtons(Composite content) {
@@ -254,5 +259,27 @@ public class ShuffleViewer  {
 		} catch (Exception ne) {
 			logger.error("Problem moving veritcally!", ne);
 		}
+	}
+	
+	public Control getControl() {
+		return control;
+	}
+
+	public void setLayoutData(GridData data) {
+		control.setLayoutData(data);
+	}
+
+	public void setFocus() {
+		fromTable.getControl().setFocus();
+	}
+
+	/**
+	 * Sets this menu on the 
+	 * @param rightClick
+	 */
+	public void setMenu(MenuManager rightClick) {
+		control.setMenu(rightClick.createContextMenu(control));
+		fromTable.getControl().setMenu(rightClick.createContextMenu(fromTable.getControl()));
+		toTable.getControl().setMenu(rightClick.createContextMenu(toTable.getControl()));
 	}
 }
