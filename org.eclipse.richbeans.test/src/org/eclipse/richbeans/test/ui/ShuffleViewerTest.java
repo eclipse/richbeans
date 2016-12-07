@@ -16,23 +16,30 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.richbeans.widgets.shuffle.IShuffleListener;
 import org.eclipse.richbeans.widgets.shuffle.ShuffleConfiguration;
+import org.eclipse.richbeans.widgets.shuffle.ShuffleDirection;
+import org.eclipse.richbeans.widgets.shuffle.ShuffleEvent;
 import org.eclipse.richbeans.widgets.shuffle.ShuffleViewer;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(SWTBotJunit4ClassRunner.class)
 public class ShuffleViewerTest extends ShellTest {
 
-	private static ShuffleConfiguration conf;
+	private static ShuffleConfiguration<String> conf;
+	private ShuffleViewer<String> viewer;
 
 	@Override
 	protected Shell createShell(Display display) {
@@ -42,7 +49,7 @@ public class ShuffleViewerTest extends ShellTest {
 		parent.setLayout(new FillLayout());
 		
 		// Provide some data to shuffle
-		conf = new ShuffleConfiguration();
+		conf = new ShuffleConfiguration<String>();
 		conf.setFromToolipText("left");
 		conf.setToToolipText("right");
 		conf.setFromLabel("Available Experiments");
@@ -52,12 +59,33 @@ public class ShuffleViewerTest extends ShellTest {
 		conf.setToReorder(true);
 		
 		// Create the widget
-		ShuffleViewer viewer = new ShuffleViewer(conf);
+		this.viewer = new ShuffleViewer<String>(conf);
 		viewer.createPartControl(parent);
 		parent.pack();
 		parent.open();
 		return parent;
 	}
+	
+	private IShuffleListener       listener;
+	private List<ShuffleDirection> directions = new ArrayList<>(7);
+	
+	@Before
+	public void addListener() {
+		directions.clear();
+		listener = new IShuffleListener() {				
+			@Override
+			public void postShuffle(ShuffleEvent evt) {
+				directions.add(evt.getDirection());
+			}
+		};
+		viewer.addShuffleListener(listener);
+	}
+	@After
+	public void removeListener() {
+		directions.clear();
+		viewer.removeShuffleListener(listener);
+	}
+	
 	
 	@Test
 	public void checkShell() throws Exception {
@@ -165,8 +193,9 @@ public class ShuffleViewerTest extends ShellTest {
 		table = bot.table(1);
 		assertEquals(5, table.rowCount());
 
+		assertEquals(2, directions.size());
+		assertEquals(directions.get(1), ShuffleDirection.LEFT_TO_RIGHT);
 	}
-
 
 	@Test
 	public void checkMoveOneLeftNoSelection() throws Exception {
@@ -186,7 +215,10 @@ public class ShuffleViewerTest extends ShellTest {
 		assertEquals("four", table.getTableItem(3).getText());
 		assertEquals(1, table.selectionCount());
 		// TODO How to check items selected
-
+		
+		assertEquals(2, directions.size());
+		assertEquals(directions.get(0), ShuffleDirection.DELETE);
+		assertEquals(directions.get(1), ShuffleDirection.RIGHT_TO_LEFT);
 	}
 
 	@Test
