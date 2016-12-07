@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.richbeans.widgets.shuffle.IShuffleListener;
@@ -208,6 +209,7 @@ public class ShuffleViewerTest extends ShellTest {
 		bot.table(0).click(2, 0);
 		bot.table(1).click(0, 0);
 		SWTBotTable table = bot.table(1);
+		
 		bot.arrowButton(3).click();
 		
 		table = bot.table(0);
@@ -239,6 +241,15 @@ public class ShuffleViewerTest extends ShellTest {
 		
 		table = bot.table(0);
 		assertEquals(0, table.rowCount());
+		
+		assertEquals(6, directions.size());
+		assertEquals(directions.get(0), ShuffleDirection.DELETE);
+		assertEquals(directions.get(1), ShuffleDirection.LEFT_TO_RIGHT);
+		assertEquals(directions.get(2), ShuffleDirection.DELETE);
+		assertEquals(directions.get(3), ShuffleDirection.LEFT_TO_RIGHT);
+		assertEquals(directions.get(4), ShuffleDirection.DELETE);
+		assertEquals(directions.get(5), ShuffleDirection.LEFT_TO_RIGHT);
+
 	}
 	
 	@Test
@@ -260,6 +271,17 @@ public class ShuffleViewerTest extends ShellTest {
 		
 		table = bot.table(1);
 		assertEquals(0, table.rowCount());
+		
+		assertEquals(8, directions.size());
+		assertEquals(directions.get(0), ShuffleDirection.DELETE);
+		assertEquals(directions.get(1), ShuffleDirection.RIGHT_TO_LEFT);
+		assertEquals(directions.get(2), ShuffleDirection.DELETE);
+		assertEquals(directions.get(3), ShuffleDirection.RIGHT_TO_LEFT);
+		assertEquals(directions.get(4), ShuffleDirection.DELETE);
+		assertEquals(directions.get(5), ShuffleDirection.RIGHT_TO_LEFT);
+		assertEquals(directions.get(6), ShuffleDirection.DELETE);
+		assertEquals(directions.get(7), ShuffleDirection.RIGHT_TO_LEFT);
+
 	}
 
 	@Test
@@ -319,6 +341,11 @@ public class ShuffleViewerTest extends ShellTest {
 		for (int i = 0; i < values.size(); i++) {
 			assertEquals(values.get(i), table.getTableItem(i).getText(0));
 		}
+		
+		assertEquals(6, directions.size());
+		assertEquals(directions.get(0), ShuffleDirection.RIGHT_UP);
+		assertEquals(directions.get(3), ShuffleDirection.RIGHT_DOWN);
+
 	}
 	
 	@Test
@@ -343,6 +370,93 @@ public class ShuffleViewerTest extends ShellTest {
 		
 		// Go off the Bottom
 		assertEquals("seven", table.getTableItem(6).getText(0));
+		
+		// If the viewer is wrong it will send an event even
+		// when the list of items does not change. In this case
+		// directions.size() will be 20, however the real value 
+		// should be 12 because we go off the end in both directions (6+6=12)
+		assertEquals(12, directions.size());
+
+	}
+	
+	@Test
+	public void checkReorderItemsinShuffleRight() throws Exception {
+		
+		conf.setFromList(Arrays.asList("one", "two", "three"));
+		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
+		
+		SWTBotTable table = bot.table(0);
+		table.click(0, 0); // one
+		
+		IShuffleListener l = null;
+		try {
+			l = new IShuffleListener() {
+				public boolean preShuffle(ShuffleEvent evt) {
+					
+					List<?> items = evt.getItems();
+					Collections.sort((List<String>)items);
+					evt.setItems(items);
+					return true;
+				}
+			};
+			viewer.addShuffleListener(l);
+
+			bot.arrowButton(2).click(); // Move 'one' right (it gets sorted)
+			
+			table = bot.table(1);
+			assertEquals(5, table.rowCount());
+			assertTrue(bot.arrowButton(2).isEnabled());
+			assertTrue(bot.arrowButton(3).isEnabled());
+	
+			// We check that one is selected
+			assertEquals("five", table.getTableItem(0).getText());
+			assertEquals("one", table.getTableItem(2).getText());
+			assertEquals(1, table.selectionCount());
+			// TODO How to check items selected
+
+		} finally {
+			viewer.removeShuffleListener(l);
+		}
+	}
+	
+	@Test
+	public void checkReorderItemsinShuffleLeft() throws Exception {
+		
+		conf.setFromList(Arrays.asList("one", "two", "three"));
+		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
+		
+		SWTBotTable table = bot.table(1);
+		table.click(0, 0); // four
+		
+		IShuffleListener l = null;
+		try {
+			l = new IShuffleListener() {
+				public boolean preShuffle(ShuffleEvent evt) {
+					
+					List<?> items = evt.getItems();
+					Collections.sort((List<String>)items);
+					evt.setItems(items);
+					return true;
+				}
+			};
+			viewer.addShuffleListener(l);
+
+			bot.arrowButton(3).click(); // Move 'four' right (it gets sorted)
+			
+			table = bot.table(0);
+			assertEquals(4, table.rowCount());
+			assertTrue(bot.arrowButton(0).isEnabled());
+			assertTrue(bot.arrowButton(1).isEnabled());
+	
+			// We check that one is selected
+			assertEquals("four", table.getTableItem(0).getText());
+			assertEquals("three", table.getTableItem(2).getText());
+			assertEquals(1, table.selectionCount());
+			// TODO How to check items selected
+
+		} finally {
+			viewer.removeShuffleListener(l);
+		}
 	}
 
 }
