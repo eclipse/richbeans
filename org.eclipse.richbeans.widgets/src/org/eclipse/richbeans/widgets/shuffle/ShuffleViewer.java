@@ -307,6 +307,10 @@ public class ShuffleViewer<T>  {
 			if (newIndex<0) newIndex = 0;
 			if (newIndex>items.size()) newIndex = items.size();
 			items.add(newIndex, item);
+			if (items.equals(RichBeanUtils.getBeanValue(conf, propName))) {
+				// The list is the same
+				return;
+			}
 	
 			items = firePreShuffle(new ShuffleEvent(this, direction, items));
 			RichBeanUtils.setBeanValue(conf, propName, items);
