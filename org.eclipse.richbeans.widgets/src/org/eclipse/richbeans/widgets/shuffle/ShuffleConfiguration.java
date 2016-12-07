@@ -2,6 +2,7 @@ package org.eclipse.richbeans.widgets.shuffle;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,18 +11,31 @@ import java.util.List;
  * Class for configuring a ShuffleWidget
  * 
  * @author Matthew Gerring
- *
+ * @param T the type of the items we are shuffling
  */
-public class ShuffleConfiguration {
+public class ShuffleConfiguration<T> implements Cloneable {
 
     private String fromToolipText, toToolipText;    
-	private List<Object> fromList, toList;
+	private List<T> fromList, toList;
 	private boolean fromReorder=false, toReorder=true;
 	private String fromLabel, toLabel;
 
 	public ShuffleConfiguration() {
 		fromList = Collections.emptyList();
 		toList   = Collections.emptyList();
+	}
+	
+	public ShuffleConfiguration<T> clone() {
+		ShuffleConfiguration<T> ret = new ShuffleConfiguration<>();
+		ret.fromToolipText = fromToolipText;
+		ret.toToolipText  = toToolipText;
+		ret.fromList = new ArrayList<>(fromList);
+		ret.toList = new ArrayList<>(toList);
+		ret.fromReorder  = fromReorder;
+		ret.toReorder  = toReorder;
+		ret.fromLabel  = fromLabel;
+		ret.toLabel  = toLabel;
+		return ret;
 	}
     
 	public String getFromToolipText() {
@@ -41,19 +55,19 @@ public class ShuffleConfiguration {
 		firePropertyChange("toToolipText", old, toToolipText);
     }
 	
-    public List<Object> getFromList() {
+    public List<T> getFromList() {
 		return fromList;
 	}
-	public void setFromList(List<Object> fromList) {
-		List<Object> old = this.fromList;
+	public void setFromList(List<T> fromList) {
+		List<T> old = this.fromList;
 		this.fromList = fromList;
 		firePropertyChange("fromList", old, fromList);
 	}
-	public List<Object> getToList() {
+	public List<T> getToList() {
 		return toList;
 	}
-	public void setToList(List<Object> toList) {
-		List<Object> old = this.toList;
+	public void setToList(List<T> toList) {
+		List<T> old = this.toList;
 		this.toList = toList;
 		firePropertyChange("toList", old, toList);
 	}
