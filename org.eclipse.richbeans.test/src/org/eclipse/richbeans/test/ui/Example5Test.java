@@ -59,7 +59,6 @@ public class Example5Test extends ShellTest {
 		assertNotNull(bot.button(1)); // Range2
 	}
 	
-	@Ignore("Not running travis right now, find out why")
 	@Test
 	public void range1Test() throws Exception {
 		
@@ -88,7 +87,6 @@ public class Example5Test extends ShellTest {
 		botRange.button(2).click(); // ok
 	}
 
-	@Ignore("Not running travis right now, find out why")
 	@Test
 	public void range2Test() throws Exception {
 		

@@ -87,7 +87,12 @@ class TestUI {
 	public void disposeBot(ShellTest shellTest) throws InterruptedException {
 		currentTestLock.lockInterruptibly();
 		currentTest = null;
-		Display.getDefault().syncExec(() -> {appShell.close();});
+		Display.getDefault().syncExec(() -> {
+			if (appShell.getShells()!=null) {
+				for (Shell child : appShell.getShells()) child.close();
+			}
+			appShell.close();
+		});
 	}
 
 }
