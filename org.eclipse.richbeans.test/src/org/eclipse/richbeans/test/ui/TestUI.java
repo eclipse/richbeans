@@ -53,6 +53,9 @@ class TestUI {
 
 						if (currentTest==null) continue;
 						
+						if (Display.getCurrent()!=null) {
+							Display.getCurrent().dispose();
+						}
 						DeviceData data = new DeviceData();
 						data.tracking=true;
 						data.debug=true;
