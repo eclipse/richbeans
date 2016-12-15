@@ -15,6 +15,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.eclipse.swt.graphics.DeviceData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
@@ -32,7 +33,7 @@ class TestUI {
 	private final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 	private Thread uiThread;
 	
-	private ShellTest currentTest;
+	private volatile ShellTest currentTest;
 	private volatile boolean disposed = false;
 	private Shell appShell;
 	
@@ -49,22 +50,29 @@ class TestUI {
 						
 						currentTestLock.lockInterruptibly();
 						currentTestLock.unlock();
+
+						if (currentTest==null) continue;
 						
-						final Display display = new Display();
+						DeviceData data = new DeviceData();
+						data.tracking=true;
+						data.debug=true;
+						final Display display = new Display(data);
+
 						appShell = currentTest.createShell(display);
 						currentTest.setBot(new SWTBot(appShell));
 						swtBarrier.await();
-						System.out.println(Thread.currentThread().getName()+" entering readAndDespatch for test");
 						while (!appShell.isDisposed()) {
-							if (!display.readAndDispatch()) {
-								display.sleep();
-							}
+							if (!display.readAndDispatch()) display.sleep();
 						}
 						display.dispose();
-						System.out.println(Thread.currentThread().getName()+" test finished");
+						
 					}
+				} catch (InterruptedException expected) {
+					return;
 				} catch (Exception e) {
 					e.printStackTrace();
+				} finally {
+					System.out.println("Stopped "+Thread.currentThread().getName());
 				}
 			}
 		}, "SWTBot UI Thread");
@@ -87,7 +95,15 @@ class TestUI {
 	public void disposeBot(ShellTest shellTest) throws InterruptedException {
 		currentTestLock.lockInterruptibly();
 		currentTest = null;
-		Display.getDefault().syncExec(() -> {appShell.close();});
+		
+		Display display = appShell.getDisplay();
+		display.syncExec(() -> {
+			if (appShell.getShells()!=null) {
+				for (Shell child : appShell.getShells()) child.close();
+			}
+			appShell.close();
+			appShell.dispose();
+		});
 	}
 
 }
