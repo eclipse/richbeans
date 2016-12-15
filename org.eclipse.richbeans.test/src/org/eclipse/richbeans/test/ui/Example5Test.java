@@ -37,6 +37,7 @@ public class Example5Test extends ShellTest {
 		IShellCreator runner = ExampleFactory.createExample5();
 		Shell shell = runner.createShell(display);
 		shell.pack();
+		shell.setSize(500, 500);
 		shell.open();
 		return shell;
 	}
@@ -105,12 +106,12 @@ public class Example5Test extends ShellTest {
 		checkValues(botRange, 2,8,1,7);
 		checkValues(botRange, -30,4000,100,41);
 		checkValues(botRange, -30,4000,600,7);
-		botRange.button(0).click(); // ok
+		botRange.button(0).click(); // ok, range form goes
 		
 		// Left invalid, check red
 		Color black = new Color(bot.getDisplay(), 0, 0, 0, 255);
 		Color red = new Color(bot.getDisplay(), 255, 0, 0, 255);
-		//assertEquals(red, bot.styledText(1).foregroundColor());
+		assertEquals(red, bot.styledText(1).foregroundColor());
 		
 		// Open range
 		bot.button(1).click();
