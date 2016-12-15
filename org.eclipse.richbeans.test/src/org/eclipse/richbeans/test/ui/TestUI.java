@@ -50,23 +50,26 @@ class TestUI {
 						
 						currentTestLock.lockInterruptibly();
 						currentTestLock.unlock();
-						
-						DeviceData data = new DeviceData();
-						data.tracking=true;
-						data.debug=true;
-						final Display display = new Display(data);
-						appShell = currentTest.createShell(display);
-						currentTest.setBot(new SWTBot(appShell));
-						swtBarrier.await();
-						System.out.println(Thread.currentThread().getName()+" entering readAndDespatch for test");
-						while (!appShell.isDisposed()) {
-							if (!display.readAndDispatch()) {
-								display.sleep();
+
+						if (currentTest!=null) {
+							DeviceData data = new DeviceData();
+							data.tracking=true;
+							data.debug=true;
+							final Display display = new Display(data);
+
+							appShell = currentTest.createShell(display);
+							currentTest.setBot(new SWTBot(appShell));
+							swtBarrier.await();
+							System.out.println(Thread.currentThread().getName()+" entering readAndDespatch for test");
+							while (!appShell.isDisposed()) {
+								if (!display.readAndDispatch()) display.sleep();
 							}
+							display.dispose();
+							System.out.println(Thread.currentThread().getName()+" test finished");
 						}
-						display.dispose();
-						System.out.println(Thread.currentThread().getName()+" test finished");
 					}
+				} catch (InterruptedException expected) {
+					return;
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
