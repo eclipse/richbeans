@@ -33,7 +33,7 @@ class TestUI {
 	private final CyclicBarrier swtBarrier = new CyclicBarrier(2);
 	private Thread uiThread;
 	
-	private ShellTest currentTest;
+	private volatile ShellTest currentTest;
 	private volatile boolean disposed = false;
 	private Shell appShell;
 	
@@ -51,22 +51,23 @@ class TestUI {
 						currentTestLock.lockInterruptibly();
 						currentTestLock.unlock();
 
-						if (currentTest!=null) {
-							DeviceData data = new DeviceData();
-							data.tracking=true;
-							data.debug=true;
-							final Display display = new Display(data);
+						if (currentTest==null) continue;
+						
+						DeviceData data = new DeviceData();
+						data.tracking=true;
+						data.debug=true;
+						final Display display = new Display(data);
 
-							appShell = currentTest.createShell(display);
-							currentTest.setBot(new SWTBot(appShell));
-							swtBarrier.await();
-							System.out.println(Thread.currentThread().getName()+" entering readAndDespatch for test");
-							while (!appShell.isDisposed()) {
-								if (!display.readAndDispatch()) display.sleep();
-							}
-							display.dispose();
-							System.out.println(Thread.currentThread().getName()+" test finished");
+						appShell = currentTest.createShell(display);
+						currentTest.setBot(new SWTBot(appShell));
+						swtBarrier.await();
+						System.out.println(Thread.currentThread().getName()+" entering readAndDespatch for test");
+						while (!appShell.isDisposed()) {
+							if (!display.readAndDispatch()) display.sleep();
 						}
+						display.dispose();
+						System.out.println(Thread.currentThread().getName()+" test finished");
+						
 					}
 				} catch (InterruptedException expected) {
 					return;

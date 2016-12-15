@@ -63,7 +63,7 @@ public class Example5Test extends ShellTest {
 		
 
 		checkListRange("Range", new String[]{"10.0", "50.0", "1.0"});
-		assertTrue(bot.styledText(0).getText().startsWith("10.0, 50.0, 1.0"));
+		assertTrue("Text was "+bot.styledText(0).getText(), bot.styledText(0).getText().startsWith("10.0, 50.0, 1.0"));
 		
 		bot.styledText(0).setText("0,1,2,3,4,5,6,7,8,9");
 		checkListRange("Range", new String[]{"0.0", "1.0", "2.0", "3.0", "4.0", "5.0", "6.0", "7.0", "8.0", "9.0"});
