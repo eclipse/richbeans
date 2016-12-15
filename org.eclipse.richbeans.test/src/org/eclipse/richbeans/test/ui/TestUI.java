@@ -61,18 +61,18 @@ class TestUI {
 						appShell = currentTest.createShell(display);
 						currentTest.setBot(new SWTBot(appShell));
 						swtBarrier.await();
-						System.out.println(Thread.currentThread().getName()+" entering readAndDespatch for test");
 						while (!appShell.isDisposed()) {
 							if (!display.readAndDispatch()) display.sleep();
 						}
 						display.dispose();
-						System.out.println(Thread.currentThread().getName()+" test finished");
 						
 					}
 				} catch (InterruptedException expected) {
 					return;
 				} catch (Exception e) {
 					e.printStackTrace();
+				} finally {
+					System.out.println("Stopped "+Thread.currentThread().getName());
 				}
 			}
 		}, "SWTBot UI Thread");
@@ -103,7 +103,6 @@ class TestUI {
 			}
 			appShell.close();
 			appShell.dispose();
-			display.dispose();
 		});
 	}
 
