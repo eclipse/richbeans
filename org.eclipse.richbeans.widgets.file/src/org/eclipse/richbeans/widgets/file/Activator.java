@@ -1,7 +1,11 @@
 package org.eclipse.richbeans.widgets.file;
 
+import java.io.File;
+
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -52,6 +56,17 @@ public class Activator extends AbstractUIPlugin {
 	}
 
 	public static ImageDescriptor getImageDescriptor(String path) {
+		
+		if (plugin==null) {  // Testing
+			final File file = new File("../"+PLUGIN_ID+"/"+path);
+			final ImageData data = file.exists() ? new ImageData(file.getAbsolutePath()) : new ImageData(16, 16, 24, new PaletteData(0xff0000, 0x00ff00, 0x0000ff));
+			return new ImageDescriptor() {				
+				@Override
+				public ImageData getImageData() {
+					return data;
+				}
+			};
+		}
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
 	}
 
