@@ -21,7 +21,6 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
-import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -71,7 +70,6 @@ public class Example5Test extends ShellTest {
 
 		bot.styledText(0).setText("0.1,1.2,2.3,3.4");
 		checkListRange("Range", new String[]{"0.1", "1.2", "2.3", "3.4"});
-
 	}
 
 	private void checkListRange(String name, String[] values) {
