@@ -15,6 +15,7 @@ import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.locks.ReentrantLock;
 
+import org.eclipse.swt.graphics.DeviceData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.SWTBot;
@@ -50,7 +51,10 @@ class TestUI {
 						currentTestLock.lockInterruptibly();
 						currentTestLock.unlock();
 						
-						final Display display = new Display();
+						DeviceData data = new DeviceData();
+						data.tracking=true;
+						data.debug=true;
+						final Display display = new Display(data);
 						appShell = currentTest.createShell(display);
 						currentTest.setBot(new SWTBot(appShell));
 						swtBarrier.await();
