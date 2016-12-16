@@ -11,11 +11,14 @@
  *******************************************************************************/
 package org.eclipse.richbeans.widgets;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.PaletteData;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -42,6 +45,17 @@ public class Activator implements BundleActivator {
 
 	public static ImageDescriptor getImageDesciptor(String iconPath) {
 
+		if (context==null) { // Testing
+			final File file = new File("../org.eclipse.richbeans.widgets/"+iconPath);
+			final ImageData data = file.exists() ? new ImageData(file.getAbsolutePath()) : new ImageData(16, 16, 24, new PaletteData(0xff0000, 0x00ff00, 0x0000ff));
+			return new ImageDescriptor() {				
+				@Override
+				public ImageData getImageData() {
+					return data;
+				}
+			};
+		}
+		
 		Bundle bundle = context.getBundle();
 
 		// look for the image (this will check both the plugin and fragment
