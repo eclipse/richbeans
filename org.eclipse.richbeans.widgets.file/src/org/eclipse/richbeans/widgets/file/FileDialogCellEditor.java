@@ -33,6 +33,8 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -120,6 +122,18 @@ public class FileDialogCellEditor extends TextCellEditor {
 		ContentProposalAdapter ad = new ContentProposalAdapter(text, new TextContentAdapter(), prov, null, null);
 		ad.setProposalAcceptanceStyle(ContentProposalAdapter.PROPOSAL_REPLACE);
 		text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true));
+		
+		final Color black = text.getDisplay().getSystemColor(SWT.COLOR_BLACK);
+		final Color red   = text.getDisplay().getSystemColor(SWT.COLOR_RED);
+		text.addModifyListener((ModifyEvent e) -> {
+			if (!isNewFile()) {
+				final File file = new File(text.getText());
+				text.setForeground(file.exists() ? black : red);
+			} else {
+				if (text.getForeground().equals(black)) return;
+				text.setForeground(black);
+			}
+		});
 		
 		DropTarget target = new DropTarget(text, DND.DROP_MOVE | DND.DROP_COPY | DND.DROP_DEFAULT);
 		final TextTransfer textTransfer = TextTransfer.getInstance();
