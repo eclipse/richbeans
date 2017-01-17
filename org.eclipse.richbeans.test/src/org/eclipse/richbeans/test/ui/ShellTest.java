@@ -12,6 +12,8 @@
 package org.eclipse.richbeans.test.ui;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BrokenBarrierException;
 
 import org.eclipse.swt.widgets.Display;
@@ -68,6 +70,42 @@ public abstract class ShellTest {
 
 	public void setBot(SWTBot bot) {
 		this.bot = bot;
+	}
+
+
+	public interface RunnableWithErrorAndValue<T> {
+		T run() throws Exception;
+	}
+	protected <T> T synchExec(RunnableWithErrorAndValue<T> func) throws Exception {
+		
+		final List<Exception> errors = new ArrayList<>(1);
+		final List<T> result = new ArrayList<>(1);
+		bot.getDisplay().syncExec(()->{
+			try {
+				result.add(func.run());
+			} catch (Exception ne) {
+				errors.add(ne);
+			}
+		});
+		if (!errors.isEmpty()) throw errors.get(0);
+		return (!result.isEmpty()) ? result.get(0) : null;
+	}
+	
+	
+	public interface RunnableWithError {
+		void run() throws Exception;
+	}
+	protected void synchExec(RunnableWithError func) throws Exception {
+		
+		final List<Exception> errors = new ArrayList<>(1);
+		bot.getDisplay().syncExec(()->{
+			try {
+			    func.run();
+			} catch (Exception ne) {
+				errors.add(ne);
+			}
+		});
+		if (!errors.isEmpty()) throw errors.get(0);
 	}
 
 }
