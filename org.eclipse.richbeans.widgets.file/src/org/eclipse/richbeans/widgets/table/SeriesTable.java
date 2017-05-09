@@ -268,13 +268,26 @@ public class SeriesTable {
 	 * Add a new operation to the list.
 	 */
 	public void addNew() {
+		addNewElement(false);
+	}
+	
+	/**
+	 * Add a new operation to the list.
+	 */
+	public void addNewBeforeSelected() {
+		addNewElement(true);
+	}
+	
+	private void addNewElement(boolean before){
 		tableViewer.cancelEditing();
+		
+		int i = before ? 0 : 1;
 		
 		final ISeriesItemDescriptor selected = getSelected();
 		if (selected!=null && !selected.equals(ISeriesItemDescriptor.NEW)) {
 			final List<ISeriesItemDescriptor> items = getSeriesItems();
 			final int index = items.indexOf(selected);
-			items.add(index+1, ISeriesItemDescriptor.INSERT);
+			items.add(index+i, ISeriesItemDescriptor.INSERT);
 			tableViewer.setInput(items);
 			tableViewer.editElement(ISeriesItemDescriptor.INSERT, 0);
 			return;
