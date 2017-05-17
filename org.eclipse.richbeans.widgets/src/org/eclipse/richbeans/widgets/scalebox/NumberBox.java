@@ -500,13 +500,13 @@ public abstract class NumberBox extends ButtonComposite implements BoundsProvide
 				setForeground(red);
 			}
 			validBounds = false;
-			if ((numericalValue >= maximum && !isMaximumValid()) ||
-				(numericalValue > maximum && isMaximumValid())) {
+			if ((numericalValue >= evt.getUpper() && !isMaximumValid()) ||
+				(numericalValue > evt.getUpper() && isMaximumValid())) {
 				evt.setMode(Mode.GREATER);
 				setTooltipOveride("The value '" + numericalValue + "' is greater than the upper limit.");
 			} 
-			else if ((numericalValue <= minimum && !isMinimumValid()) ||
-					(numericalValue < minimum && isMinimumValid())) {
+			else if ((numericalValue <= evt.getLower() && !isMinimumValid()) ||
+					(numericalValue < evt.getLower() && isMinimumValid())) {
 				evt.setMode(Mode.LESS);
 				setTooltipOveride("The value '" + numericalValue + "' is less than the lower limit.");
 			}
