@@ -37,12 +37,12 @@ import org.eclipse.swt.widgets.Control;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class ListEditor extends FieldBeanComposite {
+public abstract class ListEditor<T> extends FieldBeanComposite {
 
 	private static final Logger logger = LoggerFactory.getLogger(ListEditor.class);
 
-	protected final List<BeanWrapper> beans;
-	protected final Map<BeanWrapper, String> takenNames;
+	protected final List<BeanWrapper<T>> beans;
+	protected final Map<BeanWrapper<T>, String> takenNames;
 	protected String nameField;
 	protected int listHeight;
 	protected int listWidth;
@@ -50,6 +50,7 @@ public abstract class ListEditor extends FieldBeanComposite {
 	protected int minItems;
 	protected String defaultName;
 	private ListEditorUI listEditorUI;
+    private BeanConfigurator<T> beanConfigurator;
 
 	public abstract StructuredViewer getViewer();
 
@@ -60,8 +61,8 @@ public abstract class ListEditor extends FieldBeanComposite {
 
 	public ListEditor(Composite parent, int style, String listenerName) {
 		super(parent, style, listenerName);
-		this.beans = new ArrayList<BeanWrapper>(7);
-		this.takenNames = new HashMap<BeanWrapper, String>(7);
+		this.beans = new ArrayList<BeanWrapper<T>>(7);
+		this.takenNames = new HashMap<BeanWrapper<T>, String>(7);
 	}
 
 	protected void updateEditingUIVisibility() {
@@ -113,7 +114,7 @@ public abstract class ListEditor extends FieldBeanComposite {
 	 */
 	public void setValue(final int index, final String fieldName, final Object value) throws Exception {
 
-		final BeanWrapper wrapper = beans.get(index);
+		final BeanWrapper<T> wrapper = beans.get(index);
 		RichBeanUtils.setBeanValue(wrapper.getBean(), fieldName, value);
 
 		if (index == getSelectedIndex()) {
@@ -136,7 +137,9 @@ public abstract class ListEditor extends FieldBeanComposite {
 	}
 
 	@Override
-	public Object getBean() {
+	public T getBean() {
+		int index = getSelectedIndex();
+		if (index<0 || index>beans.size()) return null;
 		return beans.get(getSelectedIndex()).getBean();
 	}
 
@@ -206,9 +209,9 @@ public abstract class ListEditor extends FieldBeanComposite {
 		this.eventDelegate.notifyValueListeners(evt);
 	}
 
-	protected BeanWrapper lastSelectionBean = null;
+	protected BeanWrapper<T> lastSelectionBean = null;
 
-	protected void setSelectedBean(BeanWrapper wrapper, boolean fireListeners) {
+	protected void setSelectedBean(BeanWrapper<T> wrapper, boolean fireListeners) {
 		if (wrapper == null) {
 			lastSelectionBean = null;
 			return;
@@ -267,9 +270,9 @@ public abstract class ListEditor extends FieldBeanComposite {
 		}
 	}
 
-	protected BeanWrapper getSelectedBeanWrapper() {
+	protected BeanWrapper<T> getSelectedBeanWrapper() {
 		IStructuredSelection selection = (IStructuredSelection) getViewer().getSelection();
-		return (BeanWrapper) selection.getFirstElement();
+		return (BeanWrapper<T>) selection.getFirstElement();
 	}
 
 	/**
@@ -278,7 +281,7 @@ public abstract class ListEditor extends FieldBeanComposite {
 	 * @return the name of the currently selected bean, or null
 	 */
 	public String getSelectedBeanName() {
-		BeanWrapper selectedBean = getSelectedBeanWrapper();
+		BeanWrapper<T> selectedBean = getSelectedBeanWrapper();
 		if (selectedBean != null)
 			return selectedBean.getName();
 		return null;
@@ -327,15 +330,15 @@ public abstract class ListEditor extends FieldBeanComposite {
 
 		this.clear();
 		for (int i = 0; i < obs.size(); i++) {
-			final Object bean = obs.get(i);
-			final BeanWrapper wrapper = new BeanWrapper(bean);
+			final T bean = (T)obs.get(i);
+			final BeanWrapper<T> wrapper = new BeanWrapper<>(bean);
 			wrapper.setName(getFreeName(wrapper, getTemplateName(), i));
 			beans.add(wrapper);
 		}
 
 	}
 
-	protected String getFreeName(final BeanWrapper wrapper, final String templateName, int index) {
+	protected String getFreeName(final BeanWrapper<T> wrapper, final String templateName, int index) {
 
 		if (getNameField() != null) {
 			updateName(wrapper);
@@ -359,10 +362,10 @@ public abstract class ListEditor extends FieldBeanComposite {
 		return name;
 	}
 
-	protected void updateName(BeanWrapper wrapper) {
+	protected void updateName(BeanWrapper<T> wrapper) {
    		if (wrapper==null) return;
     	final String methodName = RichBeanUtils.getGetterName(getNameField());
-    	try {
+    	if (methodName!=null) try {
  			final Method method = wrapper.getBean().getClass().getMethod(methodName);
 			final Object ob = method.invoke(wrapper.getBean());
 			final String name = ob != null ? ob.toString() : getDefaultName();
@@ -449,4 +452,14 @@ public abstract class ListEditor extends FieldBeanComposite {
 		}
 		return super.toString();
 	}
+	
+
+	public BeanConfigurator<T> getBeanConfigurator() {
+		return beanConfigurator;
+	}
+
+	public void setBeanConfigurator(BeanConfigurator<T> beanConfigurator) {
+		this.beanConfigurator = beanConfigurator;
+	}
+
 }

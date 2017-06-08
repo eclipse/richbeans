@@ -53,7 +53,7 @@ class BeanController implements IBeanController {
 		this.bean = bean;
 	}
 
-	public Object getUi() {
+	public Object getUI() {
 		return ui;
 	}
 

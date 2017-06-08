@@ -24,6 +24,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -55,8 +56,10 @@ import org.slf4j.LoggerFactory;
  * composite template for editing each item.
  * 
  * @author Matthew Gerring
+ * 
+ * @param T the type of items in the list being edited.
  */
-public class VerticalListEditor extends ListEditor {
+public class VerticalListEditor<T> extends ListEditor<T> {
 
 	private static final Logger logger  = LoggerFactory.getLogger(VerticalListEditor.class);
 
@@ -86,12 +89,7 @@ public class VerticalListEditor extends ListEditor {
 		this.selectionChangedListener = new ISelectionChangedListener() {
 			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
-				if (!VerticalListEditor.this.isOn())
-					return;
-				IStructuredSelection selection = (IStructuredSelection) event.getSelection();
-				final BeanWrapper bean = (BeanWrapper) selection.getFirstElement();
-				VerticalListEditor.super.setSelectedBean(bean, true);
-				if (requireSelectionPack) VerticalListEditor.this.pack(true);
+				doSelectionChanged(event.getSelection());
 			}
 		};
 		listViewer.addSelectionChangedListener(selectionChangedListener);
@@ -182,6 +180,14 @@ public class VerticalListEditor extends ListEditor {
 		editorUI = null;
 	}
 	
+	protected void doSelectionChanged(ISelection iselection) {
+		if (!VerticalListEditor.this.isOn()) return;
+		IStructuredSelection selection = (IStructuredSelection) iselection;
+		final BeanWrapper<T> bean = (BeanWrapper) selection.getFirstElement();
+		VerticalListEditor.super.setSelectedBean(bean, true);
+		if (requireSelectionPack) VerticalListEditor.this.pack(true);
+	}
+
 	public void setAddButtonText(String label) {
 		add.setText(label);
 	}
@@ -239,7 +245,9 @@ public class VerticalListEditor extends ListEditor {
 	 */
 	public void addBean() {
 		try {
-			addBean(beanTemplate.getClass().newInstance());
+			@SuppressWarnings("unchecked")
+			T bean = (T)beanTemplate.getClass().newInstance();
+			addBean(bean);
 		} catch (Exception ne) {
 			// Internal error, it should possible to instantiate another beanTemplate
 			// having done one already.
@@ -255,7 +263,7 @@ public class VerticalListEditor extends ListEditor {
 	 * @throws ClassCastException
 	 *             is bean is not an instance of beanTemplate
 	 */
-	public void addBean(final Object bean) throws ClassCastException {
+	public void addBean(final T bean) throws ClassCastException {
 		addBean(bean, getSelectedIndex() + 1);
 	}
 
@@ -269,11 +277,12 @@ public class VerticalListEditor extends ListEditor {
 	 * @throws ClassCastException
 	 *             is bean is not an instance of beanTemplate
 	 */
-	public void addBean(final Object bean, int index) throws ClassCastException {
+	public void addBean(final T bean, int index) throws ClassCastException {
 		if (!beanTemplate.getClass().isInstance(bean)) {
 			throw new ClassCastException("Bean passed to addBean is not an instance of beanTemplate.getClass()");
 		}
-		final BeanWrapper wrapper = new BeanWrapper(bean);
+		if (getBeanConfigurator()!=null) getBeanConfigurator().configure(bean, getBean(), getValue());
+		final BeanWrapper<T> wrapper = new BeanWrapper<>(bean);
 		String wrapperName = getFreeName(wrapper, getTemplateName(), index);
 		wrapper.setName(wrapperName);
 		
@@ -298,10 +307,10 @@ public class VerticalListEditor extends ListEditor {
 
 	}
 	
-	private void updateItem(BeanWrapper wrapper) {
+	private void updateItem(BeanWrapper<T> wrapper) {
 		if (wrapper==null) return;
 		String methodName = RichBeanUtils.getGetterName(getNameField());
-		try {
+		if (methodName!=null) try {
 			Method method = wrapper.getBean().getClass().getMethod(methodName);
 			if (method.getReturnType()==String.class) {
 				final Object ob = method.invoke(wrapper.getBean());
@@ -321,7 +330,7 @@ public class VerticalListEditor extends ListEditor {
 	 * Can be called to delete the selected bean, normally just for testing.
 	 */
 	public void deleteBean() {
-		final BeanWrapper bean = getSelectedBeanWrapper();
+		final BeanWrapper<T> bean = getSelectedBeanWrapper();
 		int index = beans.indexOf(bean);
 		beanRemove(bean.getBean());
 		beans.remove(bean);
@@ -360,7 +369,7 @@ public class VerticalListEditor extends ListEditor {
 	}
 
 	@Override
-	protected void setSelectedBean(BeanWrapper wrapper, boolean fireListeners) {
+	protected void setSelectedBean(BeanWrapper<T> wrapper, boolean fireListeners) {
 		listViewer.setSelection(new StructuredSelection(wrapper), true);
 		super.setSelectedBean(wrapper, fireListeners);
 	}
@@ -371,7 +380,7 @@ public class VerticalListEditor extends ListEditor {
 	 * @param moveAmount
 	 */
 	public void moveBean(final int moveAmount) {
-		BeanWrapper bean = getSelectedBeanWrapper();
+		BeanWrapper<T> bean = getSelectedBeanWrapper();
 		final int index = beans.indexOf(bean);
 		bean = beans.remove(index);
 
@@ -525,7 +534,8 @@ public class VerticalListEditor extends ListEditor {
 		name.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
-				final BeanWrapper bean = (BeanWrapper) element;
+				@SuppressWarnings("unchecked")
+				final BeanWrapper<T> bean = (BeanWrapper<T>) element;
 				final String name = bean.getName();
 				return name != null ? name : "null";
 			}
@@ -559,7 +569,8 @@ public class VerticalListEditor extends ListEditor {
 				col.setLabelProvider(new ColumnLabelProvider() {
 					@Override
 					public String getText(Object element) {
-						final BeanWrapper bean = (BeanWrapper) element;
+						@SuppressWarnings("unchecked")
+						final BeanWrapper<T> bean = (BeanWrapper<T>) element;
 						final Object ob = bean.getBean();
 						try {
 							Method method = ob.getClass().getMethod("get" + additionalField);
@@ -627,7 +638,7 @@ public class VerticalListEditor extends ListEditor {
 		@Override
 		@SuppressWarnings("cast")
 		public Object[] getElements(Object ignored) {
-			return ((List<BeanWrapper>) beans).toArray();
+			return ((List<BeanWrapper<T>>) beans).toArray();
 		}
 
 		@Override
