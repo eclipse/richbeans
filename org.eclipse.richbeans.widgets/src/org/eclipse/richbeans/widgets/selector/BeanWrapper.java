@@ -18,9 +18,9 @@ package org.eclipse.richbeans.widgets.selector;
  * 
  * The bean wrapper has a unique name and avoids these problems.
  */
-class BeanWrapper {
+class BeanWrapper<T> {
 	
-	public BeanWrapper(final Object bean) {
+	public BeanWrapper(final T bean) {
 		setBean(bean);
 	}
 	
@@ -42,18 +42,18 @@ class BeanWrapper {
 		return super.equals(obj);
 	}
 	
-	private Object bean;
+	private T      bean;
 	private String name;
 	/**
 	 * @return the bean
 	 */
-	public Object getBean() {
+	public T getBean() {
 		return bean;
 	}
 	/**
 	 * @param bean the bean to set
 	 */
-	public void setBean(Object bean) {
+	public void setBean(T bean) {
 		this.bean = bean;
 	}
 	/**

@@ -50,9 +50,10 @@ import org.eclipse.swt.widgets.Listener;
  * The items are in a fixed grid and there are no add/remove buttons.
  * 
  * @author Matthew Gerring
-  *
+ *
+ * @param T the type of items in the list being edited.
  */
-public final class GridListEditor extends ListEditor {
+public final class GridListEditor<T> extends ListEditor<T> {
 	
 	
 	/**
@@ -169,7 +170,7 @@ public final class GridListEditor extends ListEditor {
 	}
 	
 	@Override
-	protected BeanWrapper getSelectedBeanWrapper() {
+	protected BeanWrapper<T> getSelectedBeanWrapper() {
 		return beans.get(selectedIndex);
 	}
 	
@@ -187,7 +188,7 @@ public final class GridListEditor extends ListEditor {
 	}
 	
 	@Override
-	protected void setSelectedBean(BeanWrapper wrapper, boolean fireListeners) {
+	protected void setSelectedBean(BeanWrapper<T> wrapper, boolean fireListeners) {
         super.setSelectedBean(wrapper, fireListeners);
 		this.selectedIndex = beans.indexOf(wrapper);
 		if (gridTable != null) {
@@ -202,8 +203,9 @@ public final class GridListEditor extends ListEditor {
 		
 		this.clear();
 		for (int i = 0; i < obs.size(); i++) {
-			final Object bean = obs.get(i);
-			final BeanWrapper wrapper = new BeanWrapper(bean);
+			@SuppressWarnings("unchecked")
+			final T bean = (T)obs.get(i);
+			final BeanWrapper<T> wrapper = new BeanWrapper<>(bean);
 			wrapper.setName(i+"");
 			beans.add(wrapper);
 		}
@@ -244,7 +246,7 @@ public final class GridListEditor extends ListEditor {
 		final Integer row = (Integer)element;
 		final int col = Integer.parseInt(property);
 		selectedIndex = getElementIndex(row, col);
-		final BeanWrapper bean = beans.get(selectedIndex);
+		final BeanWrapper<T> bean = beans.get(selectedIndex);
 		setSelectedBean(bean, false);
 		gridTable.refresh();
 		if (listeners!=null) {

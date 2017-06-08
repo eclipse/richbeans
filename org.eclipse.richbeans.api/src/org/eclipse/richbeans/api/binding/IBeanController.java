@@ -60,6 +60,13 @@ public interface IBeanController {
 	 * @return
 	 */
 	Object getBean();
+	
+    /**
+     * Returns the original UI object to which we are linking with reflection.
+     * @return
+     */
+	Object getUI();
+
 
 	/**
 	 * Used to switch the UI on or off. If off, it will not send events.

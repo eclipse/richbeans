@@ -43,8 +43,10 @@ import org.eclipse.swt.widgets.Menu;
 
 /**
  * This class is not completed as yet but can be used and improved.
+ * 
+ * @param T the type of items in the list being edited.
  */
-public final class HorizontalListEditor extends ListEditor {
+public final class HorizontalListEditor<T> extends ListEditor<T> {
 	
 	private final TableViewer regionViewer;
 	private final ISelectionChangedListener selectionChangedListener;
@@ -88,7 +90,7 @@ public final class HorizontalListEditor extends ListEditor {
 				if ("Spacer".equals(property))
 					return false;
 				selectedIndex = Integer.parseInt(property);
-				final BeanWrapper bean = beans.get(selectedIndex);
+				final BeanWrapper<T> bean = beans.get(selectedIndex);
 				setSelectedBean(bean, false);
 
 				regionViewer.refresh();
@@ -117,7 +119,7 @@ public final class HorizontalListEditor extends ListEditor {
 			public void selectionChanged(SelectionChangedEvent event) {
 				if (!HorizontalListEditor.this.isOn())
 					return;
-				final BeanWrapper bean = getSelectedBeanWrapper();
+				final BeanWrapper<T> bean = getSelectedBeanWrapper();
 				setSelectedBean(bean, true);
 			}
 		};
@@ -213,7 +215,7 @@ public final class HorizontalListEditor extends ListEditor {
 	 * @param moveAmount
 	 */
 	public void moveBean(final int moveAmount) {
-		BeanWrapper bean = getSelectedBeanWrapper();
+		BeanWrapper<T> bean = getSelectedBeanWrapper();
 		final int index = beans.indexOf(bean);
 		bean = beans.remove(index);
 
@@ -240,7 +242,7 @@ public final class HorizontalListEditor extends ListEditor {
 	}
 
 	@Override
-	protected BeanWrapper getSelectedBeanWrapper() {
+	protected BeanWrapper<T> getSelectedBeanWrapper() {
 		return beans.get(selectedIndex);
 	}
 
@@ -249,7 +251,8 @@ public final class HorizontalListEditor extends ListEditor {
 	 */
 	public void addBean() {
 		try {
-			addBean(beanTemplate.getClass().newInstance());
+			T bean = (T)beanTemplate.getClass().newInstance();
+			addBean(bean);
 		} catch (Exception ne) {
 			// Internal error, it should possible to instantiate another beanTemplate
 			// having done one already.
@@ -265,7 +268,7 @@ public final class HorizontalListEditor extends ListEditor {
 	 * @throws ClassCastException
 	 *             is bean is not an instance of beanTemplate
 	 */
-	public void addBean(final Object bean) throws ClassCastException {
+	public void addBean(final T bean) throws ClassCastException {
 		addBean(bean, getSelectedIndex() + 1);
 	}
 
@@ -279,14 +282,15 @@ public final class HorizontalListEditor extends ListEditor {
 	 * @throws ClassCastException
 	 *             is bean is not an instance of beanTemplate
 	 */
-	public void addBean(final Object bean, int index) throws ClassCastException {
+	public void addBean(final T bean, int index) throws ClassCastException {
 		if (!beanTemplate.getClass().isInstance(bean)) {
 			throw new ClassCastException("Bean passed to addBean is not an instance of beanTemplate.getClass()");
 		}
 		if (!getListEditorUI().isAddAllowed(this))
 			return;
 		try {
-			final BeanWrapper wrapper = new BeanWrapper(bean);
+			if (getBeanConfigurator()!=null) getBeanConfigurator().configure(bean, getBean(), getValue());
+			final BeanWrapper<T> wrapper = new BeanWrapper<>(bean);
 			wrapper.setName(getFreeName(wrapper, getTemplateName(), index));
 			if (index < 0)
 				beans.add(wrapper);
