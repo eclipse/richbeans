@@ -453,13 +453,28 @@ public abstract class ListEditor<T> extends FieldBeanComposite {
 		return super.toString();
 	}
 	
-
+    /**
+     * The configurator is a functional interface allowing beans when created and added to be
+     * compared with existing values and changed. This allows checks to be done of the current
+     * state of added items and the new item to be added with sensible defaults.
+     * 
+     * @return the current configurator
+     */
 	public BeanConfigurator<T> getBeanConfigurator() {
 		return beanConfigurator;
 	}
 
-	public void setBeanConfigurator(BeanConfigurator<T> beanConfigurator) {
+    /**
+     * The configurator is a functional interface allowing beans when created and added to be
+     * compared with existing values and changed. This allows checks to be done of the current
+     * state of added items and the new item to be added with sensible defaults.
+     * 
+     * @return the current configurator
+     */
+	public BeanConfigurator<T> setBeanConfigurator(BeanConfigurator<T> beanConfigurator) {
+		BeanConfigurator<T> old = this.beanConfigurator;
 		this.beanConfigurator = beanConfigurator;
+		return old;
 	}
 
 }
