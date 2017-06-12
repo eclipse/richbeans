@@ -19,6 +19,7 @@ import java.util.EventListener;
  * @author Matthew Gerring
  *
  */
+@FunctionalInterface
 public interface ValueListener extends EventListener {
 
 	/**
@@ -41,7 +42,9 @@ public interface ValueListener extends EventListener {
 	 * 
 	 * @return name
 	 */
-	public String getValueListenerName();
+	default String getValueListenerName() {
+		return null;
+	}
 	
 }
 

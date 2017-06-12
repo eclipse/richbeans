@@ -24,7 +24,7 @@ import org.eclipse.richbeans.api.widget.IFieldWidget;
  * @author Matthew Gerring
  *
  */
-public interface IBeanController {
+public interface IBeanController<T> {
 
 	/**
 	 * Add a value listener to any UI objects which change in the UIObject.
@@ -59,7 +59,7 @@ public interface IBeanController {
 	 * Get the current bean directly (no copy is made, use with caution)
 	 * @return
 	 */
-	Object getBean();
+	T getBean();
 	
     /**
      * Returns the original UI object to which we are linking with reflection.

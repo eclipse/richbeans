@@ -51,11 +51,11 @@ import org.slf4j.LoggerFactory;
  * 
  * 
  */
-public abstract class BeanDialog extends Dialog {
+public abstract class BeanDialog<T> extends Dialog {
 	
 	private static final Logger logger = LoggerFactory.getLogger(BeanDialog.class);
 	
-	protected IBeanController controller;
+	protected IBeanController<T> controller;
 	
 
 	protected BeanDialog(Shell parentShell) {
@@ -82,11 +82,11 @@ public abstract class BeanDialog extends Dialog {
 		return super.close();
 	}
 	
-	public Object getBean() {
+	public T getBean() {
 		return controller.getBean();
 	}
 
-	public void setBean(Object bean) {
+	public void setBean(T bean) {
 		try {
 			IBeanService service = (IBeanService)Activator.getService(IBeanService.class);
 			this.controller = service.createController(this, bean);

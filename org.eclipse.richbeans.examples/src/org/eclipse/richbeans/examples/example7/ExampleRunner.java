@@ -63,7 +63,7 @@ public class ExampleRunner {
 		final ExampleBean bean = createSimpleBean();
 
 		// Connect the UI and bean
-		final IBeanController controller = BeanService.getInstance().createController(ui, bean);
+		final IBeanController<ExampleBean> controller = BeanService.getInstance().createController(ui, bean);
 		ExamplePrintBeanValueListener listener = new ExamplePrintBeanValueListener(controller, value);
 		listener.setTextLimit(300);
 		controller.addValueListener(listener);

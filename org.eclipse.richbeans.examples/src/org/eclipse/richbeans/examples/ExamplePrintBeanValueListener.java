@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Control;
 
 public class ExamplePrintBeanValueListener extends ValueAdapter {
 
-	private IBeanController controller;
+	private IBeanController<?> controller;
 	private Control value;
 	private int textLimit = -1;
 
@@ -28,7 +28,7 @@ public class ExamplePrintBeanValueListener extends ValueAdapter {
 	 * @param controller
 	 * @param value A control with a setText(...) method.
 	 */
-	public ExamplePrintBeanValueListener(IBeanController controller, Control value) {
+	public ExamplePrintBeanValueListener(IBeanController<?> controller, Control value) {
 
 		// The name should be unique and is only hard-coded here for simplicity - see the javadoc for ValueAdapter.
 		this.name = "Example listener";

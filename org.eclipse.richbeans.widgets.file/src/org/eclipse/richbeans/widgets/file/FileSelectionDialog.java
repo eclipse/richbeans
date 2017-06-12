@@ -142,15 +142,25 @@ public class FileSelectionDialog extends Dialog {
 		return extensions;
 	}
 
+	/**
+	 * This method would be more accurately called getLabels()
+	 * It is the labels for the file dialog
+	 * @return
+	 */
 	public String[] getFiles() {
 		return files;
 	}
 
-	public void setFiles(String[] files) {
+	/**
+	 * This method would be more accurately called setLabels(...)
+	 * It is the labels for the file dialog
+	 * @return
+	 */
+	public void setFiles(String... files) {
 		this.files = files;
 	}
 
-	public void setExtensions(String[] extensions) {
+	public void setExtensions(String... extensions) {
 		this.extensions = extensions;
 	}
 

@@ -95,6 +95,9 @@ public abstract class NumberBox extends ButtonComposite implements BoundsProvide
 	private ActiveMode activeMode = ActiveMode.SET_VISIBLE_AND_ACTIVE;
 	private String boundsKey;
 	
+	// FIXME Widgets should not have a reference to the controller.
+	// This breaks the model/view/controller design because the controller
+	// is referenced by the view to look up field values.
 	private IBeanController beanService;
 
 

@@ -277,11 +277,12 @@ public class VerticalListEditor<T> extends ListEditor<T> {
 	 * @throws ClassCastException
 	 *             is bean is not an instance of beanTemplate
 	 */
+	@SuppressWarnings("unchecked")
 	public void addBean(final T bean, int index) throws ClassCastException {
 		if (!beanTemplate.getClass().isInstance(bean)) {
 			throw new ClassCastException("Bean passed to addBean is not an instance of beanTemplate.getClass()");
 		}
-		if (getBeanConfigurator()!=null) getBeanConfigurator().configure(bean, getBean(), getValue());
+		if (getBeanConfigurator()!=null) getBeanConfigurator().configure(bean, getBean(), (List<T>)getValue());
 		final BeanWrapper<T> wrapper = new BeanWrapper<>(bean);
 		String wrapperName = getFreeName(wrapper, getTemplateName(), index);
 		wrapper.setName(wrapperName);

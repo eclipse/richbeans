@@ -282,6 +282,7 @@ public final class HorizontalListEditor<T> extends ListEditor<T> {
 	 * @throws ClassCastException
 	 *             is bean is not an instance of beanTemplate
 	 */
+	@SuppressWarnings("unchecked")
 	public void addBean(final T bean, int index) throws ClassCastException {
 		if (!beanTemplate.getClass().isInstance(bean)) {
 			throw new ClassCastException("Bean passed to addBean is not an instance of beanTemplate.getClass()");
@@ -289,7 +290,7 @@ public final class HorizontalListEditor<T> extends ListEditor<T> {
 		if (!getListEditorUI().isAddAllowed(this))
 			return;
 		try {
-			if (getBeanConfigurator()!=null) getBeanConfigurator().configure(bean, getBean(), getValue());
+			if (getBeanConfigurator()!=null) getBeanConfigurator().configure(bean, getBean(), (List<T>)getValue());
 			final BeanWrapper<T> wrapper = new BeanWrapper<>(bean);
 			wrapper.setName(getFreeName(wrapper, getTemplateName(), index));
 			if (index < 0)
