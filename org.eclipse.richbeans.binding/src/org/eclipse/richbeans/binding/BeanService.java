@@ -43,8 +43,8 @@ public class BeanService implements IBeanService {
 	}
 
 	@Override
-	public IBeanController createController(Object ui, Object bean) {
-		return new BeanController(ui, bean);
+	public <T> IBeanController<T> createController(Object ui, T bean) {
+		return new BeanController<>(ui, bean);
 	}
 
 }

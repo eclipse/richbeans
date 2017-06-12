@@ -69,7 +69,7 @@ public class ExampleRunner  implements IShellCreator {
 		bean.addItem(new ExampleItem("Item 3", 3, 4, ItemChoice.XY));
 
 		// Connect the UI and bean
-		final IBeanController controller = BeanService.getInstance().createController(ui, bean);
+		final IBeanController<ExampleBean> controller = BeanService.getInstance().createController(ui, bean);
 		controller.addValueListener(new ExamplePrintBeanValueListener(controller, value));
 		controller.beanToUI();
 		controller.switchState(true);

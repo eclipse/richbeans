@@ -21,7 +21,7 @@ public interface IBeanService {
 	 * @param bean
 	 * @return
 	 */
-	public IBeanController createController(Object ui, Object bean);
+	public <T> IBeanController<T> createController(Object ui, T bean);
 
 
 }

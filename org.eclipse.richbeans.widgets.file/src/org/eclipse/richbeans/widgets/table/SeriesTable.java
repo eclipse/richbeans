@@ -260,6 +260,7 @@ public class SeriesTable {
 	}
 
 	public List<ISeriesItemDescriptor> getSeriesItems() {
+		if (tableViewer==null) return null;
 		SeriesContentProvider prov = (SeriesContentProvider)tableViewer.getContentProvider();
 		return prov.getSeriesItems();
 	}

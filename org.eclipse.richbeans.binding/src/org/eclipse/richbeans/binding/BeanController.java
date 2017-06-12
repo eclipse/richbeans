@@ -33,16 +33,16 @@ import org.eclipse.richbeans.api.widget.IFieldWidget;
  * 
  * @author Colin Palmer
  */
-class BeanController implements IBeanController {
+class BeanController<T> implements IBeanController<T> {
 
 	private final Object ui;
-	private final Object bean;
+	private final T bean;
 
 	/**
 	 * Create a new BeanController with the given UI and bean objects. Note the
 	 * correct order of the arguments!
 	 */
-	public BeanController(Object ui, Object bean) {
+	public BeanController(Object ui, T bean) {
 		if (ui == null) {
 			throw new NullPointerException("UI object must not be null");
 		}
@@ -57,7 +57,7 @@ class BeanController implements IBeanController {
 		return ui;
 	}
 
-	public Object getBean() {
+	public T getBean() {
 		return bean;
 	}
 
