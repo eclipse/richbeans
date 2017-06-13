@@ -11,6 +11,7 @@ package org.eclipse.richbeans.widgets.table;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.bindings.keys.IKeyLookup;
@@ -260,9 +261,19 @@ public class SeriesTable {
 	}
 
 	public List<ISeriesItemDescriptor> getSeriesItems() {
-		if (tableViewer==null) return null;
+		if (tableViewer==null) return Collections.emptyList();
 		SeriesContentProvider prov = (SeriesContentProvider)tableViewer.getContentProvider();
 		return prov.getSeriesItems();
+	}
+
+	/**
+	 * Searchs for a matching ISeriesItemDescriptor in the list of descriptors
+	 * @param predicate
+	 * @return
+	 */
+	public ISeriesItemDescriptor find(Predicate<ISeriesItemDescriptor> predicate) {
+		if (tableViewer==null) return null;
+		return getSeriesItems().stream().filter(predicate::test).findFirst().orElse(null);
 	}
 
 	/**
