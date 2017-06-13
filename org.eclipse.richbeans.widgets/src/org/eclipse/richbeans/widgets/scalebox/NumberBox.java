@@ -98,7 +98,7 @@ public abstract class NumberBox extends ButtonComposite implements BoundsProvide
 	// FIXME Widgets should not have a reference to the controller.
 	// This breaks the model/view/controller design because the controller
 	// is referenced by the view to look up field values.
-	private IBeanController<?> beanService;
+	private IBeanController<Object> beanService;
 
 
 	public NumberBox(Composite parent, int style) {
@@ -1116,11 +1116,11 @@ public abstract class NumberBox extends ButtonComposite implements BoundsProvide
 		this.fieldOveride = fieldOveride;
 	}
 	
-	public IBeanController<?> getBeanService() {
+	public IBeanController<Object> getBeanService() {
 		return beanService;
 	}
 
-	public void setBeanService(IBeanController<?> beanService) {
+	public void setBeanService(IBeanController<Object> beanService) {
 		this.beanService = beanService;
 	}
 
