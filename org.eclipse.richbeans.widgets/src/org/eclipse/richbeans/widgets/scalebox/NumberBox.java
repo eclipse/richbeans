@@ -98,7 +98,7 @@ public abstract class NumberBox extends ButtonComposite implements BoundsProvide
 	// FIXME Widgets should not have a reference to the controller.
 	// This breaks the model/view/controller design because the controller
 	// is referenced by the view to look up field values.
-	private IBeanController beanService;
+	private IBeanController<?> beanService;
 
 
 	public NumberBox(Composite parent, int style) {
@@ -781,8 +781,10 @@ public abstract class NumberBox extends ButtonComposite implements BoundsProvide
 	 */
 	@SuppressWarnings("unchecked")
 	public double getMaximum() {
-		if (maxProvider != null)
-			return maxProvider.getBoundValue();
+		if (maxProvider != null) {
+			double dbl = maxProvider.getBoundValue();
+			if (!Double.isNaN(dbl)) return dbl;
+		}
 		if (maxFieldName != null && maxClass != null) {
 			ScaleBox max = beanService!=null ? (ScaleBox) beanService.getBeanField(maxFieldName, maxClass) : null;
 			if (max != null)
@@ -840,8 +842,10 @@ public abstract class NumberBox extends ButtonComposite implements BoundsProvide
 	 */
 	@SuppressWarnings("unchecked")
 	public double getMinimum() {
-		if (minProvider != null)
-			return minProvider.getBoundValue();
+		if (minProvider != null) {
+			double dbl = minProvider.getBoundValue();
+			if (!Double.isNaN(dbl)) return dbl;
+		}
 		if (minFieldName != null && minClass != null) {
 			final ScaleBox min = beanService!=null ? (ScaleBox) beanService.getBeanField(minFieldName, minClass) : null;
 			if (min != null)
@@ -1112,11 +1116,11 @@ public abstract class NumberBox extends ButtonComposite implements BoundsProvide
 		this.fieldOveride = fieldOveride;
 	}
 	
-	public IBeanController getBeanService() {
+	public IBeanController<?> getBeanService() {
 		return beanService;
 	}
 
-	public void setBeanService(IBeanController beanService) {
+	public void setBeanService(IBeanController<?> beanService) {
 		this.beanService = beanService;
 	}
 
