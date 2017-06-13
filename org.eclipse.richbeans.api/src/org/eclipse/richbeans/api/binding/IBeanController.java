@@ -61,6 +61,14 @@ public interface IBeanController<T> {
 	 */
 	T getBean();
 	
+	/**
+	 * Calling this method assigns the linked bean to some other data
+	 * and it calls a beanToUI() to update the UI.
+	 * @param model
+	 * @throws Exception from the beanToUI() if the bean cannot update the UI
+	 */
+	T setBean(T model)  throws Exception;
+
     /**
      * Returns the original UI object to which we are linking with reflection.
      * @return

@@ -36,7 +36,7 @@ import org.eclipse.richbeans.api.widget.IFieldWidget;
 class BeanController<T> implements IBeanController<T> {
 
 	private final Object ui;
-	private final T bean;
+	private       T bean;
 
 	/**
 	 * Create a new BeanController with the given UI and bean objects. Note the
@@ -61,6 +61,12 @@ class BeanController<T> implements IBeanController<T> {
 		return bean;
 	}
 
+	public T setBean(T bean) throws Exception {
+		T old = this.bean;
+		this.bean = bean;
+		beanToUI();
+		return old;
+	}
 	/**
 	 * Send the bean values to the UI
 	 * <p>
