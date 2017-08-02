@@ -128,8 +128,9 @@ public class ShuffleViewer<T>  {
 
         final Button right = new Button(ret, SWT.ARROW |SWT.RIGHT);
         right.setToolTipText("Move item right");
-        right.setEnabled(conf.getFromList().size()>0);
+        right.setEnabled(!conf.getFromList().isEmpty());
         right.addSelectionListener(new SelectionAdapter() {
+        	@Override
         	public void widgetSelected(SelectionEvent e) {
         		moveRight();
         	}
@@ -146,8 +147,9 @@ public class ShuffleViewer<T>  {
         
         final Button left = new Button(ret, SWT.ARROW |SWT.LEFT);
         left.setToolTipText("Move item left");
-        left.setEnabled(conf.getToList().size()>0);
+        left.setEnabled(!conf.getToList().isEmpty());
         left.addSelectionListener(new SelectionAdapter() {
+        	@Override
         	public void widgetSelected(SelectionEvent e) {
         		moveLeft();
         	}
@@ -164,14 +166,14 @@ public class ShuffleViewer<T>  {
 	}
 
 	private void moveRight() {
-		ShuffleBean<T> from = new ShuffleBean<T>(fromTable, "fromList", conf.getFromList(), ShuffleDirection.DELETE);
-		ShuffleBean<T> to = new ShuffleBean<T>(toTable, "toList", conf.getToList(), ShuffleDirection.LEFT_TO_RIGHT);
+		ShuffleBean<T> from = new ShuffleBean<>(fromTable, "fromList", conf.getFromList(), ShuffleDirection.DELETE);
+		ShuffleBean<T> to = new ShuffleBean<>(toTable, "toList", conf.getToList(), ShuffleDirection.LEFT_TO_RIGHT);
 		moveHorizontal(from, to);
 	}
 
 	private void moveLeft() {
-		ShuffleBean<T> from = new ShuffleBean<T>(toTable, "toList", conf.getToList(), ShuffleDirection.DELETE);
-		ShuffleBean<T> to = new ShuffleBean<T>(fromTable, "fromList", conf.getFromList(), ShuffleDirection.RIGHT_TO_LEFT);
+		ShuffleBean<T> from = new ShuffleBean<>(toTable, "toList", conf.getToList(), ShuffleDirection.DELETE);
+		ShuffleBean<T> to = new ShuffleBean<>(fromTable, "fromList", conf.getFromList(), ShuffleDirection.RIGHT_TO_LEFT);
 		moveHorizontal(from, to);
 	}
 
@@ -206,7 +208,7 @@ public class ShuffleViewer<T>  {
 			RichBeanUtils.setBeanValue(conf, bbean.getName(), add); // Set the value of the add list and property name 'bName' in object conf
 	
 			bbean.getTable().setSelection(new StructuredSelection(sel));
-			if (rem.size()>0) {
+			if (!rem.isEmpty()) {
 				aindex--;
 				if (aindex<0) aindex=0;
 				abean.getTable().setSelection(new StructuredSelection(rem.get(aindex)));
@@ -270,6 +272,7 @@ public class ShuffleViewer<T>  {
 		gd.widthHint = 50;
 		down.setLayoutData(gd);
 		down.addSelectionListener(new SelectionAdapter() {
+			@Override
         	public void widgetSelected(SelectionEvent e) {
         		ShuffleDirection direction = propName.startsWith("from") ? ShuffleDirection.LEFT_DOWN : ShuffleDirection.RIGHT_DOWN;
         		moveVertical(ret, propName, 1, direction);
@@ -281,6 +284,7 @@ public class ShuffleViewer<T>  {
 		up.setEnabled(false);
 		up.setLayoutData(gd);	
 		up.addSelectionListener(new SelectionAdapter() {
+			@Override
         	public void widgetSelected(SelectionEvent e) {
            		ShuffleDirection direction = propName.startsWith("from") ? ShuffleDirection.LEFT_UP : ShuffleDirection.RIGHT_UP;
         		moveVertical(ret, propName, -1, direction);
@@ -299,7 +303,12 @@ public class ShuffleViewer<T>  {
 			});
         };
         conf.addPropertyChangeListener(propName, pcLeft);
-
+        
+        // pcLeft only triggered when list is changed.
+        // check whether you should be able to reorder as soon as widget is created
+        boolean enabled = items.size() > 1;
+		down.setEnabled(enabled);
+		up.setEnabled(enabled);
 
 		return ret;
 	}
@@ -310,7 +319,7 @@ public class ShuffleViewer<T>  {
 			T item = getSelection(viewer);
 			if (item==null) return;
 	
-			List<T> items = new ArrayList<T>((Collection<T>)RichBeanUtils.getBeanValue(conf, propName));
+			List<T> items = new ArrayList<>((Collection<T>)RichBeanUtils.getBeanValue(conf, propName));
 			final int index = items.indexOf(item);
 			item = items.remove(index);
 	
@@ -359,7 +368,7 @@ public class ShuffleViewer<T>  {
 	 * 
 	 * @return the mutable model, changing items in the config causes the UI to change
 	 */
-	public ShuffleConfiguration getShuffleConfiguration() {
+	public ShuffleConfiguration<T> getShuffleConfiguration() {
 		return conf;
 	}
 }
