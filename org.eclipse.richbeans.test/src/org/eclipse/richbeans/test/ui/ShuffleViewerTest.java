@@ -26,12 +26,14 @@ import org.eclipse.richbeans.widgets.shuffle.ShuffleConfiguration;
 import org.eclipse.richbeans.widgets.shuffle.ShuffleDirection;
 import org.eclipse.richbeans.widgets.shuffle.ShuffleEvent;
 import org.eclipse.richbeans.widgets.shuffle.ShuffleViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,7 +47,7 @@ public class ShuffleViewerTest extends ShellTest {
 	@Override
 	protected Shell createShell(Display display) {
 		
-		Shell parent = new Shell(display);
+		Shell parent = new Shell(display, SWT.RESIZE);
 		parent.setText("Test");
 		parent.setLayout(new FillLayout());
 		
@@ -68,6 +70,8 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	private IShuffleListener<String>       listener;
+
+	// this list contains the history of directions, it is appended to by the listener  
 	private List<ShuffleDirection> directions = new ArrayList<>(7);
 	
 	@Before
@@ -81,12 +85,12 @@ public class ShuffleViewerTest extends ShellTest {
 		};
 		viewer.addShuffleListener(listener);
 	}
+	
 	@After
 	public void removeListener() {
 		directions.clear();
 		viewer.removeShuffleListener(listener);
 	}
-	
 	
 	@Test
 	public void checkShell() throws Exception {
@@ -175,8 +179,13 @@ public class ShuffleViewerTest extends ShellTest {
 
 		// We check that one is selected
 		assertEquals("one", table.getTableItem(4).getText());
+		assertEquals(5, table.rowCount());
 		assertEquals(1, table.selectionCount());
 		// TODO How to check items selected
+		
+		assertEquals(2, directions.size());
+		assertEquals(directions.get(0), ShuffleDirection.DELETE);
+		assertEquals(directions.get(1), ShuffleDirection.LEFT_TO_RIGHT);
 	}
 	
 	@Test
@@ -192,9 +201,13 @@ public class ShuffleViewerTest extends ShellTest {
 		bot.arrowButton(2).click();
 		
 		table = bot.table(1);
+		assertEquals("one", table.getTableItem(4).getText());
 		assertEquals(5, table.rowCount());
+		assertEquals(1, table.selectionCount());
+		// TODO How to check items selected
 
 		assertEquals(2, directions.size());
+		assertEquals(directions.get(0), ShuffleDirection.DELETE);
 		assertEquals(directions.get(1), ShuffleDirection.LEFT_TO_RIGHT);
 	}
 
@@ -253,6 +266,28 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
+	public void checkMoveThreeRightMultiSelection() throws Exception {
+		conf.setFromList(Arrays.asList("one", "two", "three"));
+		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
+		
+		SWTBotTable table = bot.table(0);
+		table.select(0, 1, 2);
+		bot.arrowButton(2).click();
+		
+		table = bot.table(1);
+		assertEquals(7, table.rowCount());
+		assertFalse(bot.arrowButton(2).isEnabled());
+		assertTrue(bot.arrowButton(3).isEnabled());
+		
+		table = bot.table(0);
+		assertEquals(0, table.rowCount());
+		
+		assertEquals(2, directions.size());
+		assertEquals(directions.get(0), ShuffleDirection.DELETE);
+		assertEquals(directions.get(1), ShuffleDirection.LEFT_TO_RIGHT);
+	}
+	
+	@Test
 	public void checkMoveFourLeft() throws Exception {
 		
 		conf.setFromList(Arrays.asList("one", "two", "three"));
@@ -281,9 +316,30 @@ public class ShuffleViewerTest extends ShellTest {
 		assertEquals(directions.get(5), ShuffleDirection.RIGHT_TO_LEFT);
 		assertEquals(directions.get(6), ShuffleDirection.DELETE);
 		assertEquals(directions.get(7), ShuffleDirection.RIGHT_TO_LEFT);
-
 	}
-
+	
+	@Test
+	public void checkMoveTwoLeftMultiSelection() throws Exception {
+		conf.setFromList(Arrays.asList("one", "two", "three"));
+		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
+		
+		SWTBotTable table = bot.table(1);
+		table.select(1, 3);
+		bot.arrowButton(3).click();
+		
+		table = bot.table(0);
+		assertEquals(5, table.rowCount());
+		assertTrue(bot.arrowButton(2).isEnabled());
+		assertTrue(bot.arrowButton(2).isEnabled());
+		
+		table = bot.table(1);
+		assertEquals(2, table.rowCount());
+		
+		assertEquals(2, directions.size());
+		assertEquals(directions.get(0), ShuffleDirection.DELETE);
+		assertEquals(directions.get(1), ShuffleDirection.RIGHT_TO_LEFT);
+	}
+	
 	@Test
 	public void checkMoveThreeRightCheckOrder() throws Exception {
 		
