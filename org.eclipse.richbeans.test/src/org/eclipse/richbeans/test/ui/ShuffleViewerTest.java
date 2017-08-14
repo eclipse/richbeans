@@ -67,15 +67,15 @@ public class ShuffleViewerTest extends ShellTest {
 		return parent;
 	}
 	
-	private IShuffleListener       listener;
+	private IShuffleListener<String>       listener;
 	private List<ShuffleDirection> directions = new ArrayList<>(7);
 	
 	@Before
 	public void addListener() {
 		directions.clear();
-		listener = new IShuffleListener() {				
+		listener = new IShuffleListener<String>() {
 			@Override
-			public void postShuffle(ShuffleEvent evt) {
+			public void postShuffle(ShuffleEvent<String> evt) {
 				directions.add(evt.getDirection());
 			}
 		};
@@ -388,13 +388,13 @@ public class ShuffleViewerTest extends ShellTest {
 		SWTBotTable table = bot.table(0);
 		table.click(0, 0); // one
 		
-		IShuffleListener l = null;
+		IShuffleListener<String> l = null;
 		try {
-			l = new IShuffleListener() {
-				public boolean preShuffle(ShuffleEvent evt) {
+			l = new IShuffleListener<String>() {
+				public boolean preShuffle(ShuffleEvent<String> evt) {
 					
-					List<?> items = evt.getItems();
-					Collections.sort((List<String>)items);
+					List<String> items = evt.getItems();
+					Collections.sort(items);
 					evt.setItems(items);
 					return true;
 				}
@@ -428,12 +428,12 @@ public class ShuffleViewerTest extends ShellTest {
 		SWTBotTable table = bot.table(1);
 		table.click(0, 0); // four
 		
-		IShuffleListener l = null;
+		IShuffleListener<String> l = null;
 		try {
-			l = new IShuffleListener() {
-				public boolean preShuffle(ShuffleEvent evt) {
+			l = new IShuffleListener<String>() {
+				public boolean preShuffle(ShuffleEvent<String> evt) {
 					
-					List<?> items = evt.getItems();
+					List<String> items = evt.getItems();
 					Collections.sort((List<String>)items);
 					evt.setItems(items);
 					return true;

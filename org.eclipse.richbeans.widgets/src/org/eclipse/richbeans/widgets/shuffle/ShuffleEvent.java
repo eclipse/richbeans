@@ -14,19 +14,19 @@ package org.eclipse.richbeans.widgets.shuffle;
 import java.util.EventObject;
 import java.util.List;
 
-public class ShuffleEvent extends EventObject {
+public class ShuffleEvent<T> extends EventObject {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 5544505644622339356L;
 	
-	private List<?>          items;
+	private List<T>          items;
 	private ShuffleDirection direction;
 
 	private boolean itemsSet;
 
-	public ShuffleEvent(ShuffleViewer<?> source, ShuffleDirection direction, List<?> items) {
+	public ShuffleEvent(ShuffleViewer<T> source, ShuffleDirection direction, List<T> items) {
 		super(source);
 		this.direction = direction;
 		this.items = items;
@@ -40,7 +40,7 @@ public class ShuffleEvent extends EventObject {
 		this.direction = direction;
 	}
 
-	public List<?> getItems() {
+	public List<T> getItems() {
 		return items;
 	}
 
@@ -54,7 +54,7 @@ public class ShuffleEvent extends EventObject {
 	 * 
 	 * @param items
 	 */
-	public void setItems(List<?> items) {
+	public void setItems(List<T> items) {
 		itemsSet = true;
 		this.items = items;
 	}
@@ -67,8 +67,9 @@ public class ShuffleEvent extends EventObject {
 	 * 
 	 * @return an immutable shuffle configuration which also does not change if the shuffle does in future (it makes inactive copies)
 	 */
-	public ShuffleConfiguration getConfiguration() {
-		ShuffleConfiguration configuration = ((ShuffleViewer)getSource()).getShuffleConfiguration();
-		return new ImmutableShuffleConfiguration(configuration);
+	public ShuffleConfiguration<T> getConfiguration() {
+		@SuppressWarnings("unchecked")
+		ShuffleConfiguration<T> configuration = ((ShuffleViewer<T>) getSource()).getShuffleConfiguration();
+		return new ImmutableShuffleConfiguration<T>(configuration);
 	}
 }

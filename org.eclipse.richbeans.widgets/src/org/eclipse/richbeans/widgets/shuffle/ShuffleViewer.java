@@ -51,7 +51,7 @@ public class ShuffleViewer<T>  {
 	private TableViewer fromTable, toTable;
 
 	private Composite control;
-	private List<IShuffleListener> shuffleListeners;
+	private List<IShuffleListener<T>> shuffleListeners;
 
 	public ShuffleViewer(ShuffleConfiguration<T> data) {
 		this.conf = data;
@@ -80,12 +80,12 @@ public class ShuffleViewer<T>  {
 		return control;
 	}
 	
-	public void addShuffleListener(IShuffleListener l) {
+	public void addShuffleListener(IShuffleListener<T> l) {
 		if (shuffleListeners==null) shuffleListeners = Collections.synchronizedList(new ArrayList<>(7));
 		shuffleListeners.add(l);
 	}
 	
-	public void removeShuffleListener(IShuffleListener l) {
+	public void removeShuffleListener(IShuffleListener<T> l) {
 		if (shuffleListeners==null) return;
 		shuffleListeners.remove(l);
 	}
@@ -95,28 +95,30 @@ public class ShuffleViewer<T>  {
 	 * @param evt
 	 * @return items if one or more listeners set them, the items unchanged if no listener changed them.
 	 */
-	protected List<T> firePreShuffle(ShuffleEvent evt) {
+	protected List<T> firePreShuffle(ShuffleEvent<T> evt) {
 		if (shuffleListeners==null) return (List<T>)evt.getItems();
-		IShuffleListener[] la = shuffleListeners.toArray(new IShuffleListener[shuffleListeners.size()]);
+		@SuppressWarnings("unchecked")
+		IShuffleListener<T>[] la = shuffleListeners.toArray(new IShuffleListener[shuffleListeners.size()]);
 		List<T> ret = (List<T>)evt.getItems();
-		for (IShuffleListener iShuffleListener : la) {
+		for (IShuffleListener<T> iShuffleListener : la) {
 			boolean ok = iShuffleListener.preShuffle(evt);
 			if (!ok) throw new RuntimeException("Unable to call preshuffle, aborting event!");
 			if (evt.isItemsSet()) ret = (List<T>)evt.getItems(); // Ret can be overwritten, Javadoc on IShuffleListener explains this.
 		}
 		return ret;
 	}
+	
 	/**
 	 * 
 	 * @param evt
 	 * @return items if one or more listeners set them, null if no listener changed them.
 	 */
-	protected void firePostShuffle(ShuffleEvent evt) {
+	protected void firePostShuffle(ShuffleEvent<T> evt) {
 		if (shuffleListeners==null) return;
-		IShuffleListener[] la = shuffleListeners.toArray(new IShuffleListener[shuffleListeners.size()]);
-		for (IShuffleListener iShuffleListener : la) iShuffleListener.postShuffle(evt);
+		@SuppressWarnings("unchecked")
+		IShuffleListener<T>[] la = shuffleListeners.toArray(new IShuffleListener[shuffleListeners.size()]);
+		for (IShuffleListener<T> iShuffleListener : la) iShuffleListener.postShuffle(evt);
 	}
-
 
 	private final Composite createButtons(Composite content) {
 		
@@ -126,37 +128,37 @@ public class ShuffleViewer<T>  {
         ret.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         GridUtils.removeMargins(ret, 0, 20);
 
-        final Button right = new Button(ret, SWT.ARROW |SWT.RIGHT);
-        right.setToolTipText("Move item right");
-        right.setEnabled(conf.getFromList().size()>0);
-        right.addSelectionListener(new SelectionAdapter() {
+        final Button rightButton = new Button(ret, SWT.ARROW |SWT.RIGHT);
+        rightButton.setToolTipText("Move item right");
+        rightButton.setEnabled(conf.getFromList().size()>0);
+        rightButton.addSelectionListener(new SelectionAdapter() {
         	public void widgetSelected(SelectionEvent e) {
         		moveRight();
         	}
         });
-        right.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        rightButton.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
         GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
         gd.heightHint = 50;
-        right.setLayoutData(gd);
+        rightButton.setLayoutData(gd);
         PropertyChangeListener pcRight = evt -> {
-			final boolean enabled = evt.getNewValue()!=null && evt.getNewValue() instanceof List && ((List)evt.getNewValue()).size()>0;
-			fromTable.getControl().getDisplay().syncExec(() -> right.setEnabled(enabled));
+			final boolean enabled = evt.getNewValue() instanceof List && ((List<?>)evt.getNewValue()).size() > 0;
+			fromTable.getControl().getDisplay().syncExec(() -> rightButton.setEnabled(enabled));
         };
         conf.addPropertyChangeListener("fromList", pcRight);
         
-        final Button left = new Button(ret, SWT.ARROW |SWT.LEFT);
-        left.setToolTipText("Move item left");
-        left.setEnabled(conf.getToList().size()>0);
-        left.addSelectionListener(new SelectionAdapter() {
+        final Button leftButton = new Button(ret, SWT.ARROW |SWT.LEFT);
+        leftButton.setToolTipText("Move item left");
+        leftButton.setEnabled(conf.getToList().size()>0);
+        leftButton.addSelectionListener(new SelectionAdapter() {
         	public void widgetSelected(SelectionEvent e) {
         		moveLeft();
         	}
         });
-        left.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-        left.setLayoutData(gd);
+        leftButton.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+        leftButton.setLayoutData(gd);
         PropertyChangeListener pcLeft = evt -> {
-			final boolean enabled = evt.getNewValue()!=null && evt.getNewValue() instanceof List && ((List)evt.getNewValue()).size()>0;
-			fromTable.getControl().getDisplay().syncExec(() -> left.setEnabled(enabled));
+			final boolean enabled = evt.getNewValue() instanceof List && ((List<?>)evt.getNewValue()).size() > 0;
+			fromTable.getControl().getDisplay().syncExec(() -> leftButton.setEnabled(enabled));
         };
         conf.addPropertyChangeListener("toList", pcLeft);
    
@@ -175,50 +177,49 @@ public class ShuffleViewer<T>  {
 		moveHorizontal(from, to);
 	}
 
-	private void moveHorizontal(ShuffleBean<T> abean, ShuffleBean<T> bbean) {
-		
-		T sel = getSelection(abean.getTable());
+	private void moveHorizontal(ShuffleBean<T> from, ShuffleBean<T> to) {
+		T sel = getSelection(from.getTable());
 		if (sel==null) return;
 		
-		List<T> a = abean.getList();
-		int aindex = a.indexOf(sel);
+		List<T> a = from.getList();
+		int fromIndex = a.indexOf(sel);
 		List<T> rem = new ArrayList<>(a);
 		rem.remove(sel);
 		
-		List<T> add = new ArrayList<>(bbean.getList());
-		T existing = getSelection(bbean.getTable());
-		int bindex = add.size();
+		List<T> add = new ArrayList<>(to.getList());
+		T existing = getSelection(to.getTable());
+		int toIndex = add.size();
 		if (existing!=null) {
-			bindex = add.indexOf(existing);
+			toIndex = add.indexOf(existing);
 		}
 		try {
-		    add.add(bindex+1, sel);
+		    add.add(toIndex+1, sel);
 		} catch (IndexOutOfBoundsException ne) {
 			add.add(sel);
 		}
 		
 		try {
-			rem = firePreShuffle(new ShuffleEvent(this, abean.getDirection(), rem));
-			RichBeanUtils.setBeanValue(conf, abean.getName(), rem); // Set the value of the rem list and property name 'aName' in object conf
-			firePostShuffle(new ShuffleEvent(this, abean.getDirection(), rem));
+			rem = firePreShuffle(new ShuffleEvent<T>(this, from.getDirection(), rem));
+			RichBeanUtils.setBeanValue(conf, from.getName(), rem); // Set the value of the rem list and property name 'aName' in object conf
+			firePostShuffle(new ShuffleEvent<T>(this, from.getDirection(), rem));
 			
-			add = firePreShuffle(new ShuffleEvent(this, bbean.getDirection(), add));
-			RichBeanUtils.setBeanValue(conf, bbean.getName(), add); // Set the value of the add list and property name 'bName' in object conf
+			add = firePreShuffle(new ShuffleEvent<T>(this, to.getDirection(), add));
+			RichBeanUtils.setBeanValue(conf, to.getName(), add); // Set the value of the add list and property name 'bName' in object conf
 	
-			bbean.getTable().setSelection(new StructuredSelection(sel));
+			to.getTable().setSelection(new StructuredSelection(sel));
 			if (rem.size()>0) {
-				aindex--;
-				if (aindex<0) aindex=0;
-				abean.getTable().setSelection(new StructuredSelection(rem.get(aindex)));
+				fromIndex--;
+				if (fromIndex<0) fromIndex=0;
+				from.getTable().setSelection(new StructuredSelection(rem.get(fromIndex)));
 			}
-			firePostShuffle(new ShuffleEvent(this, bbean.getDirection(), add));
+			firePostShuffle(new ShuffleEvent<T>(this, to.getDirection(), add));
 			
 		} catch (Exception ne) {
 			logger.error("Cannot set the values after move!", ne);
 		}
 	}
 	
-	
+	@SuppressWarnings("unchecked")
 	private T getSelection(TableViewer viewer) {
 		ISelection sel = viewer.getSelection();
 		if (sel instanceof StructuredSelection) {
@@ -226,7 +227,6 @@ public class ShuffleViewer<T>  {
 		}
 		return null;
 	}
-
 
 	private final TableViewer createTable(Composite parent, 
 			                              String tooltip, 
@@ -263,43 +263,42 @@ public class ShuffleViewer<T>  {
 		buttons.setLayout(new GridLayout(2, true));
 		GridUtils.removeMargins(buttons, 20, 0);
 		
-		Button down = new Button(buttons, SWT.ARROW | SWT.DOWN);
-		down.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		down.setEnabled(false);
+		Button downButton = new Button(buttons, SWT.ARROW | SWT.DOWN);
+		downButton.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		downButton.setEnabled(false);
 		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
 		gd.widthHint = 50;
-		down.setLayoutData(gd);
-		down.addSelectionListener(new SelectionAdapter() {
+		downButton.setLayoutData(gd);
+		downButton.addSelectionListener(new SelectionAdapter() {
         	public void widgetSelected(SelectionEvent e) {
         		ShuffleDirection direction = propName.startsWith("from") ? ShuffleDirection.LEFT_DOWN : ShuffleDirection.RIGHT_DOWN;
         		moveVertical(ret, propName, 1, direction);
         	}
         });
 		
-		Button up = new Button(buttons, SWT.ARROW | SWT.UP);
-		up.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
-		up.setEnabled(false);
-		up.setLayoutData(gd);	
-		up.addSelectionListener(new SelectionAdapter() {
+		Button upButton = new Button(buttons, SWT.ARROW | SWT.UP);
+		upButton.setBackground(content.getDisplay().getSystemColor(SWT.COLOR_WHITE));
+		upButton.setEnabled(false);
+		upButton.setLayoutData(gd);	
+		upButton.addSelectionListener(new SelectionAdapter() {
         	public void widgetSelected(SelectionEvent e) {
            		ShuffleDirection direction = propName.startsWith("from") ? ShuffleDirection.LEFT_UP : ShuffleDirection.RIGHT_UP;
         		moveVertical(ret, propName, -1, direction);
         	}
         });
 		if (!allowReorder) { // This cannot be changed later
-			down.setVisible(false);
-			up.setVisible(false);
+			downButton.setVisible(false);
+			upButton.setVisible(false);
 		}
 		
         PropertyChangeListener pcLeft = evt -> {
-			final boolean enabled = evt.getNewValue()!=null && evt.getNewValue() instanceof List && ((List)evt.getNewValue()).size()>1;
+			final boolean enabled = evt.getNewValue() instanceof List && ((List<?>) evt.getNewValue()).size() > 1;
 			fromTable.getControl().getDisplay().syncExec(() -> {
-				down.setEnabled(enabled);
-				up.setEnabled(enabled);
+				downButton.setEnabled(enabled);
+				upButton.setEnabled(enabled);
 			});
         };
         conf.addPropertyChangeListener(propName, pcLeft);
-
 
 		return ret;
 	}
@@ -310,6 +309,7 @@ public class ShuffleViewer<T>  {
 			T item = getSelection(viewer);
 			if (item==null) return;
 	
+			@SuppressWarnings("unchecked")
 			List<T> items = new ArrayList<T>((Collection<T>)RichBeanUtils.getBeanValue(conf, propName));
 			final int index = items.indexOf(item);
 			item = items.remove(index);
@@ -323,10 +323,10 @@ public class ShuffleViewer<T>  {
 				return;
 			}
 	
-			items = firePreShuffle(new ShuffleEvent(this, direction, items));
+			items = firePreShuffle(new ShuffleEvent<T>(this, direction, items));
 			RichBeanUtils.setBeanValue(conf, propName, items);
 			viewer.setSelection(new StructuredSelection(item));
-			firePostShuffle(new ShuffleEvent(this, direction, items));
+			firePostShuffle(new ShuffleEvent<T>(this, direction, items));
 			
 		} catch (Exception ne) {
 			logger.error("Problem moving veritcally!", ne);
@@ -359,7 +359,7 @@ public class ShuffleViewer<T>  {
 	 * 
 	 * @return the mutable model, changing items in the config causes the UI to change
 	 */
-	public ShuffleConfiguration getShuffleConfiguration() {
+	public ShuffleConfiguration<T> getShuffleConfiguration() {
 		return conf;
 	}
 }
