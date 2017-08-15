@@ -11,6 +11,8 @@
  *******************************************************************************/
 package org.eclipse.richbeans.test.ui;
 
+import static java.util.stream.IntStream.range;
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +35,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swtbot.swt.finder.junit.SWTBotJunit4ClassRunner;
 import org.eclipse.swtbot.swt.finder.widgets.SWTBotTable;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -93,12 +94,12 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
-	public void checkShell() throws Exception {
+	public void testShell() throws Exception {
 		assertNotNull(bot.shell("Test"));
 	}
 	
 	@Test
-	public void checkButtons() throws Exception {
+	public void testButtons() throws Exception {
 		assertNotNull(bot.arrowButton(0)); // Down
 		assertNotNull(bot.arrowButton(1)); // Up
 		assertNotNull(bot.arrowButton(2)); // Right
@@ -108,7 +109,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
-	public void checkButtonsDisabledWhenEmpty() throws Exception {
+	public void testButtonsDisabledWhenEmpty() throws Exception {
 		assertFalse(bot.arrowButton(0).isEnabled());
 		assertFalse(bot.arrowButton(1).isEnabled());
 		assertFalse(bot.arrowButton(2).isEnabled());
@@ -118,7 +119,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 
 	@Test
-	public void checkLabels() throws Exception {
+	public void testLabels() throws Exception {
 		assertNotNull(bot.label(0)); // Left
 		assertNotNull(bot.label(1)); // Right
 		assertTrue(bot.label(0).getText().equals("Available Experiments")); // Left
@@ -126,7 +127,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 
 	@Test
-	public void checkTables() throws Exception {
+	public void testTables() throws Exception {
 		assertNotNull(bot.table(0)); // Left
 		assertNotNull(bot.table(1)); // Right
 		assertTrue(bot.table(0).getToolTipText().equals("left")); // Left
@@ -134,7 +135,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 
 	@Test
-	public void checkAddFromContent() throws Exception {
+	public void testAddFromContent() throws Exception {
 		
 		SWTBotTable table = bot.table(0);
 		assertTrue(table.rowCount()==0);
@@ -146,7 +147,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
-	public void checkAddToContent() throws Exception {
+	public void testAddToContent() throws Exception {
 		
 		SWTBotTable table = bot.table(1);
 		assertTrue(table.rowCount()==0);
@@ -158,7 +159,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 
 	@Test
-	public void checkMoveOneRight() throws Exception {
+	public void testMoveOneRight() throws Exception {
 		
 		assertFalse(bot.arrowButton(2).isEnabled());
 		assertFalse(bot.arrowButton(3).isEnabled());
@@ -177,7 +178,7 @@ public class ShuffleViewerTest extends ShellTest {
 		assertTrue(bot.arrowButton(2).isEnabled());
 		assertTrue(bot.arrowButton(3).isEnabled());
 
-		// We check that one is selected
+		// We test that one is selected
 		assertEquals("one", table.getTableItem(4).getText());
 		assertEquals(5, table.rowCount());
 		assertEquals(1, table.selectionCount());
@@ -189,7 +190,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
-	public void checkMoveOneRightNoSelection() throws Exception {
+	public void testMoveOneRightNoSelection() throws Exception {
 		
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
@@ -212,7 +213,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 
 	@Test
-	public void checkMoveOneLeftNoSelection() throws Exception {
+	public void testMoveOneLeftNoSelection() throws Exception {
 		
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
@@ -237,7 +238,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 
 	@Test
-	public void checkMoveThreeRight() throws Exception {
+	public void testMoveThreeRight() throws Exception {
 		
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
@@ -266,7 +267,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
-	public void checkMoveThreeRightMultiSelection() throws Exception {
+	public void testMoveThreeRightMultiSelection() throws Exception {
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
 		
@@ -288,7 +289,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
-	public void checkMoveFourLeft() throws Exception {
+	public void testMoveFourLeft() throws Exception {
 		
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
@@ -319,7 +320,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
-	public void checkMoveTwoLeftMultiSelection() throws Exception {
+	public void testMoveTwoLeftMultiSelection() throws Exception {
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
 		
@@ -341,7 +342,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
-	public void checkMoveThreeRightCheckOrder() throws Exception {
+	public void testMoveThreeRightCheckOrder() throws Exception {
 		
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
@@ -366,14 +367,47 @@ public class ShuffleViewerTest extends ShellTest {
 		}
 	}
 
+	@Test
+	public void testUpDownButtonEnablement() throws Exception {
+		assertFalse(bot.arrowButton(4).isEnabled()); // Down
+		assertFalse(bot.arrowButton(5).isEnabled()); // Up
+		conf.setToList(Arrays.asList("one", "two", "three", "four", "five", "six", "seven"));		
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertTrue(bot.arrowButton(5).isEnabled());
+		
+		SWTBotTable table = bot.table(1);
+		table.select(0, 1, 2); // select top three contiguous items
+		assertTrue(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(5).isEnabled());
+		
+		table.select(2, 3, 4); // select middle contiguous
+		assertTrue(bot.arrowButton(4).isEnabled());
+		assertTrue(bot.arrowButton(5).isEnabled());
+		
+		table.select(5, 6); // select bottom contiguous
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertTrue(bot.arrowButton(5).isEnabled());
+		
+		table.select(0, 2, 3); // select non-contiguous top
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(5).isEnabled());
+		
+		table.select(2, 5); // select non-contiguous middle
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(5).isEnabled());
+		
+		table.select(4, 6); // select non-contiguous bottom
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(5).isEnabled());
+	}
 	
 	@Test
-	public void checkReorderInsideRight() throws Exception {
+	public void testReorderInsideRight() throws Exception {
 
 		assertFalse(bot.arrowButton(4).isEnabled());
 		assertFalse(bot.arrowButton(5).isEnabled());
 		conf.setToList(Arrays.asList("one", "two", "three", "four", "five", "six", "seven"));		
-		assertTrue(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(4).isEnabled());
 		assertTrue(bot.arrowButton(5).isEnabled());
         
 		SWTBotTable table = bot.table(1);
@@ -405,26 +439,33 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
-	public void checkReorderUpDownExtents() throws Exception {
+	public void testReorderUpDownExtents() throws Exception {
 
 		assertFalse(bot.arrowButton(4).isEnabled());
 		assertFalse(bot.arrowButton(5).isEnabled());
 		conf.setToList(Arrays.asList("one", "two", "three", "four", "five", "six", "seven"));		
-		assertTrue(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(4).isEnabled());
 		assertTrue(bot.arrowButton(5).isEnabled());
         
 		SWTBotTable table = bot.table(1);
 		table.click(6, 0); // Select "seven"
 		
 		// Go off the top
-		for (int i = 0; i < 10; i++) bot.arrowButton(5).click(); // Up
+		for (int i = 0; i < 6; i++) {
+			bot.arrowButton(5).click(); // Up
+		}
+		assertTrue(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(5).isEnabled());
 
 		assertEquals("seven", table.getTableItem(0).getText(0));
 
 		// Go off the Bottom
-		for (int i = 0; i < 10; i++) bot.arrowButton(4).click(); // Down
+		for (int i = 0; i < 6; i++) {
+			bot.arrowButton(4).click(); // Down
+		}
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertTrue(bot.arrowButton(5).isEnabled());
 		
-		// Go off the Bottom
 		assertEquals("seven", table.getTableItem(6).getText(0));
 		
 		// If the viewer is wrong it will send an event even
@@ -432,11 +473,55 @@ public class ShuffleViewerTest extends ShellTest {
 		// directions.size() will be 20, however the real value 
 		// should be 12 because we go off the end in both directions (6+6=12)
 		assertEquals(12, directions.size());
-
+		for (int i = 0; i < 12; i++) {
+			assertEquals(directions.get(i),
+					i < 6 ? ShuffleDirection.RIGHT_UP : ShuffleDirection.RIGHT_DOWN);
+		}
 	}
 	
 	@Test
-	public void checkReorderItemsinShuffleRight() throws Exception {
+	public void testReorderMultiSelection() throws Exception {
+		assertFalse(bot.arrowButton(4).isEnabled()); // Down
+		assertFalse(bot.arrowButton(5).isEnabled()); // Up
+		conf.setToList(Arrays.asList("one", "two", "three", "four", "five", "six", "seven"));
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertTrue(bot.arrowButton(5).isEnabled());
+		
+		SWTBotTable table = bot.table(1);
+		table.select(0, 1);
+
+		// move down once
+		bot.arrowButton(4).click();
+		
+		assertTrue(bot.arrowButton(4).isEnabled());
+		assertTrue(bot.arrowButton(5).isEnabled());
+		assertArrayEquals(new Object[] { "three", "one", "two", "four", "five", "six", "seven" }, 
+				range(0, 7).mapToObj(i -> table.getTableItem(i).getText()).toArray());
+
+		// move down four more times
+		for (int i = 0; i < 4; i++) {
+			bot.arrowButton(4).click();
+		}
+
+		assertFalse(bot.arrowButton(4).isEnabled());
+		assertTrue(bot.arrowButton(5).isEnabled());
+		assertArrayEquals(new Object[] { "three", "four", "five", "six", "seven", "one", "two" }, 
+				range(0, 7).mapToObj(i -> table.getTableItem(i).getText()).toArray());
+		
+		// move up five times
+		for (int i = 0; i < 5; i++) {
+			bot.arrowButton(5).click();
+		}
+		
+		assertTrue(bot.arrowButton(4).isEnabled());
+		assertFalse(bot.arrowButton(5).isEnabled());
+		
+		assertArrayEquals(new Object[] { "one", "two", "three", "four", "five", "six", "seven" }, 
+				range(0, 7).mapToObj(i -> table.getTableItem(i).getText()).toArray());
+	}
+	
+	@Test
+	public void testReorderItemsinShuffleRight() throws Exception {
 		
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
@@ -476,7 +561,7 @@ public class ShuffleViewerTest extends ShellTest {
 	}
 	
 	@Test
-	public void checkReorderItemsinShuffleLeft() throws Exception {
+	public void testReorderItemsinShuffleLeft() throws Exception {
 		
 		conf.setFromList(Arrays.asList("one", "two", "three"));
 		conf.setToList(Arrays.asList("four", "five", "six", "seven"));
@@ -502,7 +587,7 @@ public class ShuffleViewerTest extends ShellTest {
 			table = bot.table(0);
 			assertEquals(4, table.rowCount());
 			assertTrue(bot.arrowButton(0).isEnabled());
-			assertTrue(bot.arrowButton(1).isEnabled());
+			assertFalse(bot.arrowButton(1).isEnabled());
 	
 			// We check that one is selected
 			assertEquals("four", table.getTableItem(0).getText());
