@@ -185,7 +185,6 @@ public class SelectorWidget {
 		
 		inputLocation = new Text(container, SWT.BORDER);
 		inputLocation.setText(path);
-		gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
 		gridData.widthHint = 150;
 		
 		inputLocation.setLayoutData(gridData);
