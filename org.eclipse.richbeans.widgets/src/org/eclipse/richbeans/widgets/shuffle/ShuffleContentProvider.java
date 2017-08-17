@@ -20,18 +20,18 @@ import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.Viewer;
 
-class ShuffleContentProvider implements IStructuredContentProvider, PropertyChangeListener{
+class ShuffleContentProvider<T> implements IStructuredContentProvider, PropertyChangeListener{
 
-	private List<Object> items;
+	private List<T> items;
 	
-	private final ShuffleConfiguration conf;
+	private final ShuffleConfiguration<T> conf;
 	private final String propName;
 	    
 	private Viewer viewer;
 
 	private boolean selectEnd;
 	
-	public ShuffleContentProvider(ShuffleConfiguration conf, String propName, boolean selectEnd) {
+	public ShuffleContentProvider(ShuffleConfiguration<T> conf, String propName, boolean selectEnd) {
 		this.conf     = conf;
 		this.propName = propName;
 		this.selectEnd =selectEnd;
@@ -64,7 +64,9 @@ class ShuffleContentProvider implements IStructuredContentProvider, PropertyChan
 	@Override
 	public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 		this.viewer = viewer;
-		this.items = (List<Object>)newInput;
+		@SuppressWarnings("unchecked")
+		List<T> items = (List<T>) newInput;
+		this.items = items;
 	}
 
 	@Override

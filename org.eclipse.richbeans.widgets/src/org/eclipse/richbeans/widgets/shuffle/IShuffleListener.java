@@ -13,7 +13,7 @@ package org.eclipse.richbeans.widgets.shuffle;
 
 import java.util.EventListener;
 
-public interface IShuffleListener extends EventListener {
+public interface IShuffleListener<T> extends EventListener {
 
 	/**
 	 * This event is called prior to a shuffle happening.
@@ -31,7 +31,7 @@ public interface IShuffleListener extends EventListener {
 	 * 
 	 * @return true if shuffle may happen, false if it should be aborted.
 	 */
-	default boolean preShuffle(ShuffleEvent evt) {
+	default boolean preShuffle(ShuffleEvent<T> evt) {
 		return true;
 	}
 	
@@ -42,7 +42,7 @@ public interface IShuffleListener extends EventListener {
 	 * 
 	 * @param evt
 	 */
-	default void postShuffle(ShuffleEvent evt) {
+	default void postShuffle(ShuffleEvent<T> evt) {
 		
 	}
 }

@@ -81,7 +81,7 @@ class ShuffleBean<T> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ShuffleBean other = (ShuffleBean) obj;
+		ShuffleBean<?> other = (ShuffleBean<?>) obj;
 		if (direction != other.direction)
 			return false;
 		if (list == null) {
