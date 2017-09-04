@@ -44,7 +44,7 @@ public class CComboWithEntryCellEditor extends CComboCellEditor {
 	 * @see CellEditor#dispose
 	 */
 	public CComboWithEntryCellEditor() {
-		setStyle(defaultStyle);
+		setStyle(DEFAULT_STYLE);
 	}
 
 	/**
@@ -59,7 +59,7 @@ public class CComboWithEntryCellEditor extends CComboCellEditor {
 	 *            the list of strings for the combo box
 	 */
 	public CComboWithEntryCellEditor(Composite parent, String[] items) {
-		this(parent, items, defaultStyle);
+		this(parent, items, DEFAULT_STYLE);
 	}
 
 	/**
