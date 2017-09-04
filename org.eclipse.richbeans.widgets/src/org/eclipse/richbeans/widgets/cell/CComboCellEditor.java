@@ -36,17 +36,26 @@ public class CComboCellEditor extends AppliableCellEditor {
 	/**
 	 * The zero-based index of the selected item.
 	 */
-	int selection;
+	private int selection;
 
 	/**
 	 * The custom combo box control.
 	 */
-	CCombo comboBox;
+	protected CCombo comboBox;
+	
+	/**
+	 * Keys the user has pressed recently.<br>
+	 * This is used to allow the user to find an item in the list by typing the first few characters.<br>
+	 * Times out at keySequenceTimeout, which is set to KEY_PRESS_TIMEOUT milliseconds after the last key pressed.
+	 */
+	private String keySequence;
+	private long keySequenceTimeout;
+	private static final int KEY_PRESS_TIMEOUT = 2000;
 
 	/**
 	 * Default ComboBoxCellEditor style
 	 */
-	protected static final int defaultStyle = SWT.NONE;
+	protected static final int DEFAULT_STYLE = SWT.NONE;
 
 	/**
 	 * Creates a new cell editor with no control and no st of choices.
@@ -59,7 +68,7 @@ public class CComboCellEditor extends AppliableCellEditor {
 	 * @see CellEditor#dispose
 	 */
 	public CComboCellEditor() {
-		setStyle(defaultStyle);
+		setStyle(DEFAULT_STYLE);
 	}
 
 	/**
@@ -74,7 +83,7 @@ public class CComboCellEditor extends AppliableCellEditor {
 	 *            the list of strings for the combo box
 	 */
 	public CComboCellEditor(Composite parent, String[] items) {
-		this(parent, items, defaultStyle);
+		this(parent, items, DEFAULT_STYLE);
 	}
 
 	/**
@@ -129,9 +138,9 @@ public class CComboCellEditor extends AppliableCellEditor {
 		populateComboBoxItems();
 
 		comboBox.addKeyListener(new KeyAdapter() {
-			// hook key pressed - see PR 14201
 			@Override
-			public void keyPressed(KeyEvent e) {
+			public void keyReleased(KeyEvent e) {
+				super.keyReleased(e);
 				keyReleaseOccured(e);
 			}
 		});
@@ -167,22 +176,21 @@ public class CComboCellEditor extends AppliableCellEditor {
 				CComboCellEditor.this.focusLost();
 			}
 		});
+		
+		comboBox.select(0);
 		return comboBox;
 	}
-	
-	public void activate() {
-		//comboBox.setListVisible(true);
-	}
 
+	@Override
 	public void setFocus() {
 		super.setFocus();
 		comboBox.setListVisible(true);
 	}
-	
+
 	/**
 	 * @return true if windows
 	 */
-	static private boolean isWindowsOS() {
+	private static boolean isWindowsOS() {
 		return (System.getProperty("os.name").indexOf("Windows") == 0);
 	}
 
@@ -196,7 +204,7 @@ public class CComboCellEditor extends AppliableCellEditor {
 	 */
 	@Override
 	protected Object doGetValue() {
-		return new Integer(selection);
+		return selection;
 	}
 
 	/*
@@ -271,7 +279,6 @@ public class CComboCellEditor extends AppliableCellEditor {
 	 * Applies the currently selected value and deactivates the cell editor
 	 */
 	public void applyEditorValueAndDeactivate(int selection) {
-		
 		this.selection = selection;
 		Object newValue = doGetValue();
 		markDirty();
@@ -282,14 +289,11 @@ public class CComboCellEditor extends AppliableCellEditor {
 			// Only format if the 'index' is valid
 			if (items.length > 0 && selection >= 0 && selection < items.length) {
 				// try to insert the current value into the error message.
-				setErrorMessage(MessageFormat.format(getErrorMessage(),
-						new Object[] { items[selection] }));
+				setErrorMessage(MessageFormat.format(getErrorMessage(), items[selection]));
 			} else {
 				// Since we don't have a valid index, assume we're using an
-				// 'edit'
-				// combo so format using its text value
-				setErrorMessage(MessageFormat.format(getErrorMessage(),
-						new Object[] { comboBox.getText() }));
+				// 'edit' combo so format using its text value
+				setErrorMessage(MessageFormat.format(getErrorMessage(), comboBox.getText()));
 			}
 		}
 
@@ -320,12 +324,44 @@ public class CComboCellEditor extends AppliableCellEditor {
 			fireCancelEditor();
 		} else if (keyEvent.character == '\t') { // tab key
 			applyEditorValueAndDeactivate();
+		} else {
+			handleSearchList(keyEvent);
 		}
+	}
+
+	// Try to go to position in list corresponding to input key sequence
+	private void handleSearchList(final KeyEvent keyEvent) {
+		final char ch = keyEvent.character;
+		if (!(Character.isLetterOrDigit(ch) || Character.getType(ch) == Character.CONNECTOR_PUNCTUATION)) {
+			return;
+		}
+		final long now = System.currentTimeMillis();
+		if (now > keySequenceTimeout) {
+			// Clear key sequence if user has not pressed a key for a while
+			keySequence = "";
+		}
+
+		keySequence += Character.toString(ch).toLowerCase();
+		keySequenceTimeout = now + KEY_PRESS_TIMEOUT;
+		
+		// Try to find an item beginning with the input character(s)
+		for (int i = 0; i < items.length; i++) {
+			if (items[i].toLowerCase().startsWith(keySequence)) {
+				keyEvent.doit = false;
+				comboBox.select(i);
+				return;
+			}
+		}
+
+		// Nothing found - reset
+		keySequence = "";
 	}
 
 	public CCombo getCombo() {
 		return comboBox;
 	}
+
+	@Override
 	protected int getDoubleClickTimeout() {
 		return 0;
 	}
