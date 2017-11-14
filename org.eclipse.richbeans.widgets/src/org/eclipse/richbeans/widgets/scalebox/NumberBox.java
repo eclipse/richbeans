@@ -651,6 +651,11 @@ public abstract class NumberBox extends ButtonComposite implements BoundsProvide
 				}
 			}
 		}
+		try {
+			return Double.valueOf(txt);
+		} catch (java.lang.NumberFormatException ne) {
+			// Fall through.
+		}
 		return Double.NaN;
 	}
 
